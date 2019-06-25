@@ -79,7 +79,7 @@ class RNlists:
                             )
                 else:
                     allRomanListOfLists.append(thisFigListOfLists)
-                    return RNlistOlists
+                    return allRomanListOfLists
 
 #------------------------------------------------------------------------------
 
@@ -105,16 +105,16 @@ class RNlists:
 
 class Test(unittest.TestCase):
 
-    # def testList(self):
-    #
-    #     figs = RNlists.figures(listLength=3, maxFig=4)
-    #     test = RNlists.RNarray(figs)
-    #
-    #     self.assertIsInstance(test, list)
-    #     self.assertIsInstance(test[0], list)
-    #     self.assertIsInstance(test[0][0], list)
-    #     self.assertIsInstance(test[0][0][0], list)
-    #     self.assertEqual(test, ***)
-    #     self.assertEqual(test[0],
-    #     self.assertEqual(test[0][0],
-    #     self.assertEqual(test[0][0][0],
+    def testList(self):
+
+        figs = RNlists.figures(listLength=3, maxFig=4)
+        test = RNlists.RNarray(figs, writeEachFig=False)
+
+        self.assertIsInstance(test, list)
+        self.assertIsInstance(test[0], list)
+        self.assertIsInstance(test[0][0], list)
+        self.assertIsInstance(test[0][0][0], list)
+        self.assertEqual(len(test), 1)
+        self.assertEqual(len(test[0]), 84)
+        self.assertEqual(test[0][0], 3)
+        self.assertEqual(test[0][0][0], 4)
