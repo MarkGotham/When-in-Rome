@@ -30,9 +30,33 @@ This encompasses music21's default reading of:
 - Scale degree, I-VII (= 7)
 - Chord type (o, m, M, +; e.g. ['io', 'i', 'I', 'I+',]).  (= 4)
 
-The lists were generated in 2018; please let me know if you find changes and I'll re-make them.
+'Make-list.py' provides the (very simple) code for generating these list anew.
 
-Additionally/alternatively, 'Make-list.py' provides the (very simple) code for generating these list anew.
+## Minor Mode
+
+The lists were generated with music21's 'quality' default for handling the 6th / 7th degrees in minor mode.
+
+Music21 has four settable options for handling minor key variation.
+- Quality: the status of the triad as major or minor (upper or lower case, not accounting for diminished / augmented at this stage) alters the output chord’s root. In this case, ‘vii’ in a minor returns g# minor and the same holds for a diminished alteration (’viio’ = g# diminished). ‘VII’ sets the root to G natural, so ‘VII’ = G major and VII+ is G augmented.
+- Cautionary: like 'quality', except that the ‘cautionary’ option ignores one chromatic alteration in the ‘sensible’ direction. So, ‘#vii’ would return g# minor, and not g## minor. Likewise, ‘bVII’ would be G major and not Gb major. This is useful to accommodating cases much of the realistic variation in minor mode conventions — the single, ‘sensible' sharp or flat is like a ‘cautionary accidental’. Further sharps and flats in the ‘sensible’ direction, and any sharps / flats in the opposite direction do change the root.
+- Sharp / Raised: explicitly sets the 6th and / or 7th degrees to ‘Sharp / Raised’ (F# and G# in a minor).
+- Flat / Lowered: the same for flatten / lowered roots (F and G in a minor).
+
+The following tables set out how these options relate to each other in a minor. The first moves in a logical direction for  sharp / flat direction modifications. The second sets out the opposite direction, largely for the sake of completeness.
+
+|“Right” direction|##vii|#vii|vii|VII|bVII|bbVII|
+|---|---|---|---|---|---|---|
+|Quality|g###|g##|g#|G|Gb|Gbb|
+|Cautionary|g##|g#|g#|G|G|Gb|
+|Sharp / Raised|g###|g##|g#|G#|G|Gb|
+|Flat / Lowered|g##|g#|g|G|Gb|Gbb|
+
+|“Wrong” direction|bbvii|bvii|vii|VII|VII#|VII##|
+|---|---|---|---|---|---|---|
+|Quality|gb|g|g#|G|G#|G##|
+|Cautionary|gb|g|g#|G|G#|G##|
+|Sharp / Raised|gb|g|g#|G#|G##|G###|
+|Flat / Lowered|gbb|gb|g|G|G#|G##|
 
 ## Acknowledging and Contributing
 
