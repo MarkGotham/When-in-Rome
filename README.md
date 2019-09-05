@@ -14,7 +14,7 @@ See also:
 The corpora mentioned in the paper are hosted here or on music21 as follows:
 
 - Complete scores and analyses for books 3--5 of the Monteverdi madrigals (48 works). [Hosted on music21: all .rntxt files in this folder](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/monteverdi).
-- Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses). [Hosted here, coming soon]
+- Complete preludes from the first book of [Bach's Well Tempered Clavier (24 analyses)](/Corpus/Bach Preludes/)
 - A sample of Bach chorale analyses (20 analyses). [Hosted on music21: all files in this folder](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/bach/choraleAnalyses).
 - The complete Beethoven string quartets, converted from the DCMLab's ABC corpus and with some manual error-correction (16 string quartets, 70 movements). [Hosted here, coming soon]
 - A sample of Nineteenth-century French and German songs from the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores), including Schubert's complete Winterreise cycle (50 songs). [Hosted here, coming soon]
