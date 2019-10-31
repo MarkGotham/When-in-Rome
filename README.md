@@ -1,6 +1,6 @@
 # When in Rome
 
-This repo provides corpora and supplementary material for the following paper:
+This repo provides Roman numeral analysis corpora and supplementary material for the following paper:
 
 Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.
 
@@ -13,13 +13,19 @@ See also:
 
 The corpora provided include those mentioned in the paper as well as other created or converted since going to press. They are hosted here or on music21 as follows:
 
-- [Bach Preludes](Corpus/Bach Preludes/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
+### Hosted on music21
 - Bach Chorales: A sample of 20 analyses. [Hosted on music21: all files in this folder](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/bach/choraleAnalyses).
-- [Beethoven Piano Sonatas](Corpus/Beethoven Piano Sonatas/): Complete first movements, converted from Tsung-Ping Chen and Li Su's [BPS dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
-- Beethoven string quartets: Complete, converted from the DCMLab's ABC corpus and with some manual error-correction (16 string quartets, 70 movements). [Hosted here, coming soon]
-- Grounds: Examples of [ground bass compositions from Purcell and Bach](Corpus/Grounds/)
 - Monteverdi madrigals: Complete scores and analyses for books 3--5 of the Monteverdi madrigals (48 works). [Hosted on music21: all .rntxt files in this folder](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/monteverdi).
-- Nineteenth-century French and German songs: A sample from the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores), including Schubert's complete Winterreise cycle (50 songs). [Hosted here, coming soon]
+
+### Conversions of existing corpora
+- ['BPS-FH'](/Corpus/BPS-FH/): Complete first movements of the Beethoven Piano Sonatas (32 movments), from [Tsung-Ping Chen and Li Su, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
+- ['TAVERN'](/Corpus/TAVERN/): 27 sets of Variations by Mozart and Beethoven, from [Devaney et al, ISMIR 2015](https://github.com/jcdevaney/TAVERN)
+- 'ABC': Complete Beethoven string quartets (16 string quartets, 70 movements), from the [DCMLab](https://github.com/DCMLab/ABC), with some manual error-correction. [Coming soon]
+
+### New corpora by MG and colleagues
+- [Bach Preludes](/Corpus/Bach_Preludes/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
+- [Grounds](/Corpus/Grounds/): Examples of ground bass compositions from Purcell and Bach.
+- [Nineteenth-century French and German songs](/Corpus/Songs/): A sample of 48 songs from the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores), including Schubert's complete _Winterreise_ cycle.
 
 ## Lists
 
