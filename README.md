@@ -20,7 +20,7 @@ The corpora provided include those mentioned in the paper as well as other creat
 ### Conversions of existing corpora
 - ['BPS-FH'](/Corpus/BPS-FH/): Complete first movements of the Beethoven Piano Sonatas (32 movments), from [Tsung-Ping Chen and Li Su, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
 - ['TAVERN'](/Corpus/TAVERN/): 27 sets of Variations by Mozart and Beethoven, from [Devaney et al, ISMIR 2015](https://github.com/jcdevaney/TAVERN)
-- 'ABC': Complete Beethoven string quartets (16 string quartets, 70 movements), from the [DCMLab](https://github.com/DCMLab/ABC), with some manual error-correction. [Coming soon]
+- ['ABC'](/Corpus/ABC/): Complete Beethoven string quartets (16 string quartets, 70 movements), from the [DCMLab](https://github.com/DCMLab/ABC), with a small amount of error-correction and proof-reading to ensure parsing. (Proof-read version coming soon).
 
 ### New corpora by MG and colleagues
 - [Bach Preludes](/Corpus/Bach_Preludes/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
