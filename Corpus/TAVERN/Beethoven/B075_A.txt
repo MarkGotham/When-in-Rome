@@ -450,8 +450,8 @@ m322 b1 V
 m323 b1 Cad64/V b2 V/V
 m324 b1 V
 m325 b1 Cad64/V b2 V/V
-m326 b1 V b2 viio6/-VI
-m327 b1 -VI b2.5 I
+m326 b1 V b2 viio6/VI
+m327 b1 VI b2.5 I
 m328 b1 iv
 m329 b1 V7
 
@@ -459,7 +459,7 @@ Form: Variation 6 e
 
 m330 b1 i b2 i
 m331 b1 i
-m332 b1 -VI
+m332 b1 VI
 m333 b1 iio6 b2 V
 
 Form: Variation 6 f
@@ -470,7 +470,7 @@ m336 b1 i64
 m337 b1 V7
 m338 b1 i64
 m339 b1 V7
-m340 b1 i b2 -VI
+m340 b1 i b2 VI
 m341 b1 iiø65 b2 V7
 m342 b1 i b2 V
 m343 b1 i b2 F: I
@@ -553,7 +553,7 @@ m392 b1 V7/vi
 m393 b1 Cad64/vi
 m394 b1 V7/vi
 m395 b1 Cad64/vi
-m396 b1 -VI/vi
+m396 b1 VI/vi
 m397 b1 Ger/vi
 m398 b1 V/vi b3 viio7/V/vi
 m399 b1 V/vi b3 viio7/V/vi
@@ -588,13 +588,14 @@ m424 b1 ii b2 V43
 m425 b1 I
 m426 b1 i
 m427 b1 i64
-m428 b1 vi/-VI
-m429 b1 vi64/-VI
-m430 b1 ii/-VI
-m431 b1 V7/-VI
-m432 b1 I/-VI b2 ii/-VI
-m433 b1 Cad64/-VI b2 V/-VI
-m434 b1 Bb: I
+Note: moved modulation to Bb earlier
+m428 b1 Bb: vi
+m429 b1 vi64
+m430 b1 ii
+m431 b1 V7
+m432 b1 I b2 ii
+m433 b1 Cad64 b2 V
+m434 b1 I
 m435 b1 I
 m436 b1 viio7 b2.5 I
 m437 b1 I
