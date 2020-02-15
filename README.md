@@ -1,8 +1,8 @@
 # When in Rome
 
-This repo provides Roman numeral analysis corpora and supplementary material for the following paper:
+This repo provides Roman numeral analysis corpora and related material including the supplementary resources promised in:
 
-Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.
+[Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
 
 See also:
 - https://github.com/cuthbertLab/music21/tree/master/music21/romanText
@@ -11,7 +11,14 @@ See also:
 
 ## Corpora
 
-The corpora provided include those mentioned in the paper as well as other created or converted since going to press. They are hosted here or on music21 as follows:
+The corpora provided include those mentioned in the paper as well as other created or converted since going to press, totaling around 250 scores and 80,000 Roman numerals.
+These analyses are hosted here or on music21 as listed in the following subsections.
+
+Note: As the paper attests, harmonic analysis is fundamentally, necessarily, and intentionally a reductive act that includes a good degree of subjective reading.
+These are not in any sense, 'definitive' analyses to the exclusion of other possibilities.
+Quite the opposite: part of the point of having a representation format like this is to enable the recording of variant readings.
+Please feel free to re-analyse these works by using the existing analysis as a template and changing the parts you disagree with.
+In that case, perhaps credit the original analyst too in the format: 'Analyst: [Your name] after [their name]'
 
 ### Hosted on music21
 - Bach Chorales: A sample of 20 analyses. [Hosted on music21: all files in this folder](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/bach/choraleAnalyses).
@@ -27,9 +34,24 @@ The corpora provided include those mentioned in the paper as well as other creat
 - [Grounds](/Corpus/Grounds/): Examples of ground bass compositions from Purcell and Bach.
 - [Nineteenth-century French and German songs](/Corpus/Songs/): A sample of 48 songs from the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores), including Schubert's complete _Winterreise_ cycle.
 
+## Templates
+
+The templates folder contains templates for analyses of every song in the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores).
+These rntxt template files include the:
+- metadata,
+- time signatures, and
+- measure range equalities
+
+... but no actual analysis.
+You can download these templates and fill them in with your take on the work.
+
+The file names correspond exactly to the auto-updating corpus mirror [hosted here](https://github.com/shoogle/OpenScore-LiederCorpus) enabling easy pairing with the original scores.
+That repo provides details of the file naming system.
+The only modification here is to replace the '/' for subdirectories with '\_-\_'.
+
 ## Lists
 
-These lists spell out which pitches are associated with Roman numerals.
+To assist with the task of undertaking a Roman numerals, the 'Lists' folder spells out which pitches are associated with numerals.
 
 This encompasses music21's default reading of:
 - Every combination of the figures 2–9 (= 255 total, the number of files)
