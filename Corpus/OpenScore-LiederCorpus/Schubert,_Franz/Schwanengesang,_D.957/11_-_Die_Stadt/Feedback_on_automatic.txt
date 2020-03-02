@@ -1,0 +1,153 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 94.26%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 6, beat 1, viio43 in c minor, indicating the pitches ['F', 'A-', 'B', 'D'] accounting for successive slices of [['C2'], ['C3'], ['C2'], ['C3'], ['C2'], ['C3'], ['C2'], ['C3'], ['C2'], ['C2']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 8, beat 3, i6 in c minor, indicating the pitches ['E-', 'G', 'C'] accounting for successive slices of [['A-2', 'C3', 'F3']].
+Match strength estimated at 33.0%.
+How about:
+m8 b3 iv6 for the slice ['A-2', 'C3', 'F3']
+
+
+Measure 9, beat 1, i in c minor, indicating the pitches ['C', 'E-', 'G'] accounting for successive slices of [['C3', 'F3', 'A-3', 'A-4']].
+Match strength estimated at 25.0%.
+How about:
+m9 b1 iv64 for the slice ['C3', 'F3', 'A-3', 'A-4']
+
+
+Measure 16, beat 1, vii6/V in c minor, indicating the pitches ['A', 'C#', 'F#'] accounting for successive slices of [['C2', 'A4'], ['C2', 'C5'], ['C3', 'C5'], ['C3', 'E-5'], ['C2', 'E-5'], ['C2', 'F#5'], ['C3', 'F#5'], ['C3', 'A5']].
+Match strength estimated at 28.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 19, beat 3.5, viio42/V in c minor, indicating the pitches ['E-', 'F#', 'A', 'C'] accounting for successive slices of [['A2', 'B-4'], ['B-4']].
+Match strength estimated at 25.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 20, beat 3.5, viio42/V in c minor, indicating the pitches ['E-', 'F#', 'A', 'C'] accounting for successive slices of [['A2', 'B-4'], ['B-4']].
+Match strength estimated at 25.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 29, beat 3, i6 in c minor, indicating the pitches ['E-', 'G', 'C'] accounting for successive slices of [['A-2', 'A-3', 'C4', 'F4'], ['A-2', 'A-3', 'C4', 'E4', 'F4']].
+Match strength estimated at 22.0%.
+How about:
+m29 b3 iv6 for the slice ['A-2', 'A-3', 'C4', 'F4']
+m29 b3.33 iv6#53 for the slice ['A-2', 'A-3', 'C4', 'E4', 'F4']
+
+
+Measure 30, beat 3, V7 in c minor, indicating the pitches ['G', 'B', 'D', 'F'] accounting for successive slices of [['C2', 'C3', 'C4', 'G4', 'B-4'], ['C2', 'C3', 'C4', 'E4', 'G4']].
+Match strength estimated at 20.0%.
+How about:
+m30 b3.75 I for the slice ['C2', 'C3', 'C4', 'E4', 'G4']
+
+
+Measure 32, beat 2, II6 in c minor, indicating the pitches ['F#', 'A', 'D'] accounting for successive slices of [['F2', 'F3', 'D-4', 'A-4', 'D-5']].
+Match strength estimated at 0.0%.
+How about:
+m32 b2 bII6 for the slice ['F2', 'F3', 'D-4', 'A-4', 'D-5']
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 88.33%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 5, beat 1, viio65/V in c minor, indicating the bass A for lowest note(s) of: ['C3', 'C2'].
+How about:
+m5 b1 #ivob864b3
+
+
+Measure 6, beat 1, viio43 in c minor, indicating the bass F for lowest note(s) of: ['C3', 'C2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 6, beat 3, i64 in c minor, indicating the bass G for lowest note(s) of: ['C2'].
+How about:
+m6 b3 i
+
+
+Measure 8, beat 3, i6 in c minor, indicating the bass E- for lowest note(s) of: ['A-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 8, beat 3.5, iv6 in c minor, indicating the bass A- for lowest note(s) of: ['F2'].
+How about:
+m8 b3.5 iv
+
+
+Measure 9, beat 2, i in f minor, indicating the bass F for lowest note(s) of: ['C3', 'C2'].
+How about:
+m9 b2 i64
+
+
+Measure 16, beat 1, vii6/V in c minor, indicating the bass A for lowest note(s) of: ['C3', 'C2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 18, beat 1, viio65/V in c minor, indicating the bass A for lowest note(s) of: ['C3', 'C2'].
+How about:
+m18 b1 #ivob864b3
+
+
+Measure 19, beat 3.5, viio42/V in c minor, indicating the bass E- for lowest note(s) of: ['B-4', 'A2'].
+How about:
+m19 b3.5 #ivo6b5b3
+
+
+Measure 20, beat 3.5, viio42/V in c minor, indicating the bass E- for lowest note(s) of: ['B-4', 'A2'].
+How about:
+m20 b3.5 #ivo6b5b3
+
+
+Measure 24, beat 1, viio65/V in c minor, indicating the bass A for lowest note(s) of: ['C3', 'C2'].
+How about:
+m24 b1 #ivob864b3
+
+
+Measure 25, beat 1, viio65/V in c minor, indicating the bass A for lowest note(s) of: ['C3', 'C2'].
+How about:
+m25 b1 #ivob864b3
+
+
+Measure 29, beat 3, i6 in c minor, indicating the bass E- for lowest note(s) of: ['A-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 30, beat 1, iv in c minor, indicating the bass F for lowest note(s) of: ['C3'].
+How about:
+m30 b1 iv64
+
+
+Measure 30, beat 3, V7 in c minor, indicating the bass G for lowest note(s) of: ['C2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 32, beat 2, II6 in c minor, indicating the bass F# for lowest note(s) of: ['F2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 32, beat 3.5, IV6 in c minor, indicating the bass A for lowest note(s) of: ['A-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+
+WARNINGS =====================
+
+WARNING: There are 40 measures in the score but 39 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

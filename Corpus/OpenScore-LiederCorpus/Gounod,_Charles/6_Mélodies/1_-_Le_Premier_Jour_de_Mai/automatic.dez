@@ -1,0 +1,1748 @@
+{
+    "meta": {
+        "title": "automatic",
+        "name": "automatic",
+        "date": "2020-02-20 11:46:50.592357",
+        "producer": "Algomus team",
+        "layout": [
+            {
+                "filter": {
+                    "type": "Harmony",
+                    "layers": [
+                        "reference"
+                    ]
+                },
+                "style": {
+                    "line": "top.1"
+                }
+            },
+            {
+                "filter": {
+                    "type": "Harmony",
+                    "layers": [
+                        "prediction",
+                        "conv_gru_spelling_bass_cut_3"
+                    ]
+                },
+                "style": {
+                    "line": "top.2"
+                }
+            },
+            {
+                "filter": {
+                    "type": "Tonality",
+                    "layers": [
+                        "reference"
+                    ]
+                },
+                "style": {
+                    "line": "bot.1"
+                }
+            },
+            {
+                "filter": {
+                    "type": "Tonality",
+                    "layers": [
+                        "prediction",
+                        "conv_gru_spelling_bass_cut_3"
+                    ]
+                },
+                "style": {
+                    "line": "bot.2"
+                }
+            }
+        ]
+    },
+    "labels": [
+        {
+            "type": "Tonality",
+            "tag": "A",
+            "start": 0.0,
+            "actual-duration": 79.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 0.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 1.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 2.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 3.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 4.0,
+            "actual-duration": 4.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 8.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 10.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 12.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 13.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 14.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 15.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 16.0,
+            "actual-duration": 7.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 23.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 24.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 25.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 26.0,
+            "actual-duration": 6.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 32.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 33.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 34.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 35.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 35.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 37.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 38.0,
+            "actual-duration": 3.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "IV",
+            "start": 41.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 41.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7/V",
+            "start": 42.0,
+            "actual-duration": 12.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 54.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "II7",
+            "start": 55.5,
+            "actual-duration": 2.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 58.0,
+            "actual-duration": 3.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 61.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 61.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 62.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 62.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 63.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V65",
+            "start": 64.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 64.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 65.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 66.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 67.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 69.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 70.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "vi",
+            "start": 71.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "iv",
+            "start": 72.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "ii6",
+            "start": 72.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "ii",
+            "start": 73.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "IV",
+            "start": 73.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 74.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 75.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 76.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 78.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 79.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Tonality",
+            "tag": "A",
+            "start": 80.0,
+            "actual-duration": 79.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 80.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 81.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 82.0,
+            "actual-duration": 4.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 86.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 88.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 90.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 91.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 92.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 93.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 94.0,
+            "actual-duration": 7.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 101.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 102.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 103.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 104.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 105.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 105.5,
+            "actual-duration": 5.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 110.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 111.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 112.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 113.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 113.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 115.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 116.0,
+            "actual-duration": 3.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "IV",
+            "start": 119.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 119.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7/V",
+            "start": 120.0,
+            "actual-duration": 12.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 132.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "II7",
+            "start": 133.5,
+            "actual-duration": 2.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 136.0,
+            "actual-duration": 3.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 139.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 139.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 140.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 140.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 141.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V65",
+            "start": 142.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 142.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 143.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 144.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 145.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 147.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 148.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "vi",
+            "start": 149.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "iv",
+            "start": 150.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "ii6",
+            "start": 150.5,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "ii",
+            "start": 151.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 152.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 152.5,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 153.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 154.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 156.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 157.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 158.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 159.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Tonality",
+            "tag": "A",
+            "start": 160.0,
+            "actual-duration": 79.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 160.0,
+            "actual-duration": 4.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 164.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 166.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 168.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 169.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 170.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 171.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 172.0,
+            "actual-duration": 7.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 179.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 180.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 181.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 182.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 183.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 183.5,
+            "actual-duration": 5.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 188.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 189.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 190.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 191.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 191.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 193.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 194.0,
+            "actual-duration": 3.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "IV",
+            "start": 197.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 197.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7/V",
+            "start": 198.0,
+            "actual-duration": 12.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 210.5,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "II7",
+            "start": 211.5,
+            "actual-duration": 2.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 214.0,
+            "actual-duration": 3.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 217.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 217.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 218.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 218.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 219.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V65",
+            "start": 220.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 220.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 221.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 222.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 223.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 225.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 226.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "vi",
+            "start": 227.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "iv",
+            "start": 228.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "ii6",
+            "start": 228.5,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "ii",
+            "start": 229.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 230.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 230.5,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 231.5,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 232.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 234.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 235.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 236.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 237.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 238.0,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Tonality",
+            "tag": "A",
+            "start": 240.0,
+            "actual-duration": 13.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 240.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 242.0,
+            "actual-duration": 2.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 244.0,
+            "actual-duration": 0.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V7",
+            "start": 244.5,
+            "actual-duration": 1.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 246.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 247.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 248.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "V",
+            "start": 249.0,
+            "actual-duration": 1.0,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        },
+        {
+            "type": "Harmony",
+            "tag": "I",
+            "start": 250.0,
+            "actual-duration": 3.5,
+            "layers": [
+                "prediction",
+                "conv_gru_spelling_bass_cut_3"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,75 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 98.67%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 5, beat 2.5, V64 in G major, indicating the pitches ['A', 'D', 'F#'] accounting for successive slices of [['D2', 'D3', 'B4'], ['D2', 'D3', 'G4', 'B4']].
+Match strength estimated at 58.0%.
+How about:
+m6 b2.75 I64 for the slice ['D2', 'D3', 'G4', 'B4']
+
+
+Measure 14, beat 2, VII65/V in G major, indicating the pitches ['E#', 'G#', 'B', 'C#'] accounting for successive slices of [['C#2', 'C#3', 'B-3', 'B-4'], ['C#2', 'C#3', 'E4', 'B-4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 86.96%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 0, beat 2.5, I in G major, indicating the bass G for lowest note(s) of: ['D4'].
+How about:
+m0 b2.5 I64
+
+
+Measure 4, beat 2, V65/IV in G major, indicating the bass B for lowest note(s) of: ['F2'].
+How about:
+m4 b2 Ib8642
+
+
+Measure 5, beat 2.5, V64 in G major, indicating the bass A for lowest note(s) of: ['D2'].
+How about:
+m5 b2.5 V
+
+
+Measure 6, beat 1.5, V7 in G major, indicating the bass D for lowest note(s) of: ['C2'].
+How about:
+m6 b1.5 V42
+
+
+Measure 7, beat 1, V in G major, indicating the bass D for lowest note(s) of: ['A1'].
+How about:
+m7 b1 V64
+
+
+Measure 12, beat 2, V65/IV in G major, indicating the bass B for lowest note(s) of: ['F2'].
+How about:
+m12 b2 Ib8642
+
+
+Measure 13, beat 2.5, I in G major, indicating the bass G for lowest note(s) of: ['D2'].
+How about:
+m13 b2.5 I64
+
+
+Measure 14, beat 2, VII65/V in G major, indicating the bass E# for lowest note(s) of: ['C#2'].
+How about:
+m14 b2 #IVb753
+
+
+
+WARNINGS =====================
+
+WARNING: There are 18 measures in the score but 17 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

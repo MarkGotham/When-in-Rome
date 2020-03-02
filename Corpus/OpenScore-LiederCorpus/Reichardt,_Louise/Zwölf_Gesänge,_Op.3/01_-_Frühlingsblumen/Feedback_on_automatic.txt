@@ -1,0 +1,62 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 98.53%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 1, beat 2.67, V in G major, indicating the pitches ['D', 'F#', 'A'] accounting for successive slices of [['G2', 'G3', 'F#4', 'C5']].
+Match strength estimated at 25.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 5, beat 2.67, V in G major, indicating the pitches ['D', 'F#', 'A'] accounting for successive slices of [['G2', 'G3', 'F#4', 'C5']].
+Match strength estimated at 25.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 90.2%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 1, beat 2.67, V in G major, indicating the bass D for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 5, beat 2.67, V in G major, indicating the bass D for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 7, beat 1, I in G major, indicating the bass G for lowest note(s) of: ['D2'].
+How about:
+m7 b1 I64
+
+
+Measure 11, beat 2, V65/V in G major, indicating the bass C# for lowest note(s) of: ['E3'].
+How about:
+m11 b2 II#643
+
+
+Measure 11, beat 2.67, V7/V in G major, indicating the bass A for lowest note(s) of: ['E3'].
+How about:
+m11 b2.67 II#643
+
+
+Measure 15, beat 1, I in G major, indicating the bass G for lowest note(s) of: ['D2'].
+How about:
+m15 b1 I64
+
+
+
+WARNINGS =====================
+
+WARNING: There are 17 measures in the score but 16 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

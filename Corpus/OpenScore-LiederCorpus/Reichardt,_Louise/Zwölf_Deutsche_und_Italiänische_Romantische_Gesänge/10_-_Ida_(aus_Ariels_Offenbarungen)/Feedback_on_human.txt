@@ -1,0 +1,50 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 98.76%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 11, beat 1, i64 in f minor, indicating the pitches ['C', 'F', 'A-'] accounting for successive slices of [['C-3', 'A-3', 'C-4', 'F4', 'C-5'], ['C-3', 'A-3', 'C-4', 'F4', 'C-5']].
+Match strength estimated at 40.0%.
+How about:
+m11 b1 io64 for the slice ['C-3', 'A-3', 'C-4', 'F4', 'C-5']
+m11 b1.5 io64 for the slice ['C-3', 'A-3', 'C-4', 'F4', 'C-5']
+
+
+Measure 11, beat 2, V in f minor, indicating the pitches ['C', 'E', 'G'] accounting for successive slices of [['C-3', 'G-3', 'B-3', 'E4'], ['C-3', 'G-3', 'B-3', 'E4']].
+Match strength estimated at 24.0%.
+How about:
+m11 b2 bv#75##3 for the slice ['C-3', 'G-3', 'B-3', 'E4']
+m11 b2.5 bv#75##3 for the slice ['C-3', 'G-3', 'B-3', 'E4']
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 96.36%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 11, beat 1, i64 in f minor, indicating the bass C for lowest note(s) of: ['C-3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 11, beat 2, V in f minor, indicating the bass C for lowest note(s) of: ['C-3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 38, beat 1, viio43 in e- minor, indicating the bass A- for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+
+WARNINGS =====================
+
+WARNING: There are 55 measures in the score but 54 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

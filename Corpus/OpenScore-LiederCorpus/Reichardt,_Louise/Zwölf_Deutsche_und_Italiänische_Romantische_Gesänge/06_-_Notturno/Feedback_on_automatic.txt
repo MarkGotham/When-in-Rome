@@ -1,0 +1,101 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 97.06%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 8, beat 1, I in A major, indicating the pitches ['A', 'C#', 'E'] accounting for successive slices of [['E3', 'B3', 'B4', 'C#5'], ['E3', 'E4', 'B4'], ['E3', 'G#4', 'B4'], ['E3', 'E4', 'B4'], ['E3', 'B3', 'B4'], ['E3', 'E4', 'B4'], ['E3', 'G#4', 'B4'], ['E3', 'E4', 'B4'], ['B3'], ['E4'], ['G#4'], ['E4'], ['B3'], ['E4'], ['G#4'], ['E4']].
+Match strength estimated at 49.0%.
+How about:
+m8 b1.5 V for the slice ['E3', 'G#4', 'B4']
+m8 b2.5 V for the slice ['E3', 'G#4', 'B4']
+
+
+Measure 9, beat 1, I in A major, indicating the pitches ['A', 'C#', 'E'] accounting for successive slices of [['E3', 'B3', 'B4'], ['E3', 'E4', 'B4'], ['E3', 'G#4', 'B4'], ['E3', 'E4', 'B4']].
+Match strength estimated at 50.0%.
+How about:
+m9 b1.5 V for the slice ['E3', 'G#4', 'B4']
+
+
+Measure 9, beat 2.5, V/V in A major, indicating the pitches ['B', 'D#', 'F#'] accounting for successive slices of [['E3', 'E4', 'G#4'], ['E3', 'E4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 17, beat 3, V64 in A major, indicating the pitches ['B', 'E', 'G#'] accounting for successive slices of [['E3', 'C#4', 'A4'], ['E3', 'E4', 'A4']].
+Match strength estimated at 50.0%.
+How about:
+m17 b3 I64 for the slice ['E3', 'C#4', 'A4']
+
+
+
+HARMONIC RHYTHM =====================
+
+In the following cases, the chord change is at an unusually weak metrical position:
+Measure 9, V/V in A major appears on beat 2.5.
+Measure 10, I/V in A major appears on beat 4.5.
+Measure 11, V7/V in A major appears on beat 1.5.
+Measure 12, V7 in A major appears on beat 4.5.
+Measure 15, I in A major appears on beat 2.5.
+Measure 17, V in A major appears on beat 3.5.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 83.04%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 2, beat 1, IV in A major, indicating the bass D for lowest note(s) of: ['A2'].
+How about:
+m2 b1 IV64
+
+
+Measure 6, beat 1, IV in A major, indicating the bass D for lowest note(s) of: ['A2'].
+How about:
+m6 b1 IV64
+
+
+Measure 7, beat 4, viio7/V in A major, indicating the bass D# for lowest note(s) of: ['F#3'].
+How about:
+m7 b4 #ivob86bb5b3
+
+
+Measure 8, beat 1, I in A major, indicating the bass A for lowest note(s) of: ['B3', 'E3', 'G#4', 'E4'].
+How about:
+m8 b1 I64
+
+
+Measure 9, beat 1, I in A major, indicating the bass A for lowest note(s) of: ['E3'].
+How about:
+m9 b1 I64
+
+
+Measure 9, beat 2.5, V/V in A major, indicating the bass B for lowest note(s) of: ['E3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 10, beat 1, I in A major, indicating the bass A for lowest note(s) of: ['E3'].
+How about:
+m10 b1 I64
+
+
+Measure 15, beat 2.5, I in A major, indicating the bass A for lowest note(s) of: ['E2'].
+How about:
+m15 b2.5 I64
+
+
+Measure 17, beat 3, V64 in A major, indicating the bass B for lowest note(s) of: ['E3'].
+How about:
+m17 b3 V
+
+
+Measure 20, beat 1, IV in A major, indicating the bass D for lowest note(s) of: ['A2'].
+How about:
+m20 b1 IV64
+
+
+Measure 24, beat 1, IV in A major, indicating the bass D for lowest note(s) of: ['A2'].
+How about:
+m24 b1 IV64
+
+

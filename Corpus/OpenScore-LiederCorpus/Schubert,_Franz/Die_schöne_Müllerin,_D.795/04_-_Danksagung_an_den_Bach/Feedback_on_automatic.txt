@@ -1,0 +1,69 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 95.54%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 0, beat 2.5, I in G major, indicating the pitches ['G', 'B', 'D'] accounting for successive slices of [['G3'], ['A3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 25, beat 1, V in g minor, indicating the pitches ['D', 'F#', 'A'] accounting for successive slices of [['F1', 'A3', 'F5'], ['F1', 'E-4', 'F5']].
+Match strength estimated at 17.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 25, beat 1.5, V7 in g minor, indicating the pitches ['D', 'F#', 'A', 'C'] accounting for successive slices of [['F2', 'F3', 'E-5'], ['F2', 'A3', 'C5']].
+Match strength estimated at 33.0%.
+How about:
+m25 b1.75 bVII for the slice ['F2', 'A3', 'C5']
+
+
+Measure 25, beat 2, I in G major, indicating the pitches ['G', 'B', 'D'] accounting for successive slices of [['B-1', 'B-3', 'B-4'], ['B-1', 'D4', 'B-4'], ['B-2', 'D3', 'B-4'], ['B-2', 'B-3', 'D5']].
+Match strength estimated at 24.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 26, beat 1, I in G major, indicating the pitches ['G', 'B', 'D'] accounting for successive slices of [['B-1', 'A3', 'F5'], ['B-1', 'E-4', 'F5'], ['B-2', 'F3', 'E-5'], ['B-2', 'A3', 'C5'], ['B-1', 'B-3', 'B-4'], ['B-1', 'D4', 'B-4'], ['B-2', 'F3'], ['B-2', 'B-3']].
+Match strength estimated at 4.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 93.33%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 25, beat 1, V in g minor, indicating the bass D for lowest note(s) of: ['F1'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 25, beat 1.5, V7 in g minor, indicating the bass D for lowest note(s) of: ['F2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 25, beat 2, I in G major, indicating the bass G for lowest note(s) of: ['B-2', 'B-1'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 26, beat 1, I in G major, indicating the bass G for lowest note(s) of: ['B-2', 'B-1'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 27, beat 1, V7 in G major, indicating the bass D for lowest note(s) of: ['A1', 'A2'].
+How about:
+m27 b1 V43
+
+
+Measure 40, beat 2, V7 in G major, indicating the bass D for lowest note(s) of: ['F#2'].
+How about:
+m40 b2 V65
+
+

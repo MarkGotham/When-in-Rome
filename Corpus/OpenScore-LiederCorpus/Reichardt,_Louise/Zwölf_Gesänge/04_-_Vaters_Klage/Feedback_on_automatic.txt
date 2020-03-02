@@ -1,0 +1,95 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 79.24%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 3, beat 2, IV in g minor, indicating the pitches ['C', 'E', 'G'] accounting for successive slices of [['E-2', 'E-3', 'G3', 'G4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 3, beat 2.33, IVGr65 in g minor, indicating the pitches ['E', 'G', 'B-', 'C'] accounting for successive slices of [['E-2', 'E-3', 'C#4', 'F#4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 3, beat 2.67, IV6 in g minor, indicating the pitches ['E', 'G', 'C'] accounting for successive slices of [['E-2', 'E-3', 'C#4', 'G4']].
+Match strength estimated at 25.0%.
+How about:
+m4 b2.67 It6 for the slice ['E-2', 'E-3', 'C#4', 'G4']
+
+
+Measure 5, beat 2.33, v in g minor, indicating the pitches ['D', 'F', 'A'] accounting for successive slices of [['G2', 'G3', 'D4', 'A4'], ['G2', 'G3', 'D4', 'A4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 6, beat 1, ii64 in g minor, indicating the pitches ['E', 'A', 'C'] accounting for successive slices of [['G2', 'G3', 'E-4', 'A4', 'C5'], ['G2', 'G3', 'E-4', 'C5']].
+Match strength estimated at 33.0%.
+How about:
+m7 b1 iiø42 for the slice ['G2', 'G3', 'E-4', 'A4', 'C5']
+m7 b1.33 iv64 for the slice ['G2', 'G3', 'E-4', 'C5']
+
+
+Measure 7, beat 1, II6 in g minor, indicating the pitches ['C#', 'E', 'A'] accounting for successive slices of [['C2', 'C3', 'C4', 'E-4', 'A-4'], ['C2', 'C3', 'E-4', 'A-4'], ['C2', 'C3', 'E-4', 'A-4'], ['C2', 'C3', 'C4', 'E-4', 'A-4', 'C5'], ['C2', 'C3', 'E-4', 'B-4'], ['C2', 'C3', 'E-4', 'A-4']].
+Match strength estimated at 0.0%.
+How about:
+m8 b1 bII6 for the slice ['C2', 'C3', 'C4', 'E-4', 'A-4']
+m8 b1.33 bII6 for the slice ['C2', 'C3', 'E-4', 'A-4']
+m8 b1.67 bII6 for the slice ['C2', 'C3', 'E-4', 'A-4']
+m8 b2 bII6 for the slice ['C2', 'C3', 'C4', 'E-4', 'A-4', 'C5']
+m8 b2.67 bII6 for the slice ['C2', 'C3', 'E-4', 'A-4']
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 70.59%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 0, beat 2.67, i in g minor, indicating the bass G for lowest note(s) of: ['D4'].
+How about:
+m0 b2.67 i64
+
+
+Measure 3, beat 2, IV in g minor, indicating the bass C for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 3, beat 2.33, IVGr65 in g minor, indicating the bass E for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 3, beat 2.67, IV6 in g minor, indicating the bass E for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 5, beat 2, V7 in g minor, indicating the bass D for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 5, beat 2.33, v in g minor, indicating the bass D for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 6, beat 1, ii64 in g minor, indicating the bass E for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 7, beat 1, II6 in g minor, indicating the bass C# for lowest note(s) of: ['C2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+
+WARNINGS =====================
+
+WARNING: There are 10 measures in the score but 9 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

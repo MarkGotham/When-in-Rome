@@ -1,0 +1,53 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 99.62%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 20, beat 1, v in e minor, indicating the pitches ['B', 'D', 'F#'] accounting for successive slices of [['B2', 'D#4', 'F#4', 'G4']].
+Match strength estimated at 50.0%.
+How about:
+m20 b1 III+65#3 for the slice ['B2', 'D#4', 'F#4', 'G4']
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 90.15%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 14, beat 1, I in E major, indicating the bass E for lowest note(s) of: ['B2'].
+How about:
+m14 b1 I64
+
+
+Measure 20, beat 1.5, v6 in e minor, indicating the bass D for lowest note(s) of: ['B2'].
+How about:
+m20 b1.5 v
+
+
+Measure 27, beat 1, I in E major, indicating the bass E for lowest note(s) of: ['D#3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 27, beat 1.5, I6 in E major, indicating the bass G# for lowest note(s) of: ['D#3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 30, beat 1, I in E major, indicating the bass E for lowest note(s) of: ['B2'].
+How about:
+m30 b1 I64
+
+
+
+WARNINGS =====================
+
+WARNING: There are 33 measures in the score but 32 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

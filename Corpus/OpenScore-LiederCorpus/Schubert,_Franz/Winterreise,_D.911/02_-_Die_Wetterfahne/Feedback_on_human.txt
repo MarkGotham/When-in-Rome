@@ -1,0 +1,122 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 94.72%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 4, beat 1, viio6 in a minor, indicating the pitches ['B', 'D', 'G#'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 4, beat 2, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3'], ['B2', 'B3'], ['A2', 'A3'], ['B2', 'B3']].
+Match strength estimated at 42.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 5, beat 2, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3'], ['A2', 'B2', 'A3', 'B3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 35, beat 2, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['E2', 'F2', 'G#2', 'A2', 'E3', 'F3', 'G#3', 'A3', 'A4'], ['B4'], ['C5']].
+Match strength estimated at 52.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 36, beat 2, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['E2', 'F2', 'G#2', 'A2', 'E3', 'F3', 'G#3', 'A3', 'A4'], ['C5'], ['D5']].
+Match strength estimated at 52.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 46, beat 1, I in A major, indicating the pitches ['A', 'C#', 'E'] accounting for successive slices of [['A3', 'C#4', 'E4', 'A4', 'A5'], ['A4'], ['G#3', 'G#4', 'A4'], ['A3', 'A4'], ['G#3', 'G#4'], ['A3', 'A4'], ['B3', 'B4'], ['C4', 'C5'], ['C#4', 'C#5'], ['D4', 'D5'], ['D#4', 'D#5']].
+Match strength estimated at 52.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 50, beat 1, viio6 in a minor, indicating the pitches ['B', 'D', 'G#'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 50, beat 2, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3'], ['B2', 'B3'], ['A2', 'A3'], ['B2', 'B3']].
+Match strength estimated at 42.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 51, beat 1, viio6 in a minor, indicating the pitches ['B', 'D', 'G#'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 51, beat 2, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['A2', 'B2', 'A3', 'B3'], ['A2', 'B2', 'A3', 'B3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+In the following cases, the chord change is at an unusually weak metrical position:
+Measure 0, i64 in a minor appears on beat 2.5.
+Measure 22, V in a minor appears on beat 2.5.
+Measure 33, i in a minor appears on beat 2.5.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 90.24%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 4, beat 1, viio6 in a minor, indicating the bass B for lowest note(s) of: ['A2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 8, beat 1, i in a minor, indicating the bass A for lowest note(s) of: ['D4', 'C4', 'E4'].
+How about:
+m8 b1 i64
+m8 b1 i6
+
+
+Measure 11, beat 2, viio42 in C major, indicating the bass A- for lowest note(s) of: ['C3', 'B4', 'C5'].
+How about:
+m11 b2 viiob753
+
+
+Measure 27, beat 1, i in a minor, indicating the bass A for lowest note(s) of: ['C3', 'D3', 'E3'].
+How about:
+m27 b1 i6
+m27 b1 i64
+
+
+Measure 35, beat 2, i in a minor, indicating the bass A for lowest note(s) of: ['C5', 'E2', 'B4'].
+How about:
+m35 b2 i6
+m35 b2 i64
+
+
+Measure 36, beat 2, i in a minor, indicating the bass A for lowest note(s) of: ['C5', 'E2', 'D5'].
+How about:
+m36 b2 i64
+m36 b2 i6
+
+
+Measure 37, beat 1, i in a minor, indicating the bass A for lowest note(s) of: ['C3', 'D3', 'E3'].
+How about:
+m37 b1 i64
+m37 b1 i6
+
+
+Measure 41, beat 2, viio65/vi in F major, indicating the bass E for lowest note(s) of: ['E-3', 'C#5'].
+How about:
+m41 b2 #vø7
+
+
+Measure 50, beat 1, viio6 in a minor, indicating the bass B for lowest note(s) of: ['A2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 51, beat 1, viio6 in a minor, indicating the bass B for lowest note(s) of: ['A2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+

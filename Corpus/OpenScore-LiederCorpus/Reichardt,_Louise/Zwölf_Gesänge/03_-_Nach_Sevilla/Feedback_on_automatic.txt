@@ -1,0 +1,87 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 91.62%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 3, beat 2.5, I64 in E major, indicating the pitches ['B', 'E', 'G#'] accounting for successive slices of [['E3', 'A3', 'C#4', 'A4', 'B4'], ['E3', 'A3', 'C#4', 'C#5']].
+Match strength estimated at 33.0%.
+How about:
+m3 b2.75 IV64 for the slice ['E3', 'A3', 'C#4', 'C#5']
+
+
+Measure 13, beat 2, V in E major, indicating the pitches ['B', 'D#', 'F#'] accounting for successive slices of [['B3', 'G#4', 'E5']].
+Match strength estimated at 33.0%.
+How about:
+m13 b2 I64 for the slice ['B3', 'G#4', 'E5']
+
+
+Measure 16, beat 1, I6 in E major, indicating the pitches ['G#', 'B', 'E'] accounting for successive slices of [['G#3', 'B4', 'E5'], ['G#3', 'E5'], ['A3', 'E4', 'C#5'], ['A3', 'C#5']].
+Match strength estimated at 58.0%.
+How about:
+m16 b2 IV for the slice ['A3', 'E4', 'C#5']
+
+
+Measure 16, beat 2, IV in E major, indicating the pitches ['A', 'C#', 'E'] accounting for successive slices of [['A3', 'A4', 'C#5'], ['A3', 'C#5'], ['B3', 'E4', 'B4'], ['B3', 'B4']].
+Match strength estimated at 58.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 17, beat 2, V7 in E major, indicating the pitches ['B', 'D#', 'F#', 'A'] accounting for successive slices of [['B2', 'D#4', 'F#4'], ['B2', 'D#4', 'F#4'], ['E3', 'G#3', 'E4']].
+Match strength estimated at 50.0%.
+How about:
+m17 b2.5 V for the slice ['B2', 'D#4', 'F#4']
+m17 b2.75 V for the slice ['B2', 'D#4', 'F#4']
+
+
+Measure 18, beat 1, I in E major, indicating the pitches ['E', 'G#', 'B'] accounting for successive slices of [['E4', 'G#4', 'B4', 'E5'], ['A3'], ['E4', 'A4', 'C#5']].
+Match strength estimated at 44.0%.
+How about:
+m18 b2.5 IV64 for the slice ['E4', 'A4', 'C#5']
+
+
+Measure 18, beat 2.5, IV in E major, indicating the pitches ['A', 'C#', 'E'] accounting for successive slices of [['B3']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 88.75%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 0, beat 2, I in E major, indicating the bass E for lowest note(s) of: ['B4'].
+How about:
+m0 b2 I64
+
+
+Measure 3, beat 2.5, I64 in E major, indicating the bass B for lowest note(s) of: ['E3'].
+How about:
+m3 b2.5 I
+
+
+Measure 13, beat 1.5, ii in E major, indicating the bass F# for lowest note(s) of: ['A3'].
+How about:
+m13 b1.5 ii6
+
+
+Measure 17, beat 1, I in E major, indicating the bass E for lowest note(s) of: ['B3', 'B2'].
+How about:
+m17 b1 I64
+
+
+Measure 18, beat 2.5, IV in E major, indicating the bass A for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 19, beat 2, V in E major, indicating the bass B for lowest note(s) of: ['E3', 'D#4'].
+How about:
+m19 b2 V6
+
+

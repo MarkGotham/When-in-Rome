@@ -1,0 +1,40 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 99.48%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 4, beat 2, VI in a minor, indicating the pitches ['F', 'A', 'C'] accounting for successive slices of [['F3', 'A3', 'C5'], ['F3', 'A3', 'C#5'], ['C#5'], ['D5']].
+Match strength estimated at 44.0%.
+How about:
+m4 b2 bVI for the slice ['F3', 'A3', 'C5']
+m4 b2.33 bVI+ for the slice ['F3', 'A3', 'C#5']
+
+
+Measure 24, beat 1, vi in E major, indicating the pitches ['C#', 'E', 'G#'] accounting for successive slices of [['B3', 'G#4', 'B4', 'G#5', 'B5'], ['C#4', 'G#4', 'B4', 'G#5', 'B5']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+In the following cases, the chord change is at an unusually weak metrical position:
+Measure 17, V65/ii in C major appears on beat 4.75.
+Measure 20, V43 in g minor appears on beat 2.75.
+Measure 21, V65/ii in C major appears on beat 4.75.
+Measure 22, V42/ii in C major appears on beat 2.75.
+Measure 36, iv6 in a minor appears on beat 2.75.
+
+
+
+BASS / INVERSION =====================
+
+The inversions look good: the bass notes implied by the Roman numerals do indeed appear at least once in the lowest part during the relevant span.
+
+WARNINGS =====================
+
+WARNING: There are 51 measures in the score but 50 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

@@ -1,0 +1,419 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 95.6%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 7, beat 2, iv7 in E- major, indicating the pitches ['A-', 'C-', 'E-', 'G'] accounting for successive slices of [['E-4', 'F4', 'A-4', 'C5', 'C6'], ['E-4', 'F4', 'A-4', 'C5', 'A-5'], ['E-4', 'F4', 'A-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m7 b2 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'C6']
+m7 b2.11 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'A-5']
+m7 b2.22 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'E-5']
+
+
+Measure 13, beat 1, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['G-2', 'B-4', 'B-5'], ['G-2', 'B-4', 'G-5'], ['G-2', 'B-4', 'D-5'], ['G-2', 'B-4', 'B-5'], ['G-2', 'B-4', 'G-5'], ['G-2', 'B-4', 'D-5']].
+Match strength estimated at 46.0%.
+How about:
+m13 b1.22 bIII for the slice ['G-2', 'B-4', 'D-5']
+m13 b1.56 bIII for the slice ['G-2', 'B-4', 'D-5']
+
+
+Measure 15, beat 2, iv7 in E- major, indicating the pitches ['A-', 'C-', 'E-', 'G'] accounting for successive slices of [['E-4', 'F4', 'A-4', 'C5', 'C6'], ['E-4', 'F4', 'A-4', 'C5', 'A-5'], ['E-4', 'F4', 'A-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m15 b2 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'C6']
+m15 b2.11 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'A-5']
+m15 b2.22 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'E-5']
+
+
+Measure 15, beat 2.67, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-4', 'C6'], ['E-4', 'A-5'], ['E-4', 'C5', 'A-5'], ['E-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m15 b2.83 IV64 for the slice ['E-4', 'C5', 'A-5']
+
+
+Measure 20, beat 2.33, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['E-2', 'B-3', 'F4', 'B-5'], ['E-2', 'B-3', 'F4', 'G5'], ['E-2', 'B-3', 'F4', 'E-5']].
+Match strength estimated at 59.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 25, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['F2', 'C4', 'A5'], ['F2', 'C4', 'F5'], ['F2', 'C4', 'E-5']].
+Match strength estimated at 44.0%.
+How about:
+m25 b1 II for the slice ['F2', 'C4', 'A5']
+
+
+Measure 27, beat 1, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['A-2', 'E-5', 'C6'], ['A-2', 'E-5', 'A-5'], ['A-2', 'E-5']].
+Match strength estimated at 0.0%.
+How about:
+m27 b1 IV for the slice ['A-2', 'E-5', 'C6']
+
+
+Measure 27, beat 2, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['E-4', 'A-4', 'B-4', 'C5', 'C6'], ['E-4', 'A-4', 'B-4', 'C5', 'A-5'], ['E-4', 'A-4', 'B-4', 'C5', 'E-5']].
+Match strength estimated at 21.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 27, beat 2.33, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-4', 'A-4', 'C6'], ['E-4', 'A-4', 'A-5'], ['E-4', 'A-4', 'E-5'], ['E-4', 'A-4', 'C6'], ['E-4', 'A-4', 'A-5'], ['E-4', 'C5', 'A-5'], ['E-4', 'C5', 'E-5']].
+Match strength estimated at 46.0%.
+How about:
+m27 b2.33 IV64 for the slice ['E-4', 'A-4', 'C6']
+m27 b2.67 IV64 for the slice ['E-4', 'A-4', 'C6']
+m27 b2.83 IV64 for the slice ['E-4', 'C5', 'A-5']
+
+
+Measure 31, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['B1', 'B4', 'A5'], ['B1', 'B4', 'F#5'], ['B1', 'B4', 'D#5'], ['B1', 'B4', 'A5'], ['B1', 'B4', 'F#5'], ['B1', 'B4', 'D#5'], ['B1', 'F#4', 'A5'], ['B1', 'F#4', 'F#5'], ['B1', 'F#4', 'D#5'], ['B1', 'D#4', 'F#4', 'B4', 'A5'], ['B1', 'D#4', 'F#4', 'B4', 'F#5'], ['B1', 'D#4', 'F#4', 'B4', 'D#5'], ['B1', 'B3', 'C#4', 'A5'], ['B1', 'B3', 'C#4', 'F#5'], ['B1', 'B3', 'C#4', 'D#5']].
+Match strength estimated at 0.0%.
+How about:
+m31 b1.89 #V for the slice ['B1', 'F#4', 'D#5']
+m31 b2 #V7 for the slice ['B1', 'D#4', 'F#4', 'B4', 'A5']
+m31 b2.11 #V for the slice ['B1', 'D#4', 'F#4', 'B4', 'F#5']
+m31 b2.22 #V for the slice ['B1', 'D#4', 'F#4', 'B4', 'D#5']
+
+
+Measure 31, beat 2.67, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['B3', 'C#4', 'A5'], ['B3', 'C#4', 'F#5'], ['B3', 'F#5'], ['B3', 'D#5']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 48, beat 2, iv7 in E- major, indicating the pitches ['A-', 'C-', 'E-', 'G'] accounting for successive slices of [['E-4', 'F4', 'A-4', 'C5', 'C6'], ['E-4', 'F4', 'A-4', 'C5', 'A-5'], ['E-4', 'F4', 'A-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m48 b2 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'C6']
+m48 b2.11 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'A-5']
+m48 b2.22 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'E-5']
+
+
+Measure 48, beat 2.67, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-4', 'C6'], ['E-4', 'A-5'], ['E-4', 'C5', 'A-5'], ['E-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m48 b2.83 IV64 for the slice ['E-4', 'C5', 'A-5']
+
+
+Measure 49, beat 2.67, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['B-3', 'E-4', 'B-5'], ['B-3', 'E-4', 'G5'], ['B-3', 'G4', 'G5'], ['B-3', 'G4', 'E-5']].
+Match strength estimated at 44.0%.
+How about:
+m49 b2.78 I64 for the slice ['B-3', 'E-4', 'G5']
+m49 b2.89 I64 for the slice ['B-3', 'G4', 'E-5']
+
+
+Measure 54, beat 1, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['G-2', 'B-4', 'B-5'], ['G-2', 'B-4', 'G-5'], ['G-2', 'B-4', 'D-5']].
+Match strength estimated at 44.0%.
+How about:
+m54 b1.22 bIII for the slice ['G-2', 'B-4', 'D-5']
+
+
+Measure 54, beat 1.33, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['G-2', 'B-4', 'B-5'], ['G-2', 'B-4', 'G-5'], ['G-2', 'B-4', 'D-5']].
+Match strength estimated at 44.0%.
+How about:
+m54 b1.56 bIII for the slice ['G-2', 'B-4', 'D-5']
+
+
+Measure 56, beat 2, iv65 in E- major, indicating the pitches ['C-', 'E-', 'G', 'A-'] accounting for successive slices of [['E-4', 'F4', 'A-4', 'C5', 'C6'], ['E-4', 'F4', 'A-4', 'C5', 'A-5'], ['E-4', 'F4', 'A-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m56 b2 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'C6']
+m56 b2.11 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'A-5']
+m56 b2.22 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'E-5']
+
+
+Measure 56, beat 2.67, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-4', 'C6'], ['E-4', 'A-5'], ['E-4', 'C5', 'A-5'], ['E-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m56 b2.83 IV64 for the slice ['E-4', 'C5', 'A-5']
+
+
+Measure 61, beat 2.33, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['E-2', 'B-3', 'F4', 'B-5'], ['E-2', 'B-3', 'F4', 'G5'], ['E-2', 'B-3', 'F4', 'E-5']].
+Match strength estimated at 59.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 72, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['B1', 'B4', 'A5'], ['B1', 'B4', 'F#5'], ['B1', 'B4', 'D#5'], ['B1', 'B4', 'A5'], ['B1', 'B4', 'F#5'], ['B1', 'B4', 'D#5'], ['B1', 'F#4', 'A5'], ['B1', 'F#4', 'F#5'], ['B1', 'F#4', 'D#5'], ['B1', 'D#4', 'F#4', 'B4', 'A5'], ['B1', 'D#4', 'F#4', 'B4', 'F#5'], ['B1', 'D#4', 'F#4', 'B4', 'D#5'], ['B1', 'B3', 'C#4', 'A5'], ['B1', 'B3', 'C#4', 'F#5'], ['B1', 'B3', 'C#4', 'D#5']].
+Match strength estimated at 0.0%.
+How about:
+m72 b1.89 #V for the slice ['B1', 'F#4', 'D#5']
+m72 b2 #V7 for the slice ['B1', 'D#4', 'F#4', 'B4', 'A5']
+m72 b2.11 #V for the slice ['B1', 'D#4', 'F#4', 'B4', 'F#5']
+m72 b2.22 #V for the slice ['B1', 'D#4', 'F#4', 'B4', 'D#5']
+
+
+Measure 72, beat 2.67, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['B3', 'C#4', 'A5'], ['B3', 'C#4', 'F#5'], ['B3', 'F#5'], ['B3', 'D#5']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 89, beat 2, iv7 in E- major, indicating the pitches ['A-', 'C-', 'E-', 'G'] accounting for successive slices of [['E-4', 'F4', 'A-4', 'C5', 'C6'], ['E-4', 'F4', 'A-4', 'C5', 'A-5'], ['E-4', 'F4', 'A-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m89 b2 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'C6']
+m89 b2.11 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'A-5']
+m89 b2.22 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'E-5']
+
+
+Measure 95, beat 1, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['G-2', 'B-4', 'B-5'], ['G-2', 'B-4', 'G-5'], ['G-2', 'B-4', 'D-5'], ['G-2', 'B-4', 'B-5'], ['G-2', 'B-4', 'G-5'], ['G-2', 'B-4', 'D-5']].
+Match strength estimated at 46.0%.
+How about:
+m95 b1.22 bIII for the slice ['G-2', 'B-4', 'D-5']
+m95 b1.56 bIII for the slice ['G-2', 'B-4', 'D-5']
+
+
+Measure 97, beat 2, iv65 in E- major, indicating the pitches ['C-', 'E-', 'G', 'A-'] accounting for successive slices of [['E-4', 'F4', 'A-4', 'C5', 'C6'], ['E-4', 'F4', 'A-4', 'C5', 'A-5'], ['E-4', 'F4', 'A-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m97 b2 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'C6']
+m97 b2.11 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'A-5']
+m97 b2.22 ii42 for the slice ['E-4', 'F4', 'A-4', 'C5', 'E-5']
+
+
+Measure 97, beat 2.67, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-4', 'C6'], ['E-4', 'A-5'], ['E-4', 'C5', 'A-5'], ['E-4', 'C5', 'E-5']].
+Match strength estimated at 53.0%.
+How about:
+m97 b2.83 IV64 for the slice ['E-4', 'C5', 'A-5']
+
+
+Measure 102, beat 2.33, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['E-2', 'B-3', 'F4', 'B-5'], ['E-2', 'B-3', 'F4', 'G5'], ['E-2', 'B-3', 'F4', 'E-5']].
+Match strength estimated at 59.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 107, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['F2', 'C4', 'A5'], ['F2', 'C4', 'F5'], ['F2', 'C4', 'E-5']].
+Match strength estimated at 44.0%.
+How about:
+m107 b1 II for the slice ['F2', 'C4', 'A5']
+
+
+Measure 107, beat 2.33, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['F2', 'C4', 'F4', 'A5'], ['F2', 'C4', 'F4', 'F5'], ['F2', 'C4', 'F4', 'E-5'], ['C4', 'F4', 'A5'], ['C4', 'F4', 'F5'], ['C4', 'F4', 'E-5']].
+Match strength estimated at 52.0%.
+How about:
+m107 b2.33 II for the slice ['F2', 'C4', 'F4', 'A5']
+m107 b2.67 II64 for the slice ['C4', 'F4', 'A5']
+
+
+Measure 113, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['B1', 'B4', 'A5'], ['B1', 'B4', 'F#5'], ['B1', 'B4', 'D#5'], ['B1', 'B4', 'A5'], ['B1', 'B4', 'F#5'], ['B1', 'B4', 'D#5'], ['B1', 'F#4', 'A5'], ['B1', 'F#4', 'F#5'], ['B1', 'F#4', 'D#5'], ['B1', 'D#4', 'F#4', 'B4', 'A5'], ['B1', 'D#4', 'F#4', 'B4', 'F#5'], ['B1', 'D#4', 'F#4', 'B4', 'D#5'], ['B1', 'B3', 'C#4', 'A5'], ['B1', 'B3', 'C#4', 'F#5'], ['B1', 'B3', 'C#4', 'D#5']].
+Match strength estimated at 0.0%.
+How about:
+m113 b1.89 #V for the slice ['B1', 'F#4', 'D#5']
+m113 b2 #V7 for the slice ['B1', 'D#4', 'F#4', 'B4', 'A5']
+m113 b2.11 #V for the slice ['B1', 'D#4', 'F#4', 'B4', 'F#5']
+m113 b2.22 #V for the slice ['B1', 'D#4', 'F#4', 'B4', 'D#5']
+
+
+Measure 113, beat 2.67, V in E- major, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['B3', 'C#4', 'A5'], ['B3', 'C#4', 'F#5'], ['B3', 'F#5'], ['B3', 'D#5']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 90.73%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 7, beat 2, iv7 in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m7 b2 ivb643
+
+
+Measure 7, beat 2.33, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m7 b2.33 IV64
+
+
+Measure 13, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['G-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 15, beat 2, iv7 in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m15 b2 ivb643
+
+
+Measure 15, beat 2.33, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m15 b2.33 IV64
+
+
+Measure 20, beat 2.33, V in E- major, indicating the bass B- for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 23, beat 2.33, V65 in E- major, indicating the bass D for lowest note(s) of: ['F2'].
+How about:
+m23 b2.33 V43
+
+
+Measure 25, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['F2'].
+How about:
+m25 b1 V43
+
+
+Measure 27, beat 1, V in E- major, indicating the bass B- for lowest note(s) of: ['A-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 27, beat 2, V in E- major, indicating the bass B- for lowest note(s) of: ['E-4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 31, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['B1'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 31, beat 2.67, V in E- major, indicating the bass B- for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 37, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m37 b1 I64
+
+
+Measure 38, beat 2.67, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m38 b2.67 I64
+
+
+Measure 41, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m41 b1 I64
+
+
+Measure 48, beat 2, iv7 in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m48 b2 ivb643
+
+
+Measure 48, beat 2.33, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m48 b2.33 IV64
+
+
+Measure 54, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['G-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 54, beat 1.33, V in E- major, indicating the bass B- for lowest note(s) of: ['G-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 54, beat 1.67, v in E- major, indicating the bass B- for lowest note(s) of: ['D-4'].
+How about:
+m54 b1.67 vb863
+
+
+Measure 56, beat 2, iv65 in E- major, indicating the bass C- for lowest note(s) of: ['E-4'].
+How about:
+m56 b2 ivb643
+
+
+Measure 56, beat 2.33, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m56 b2.33 IV64
+
+
+Measure 61, beat 2.33, V in E- major, indicating the bass B- for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 64, beat 2.33, V65 in E- major, indicating the bass D for lowest note(s) of: ['F2'].
+How about:
+m64 b2.33 V43
+
+
+Measure 72, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['B1'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 72, beat 2.67, I in E- major, indicating the bass E- for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 76, beat 2.67, V7 in E- major, indicating the bass B- for lowest note(s) of: ['F4'].
+How about:
+m76 b2.67 V43
+
+
+Measure 78, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m78 b1 I64
+
+
+Measure 80, beat 2.67, V in E- major, indicating the bass B- for lowest note(s) of: ['F4'].
+How about:
+m80 b2.67 V64
+
+
+Measure 82, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m82 b1 I64
+
+
+Measure 89, beat 2, iv7 in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m89 b2 ivb643
+
+
+Measure 89, beat 2.33, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m89 b2.33 IV64
+
+
+Measure 95, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['G-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 97, beat 2, iv65 in E- major, indicating the bass C- for lowest note(s) of: ['E-4'].
+How about:
+m97 b2 ivb643
+
+
+Measure 97, beat 2.33, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-4'].
+How about:
+m97 b2.33 IV64
+
+
+Measure 102, beat 2.33, V in E- major, indicating the bass B- for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 107, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['F2'].
+How about:
+m107 b1 V43
+
+
+Measure 107, beat 2.33, V7 in E- major, indicating the bass B- for lowest note(s) of: ['F2', 'C4'].
+How about:
+m107 b2.33 V43
+
+
+Measure 113, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['B1'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 113, beat 2.67, V in E- major, indicating the bass B- for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 119, beat 1, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m119 b1 I64
+
+
+Measure 120, beat 2.67, I in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
+How about:
+m120 b2.67 I64
+
+
+
+WARNINGS =====================
+
+WARNING: There are 124 measures in the score but 122 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

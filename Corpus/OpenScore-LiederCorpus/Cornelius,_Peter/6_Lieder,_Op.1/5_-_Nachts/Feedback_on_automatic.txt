@@ -1,0 +1,119 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 98.32%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 13, beat 2.5, VII7/V in G major, indicating the pitches ['C#', 'E#', 'G#', 'B'] accounting for successive slices of [['C#3', 'B3', 'G4', 'E5']].
+Match strength estimated at 50.0%.
+How about:
+m13 b2.75 #ivø7 for the slice ['C#3', 'B3', 'G4', 'E5']
+
+
+Measure 17, beat 2.5, VII7/V in G major, indicating the pitches ['C#', 'E#', 'G#', 'B'] accounting for successive slices of [['C#3', 'B3', 'G4', 'E5']].
+Match strength estimated at 50.0%.
+How about:
+m17 b2.75 #ivø7 for the slice ['C#3', 'B3', 'G4', 'E5']
+
+
+Measure 24, beat 1.5, V in G major, indicating the pitches ['D', 'F#', 'A'] accounting for successive slices of [['G2', 'D3', 'B3', 'G4']].
+Match strength estimated at 25.0%.
+How about:
+m24 b1.5 I for the slice ['G2', 'D3', 'B3', 'G4']
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 75.96%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 1, beat 2, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m1 b2 I64
+
+
+Measure 5, beat 1, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m5 b1 I64
+
+
+Measure 7, beat 2.5, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m7 b2.5 I64
+
+
+Measure 8, beat 2, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m8 b2 I64
+
+
+Measure 10, beat 1, V7/IV in G major, indicating the bass G for lowest note(s) of: ['C3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 13, beat 2, V7/V in G major, indicating the bass A for lowest note(s) of: ['C#3'].
+How about:
+m13 b2 II#8653
+
+
+Measure 15, beat 1.5, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m15 b1.5 I64
+
+
+Measure 17, beat 2, V7/V in G major, indicating the bass A for lowest note(s) of: ['C#3'].
+How about:
+m17 b2 II#8653
+
+
+Measure 19, beat 2, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m19 b2 I64
+
+
+Measure 20, beat 1, I in G major, indicating the bass G for lowest note(s) of: ['D3'].
+How about:
+m20 b1 I64
+
+
+Measure 21, beat 1, I in G major, indicating the bass G for lowest note(s) of: ['B4', 'D3'].
+How about:
+m21 b1 I64
+
+
+Measure 23, beat 1, IV in G major, indicating the bass C for lowest note(s) of: ['G2'].
+How about:
+m23 b1 IV64
+
+
+Measure 23, beat 2, IV6 in G major, indicating the bass E for lowest note(s) of: ['G2'].
+How about:
+m23 b2 IV64
+
+
+Measure 24, beat 1, IV in G major, indicating the bass C for lowest note(s) of: ['G2'].
+How about:
+m24 b1 IV64
+
+
+Measure 24, beat 1.5, V in G major, indicating the bass D for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 24, beat 2, V7 in G major, indicating the bass D for lowest note(s) of: ['G2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+
+WARNINGS =====================
+
+WARNING: There are 26 measures in the score but 24 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+

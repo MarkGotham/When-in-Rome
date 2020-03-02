@@ -1,0 +1,232 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 88.12%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 1, beat 4, I in f minor, indicating the pitches ['F', 'A', 'C'] accounting for successive slices of [['E3', 'E4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 5, beat 4.5, ii in f minor, indicating the pitches ['G', 'B-', 'D'] accounting for successive slices of [].
+Match strength estimated at 0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 6, beat 4.5, I6 in E- major, indicating the pitches ['G', 'B-', 'E-'] accounting for successive slices of [].
+Match strength estimated at 0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 8, beat 4, V42 in E- major, indicating the pitches ['A-', 'B-', 'D', 'F'] accounting for successive slices of [['D-4', 'G4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 8, beat 4.5, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['E-4', 'G4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 10, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['E-2', 'E-3', 'A-3', 'D4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 10, beat 3, I7 in E- major, indicating the pitches ['E-', 'G', 'B-', 'D'] accounting for successive slices of [['E-2', 'E-3', 'A-3', 'F4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 10, beat 3.5, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['E-2', 'E-3', 'B-3', 'F4'], ['E-2', 'E-3', 'D-4', 'G4'], ['E-2', 'E-3', 'E-4', 'G4']].
+Match strength estimated at 17.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 11, beat 1, V7 in E- major, indicating the pitches ['B-', 'D', 'F', 'A-'] accounting for successive slices of [['C2', 'C3', 'C4', 'B-4'], ['C2', 'C3', 'E4', 'B-4']].
+Match strength estimated at 24.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 11, beat 2, i in E- major, indicating the pitches ['E-', 'G-', 'B-'] accounting for successive slices of [['C2', 'C3', 'C4', 'A-4'], ['C2', 'C3', 'F4', 'A-4']].
+Match strength estimated at 0.0%.
+How about:
+m11 b2.5 ii64 for the slice ['C2', 'C3', 'F4', 'A-4']
+
+
+Measure 14, beat 4, I in f minor, indicating the pitches ['F', 'A', 'C'] accounting for successive slices of [['E3', 'E4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 14, beat 4.5, i in f minor, indicating the pitches ['F', 'A-', 'C'] accounting for successive slices of [['E3', 'E4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 18, beat 4, I in f minor, indicating the pitches ['F', 'A', 'C'] accounting for successive slices of [['E3', 'E4'], ['E3', 'E4']].
+Match strength estimated at 0.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 19, beat 1, i in f minor, indicating the pitches ['F', 'A-', 'C'] accounting for successive slices of [['F3', 'F4'], ['D-3', 'D-4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+In the following cases, the chord change is at an unusually weak metrical position:
+Measure 2, i in f minor appears on beat 4.5.
+Measure 5, ii in f minor appears on beat 4.5.
+Measure 6, I6 in E- major appears on beat 4.5.
+Measure 7, ii in E- major appears on beat 4.5.
+Measure 8, V7 in E- major appears on beat 4.5.
+Measure 10, I in E- major appears on beat 1.5.
+Measure 10, V7 in E- major appears on beat 3.5.
+Measure 11, i in f minor appears on beat 4.5.
+Measure 14, i in f minor appears on beat 4.5.
+Measure 15, i in f minor appears on beat 2.5.
+Measure 19, i in f minor appears on beat 3.5.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 65.0%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 0, beat 4, I in f minor, indicating the bass F for lowest note(s) of: ['C3'].
+How about:
+m0 b4 I64
+
+
+Measure 1, beat 2, v in f minor, indicating the bass C for lowest note(s) of: ['G3'].
+How about:
+m1 b2 v64
+
+
+Measure 1, beat 3, i in f minor, indicating the bass F for lowest note(s) of: ['A-3'].
+How about:
+m1 b3 i6
+
+
+Measure 1, beat 4, I in f minor, indicating the bass F for lowest note(s) of: ['E3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 2, beat 3, iv in f minor, indicating the bass B- for lowest note(s) of: ['D-3'].
+How about:
+m2 b3 iv6
+
+
+Measure 2, beat 4.5, i in f minor, indicating the bass F for lowest note(s) of: ['C3'].
+How about:
+m2 b4.5 i64
+
+
+Measure 4, beat 1, i in f minor, indicating the bass F for lowest note(s) of: ['C3'].
+How about:
+m4 b1 i64
+
+
+Measure 5, beat 4.5, ii in f minor, indicating the bass G for lowest note(s) of: [].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 6, beat 4.5, I6 in E- major, indicating the bass G for lowest note(s) of: [].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 7, beat 4, ii6 in E- major, indicating the bass A- for lowest note(s) of: ['F2'].
+How about:
+m7 b4 ii
+
+
+Measure 8, beat 4, V42 in E- major, indicating the bass A- for lowest note(s) of: ['D-4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 8, beat 4.5, V7 in E- major, indicating the bass B- for lowest note(s) of: ['E-4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 9, beat 1, IV in E- major, indicating the bass A- for lowest note(s) of: ['E-2'].
+How about:
+m9 b1 IV64
+
+
+Measure 10, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 10, beat 3.5, V7 in E- major, indicating the bass B- for lowest note(s) of: ['E-2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 11, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['C2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 11, beat 2, i in E- major, indicating the bass E- for lowest note(s) of: ['C2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 11, beat 4.5, i in f minor, indicating the bass F for lowest note(s) of: ['C2'].
+How about:
+m11 b4.5 i64
+
+
+Measure 12, beat 2, i in f minor, indicating the bass F for lowest note(s) of: ['C2'].
+How about:
+m12 b2 i64
+
+
+Measure 13, beat 4, iv in f minor, indicating the bass B- for lowest note(s) of: ['D-4'].
+How about:
+m13 b4 iv6
+
+
+Measure 14, beat 3, i in f minor, indicating the bass F for lowest note(s) of: ['A-3'].
+How about:
+m14 b3 i6
+
+
+Measure 14, beat 4, I in f minor, indicating the bass F for lowest note(s) of: ['E3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 14, beat 4.5, i in f minor, indicating the bass F for lowest note(s) of: ['E3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 15, beat 2, iv in f minor, indicating the bass B- for lowest note(s) of: ['D-3'].
+How about:
+m15 b2 iv6
+
+
+Measure 15, beat 2.5, i in f minor, indicating the bass F for lowest note(s) of: ['C3'].
+How about:
+m15 b2.5 i64
+
+
+Measure 17, beat 4, iv in f minor, indicating the bass B- for lowest note(s) of: ['D-4'].
+How about:
+m17 b4 iv6
+
+
+Measure 18, beat 3, i in f minor, indicating the bass F for lowest note(s) of: ['A-3'].
+How about:
+m18 b3 i6
+
+
+Measure 18, beat 4, I in f minor, indicating the bass F for lowest note(s) of: ['E3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 20, beat 1, i in f minor, indicating the bass F for lowest note(s) of: ['C3'].
+How about:
+m20 b1 i64
+
+

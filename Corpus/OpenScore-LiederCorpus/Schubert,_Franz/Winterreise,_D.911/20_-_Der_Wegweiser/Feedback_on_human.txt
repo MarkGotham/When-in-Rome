@@ -1,0 +1,64 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 99.1%.
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 0, beat 2.5, i6 in g minor, indicating the pitches ['B-', 'D', 'G'] accounting for successive slices of [['B-3', 'G4'], ['C4', 'A4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 2, beat 2.5, IV in g minor, indicating the pitches ['C', 'E', 'G'] accounting for successive slices of [['C3'], ['D3']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 7, beat 2.5, iio43[no3] in g minor, indicating the pitches ['E-', 'G-', 'A'] accounting for successive slices of [['E-3', 'G4', 'A4'], ['E-3', 'G4', 'B-4']].
+Match strength estimated at 50.0%.
+How about:
+m7 b2.75 bVI for the slice ['E-3', 'G4', 'B-4']
+
+
+Measure 21, beat 2.5, I6 in G major, indicating the pitches ['B', 'D', 'G'] accounting for successive slices of [['B3', 'G4'], ['C4', 'A4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 40, beat 2.5, i in g minor, indicating the pitches ['G', 'B-', 'D'] accounting for successive slices of [['G4'], ['A4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 42, beat 2.5, iio43[no3] in g minor, indicating the pitches ['E-', 'G-', 'A'] accounting for successive slices of [['E-3', 'G4', 'A4'], ['E-3', 'G4', 'B-4']].
+Match strength estimated at 50.0%.
+How about:
+m42 b2.75 bVI for the slice ['E-3', 'G4', 'B-4']
+
+
+
+HARMONIC RHYTHM =====================
+
+In the following cases, the chord change is at an unusually weak metrical position:
+Measure 9, V42 in g minor appears on beat 2.25.
+Measure 9, viio6 in g minor appears on beat 2.75.
+Measure 44, V42 in g minor appears on beat 2.25.
+Measure 44, viio6 in g minor appears on beat 2.75.
+
+
+
+BASS / INVERSION =====================
+
+I rate the bass notes at about 99.7%.
+The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Measure 41, beat 2.5, VI in g minor, indicating the bass E- for lowest note(s) of: ['C3', 'D3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+
+WARNINGS =====================
+
+WARNING: There are 84 measures in the score but 82 in your analysis. This is usually a question of either the beginning or end: either
+1) The piece reaches its final chord before the final measure (in which case fine), or
+2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+
