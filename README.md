@@ -1,24 +1,24 @@
 # When in Rome
 
-This repo provides Roman numeral analysis corpora and related material including the supplementary resources promised in:
-
-[Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
+This repo provides Roman numeral analysis code, corpora and related material including supplementary resources promised in:
+- [Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
+- Other papers in press / forthcoming
 
 See also:
 - https://github.com/cuthbertLab/music21/tree/master/music21/romanText
 - http://web.web.mit.edu/music21/doc/moduleReference/moduleRoman.html
 - http://web.mit.edu/music21/doc/usersGuide/usersGuide_23_romanNumerals.html
 
-## Corpora
-
-The corpora provided include those mentioned in the paper as well as other created or converted since going to press, totaling around 250 scores and 80,000 Roman numerals.
-These analyses are hosted here or on music21 as listed in the following subsections.
+The corpora provided include those mentioned in the paper as well as others created or converted since going to press, now totaling around 250 scores and 80,000 Roman numerals.
+Directions to these corpora are given in the following subsection.
 
 Note: As the paper attests, harmonic analysis is fundamentally, necessarily, and intentionally a reductive act that includes a good degree of subjective reading.
-These are not in any sense, 'definitive' analyses to the exclusion of other possibilities.
+As such, these analyses are not in any sense 'definitive', to the exclusion of other possibilities.
 Quite the opposite: part of the point of having a representation format like this is to enable the recording of variant readings.
 Please feel free to re-analyse these works by using the existing analysis as a template and changing the parts you disagree with.
 In that case, perhaps credit the original analyst too in the format: 'Analyst: [Your name] after [their name]'
+
+## Human Analysis Corpora
 
 ### Hosted on music21
 - Bach Chorales: A sample of 20 analyses. [Hosted on music21: all files in this folder](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/bach/choraleAnalyses).
@@ -32,22 +32,35 @@ In that case, perhaps credit the original analyst too in the format: 'Analyst: [
 ### New corpora by MG and colleagues
 - [Bach Preludes](/Corpus/Bach_Preludes/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
 - [Grounds](/Corpus/Grounds/): Examples of ground bass compositions from Purcell and Bach.
-- [Nineteenth-century French and German songs](/Corpus/Songs/): A sample of 48 songs from the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores), including Schubert's complete _Winterreise_ cycle.
+- [Nineteenth-century French and German songs](/Corpus/OpenScore-LiederCorpus/): A sample of songs from the OpenScore / 'Scores of Scores' lieder corpus ([mirroring the public-facing score collection hosted here](https://musescore.com/openscore-lieder-corpus/sets)), including analyses for the complete _Winterreise_ and _Schwanengesang_ cycles (Schubert), _Dichterliebe_ (Schumann), and many of the songs by women composers that constitute a key part of and motivation for that collection.
 
-## Templates
+## Automated analyses, Templates, and Feedback
 
-The templates folder contains templates for analyses of every song in the ['Scores of Scores' corpus](https://github.com/MarkGotham/ScoresOfScores).
-These rntxt template files include the:
-- metadata,
-- time signatures, and
-- measure range equalities
+The new corpora (Bach Preludes, Grounds, and 'Scores of Scores' lieder) also include the corresponding scores, automated analyses, templates, and feedback files.
+(Please see the original corpora for score to the converted analyses.)
+This is intended to support future contributors to this collection, making the study of these analyses and / or the submission of alternative readings as easy as possible.
+[This page](https://fourscoreandmore.org/working-in-harmony/analysis/) provides full instructions for formatting your analysis.
+Every folder includes at least the following files:
 
-... but no actual analysis.
-You can download these templates and fill them in with your take on the work.
+1. ‘score.mxl’
+- What: This is simply an mxl copy of the corpus score with nothing added or taken away.
+- How to use: To add an analysis, enter it as lyrics to the bottom part. Note that lyrics must be affixed to a note, so in many or most cases it will be best to add a new part especially for this (e.g. press 'i' in Musescore) so that you can change the rhythm as needed.
+2. ‘automatic_onscore.musicxml’
+- What: This is a score with an automated analysis added as an additional lowest part.
+- How to use: Analysts may like to use this as a template. If so, edit the file in place. Code provided will extract the adjusted analysis and write it to Roman text format. Specifically, make changes to the lyrics. Don’t worry about the chords — they are there to illustrate the implications of the Roman numeral in question. Alternative (forthcoming) code is available for working directly with chords.
+3. ‘automatic.txt’
+- What: This is the automatic analysis in a dedicated (rntxt) text file.
+- How to use: As with the ‘automatic_onscore analysis, this is offered as a first parse which you can edit into your own analysis in. Use this (or one of the other text files) if you have any problem with the score files, or if you simply prefer to type off-score. You can find the corresponding score online [here](https://musescore.com/openscore-lieder-corpus/sets).
+4. ‘feedback_on_automatic.txt’
+- What: This is a text document providing feedback on the automatic analysis generated by the 'chordCompare' script.
+- How to use: This helps direct attention to possible errors in the automatic analysis (not that you’re likely to need help finding errors in there!)
+5. template.txt’
+- What: a text file with only the metadata, time signatures, measures, and measure equality ranges as a template - i.e. all the information you need from the score with space to enter your own analysis.
+- How to use: type the analysis in from scratch.
 
-The file names correspond exactly to the auto-updating corpus mirror [hosted here](https://github.com/shoogle/OpenScore-LiederCorpus) enabling easy pairing with the original scores.
-That repo provides details of the file naming system.
-The only modification here is to replace the '/' for subdirectories with '\_-\_'.
+For scores with a human analysis (not yet the entirety of the lieder corpus), there are also 'human.txt' and ‘feedback_on_human.txt’ files.
+I'll rename these if and when we have multiple human analyses of the same song.
+For now, the emphasis is on coverage.
 
 ## Lists
 
@@ -65,8 +78,8 @@ This encompasses music21's default reading of:
 ## Minor Mode
 
 The lists were generated with music21's 'quality' default for handling the 6th / 7th degrees in minor mode.
-
-Music21 has four settable options for handling minor key variation.
+This is one aspect of roman numeral analysis that is particularly liable to inconsistency and in need of a clear protocol.
+Here, we follow the music21 default of 'quality', which is among four supportde optins:
 - Quality: the status of the triad as major or minor (upper or lower case, not accounting for diminished / augmented at this stage) alters the output chord’s root. In this case, ‘vii’ in a minor returns g# minor and the same holds for a diminished alteration (’viio’ = g# diminished). ‘VII’ sets the root to G natural, so ‘VII’ = G major and VII+ is G augmented.
 - Cautionary: like 'quality', except that the ‘cautionary’ option ignores one chromatic alteration in the ‘sensible’ direction. So, ‘#vii’ would return g# minor, and not g## minor. Likewise, ‘bVII’ would be G major and not Gb major. This is useful to accommodating cases much of the realistic variation in minor mode conventions — the single, ‘sensible' sharp or flat is like a ‘cautionary accidental’. Further sharps and flats in the ‘sensible’ direction, and any sharps / flats in the opposite direction do change the root.
 - Sharp / Raised: explicitly sets the 6th and / or 7th degrees to ‘Sharp / Raised’ (F# and G# in a minor).
