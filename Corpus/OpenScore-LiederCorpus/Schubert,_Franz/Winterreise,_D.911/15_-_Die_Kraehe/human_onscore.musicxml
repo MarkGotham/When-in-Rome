@@ -11,7 +11,7 @@
     <creator type="lyricist">Wilhelm Müller</creator>
     <rights>OpenScore (CC0)</rights>
     <encoding>
-      <encoding-date>2020-03-03</encoding-date>
+      <encoding-date>2020-03-27</encoding-date>
       <software>music21 v.6.0.2a2</software>
       <software>MuseScore 3.4.2</software>
       <supports attribute="new-system" element="print" type="yes" value="yes" />
@@ -57,10 +57,10 @@
   <part-list>
     <score-part id="P1">
       <part-name>Singstimme Voice</part-name>
-      <score-instrument id="Id751307c91a9b73fbb626f6e13aec303">
+      <score-instrument id="I8229ab5cdef2dafcf01c200743f639b3">
         <instrument-name>Voice</instrument-name>
       </score-instrument>
-      <midi-instrument id="Id751307c91a9b73fbb626f6e13aec303">
+      <midi-instrument id="I8229ab5cdef2dafcf01c200743f639b3">
         <midi-channel>1</midi-channel>
         <midi-program>53</midi-program>
       </midi-instrument>
@@ -72,26 +72,26 @@
     </part-group>
     <score-part id="P2">
       <part-name>Pianoforte</part-name>
-      <score-instrument id="I3fb12a65e123c555eb292fad2db640fc">
+      <score-instrument id="I6d147b73077d3dcabd03c201c5f89fd9">
         <instrument-name>Grand Piano</instrument-name>
       </score-instrument>
-      <midi-instrument id="I3fb12a65e123c555eb292fad2db640fc">
+      <midi-instrument id="I6d147b73077d3dcabd03c201c5f89fd9">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="Pfff8da8bb2b8f80ac9464496d4451f62">
+    <score-part id="P93ef6b07eeb0882a0a58ecbcb6cfe150">
       <part-name>Pianoforte</part-name>
-      <score-instrument id="Ia30bdfeee6fe0e6677931541e360f737">
+      <score-instrument id="Ib3b298fa7250350878676413beee651f">
         <instrument-name>Grand Piano</instrument-name>
       </score-instrument>
-      <midi-instrument id="Ia30bdfeee6fe0e6677931541e360f737">
+      <midi-instrument id="Ib3b298fa7250350878676413beee651f">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
     <part-group number="1" type="stop" />
-    <score-part id="P6e3eae919370450abf20e95435541e65">
+    <score-part id="Pf5342eceaceb8b5d56ff3f2e8cf69a8d">
       <part-name>Analysis</part-name>
     </score-part>
   </part-list>
@@ -11084,7 +11084,7 @@
     </measure>
   </part>
   <!--=========================== Part 3 ===========================-->
-  <part id="Pfff8da8bb2b8f80ac9464496d4451f62">
+  <part id="P93ef6b07eeb0882a0a58ecbcb6cfe150">
     <!--========================= Measure 1 ==========================-->
     <measure number="1" width="374.45">
       <print>
@@ -15931,7 +15931,7 @@
     </measure>
   </part>
   <!--=========================== Part 4 ===========================-->
-  <part id="P6e3eae919370450abf20e95435541e65">
+  <part id="Pf5342eceaceb8b5d56ff3f2e8cf69a8d">
     <!--========================= Measure 1 ==========================-->
     <measure number="1">
       <attributes>
@@ -16379,22 +16379,6 @@
       </note>
       <note>
         <pitch>
-          <step>D</step>
-          <alter>-1</alter>
-          <octave>4</octave>
-        </pitch>
-        <duration>5040</duration>
-        <type>eighth</type>
-        <accidental>flat</accidental>
-        <beam number="1">end</beam>
-        <lyric name="1" number="1">
-          <syllabic>single</syllabic>
-          <text>bIIb</text>
-        </lyric>
-      </note>
-      <note>
-        <chord />
-        <pitch>
           <step>F</step>
           <alter>0</alter>
           <octave>4</octave>
@@ -16402,6 +16386,11 @@
         <duration>5040</duration>
         <type>eighth</type>
         <accidental>natural</accidental>
+        <beam number="1">end</beam>
+        <lyric name="1" number="1">
+          <syllabic>single</syllabic>
+          <text>bII6</text>
+        </lyric>
       </note>
       <note>
         <chord />
@@ -16412,6 +16401,17 @@
         </pitch>
         <duration>5040</duration>
         <type>eighth</type>
+      </note>
+      <note>
+        <chord />
+        <pitch>
+          <step>D</step>
+          <alter>-1</alter>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <type>eighth</type>
+        <accidental>flat</accidental>
       </note>
       <note>
         <pitch>
@@ -21092,22 +21092,6 @@
       </note>
       <note>
         <pitch>
-          <step>D</step>
-          <alter>-1</alter>
-          <octave>4</octave>
-        </pitch>
-        <duration>5040</duration>
-        <type>eighth</type>
-        <accidental>flat</accidental>
-        <beam number="1">end</beam>
-        <lyric name="1" number="1">
-          <syllabic>single</syllabic>
-          <text>bIIb</text>
-        </lyric>
-      </note>
-      <note>
-        <chord />
-        <pitch>
           <step>F</step>
           <alter>0</alter>
           <octave>4</octave>
@@ -21115,6 +21099,11 @@
         <duration>5040</duration>
         <type>eighth</type>
         <accidental>natural</accidental>
+        <beam number="1">end</beam>
+        <lyric name="1" number="1">
+          <syllabic>single</syllabic>
+          <text>bII6</text>
+        </lyric>
       </note>
       <note>
         <chord />
@@ -21125,6 +21114,17 @@
         </pitch>
         <duration>5040</duration>
         <type>eighth</type>
+      </note>
+      <note>
+        <chord />
+        <pitch>
+          <step>D</step>
+          <alter>-1</alter>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <type>eighth</type>
+        <accidental>flat</accidental>
       </note>
       <note>
         <pitch>

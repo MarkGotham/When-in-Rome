@@ -11,7 +11,7 @@
     <creator type="lyricist">Heinrich Heine</creator>
     <rights>OpenScore (CC0)</rights>
     <encoding>
-      <encoding-date>2020-02-29</encoding-date>
+      <encoding-date>2020-03-26</encoding-date>
       <software>music21 v.6.0.2a2</software>
       <software>MuseScore 3.4.2</software>
       <supports attribute="new-system" element="print" type="yes" value="yes" />
@@ -57,10 +57,10 @@
   <part-list>
     <score-part id="P1">
       <part-name>Voice</part-name>
-      <score-instrument id="Ia2ccd80f11d3fedc0cb6ee25af6288f3">
+      <score-instrument id="I3a04f3b4f02478a3dbd654a6e6643bd8">
         <instrument-name>Voice</instrument-name>
       </score-instrument>
-      <midi-instrument id="Ia2ccd80f11d3fedc0cb6ee25af6288f3">
+      <midi-instrument id="I3a04f3b4f02478a3dbd654a6e6643bd8">
         <midi-channel>1</midi-channel>
         <midi-program>69</midi-program>
       </midi-instrument>
@@ -72,26 +72,26 @@
     </part-group>
     <score-part id="P2">
       <part-name>Piano</part-name>
-      <score-instrument id="I3ba89c2e7ee4147f82b512e5c7f513e7">
+      <score-instrument id="Ia598da77bb1ae4235d21e4bc617c258d">
         <instrument-name>Grand Piano</instrument-name>
       </score-instrument>
-      <midi-instrument id="I3ba89c2e7ee4147f82b512e5c7f513e7">
+      <midi-instrument id="Ia598da77bb1ae4235d21e4bc617c258d">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="Pc5f7d16cd9b587667d4c06143d7d7390">
+    <score-part id="Pb2a3eb86c28718353f2d1f5515656afe">
       <part-name>Piano</part-name>
-      <score-instrument id="I60f7f26669033dc41d76bd461d0b208a">
+      <score-instrument id="I6ae2e104a46a1bef0e0ecf8e1382ab9f">
         <instrument-name>Grand Piano</instrument-name>
       </score-instrument>
-      <midi-instrument id="I60f7f26669033dc41d76bd461d0b208a">
+      <midi-instrument id="I6ae2e104a46a1bef0e0ecf8e1382ab9f">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
     <part-group number="1" type="stop" />
-    <score-part id="Pf2e9b07d87c14c0a36ecba020afb9ca9">
+    <score-part id="P8c90055abf5bbec2da68ffc636931afb">
       <part-name>Analysis</part-name>
     </score-part>
   </part-list>
@@ -4172,7 +4172,7 @@
     </measure>
   </part>
   <!--=========================== Part 3 ===========================-->
-  <part id="Pc5f7d16cd9b587667d4c06143d7d7390">
+  <part id="Pb2a3eb86c28718353f2d1f5515656afe">
     <!--========================= Measure 1 ==========================-->
     <measure number="1" width="297.77">
       <print>
@@ -6595,7 +6595,7 @@
     </measure>
   </part>
   <!--=========================== Part 4 ===========================-->
-  <part id="Pf2e9b07d87c14c0a36ecba020afb9ca9">
+  <part id="P8c90055abf5bbec2da68ffc636931afb">
     <!--========================= Measure 1 ==========================-->
     <measure number="1">
       <attributes>
@@ -6623,20 +6623,19 @@
         </notations>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>b-: I</text>
+          <text>b-: i</text>
         </lyric>
       </note>
       <note>
         <chord />
         <pitch>
           <step>D</step>
-          <alter>0</alter>
+          <alter>-1</alter>
           <octave>5</octave>
         </pitch>
         <duration>40320</duration>
         <tie type="start" />
         <type>whole</type>
-        <accidental>natural</accidental>
         <notations>
           <tied type="start" />
         </notations>
@@ -6678,7 +6677,7 @@
         <chord />
         <pitch>
           <step>D</step>
-          <alter>0</alter>
+          <alter>-1</alter>
           <octave>5</octave>
         </pitch>
         <duration>40320</duration>
@@ -6726,7 +6725,6 @@
         </pitch>
         <duration>20160</duration>
         <type>half</type>
-        <accidental>flat</accidental>
       </note>
       <note>
         <chord />
@@ -7815,7 +7813,7 @@
         <dot />
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>vi</text>
+          <text>IV6</text>
         </lyric>
       </note>
       <note>
@@ -7832,13 +7830,14 @@
       <note>
         <chord />
         <pitch>
-          <step>B</step>
+          <step>C</step>
           <alter>-1</alter>
-          <octave>5</octave>
+          <octave>6</octave>
         </pitch>
         <duration>30240</duration>
         <type>half</type>
         <dot />
+        <accidental>flat</accidental>
       </note>
       <note>
         <pitch>
@@ -7873,7 +7872,6 @@
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
-        <accidental>flat</accidental>
       </note>
     </measure>
     <!--========================= Measure 21 =========================-->
@@ -7930,12 +7928,8 @@
           <alter>-1</alter>
           <octave>4</octave>
         </pitch>
-        <duration>20160</duration>
-        <tie type="start" />
-        <type>half</type>
-        <notations>
-          <tied type="start" />
-        </notations>
+        <duration>40320</duration>
+        <type>whole</type>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
           <text>I</text>
@@ -7948,12 +7942,8 @@
           <alter>-1</alter>
           <octave>4</octave>
         </pitch>
-        <duration>20160</duration>
-        <tie type="start" />
-        <type>half</type>
-        <notations>
-          <tied type="start" />
-        </notations>
+        <duration>40320</duration>
+        <type>whole</type>
       </note>
       <note>
         <chord />
@@ -7962,89 +7952,8 @@
           <alter>-1</alter>
           <octave>5</octave>
         </pitch>
-        <duration>20160</duration>
-        <tie type="start" />
-        <type>half</type>
-        <notations>
-          <tied type="start" />
-        </notations>
-      </note>
-      <note>
-        <pitch>
-          <step>G</step>
-          <alter>-1</alter>
-          <octave>4</octave>
-        </pitch>
-        <duration>5040</duration>
-        <tie type="stop" />
-        <type>eighth</type>
-        <notations>
-          <tied type="stop" />
-        </notations>
-      </note>
-      <note>
-        <chord />
-        <pitch>
-          <step>B</step>
-          <alter>-1</alter>
-          <octave>4</octave>
-        </pitch>
-        <duration>5040</duration>
-        <tie type="stop" />
-        <type>eighth</type>
-        <notations>
-          <tied type="stop" />
-        </notations>
-      </note>
-      <note>
-        <chord />
-        <pitch>
-          <step>D</step>
-          <alter>-1</alter>
-          <octave>5</octave>
-        </pitch>
-        <duration>5040</duration>
-        <tie type="stop" />
-        <type>eighth</type>
-        <notations>
-          <tied type="stop" />
-        </notations>
-      </note>
-      <note>
-        <pitch>
-          <step>B</step>
-          <alter>-1</alter>
-          <octave>4</octave>
-        </pitch>
-        <duration>15120</duration>
-        <type>quarter</type>
-        <dot />
-        <lyric name="1" number="1">
-          <syllabic>single</syllabic>
-          <text>b-: I</text>
-        </lyric>
-      </note>
-      <note>
-        <chord />
-        <pitch>
-          <step>D</step>
-          <alter>0</alter>
-          <octave>5</octave>
-        </pitch>
-        <duration>15120</duration>
-        <type>quarter</type>
-        <dot />
-        <accidental>natural</accidental>
-      </note>
-      <note>
-        <chord />
-        <pitch>
-          <step>F</step>
-          <octave>5</octave>
-        </pitch>
-        <duration>15120</duration>
-        <type>quarter</type>
-        <dot />
+        <duration>40320</duration>
+        <type>whole</type>
       </note>
     </measure>
     <!--========================= Measure 23 =========================-->
@@ -8059,7 +7968,7 @@
         <type>whole</type>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>Ger65</text>
+          <text>b-: Ger65</text>
         </lyric>
       </note>
       <note>
@@ -8081,7 +7990,6 @@
         </pitch>
         <duration>40320</duration>
         <type>whole</type>
-        <accidental>flat</accidental>
       </note>
       <note>
         <chord />
