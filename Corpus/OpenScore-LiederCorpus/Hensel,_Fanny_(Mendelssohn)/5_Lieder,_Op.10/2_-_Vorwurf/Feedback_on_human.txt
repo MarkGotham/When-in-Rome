@@ -1,7 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 95.22%.
+I rate the pitch coverage at about 94.4%.
 In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 2, beat 1, i in g# minor, indicating the pitches ['G#', 'B', 'D#'] accounting for successive slices of [['G#3', 'G#4'], ['F#3', 'F#4'], ['E3', 'E4'], ['D#3', 'D#4', 'G#4']].
@@ -32,6 +32,18 @@ Match strength estimated at 0.0%.
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
+Measure 29, beat 3, V7/III in C# major, indicating the pitches ['B#', 'D##', 'F##', 'A#'] accounting for successive slices of [['B3', 'D#4', 'F##4', 'A#4', 'D#5']].
+Match strength estimated at 40.0%.
+How about:
+m29 b3 bVII+#7##5#3 for the slice ['B3', 'D#4', 'F##4', 'A#4', 'D#5']
+
+
+Measure 29, beat 4, III64 in C# major, indicating the pitches ['B#', 'E#', 'G##'] accounting for successive slices of [['B2', 'B3', 'D#4', 'G#4', 'B4'], ['B2', 'B3', 'G#4']].
+Match strength estimated at 0.0%.
+How about:
+m29 b4 v6 for the slice ['B2', 'B3', 'D#4', 'G#4', 'B4']
+
+
 Measure 35, beat 1, V in g# minor, indicating the pitches ['D#', 'F##', 'A#'] accounting for successive slices of [['D#3', 'B3', 'G#4', 'C##5'], ['D#3', 'A#3', 'F##4', 'D#5']].
 Match strength estimated at 44.0%.
 Sorry, no suggestions - I can't find any triads or sevenths.
@@ -48,13 +60,13 @@ HARMONIC RHYTHM =====================
 
 In the following cases, the chord change is at an unusually weak metrical position:
 Measure 23, V7 in c# minor appears on beat 4.5.
-Measure 29, viio65/v in c# minor appears on beat 2.5.
+Measure 29, viio65/v in C# major appears on beat 2.5.
 
 
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 90.05%.
+I rate the bass notes at about 89.54%.
 The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
 Measure 4, beat 1, i in c# minor, indicating the bass C# for lowest note(s) of: ['E4'].
 How about:
@@ -105,18 +117,22 @@ Measure 19, beat 1, v6 in c# minor, indicating the bass B for lowest note(s) of:
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 29, beat 2.5, viio65/v in c# minor, indicating the bass A# for lowest note(s) of: ['C#4'].
+Measure 29, beat 2.5, viio65/v in C# major, indicating the bass A# for lowest note(s) of: ['C#4'].
 How about:
-m29 b2.5 #ivob864b3
+m29 b2.5 #ivob64bb3
 
 
-Measure 30, beat 1, V7/IV in c# minor, indicating the bass C# for lowest note(s) of: ['B2'].
-How about:
-m30 b1 I6#42
-
-
-Measure 43, beat 2, VI in c# minor, indicating the bass A for lowest note(s) of: ['G#2'].
+Measure 29, beat 3, V7/III in C# major, indicating the bass B# for lowest note(s) of: ['B3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 29, beat 4, III64 in C# major, indicating the bass B# for lowest note(s) of: ['B2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 30, beat 1, V7/IV in C# major, indicating the bass C# for lowest note(s) of: ['B2'].
+How about:
+m30 b1 Ib8642
 
 
 Measure 43, beat 4, viio6/V in c# minor, indicating the bass A# for lowest note(s) of: ['G#2'].

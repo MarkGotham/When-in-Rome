@@ -11,7 +11,7 @@
     <creator type="lyricist">Nikolaus Lenau</creator>
     <rights>OpenScore (CC0)</rights>
     <encoding>
-      <encoding-date>2020-03-26</encoding-date>
+      <encoding-date>2020-03-30</encoding-date>
       <software>music21 v.6.0.2a2</software>
       <software>MuseScore 3.4.2</software>
       <supports attribute="new-system" element="print" type="yes" value="yes" />
@@ -58,10 +58,10 @@
   <part-list>
     <score-part id="P1">
       <part-name>Voice</part-name>
-      <score-instrument id="I4acd853f208a1d25a31d1d99d6968fdd">
+      <score-instrument id="Ie3ae0a895a9da827c9794bf34f7f655c">
         <instrument-name>Voice</instrument-name>
       </score-instrument>
-      <midi-instrument id="I4acd853f208a1d25a31d1d99d6968fdd">
+      <midi-instrument id="Ie3ae0a895a9da827c9794bf34f7f655c">
         <midi-channel>1</midi-channel>
         <midi-program>69</midi-program>
       </midi-instrument>
@@ -73,26 +73,26 @@
     </part-group>
     <score-part id="P2">
       <part-name>Piano</part-name>
-      <score-instrument id="Ib3188cd0fa65928e5ebeecec726572d6">
+      <score-instrument id="Id4a9fa2f88ff8535228a10e9b7b78a1a">
         <instrument-name>Piano</instrument-name>
       </score-instrument>
-      <midi-instrument id="Ib3188cd0fa65928e5ebeecec726572d6">
+      <midi-instrument id="Id4a9fa2f88ff8535228a10e9b7b78a1a">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="P41cea0f665ab13acdbd36c0b2b6d320f">
+    <score-part id="Pe10b558a780771961cc06e9e5aba4e9f">
       <part-name>Piano</part-name>
-      <score-instrument id="Ia503cbf2e5fb3b7d9c25b95aa6498fd5">
+      <score-instrument id="I50881a03182deeb05af9ccdfd4be8402">
         <instrument-name>Piano</instrument-name>
       </score-instrument>
-      <midi-instrument id="Ia503cbf2e5fb3b7d9c25b95aa6498fd5">
+      <midi-instrument id="I50881a03182deeb05af9ccdfd4be8402">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
     <part-group number="1" type="stop" />
-    <score-part id="P17dad0bf914c6c48d97e4e9ae7620995">
+    <score-part id="Pa3c58cfdd5572a4d7aca29e1af6d7f4c">
       <part-name>Analysis</part-name>
     </score-part>
   </part-list>
@@ -8186,7 +8186,7 @@
     </measure>
   </part>
   <!--=========================== Part 3 ===========================-->
-  <part id="P41cea0f665ab13acdbd36c0b2b6d320f">
+  <part id="Pe10b558a780771961cc06e9e5aba4e9f">
     <!--========================= Measure 1 ==========================-->
     <measure number="1" width="344.65">
       <print>
@@ -11080,7 +11080,7 @@
     </measure>
   </part>
   <!--=========================== Part 4 ===========================-->
-  <part id="P17dad0bf914c6c48d97e4e9ae7620995">
+  <part id="Pa3c58cfdd5572a4d7aca29e1af6d7f4c">
     <!--========================= Measure 1 ==========================-->
     <measure number="1">
       <attributes>
@@ -12816,7 +12816,7 @@
         <accidental>natural</accidental>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>V7/bII</text>
+          <text>Ger65</text>
         </lyric>
       </note>
       <note>
@@ -12841,13 +12841,13 @@
       <note>
         <chord />
         <pitch>
-          <step>G</step>
-          <alter>0</alter>
+          <step>F</step>
+          <alter>2</alter>
           <octave>5</octave>
         </pitch>
         <duration>40320</duration>
         <type>whole</type>
-        <accidental>natural</accidental>
+        <accidental>double-sharp</accidental>
       </note>
     </measure>
     <!--========================= Measure 22 =========================-->
@@ -12861,7 +12861,6 @@
         <duration>40320</duration>
         <tie type="start" />
         <type>whole</type>
-        <accidental>sharp</accidental>
         <notations>
           <tied type="start" />
         </notations>
@@ -13007,7 +13006,7 @@
         <type>whole</type>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>I</text>
+          <text>C#: I</text>
         </lyric>
       </note>
       <note>
@@ -13368,10 +13367,12 @@
       <note>
         <pitch>
           <step>B</step>
+          <alter>1</alter>
           <octave>4</octave>
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
+        <accidental>sharp</accidental>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
           <text>V7/III</text>
@@ -13381,7 +13382,18 @@
         <chord />
         <pitch>
           <step>D</step>
-          <alter>1</alter>
+          <alter>2</alter>
+          <octave>5</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <accidental>double-sharp</accidental>
+      </note>
+      <note>
+        <chord />
+        <pitch>
+          <step>F</step>
+          <alter>2</alter>
           <octave>5</octave>
         </pitch>
         <duration>10080</duration>
@@ -13390,7 +13402,31 @@
       <note>
         <chord />
         <pitch>
-          <step>F</step>
+          <step>A</step>
+          <alter>1</alter>
+          <octave>5</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+      </note>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <accidental>sharp</accidental>
+        <lyric name="1" number="1">
+          <syllabic>single</syllabic>
+          <text>III64</text>
+        </lyric>
+      </note>
+      <note>
+        <chord />
+        <pitch>
+          <step>E</step>
           <alter>1</alter>
           <octave>5</octave>
         </pitch>
@@ -13401,44 +13437,13 @@
       <note>
         <chord />
         <pitch>
-          <step>A</step>
-          <alter>0</alter>
-          <octave>5</octave>
-        </pitch>
-        <duration>10080</duration>
-        <type>quarter</type>
-        <accidental>natural</accidental>
-      </note>
-      <note>
-        <pitch>
-          <step>B</step>
-          <octave>4</octave>
-        </pitch>
-        <duration>10080</duration>
-        <type>quarter</type>
-        <lyric name="1" number="1">
-          <syllabic>single</syllabic>
-          <text>III64</text>
-        </lyric>
-      </note>
-      <note>
-        <chord />
-        <pitch>
-          <step>E</step>
-          <octave>5</octave>
-        </pitch>
-        <duration>10080</duration>
-        <type>quarter</type>
-      </note>
-      <note>
-        <chord />
-        <pitch>
           <step>G</step>
-          <alter>1</alter>
+          <alter>2</alter>
           <octave>5</octave>
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
+        <accidental>double-sharp</accidental>
       </note>
     </measure>
     <!--========================= Measure 30 =========================-->
@@ -13476,15 +13481,18 @@
         </pitch>
         <duration>20160</duration>
         <type>half</type>
+        <accidental>sharp</accidental>
       </note>
       <note>
         <chord />
         <pitch>
           <step>B</step>
+          <alter>0</alter>
           <octave>5</octave>
         </pitch>
         <duration>20160</duration>
         <type>half</type>
+        <accidental>natural</accidental>
       </note>
       <note>
         <pitch>
@@ -13494,7 +13502,6 @@
         </pitch>
         <duration>20160</duration>
         <type>half</type>
-        <accidental>sharp</accidental>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
           <text>IV6</text>
@@ -13519,6 +13526,7 @@
         </pitch>
         <duration>20160</duration>
         <type>half</type>
+        <accidental>sharp</accidental>
       </note>
     </measure>
     <!--========================= Measure 31 =========================-->
@@ -14386,6 +14394,20 @@
       </note>
       <note>
         <pitch>
+          <step>G</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <lyric name="1" number="1">
+          <syllabic>single</syllabic>
+          <text>VI42</text>
+        </lyric>
+      </note>
+      <note>
+        <chord />
+        <pitch>
           <step>A</step>
           <alter>0</alter>
           <octave>4</octave>
@@ -14393,10 +14415,6 @@
         <duration>10080</duration>
         <type>quarter</type>
         <accidental>natural</accidental>
-        <lyric name="1" number="1">
-          <syllabic>single</syllabic>
-          <text>VI</text>
-        </lyric>
       </note>
       <note>
         <chord />
@@ -14681,7 +14699,7 @@
         <accidental>sharp</accidental>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>c#: V65</text>
+          <text>V65/IV</text>
         </lyric>
       </note>
       <note>
@@ -14719,13 +14737,13 @@
         <pitch>
           <step>C</step>
           <alter>1</alter>
-          <octave>4</octave>
+          <octave>5</octave>
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>I</text>
+          <text>IV</text>
         </lyric>
       </note>
       <note>
@@ -14733,7 +14751,7 @@
         <pitch>
           <step>E</step>
           <alter>1</alter>
-          <octave>4</octave>
+          <octave>5</octave>
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
@@ -14744,7 +14762,7 @@
         <pitch>
           <step>G</step>
           <alter>1</alter>
-          <octave>4</octave>
+          <octave>5</octave>
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
@@ -14760,7 +14778,7 @@
         <accidental>natural</accidental>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>g#: III+</text>
+          <text>III+</text>
         </lyric>
       </note>
       <note>
@@ -14997,7 +15015,7 @@
         <type>half</type>
         <lyric name="1" number="1">
           <syllabic>single</syllabic>
-          <text>ii42</text>
+          <text>iiø42</text>
         </lyric>
       </note>
       <note>
@@ -15024,12 +15042,10 @@
         <chord />
         <pitch>
           <step>E</step>
-          <alter>1</alter>
           <octave>5</octave>
         </pitch>
         <duration>20160</duration>
         <type>half</type>
-        <accidental>sharp</accidental>
       </note>
     </measure>
     <!--========================= Measure 49 =========================-->
