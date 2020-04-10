@@ -1,18 +1,20 @@
 # When in Rome
 
 This repo provides Roman numeral analysis code, corpora and related material including supplementary resources promised in:
-- [Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
-- Other papers in press / forthcoming
+- In print: [Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
+- In press: Gianluca Micchi, Mark Gotham, and Mathieu Giraud (2020). "Not All Roads Lead to Rome: Pitch Representation and Model Architecture for Automatic Harmonic Analysis", Transactions of the International Society for Music Information Retrieval (DOI & link coming soon)
+- Other papers forthcoming
 
 See also:
 - https://github.com/cuthbertLab/music21/tree/master/music21/romanText
 - http://web.web.mit.edu/music21/doc/moduleReference/moduleRoman.html
 - http://web.mit.edu/music21/doc/usersGuide/usersGuide_23_romanNumerals.html
 
-The corpora provided include those mentioned in the paper as well as others created or converted since going to press, now totaling around 250 scores and 80,000 Roman numerals.
+The corpora provided include those mentioned in the papers above and continues to grow.
+The total provision now exceeds 250 scores and 80,000 Roman numerals.
 Directions to these corpora are given in the following subsection.
 
-Note: As the paper attests, harmonic analysis is fundamentally, necessarily, and intentionally a reductive act that includes a good degree of subjective reading.
+Note: As the papers attest, harmonic analysis is fundamentally, necessarily, and intentionally a reductive act that includes a good degree of subjective reading.
 As such, these analyses are not in any sense 'definitive', to the exclusion of other possibilities.
 Quite the opposite: part of the point of having a representation format like this is to enable the recording of variant readings.
 Please feel free to re-analyse these works by using the existing analysis as a template and changing the parts you disagree with.
