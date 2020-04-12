@@ -1,6 +1,6 @@
 '''
 ===============================
-CHORD COMPARE (chordCompare.py)
+THE ROMAN UMPIRE (romanUmpire.py)
 ===============================
 
 Mark Gotham, 2019–20
