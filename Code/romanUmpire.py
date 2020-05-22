@@ -49,6 +49,7 @@ in the local folder (by default) or elsewhere if specified.
 
 from music21 import converter
 from music21 import chord
+from music21 import layout
 from music21 import note
 from music21 import pitch
 from music21 import repeat
@@ -199,8 +200,52 @@ class ScoreAndAnalysis:
         else:  # self.analysisLocation is a path to a Romant text file
             if os.path.splitext(self.analysisLocation)[1] != '.txt':
                 raise ValueError('Off-score analysis file extension must be .txt.')
-            self.analysis = converter.parse(self.analysisLocation, format='Romantext')
+            self.analysis = converter.parse(self.analysisLocation, format='Romantext').parts[0]
             self.getSeparateAnalysis()
+
+    def writeScoreWithAnalysis(self, outPath=None, outFile=None, lieder=True):
+        '''
+        Combined an off-score analysis with the corresponding score and writes to disc.
+
+        Error raised if attempting on score with analysis already on there
+        i.e. with analysisLocation = 'On score' in the class init.
+
+        Additional presentation option (lieder=True, default) for returning the
+        Mensurstrich brace to the piano part of the lieder.
+        Don't worry if that doesn't mean anything to you.
+        '''
+
+        if self.analysisLocation == 'On score':
+            msg = 'This method is for combining a separate anlysis with the corresponding score. '
+            msg += 'You have indicated that the analysis is already onscore. '
+            raise ValueError()
+        else:
+            self.scoreWithAnalysis = deepcopy(self.score)
+            analysis = deepcopy(self.analysis)
+            analysis.partName = 'Analysis'
+
+            measureDiff = self.scoreMeasures - self.analysisMeasures
+            if measureDiff > 0:
+                for x in range(measureDiff):
+                    analysis.append(stream.Measure())
+
+            self.scoreWithAnalysis.insert(0, analysis)
+
+            if lieder:  # If lieder option set to true ...
+                if len(self.scoreWithAnalysis.parts) == 4:  # ... and there are 4 parts inc. the analysis
+                    staffGrouping = layout.StaffGroup([self.scoreWithAnalysis.parts[1],
+                                                        self.scoreWithAnalysis.parts[2]
+                                                        ],
+                                            name='Piano', abbreviation='Pno.', symbol='brace')
+                    staffGrouping.barTogether = 'Mensurstrich'
+                    self.scoreWithAnalysis.insert(0, staffGrouping)
+
+            if not outPath:
+                outPath = './'
+            if not outFile:
+                outFile = self.name + '_with_analysis_onscore'
+
+            self.scoreWithAnalysis.write(fmt='musicxml', fp=f'{outPath}{outFile}.musicxml')
 
     def removeGraceNotes(self):
         '''
@@ -421,10 +466,13 @@ class ScoreAndAnalysis:
         Straight to putative 'comparison' object.
         '''
 
-        analysisMeasures = len(self.analysis.parts[0].getElementsByClass('Measure'))
-        if self.scoreMeasures != analysisMeasures:
+        self.analysisMeasures = len(self.analysis.getElementsByClass('Measure'))
+
+        if self.scoreMeasures != self.analysisMeasures:
             self.errorLog.append(
-            f'WARNING: There are {self.scoreMeasures} measures in the score but {analysisMeasures} in your analysis. '+
+            f'WARNING: '+
+            f'There are {self.scoreMeasures} measures in the score '+
+            f'but {self.analysisMeasures} in your analysis. '+
             'This is usually a question of either the beginning or end: either\n'+
             '1) The piece reaches its final chord before the final measure (in which case fine), or\n'+
             '2) There\'s an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). '+
