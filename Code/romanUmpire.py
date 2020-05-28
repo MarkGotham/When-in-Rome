@@ -181,8 +181,7 @@ class ScoreAndAnalysis:
             self._scoreInit()
 
         elif type(self.scoreOrData) is str:
-            extension = os.path.splitext(self.scoreOrData)[1]
-            self.name = os.path.basename(self.scoreOrData[:len(extension)])
+            self.name, extension = os.path.splitext(self.scoreOrData)
 
             if extension in ['.tsv', '.csv']:
                 if self.analysisLocation == 'On score':
@@ -287,11 +286,11 @@ class ScoreAndAnalysis:
         self._feedbackOnScore()
 
         if not outPath:
-            outPath = './'
+            outPath = '.'
         if not outFile:
             outFile = self.name + '_with_analysis_onscore'
 
-        self.scoreWithAnalysis.write(fmt='musicxml', fp=f'{outPath}{outFile}.musicxml')
+        self.scoreWithAnalysis.write(fmt='musicxml', fp=f'{os.path.join(outPath, outFile)}.musicxml')
 
     def _removeGraceNotes(self):
         '''
@@ -373,11 +372,11 @@ class ScoreAndAnalysis:
         '''
 
         if not outPath:
-            outPath = './'
+            outPath = '.'
         if not outFile:
             outFile = 'ScoreInfoSV'
 
-        with open(f'{outPath}{outFile}.tsv', "w") as svfile:
+        with open(f'{os.path.join(outPath, outFile)}.tsv', "w") as svfile:
             svOut = csv.writer(svfile, delimiter='\t',
                                 quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -886,10 +885,10 @@ class ScoreAndAnalysis:
         # [print(x) for x in allToPrint]
 
         if not outPath:
-            outPath = './'
+            outPath = '.'
         if not outFile:
             outFile = 'Feedback'
-        text_file = open(f'{outPath}{outFile}.txt', "w")
+        text_file = open(f'{os.path.join(outPath, outFile)}.txt', "w")
         [text_file.write(x + '\n') for x in allToPrint]
         text_file.close()
 
@@ -973,10 +972,10 @@ class Test(unittest.TestCase):
 
     def testScoreInAnalysisSeparate(self):
 
-        basePath = '../Corpus/Bach_Preludes/1/'
+        basePath = os.path.join('..', 'Corpus', 'Bach_Preludes', '1')
 
-        testSeparate = ScoreAndAnalysis(basePath + 'score.mxl',
-                                        analysisLocation=basePath + 'human.txt')
+        testSeparate = ScoreAndAnalysis(os.path.join(basePath, 'score.mxl'),
+                                        analysisLocation=os.path.join(basePath, 'human.txt'))
 
         testSeparate.runComparisons()
 
@@ -995,13 +994,13 @@ class Test(unittest.TestCase):
 
     def testScoreInWithAnalysis(self):
 
-        basePath = '../Corpus/OpenScore-LiederCorpus/'
-        composer = 'Schubert,_Franz/'
-        collection = 'Schwanengesang,_D.957/'
-        song = '02_-_Kriegers_Ahnung/'
-        combinedPath = basePath + composer + collection + song
+        basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
+        composer = 'Schubert,_Franz'
+        collection = 'Schwanengesang,_D.957'
+        song = '02_-_Kriegers_Ahnung'
+        combinedPath = os.path.join(basePath, composer, collection, song)
 
-        onScoreTest = ScoreAndAnalysis(combinedPath + 'human_onscore.musicxml',
+        onScoreTest = ScoreAndAnalysis(os.path.join(combinedPath, 'human_onscore.musicxml'),
                                        analysisLocation='On score',
                                        analysisParts=1,
                                        minBeatStrength=0.25,
@@ -1021,14 +1020,14 @@ class Test(unittest.TestCase):
 
     def testTabIn(self):
 
-        basePath = '../Corpus/OpenScore-LiederCorpus/'
-        composer = 'Hensel,_Fanny_(Mendelssohn)/'
-        collection = '5_Lieder,_Op.10/'
-        song = '1_-_Nach_Süden/'
-        combinedPath = basePath + composer + collection + song
+        basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
+        composer = 'Hensel,_Fanny_(Mendelssohn)'
+        collection = '5_Lieder,_Op.10'
+        song = '1_-_Nach_Süden'
+        combinedPath = os.path.join(basePath, composer, collection, song)
 
-        testTab = ScoreAndAnalysis(combinedPath + 'slices.tsv',
-                                   analysisLocation=combinedPath + 'human.txt')
+        testTab = ScoreAndAnalysis(os.path.join(combinedPath, 'slices.tsv'),
+                                   analysisLocation=os.path.join(combinedPath, 'human.txt'))
 
         testTab.runComparisons()
 
