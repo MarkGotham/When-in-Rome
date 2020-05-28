@@ -122,10 +122,6 @@ class Feedback:
         self.matchStrength = None  # for pitch comparison only
         self.suggestions = []  # where possible
 
-        self.startUniqueOffsetID = None
-        self.measure = None
-        self.beat = None
-
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -182,6 +178,7 @@ class ScoreAndAnalysis:
 
         if type(self.scoreOrData) is stream.Score:
             self.score = self.scoreOrData
+            self._scoreInit()
 
         elif type(self.scoreOrData) is str:
             extension = os.path.splitext(self.scoreOrData)[1]
@@ -198,10 +195,7 @@ class ScoreAndAnalysis:
                 self._retrieveSlicesFromList()  # NOTE: sets totalLength and scoreMeasures
             elif extension in ['.mxl', '.musicxml', '.midi', '.mid']:  # Actual score:
                 self.score = converter.parse(self.scoreOrData)
-                self._removeGraceNotes()
-                self._retrieveSlicesFromScore()
-                self.totalLength = self.score.quarterLength
-                self.scoreMeasures = len(self.score.parts[0].getElementsByClass('Measure'))
+                self._scoreInit()
             else:
                 msg = f'The extension {extension} is not supported for score / data input.'
                 raise ValueError(msg)
@@ -209,7 +203,17 @@ class ScoreAndAnalysis:
         else:
             raise ValueError(f'The scoreOrData argument (currently {self.scoreOrData} '
                              'must be a music21 stream.Score() or '
-                             'a path to a valid score or tabular file')
+                             'a path to a valid score or tabular file.')
+
+    def _scoreInit(self):
+        '''
+        Subsidiary preparation of, and extractions from, the score.
+        '''
+
+        self._removeGraceNotes()
+        self._retrieveSlicesFromScore()
+        self.totalLength = self.score.quarterLength
+        self.scoreMeasures = len(self.score.parts[0].getElementsByClass('Measure'))
 
     def _parseAnalysis(self):
         '''
