@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 ===============================
 THE ROMAN UMPIRE (romanUmpire.py)
@@ -51,6 +52,7 @@ from music21 import converter
 from music21 import chord
 from music21 import expressions
 from music21 import layout
+from music21 import note
 from music21 import roman
 from music21 import stream
 
@@ -58,6 +60,7 @@ from copy import deepcopy
 import csv
 import os
 import unittest
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -67,12 +70,12 @@ import unittest
 
 class Slice:
     '''
-    A reduction object corresponding to one 'vertical' slice.
+    A reduction object corresponding to one 'vertical' slice through the score.
+    A 'slice' is a momentary cross-section during which none of the notes change.
     '''
 
     def __init__(self):
-
-        self.startUniqueOffsetID = None
+        self.uniqueOffsetID = None
         self.measure = None
         self.beat = None
 
@@ -80,27 +83,76 @@ class Slice:
         self.quarterLength = None
         self.beatStrength = None
 
+
 # ------------------------------------------------------------------------------
 
-
-class Comparison:
+class HarmonicRange:
     '''
-    A comparison between a Roman numeral and the corresponding slices for that range.
+    HarmonicRange objects cover part of a score, usually including:
+    a Roman numeral and the corresponding score 'slices' for that range.
+    In addition to details of the Roman numeral and the corresponding slices in question,
+    this class also keeps track of the start/end positions and lengths
+    in terms of both measures and quarter notes.
+
+    Usage here focusses on assessing the Roman numeral (key and figure).
+    This object can also be used to assess key alone, e.g. for key finding tasks.
     '''
 
-    def __init__(self):
+    def __init__(self, source=None):
 
-        self.measure = None
-        self.beat = None
-        self.startUniqueOffsetID = None
-        self.endUniqueOffsetID = None
+        # Initialise with Nones prior to (optionally) setting those values.
 
-        self.figure = None
-        self.key = None
-        self.bassPitch = None
+        self.startOffset = None
+        self.endOffset = None
+        self.quarterLength = None
 
-        self.pitches = []
+        self.startMeasure = None
+        self.endMeasure = None
+        self.measureLength = None
+
+        self.startBeat = None
+        self.endBeat = None
+        self.beatStrength = None
+
         self.slices = []
+
+        if source:
+
+            if ('NotRest' in source.classes) and ('GeneralNote' in source.classes):
+                # Covers notes and chords, excludes rests.
+                self.getCoreValues(source)
+
+                # Roman. Classes include 'Chord', 'NotRest', 'GeneralNote' as well as:
+                if 'RomanNumeral' in source.classes:
+                    self.getMoreValuesFromRN(source)
+                else:
+                    self.figure = None
+                    self.key = None
+                    self.bassPitch = None
+                    self.pitches = []
+
+            else:
+                raise ValueError('Initialise a HarmonicRange object either empty, or'
+                                 'with a relevant object: Note, Chord, or RomanNumeral.')
+
+    def getCoreValues(self, source):
+        """"
+        Retrieve core variables from a relevant object: Note, Chord, or RomanNumeral.
+        """
+        self.startMeasure = int(source.measureNumber)
+        self.startBeat = _intBeat(source.beat)
+        self.beatStrength = source.beatStrength
+        self.quarterLength = round(source.quarterLength, 2)
+        self.startOffset = round(source.activeSite.offset + source.offset, 2)
+
+    def getMoreValuesFromRN(self, rn):
+        """"
+        Retrieve additional values specific to RomanNumeral objects.
+        """
+        self.figure = rn.figure
+        self.key = rn.key
+        self.pitches = [p.name for p in rn.pitches]
+        self.bassPitch = rn.bass().name
 
 # ------------------------------------------------------------------------------
 
@@ -112,15 +164,18 @@ class Feedback:
     All cases or only where constructive suggestions are on offer?
     '''
 
-    def __init__(self, comp, msg):
+    def __init__(self,
+                 hr: HarmonicRange,
+                 msg: str):
 
-        self.startUniqueOffsetID = comp.startUniqueOffsetID
-        self.measure = comp.measure
-        self.beat = comp.beat
+        self.startOffset = hr.startOffset
+        self.measure = hr.startMeasure
+        self.beat = hr.startBeat
 
         self.message = msg  # for all cases
-        self.matchStrength = None  # for pitch comparison only
+        self.matchStrength = None  # for pitch HarmonicRange only
         self.suggestions = []  # where possible
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -131,7 +186,7 @@ class ScoreAndAnalysis:
     Class for handling:
         'ground-truth' score data (either the score itself or a tabular representation thereof);
         Roman numeral analysis (either on the score or as a separate Roman text analysis file);
-        Comparisons between the two.
+        comparisons between the two (with HarmonicRange objects).
 
     The analysisLocation variable:
         defaults to 'On score' (for analyses input on the score itself);
@@ -143,22 +198,24 @@ class ScoreAndAnalysis:
     '''
 
     def __init__(self,
-                 scoreOrData,
-                 analysisLocation='On score',
-                 analysisParts=1,
-                 minBeatStrength=0.25,
-                 tolerance=0.6):
+                 scoreOrData,  # stream.Score or str path
+                 analysisLocation='On score',  # stream.Score or str path
+                 analysisParts: int = 1,
+                 analysisPartNo: int = -1,
+                 minBeatStrength: float = 0.25,
+                 tolerance: float = 0.6):
 
         self.scoreOrData = scoreOrData
         self.analysisLocation = analysisLocation
         self.analysisParts = analysisParts
+        self.analysisPartNo = analysisPartNo
         self.minBeatStrength = minBeatStrength
         self.tolerance = tolerance
 
         self.slices = []
         self.prevSlicePitches = None
 
-        self.comparisons = []
+        self.harmonicRanges = []
 
         self.pitchFeedback = None
         self.metricalPositionFeedback = None
@@ -216,9 +273,9 @@ class ScoreAndAnalysis:
 
     def _parseAnalysis(self):
         '''
-        Handles input options for score, either:
-            a score in a recognised format (e.g. musicxml), or
-            a tabular file (.tsv or .csv) having handled the slicing in advance.
+        Handles input options for analysis, either:
+            a music21 stream.Score in a recognised format (e.g. rntxt), or
+            as lyrics on a score.
         '''
 
         if type(self.analysisLocation) is stream.Score:
@@ -227,7 +284,7 @@ class ScoreAndAnalysis:
             if self.analysisLocation == 'On score':
                 self._getOnScoreAnalysis()
             else:  # analysisLocation must be a path to a Roman text file
-                if os.path.splitext(self.analysisLocation)[1] != '.txt':
+                if os.path.splitext(self.analysisLocation)[1] not in ['.txt', '.rntxt']:
                     msg = 'The \'analysisLocation\' argument must point to one of ' \
                           'the path (str) to a Roman text file with extension .txt; ' \
                           'such a file already parsed by music21; or ' \
@@ -236,7 +293,11 @@ class ScoreAndAnalysis:
                 self.analysis = converter.parse(self.analysisLocation, format='Romantext').parts[0]
                 self._getSeparateAnalysis()
 
-    def writeScoreWithAnalysis(self, outPath=None, outFile=None, feedback=True, lieder=True):
+    def writeScoreWithAnalysis(self,
+                               outPath: str = '.',
+                               outFile: str = 'Analysis_on_score',
+                               feedback: bool = True,
+                               lieder: bool = True):
         '''
         Mostly to combine an off-score analysis with the corresponding score and write to disc.
 
@@ -277,18 +338,16 @@ class ScoreAndAnalysis:
         if lieder:  # If lieder option is set to true and ...
             if len(self.scoreWithAnalysis.parts) == 4:  # there are 4 parts inc. the analysis
                 staffGrouping = layout.StaffGroup([self.scoreWithAnalysis.parts[1],
-                                                    self.scoreWithAnalysis.parts[2]
-                                                    ],
-                                        name='Piano', abbreviation='Pno.', symbol='brace')
+                                                   self.scoreWithAnalysis.parts[2]
+                                                   ],
+                                                  name='Piano', abbreviation='Pno.', symbol='brace')
                 staffGrouping.barTogether = 'Mensurstrich'
                 self.scoreWithAnalysis.insert(0, staffGrouping)
 
         self._feedbackOnScore()
 
-        if not outPath:
-            outPath = '.'
-        if not outFile:
-            outFile = self.name + '_with_analysis_onscore'
+        if outFile == 'Analysis_on_score':
+            outFile = self.name + '_with_analysis_onscore',
 
         self.scoreWithAnalysis.write(fmt='musicxml', fp=f'{os.path.join(outPath, outFile)}.musicxml')
 
@@ -327,7 +386,7 @@ class ScoreAndAnalysis:
 
         self.lastBeat = 0
         self.lastMeasure = 0
-        self.lastStartUniqueOffsetID = 0
+        self.lastUniqueOffsetID = 0
 
         for x in chordScore.recurse():
 
@@ -342,7 +401,7 @@ class ScoreAndAnalysis:
                 thisEntry.beat = _intBeat(x.beat)
                 thisEntry.beatStrength = x.beatStrength
                 thisEntry.quarterLength = round(float(x.quarterLength), 2)
-                thisEntry.startUniqueOffsetID = round(x.activeSite.offset + x.offset, 2)
+                thisEntry.uniqueOffsetID = round(x.activeSite.offset + x.offset, 2)
 
                 if 'Chord' in x.classes:
                     thisEntry.pitches = [p.nameWithOctave for p in x.pitches]
@@ -359,11 +418,13 @@ class ScoreAndAnalysis:
 
                 self.lastBeat = thisEntry.beat
                 self.lastMeasure = thisEntry.measure
-                self.lastStartUniqueOffsetID = thisEntry.startUniqueOffsetID
+                self.lastUniqueOffsetID = thisEntry.uniqueOffsetID
 
                 self.slices.append(thisEntry)
 
-    def writeSlicesFromScore(self, outPath=None, outFile=None):
+    def writeSlicesFromScore(self,
+                             outPath: str = None,
+                             outFile: str = None):
         '''
         Optional, subsidiary method for writing out the Slice object information
         retrieved from the score to a value separated file.
@@ -378,15 +439,16 @@ class ScoreAndAnalysis:
 
         with open(f'{os.path.join(outPath, outFile)}.tsv', "w") as svfile:
             svOut = csv.writer(svfile, delimiter='\t',
-                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                               quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             for entry in self.slices:
-                svOut.writerow([entry.startUniqueOffsetID,
+                svOut.writerow([entry.uniqueOffsetID,
                                 entry.measure,
                                 entry.beat,
                                 entry.beatStrength,
                                 entry.quarterLength,
-                                entry.pitches,])
+                                entry.pitches,
+                                ])
 
     def _retrieveSlicesFromList(self):
         '''
@@ -402,7 +464,7 @@ class ScoreAndAnalysis:
 
             thisEntry = Slice()
 
-            thisEntry.startUniqueOffsetID = float(x[0])
+            thisEntry.uniqueOffsetID = float(x[0])
             thisEntry.measure = int(x[1])
             if thisEntry.measure < lastEntryMeasure:
                 raise ValueError('The list of measures slices should monotonically increase')
@@ -416,7 +478,7 @@ class ScoreAndAnalysis:
             self.slices.append(thisEntry)
 
         # Total length and score measures from 'this' (which is to say, last) entry
-        self.totalLength = thisEntry.startUniqueOffsetID + thisEntry.quarterLength
+        self.totalLength = thisEntry.uniqueOffsetID + thisEntry.quarterLength
         self.scoreMeasures = thisEntry.measure
 
     def checkMonotonicIncrease(self, x):
@@ -427,10 +489,10 @@ class ScoreAndAnalysis:
 
         measure = int(x.measureNumber)
         beat = _intBeat(x.beat)
-        startUniqueOffsetID = round(x.activeSite.offset + x.offset, 2)
+        uniqueOffsetID = round(x.activeSite.offset + x.offset, 2)
 
-        if startUniqueOffsetID < self.lastStartUniqueOffsetID:
-            msg = f'checkMonotonicIncrease fail on startUniqueOffsetID: {startUniqueOffsetID}.'
+        if uniqueOffsetID < self.lastUniqueOffsetID:
+            msg = f'checkMonotonicIncrease fail on uniqueOffsetID: {uniqueOffsetID}.'
             self.errorLog.append(msg)
             return False
 
@@ -447,54 +509,52 @@ class ScoreAndAnalysis:
 
         return True
 
-    def _getOnScoreAnalysis(self, partNo=-1):
+    def _getOnScoreAnalysis(self):
         '''
         Gets an analysis hosted in the main score,
         as lyrics in one part (the lowest, by default).
-        Straight to putative 'comparison' object.
+        Straight to putative 'HarmonicRange' object.
         '''
         # TODO: support type='Lyric' for alternatives?
-        # TODO: support partNo choice? If so, in init, if not, remove
 
         self.prevailingKey = 'FAKE KEY'
 
-        for x in self.score.parts[partNo].recurse().notes:
+        for x in self.score.parts[self.analysisPartNo].recurse().notes:
+
             if x.lyric:
 
-                thisComparison = Comparison()
+                rn = self._romanFromLyric(x.lyric)
+                if rn:
+                    thisHarmonicRange = HarmonicRange(x)
+                    thisHarmonicRange.figure = rn.figure
+                    thisHarmonicRange.key = rn.key
+                    # TODO compress but note the gap between a note and a contextless rn
 
-                thisComparison.measure = int(x.measureNumber)
-                thisComparison.beat = _intBeat(x.beat)
+                    self.harmonicRanges.append(thisHarmonicRange)
 
-                thisComparison.beatStrength = x.beatStrength
-                thisComparison.quarterLength = round(x.quarterLength, 2)
-                thisComparison.startUniqueOffsetID = round(x.activeSite.offset + x.offset, 2)
-
-                try:
-                    rn = self._romanFromLyric(x.lyric)
-                    thisComparison.figure = rn.figure
-                    thisComparison.key = rn.key
-                    thisComparison.pitches = [p.name for p in rn.pitches]
-                    thisComparison.bassPitch = rn.bass().name
-                except:
+                else:
                     msg = f'Error retrieving a Roman numeral from the lyric {x.lyric} ' \
-                        f'in measure {x.measureNumber} with the ' \
-                        f'prevailing key of {self.prevailingKey}.'
+                          f'in measure {x.measureNumber} with the ' \
+                          f'prevailing key of {self.prevailingKey}.'
                     self.errorLog.append(msg)
-
-                self.comparisons.append(thisComparison)
 
     def _romanFromLyric(self, lyric):
         '''
         Converts lyrics in recognised format into m21 Roman Numeral objects.
         Format: 'Key: Figure' for first entry and all key changes; otherwise just 'Figure'.
+
+        Includes the following substitutions:
+        all spaces (including non-breaking spaces) with nothing;
+        '-' with 'b' for flats;
+        bracket types to accept e.g. (no5) as well as the official [no5]; and
+        'sus' with '[addX]' for suspensions/added notes.
         '''
 
-        lyric = lyric.replace(' ', '')  # Remove all spaces ...
-        lyric = lyric.replace('\xa0', '')  # ... including non-breaking.
-        lyric = lyric.replace('-', 'b')  # Replace alternative flat symbol.
+        lyric = lyric.replace(' ', '')
+        lyric = lyric.replace('\xa0', '')
 
-        # Swap bracket type to accept e.g. (no5) as well as the official [no5]
+        lyric = lyric.replace('-', 'b')
+
         lyric = lyric.replace('(', '[')
         lyric = lyric.replace(')', ']')
 
@@ -505,58 +565,52 @@ class ScoreAndAnalysis:
         if ':' in lyric:
             self.prevailingKey, figure = lyric.split(':')
         else:
-            figure = lyric
+            figure = lyric  # hence self.prevailingKey
 
         asRoman = roman.RomanNumeral(figure,
                                      self.prevailingKey,
-                                     sixthMinor=roman.Minor67Default.CAUTIONARY,
-                                     seventhMinor=roman.Minor67Default.CAUTIONARY,
+                                     # sixthMinor=roman.Minor67Default.CAUTIONARY,
+                                     # seventhMinor=roman.Minor67Default.CAUTIONARY,
                                      )
 
-        return asRoman
+        if asRoman.figure:  # TODO: better test?
+            return asRoman
+        else:
+            return False
 
     def _getSeparateAnalysis(self):
         '''
         Gets an analysis from a path to a RNTXT file.
-        Straight to putative 'comparison' object.
+        Straight to putative 'HarmonicRange' objects.
         '''
 
         self.analysisMeasures = len(self.analysis.getElementsByClass('Measure'))
 
         if self.scoreMeasures != self.analysisMeasures:
             msg = f'WARNING: There are {self.scoreMeasures} measures in the score ' \
-                      f'but {self.analysisMeasures} in your analysis. ' \
-                      'This is usually a question of either the beginning or end: either\n' \
-                      '1) The final chord in the analysis ' \
-                      'comes before the final measure, or\n' \
-                      '2) There\'s an anacrusis in the score without an accompanying harmony ' \
-                      '(i.e. the analysis is missing measure 0). ' \
-                      'In that latter case, the score and analysis will be misaligned, ' \
-                      'and the comparisons will not work properly. ' \
-                      'Best to put in a chord of some kind for the anacrusis.\n'
+                  f'but {self.analysisMeasures} in your analysis. ' \
+                  'This is usually a question of either the beginning or end: either\n' \
+                  '1) The final chord in the analysis ' \
+                  'comes before the final measure, or\n' \
+                  '2) There\'s an anacrusis in the score without an accompanying harmony ' \
+                  '(i.e. the analysis is missing measure 0). ' \
+                  'In that latter case, the score and analysis will be misaligned, ' \
+                  'and the HarmonicRanges will not work properly. ' \
+                  'Best to put in a chord of some kind for the anacrusis.\n'
 
             self.errorLog.append(msg)
 
         self.lastBeat = 0
         self.lastMeasure = 0
-        self.lastStartUniqueOffsetID = 0
+        self.lastUniqueOffsetID = 0
 
         for x in self.analysis.recurse().getElementsByClass('RomanNumeral'):
 
             if not self.checkMonotonicIncrease(x):
                 continue
 
-            thisComparison = Comparison()
-            thisComparison.measure = int(x.measureNumber)
-            thisComparison.beat = _intBeat(x.beat)
-            thisComparison.beatStrength = x.beatStrength
-            thisComparison.quarterLength = round(x.quarterLength, 2)
-            thisComparison.startUniqueOffsetID = round(x.activeSite.offset + x.offset, 2)
-            thisComparison.figure = x.figure
-            thisComparison.key = x.key
-            thisComparison.pitches = [pn.name for pn in x.pitches]
-            thisComparison.bassPitch = x.bass().name
-            self.comparisons.append(thisComparison)
+            thisHarmonicRange = HarmonicRange(x)
+            self.harmonicRanges.append(thisHarmonicRange)
 
 # ------------------------------------------------------------------------------
 
@@ -569,33 +623,33 @@ class ScoreAndAnalysis:
 
         self.indexCount = 0
 
-        for index in range(len(self.comparisons) - 1):
-
-            self.comparisons[index].endUniqueOffsetID = self.comparisons[index + 1].startUniqueOffsetID
-            self._singleMatchUp(self.comparisons[index])
+        for index in range(len(self.harmonicRanges) - 1):
+            self.harmonicRanges[index].endOffset = self.harmonicRanges[index + 1].startOffset
+            self._singleMatchUp(self.harmonicRanges[index])
 
         # Special case of last one.
-        self.comparisons[-1].endUniqueOffsetID = self.totalLength
-        self._singleMatchUp(self.comparisons[-1])
+        self.harmonicRanges[-1].endOffset = self.totalLength
+        self._singleMatchUp(self.harmonicRanges[-1])
 
         if self.indexCount != len(self.slices):
             msg = f'Slices missing: {self.indexCount} accounted for ' \
-                f'of {len(self.slices)} total.'
+                  f'of {len(self.slices)} total.'
             self.errorLog.append(msg)
 
-    def _singleMatchUp(self, thisComparison):
+    def _singleMatchUp(self,
+                       thisHarmonicRange: HarmonicRange):
         '''
-        Comparison and match up of a Roman number
+        HarmonicRange and match up of a Roman numeral
         with slices (potentially) in that range by position in score.
         Note that harmony changes between slice changes are
         not supported and may lead to erratic results.
         I.e. chords should change where at least one pitch changes.
         '''
 
-        tc = thisComparison
+        tc = thisHarmonicRange
 
         for thisSlice in self.slices[self.indexCount:]:
-            if tc.startUniqueOffsetID <= thisSlice.startUniqueOffsetID < tc.endUniqueOffsetID:
+            if tc.startOffset <= thisSlice.uniqueOffsetID < tc.endOffset:
                 tc.slices.append(thisSlice)
                 self.indexCount += 1
             else:
@@ -607,10 +661,10 @@ class ScoreAndAnalysis:
 
     def runComparisons(self):
         '''
-        Runs all three comparison types:
-        metricalPositions(),
-        comparePitches(), and
-        compareBass().
+        Runs all three comparison types for feedback on:
+            metricalPositions(),
+            comparePitches(), and
+            compareBass().
         '''
 
         self.metricalPositions()
@@ -627,18 +681,17 @@ class ScoreAndAnalysis:
 
         self.metricalPositionFeedback = []
 
-        for comp in self.comparisons:
+        for comp in self.harmonicRanges:
             if comp.beatStrength < self.minBeatStrength:
+                # if comp.beatStrength < lastBeatStrength:  # TODO: this context
 
-                # if comp.beatStrength < lastBeatStrength:  # TODO: this context comparison
-
-                msg = f'Measure {comp.measure}, {comp.figure} in {comp.key} ' \
-                    f'appears on beat {comp.beat}.'
+                msg = f'Measure {comp.startMeasure}, {comp.figure} in {comp.key} ' \
+                      f'appears on beat {comp.startBeat}.'
                 fb = Feedback(comp, msg)
 
                 self.metricalPositionFeedback.append(fb)
 
-                # lastBeatStrength = x.beatStrength  # TODO: this context comparison
+                # lastBeatStrength = x.beatStrength  # TODO: this context
 
     def comparePitches(self):
         '''
@@ -653,21 +706,21 @@ class ScoreAndAnalysis:
 
         pitchNumerator = 0
 
-        for comp in self.comparisons:
+        for comp in self.harmonicRanges:
 
             overall = 0
 
-            comparisonLength = sum([round(sl.quarterLength, 2) for sl in comp.slices])
+            harmonicRangeLength = sum([round(sl.quarterLength, 2) for sl in comp.slices])
             # Note: Avoid division by 0
 
-            for slice in comp.slices:  # NB: Rest slices handled already
-                pitchesNameNoOctave = [x[:-1] for x in slice.pitches]  # Pitch only for comparison
+            for thisSlice in comp.slices:  # NB: Rest slices handled already
+                pitchesNameNoOctave = [x[:-1] for x in thisSlice.pitches]  # Pitch only
                 proportionSame = self._proportionSimilarity(comp, pitchesNameNoOctave)
                 # weighedSimilarity = proportionSame * slice.beatStrength  # TODO
-                overall += slice.quarterLength * proportionSame / comparisonLength
+                overall += thisSlice.quarterLength * proportionSame / harmonicRangeLength
                 overall = round(overall, 2)
 
-            compLength = comp.endUniqueOffsetID - comp.startUniqueOffsetID
+            compLength = comp.endOffset - comp.startOffset
 
             if overall >= self.tolerance:
                 pitchNumerator += compLength
@@ -686,9 +739,9 @@ class ScoreAndAnalysis:
                         if rn.figure != comp.figure:
                             suggestions.append([sl.measure, sl.beat, rn.figure, sl.pitches])
 
-                msg = f'Measure {comp.measure}, beat {comp.beat}, {comp.figure} in {comp.key}, ' \
-                    f'indicating the pitches {comp.pitches} ' \
-                    f'accounting for successive slices of {pl}.'
+                msg = f'Measure {comp.startMeasure}, beat {comp.startBeat}, {comp.figure} in {comp.key}, ' \
+                      f'indicating the pitches {comp.pitches} ' \
+                      f'accounting for successive slices of {pl}.'
                 fb = Feedback(comp, msg)
                 fb.matchStrength = f'Match strength estimated at {round(overall * 100, 2)}%.'
                 fb.suggestions = []
@@ -716,7 +769,7 @@ class ScoreAndAnalysis:
 
         bassNumerator = 0
 
-        for comp in self.comparisons:
+        for comp in self.harmonicRanges:
 
             # bassPitchesWithOctave = [slice.pitches[0] for slice in comp.slices]
             bassPitchesWithOctave = []  # Sometimes the slice is a rest I guess?
@@ -734,14 +787,14 @@ class ScoreAndAnalysis:
                 for bassPitch in bassPitchesNoOctave:
                     if bassPitch in comp.pitches:  # already retrieved
                         suggestedPitches = comp.pitches
-                        suggestedPitches.append(bassPitch+'0')  # To ensure it is lowest
+                        suggestedPitches.append(bassPitch + '0')  # To ensure it is lowest
                         suggestedChord = chord.Chord(suggestedPitches)
                         rn = roman.romanNumeralFromChord(suggestedChord, comp.key)
-                        inversionSuggestions.append(f'm{comp.measure} b{comp.beat} {rn.figure}')
+                        inversionSuggestions.append(f'm{comp.startMeasure} b{comp.startBeat} {rn.figure}')
 
-                msg = f'Measure {comp.measure}, beat {comp.beat}, {comp.figure} in {comp.key}, ' \
-                    f'indicating the bass {comp.bassPitch} ' \
-                    f'for lowest note(s) of: {bassPitchesWithOctave}.'
+                msg = f'Measure {comp.startMeasure}, beat {comp.startBeat}, {comp.figure} in {comp.key}, ' \
+                      f'indicating the bass {comp.bassPitch} ' \
+                      f'for lowest note(s) of: {bassPitchesWithOctave}.'
                 fb = Feedback(comp, msg)
                 # fb.matchStrength = N/A
                 fb.suggestions = []
@@ -752,15 +805,17 @@ class ScoreAndAnalysis:
                 self.bassFeedback.append(fb)
 
             else:  # comp.bassPitch in bassPitchesNoOctave:
-                compLength = comp.endUniqueOffsetID - comp.startUniqueOffsetID
+                compLength = comp.endOffset - comp.startOffset
                 bassNumerator += compLength
 
         self.bassScore = bassNumerator / self.totalLength
 
-    def _proportionSimilarity(self, comp, query):
+    def _proportionSimilarity(self,
+                              comp: HarmonicRange,
+                              query: Slice):
         '''
         Approximate measure of the 'similarity' between a
-        reference comparison object (Roman numeral, etc) and query (actual slice in score).
+        reference HarmonicRange object (Roman numeral, etc) and query (actual slice in score).
 
         Returns the proportion of score pitches accounted for.
 
@@ -768,14 +823,13 @@ class ScoreAndAnalysis:
         This is not limited to distinct pitches:
         it returns a better score for multiple tonics, for instance.
         '''
-        # TODO: Penatly for notes in the RN not used? Not here, only overall?
+        # TODO: Penalty for notes in the RN not used? Not here, only overall?
 
         if len(query) == 0:
-
             self.errorLog.append(
-                f'Roman numeral {comp.figure} in {comp.key}, m.{comp.measure}: '
+                f'Roman numeral {comp.figure} in {comp.key}, m.{comp.startMeasure}: '
                 f'No pitches in one of the slices.'
-                )
+            )
 
             return 0
 
@@ -789,15 +843,15 @@ class ScoreAndAnalysis:
 # Feedback:
 
     def printFeedback(self,
-                      pitches=True,
-                      metre=True,
-                      bass=True,
-                      constructiveOnly=False,
+                      pitches: bool = True,
+                      metre: bool = True,
+                      bass: bool = True,
+                      constructiveOnly: bool = False,
                       outPath=None,
                       outFile=None):
         '''
         Select feedback to print: any or all of:
-            'pitches' for pitch comparisons;
+            'pitches' for pitch HarmonicRanges;
             'metre' for metrical positions; and
             'bass' for bass notes / inversions.
         If constructiveOnly is True, then the returned feedback will be limited to
@@ -882,8 +936,6 @@ class ScoreAndAnalysis:
             allToPrint.append('\nWARNINGS =====================\n')
             [allToPrint.append(x) for x in self.errorLog]
 
-        # [print(x) for x in allToPrint]
-
         if not outPath:
             outPath = '.'
         if not outFile:
@@ -893,14 +945,14 @@ class ScoreAndAnalysis:
         text_file.close()
 
     def _feedbackOnScore(self,
-                         pitches=True,
-                         metre=True,
-                         bass=True):
+                         pitches: bool = True,
+                         metre: bool = True,
+                         bass: bool = True):
         '''
         Inserts comments on the score for moments where there is feedback available.
 
         Like printFeedback, option to use any or all of:
-            'pitches' for pitch comparisons;
+            'pitches' for pitch HarmonicRanges;
             'metre' for metrical positions; and
             'bass' for bass notes / inversions.
         '''
@@ -925,7 +977,8 @@ class ScoreAndAnalysis:
         te = expressions.TextExpression('***')
         te.placement = 'above'
         for x in self.totalFeedback:
-            self.score.parts[-1].measure(x.measure).insert(x.offset, te)
+            self.score.parts[-1].startMeasure(x.startMeasure).insert(x.offset, te)
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -944,7 +997,8 @@ def _intBeat(beat):
         return round(float(beat), 2)
 
 
-def _importSV(pathToFile, splitMarker='\t'):
+def _importSV(pathToFile: str,
+              splitMarker: str = '\t'):
     '''
     Imports TSV file data for further processing.
     '''
@@ -958,9 +1012,9 @@ def _importSV(pathToFile, splitMarker='\t'):
 
     return data
 
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 class Test(unittest.TestCase):
     '''
@@ -971,7 +1025,6 @@ class Test(unittest.TestCase):
     '''
 
     def testScoreInAnalysisSeparate(self):
-
         basePath = os.path.join('..', 'Corpus', 'Bach_Preludes', '1')
 
         testSeparate = ScoreAndAnalysis(os.path.join(basePath, 'score.mxl'),
@@ -993,7 +1046,6 @@ class Test(unittest.TestCase):
 # ------------------------------------------------------------------------------
 
     def testScoreInWithAnalysis(self):
-
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Schubert,_Franz'
         collection = 'Schwanengesang,_D.957'
@@ -1019,7 +1071,6 @@ class Test(unittest.TestCase):
 # ------------------------------------------------------------------------------
 
     def testTabIn(self):
-
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Hensel,_Fanny_(Mendelssohn)'
         collection = '5_Lieder,_Op.10'
@@ -1031,15 +1082,16 @@ class Test(unittest.TestCase):
 
         testTab.runComparisons()
 
-        self.assertEqual(len(testTab.pitchFeedback), 2)
+        self.assertEqual(len(testTab.pitchFeedback), 4)
         self.assertEqual(testTab.pitchFeedback[0].message[:29],
                          'Measure 11, beat 3, viio6/V i')
 
-        self.assertEqual(len(testTab.bassFeedback), 8)
+        self.assertEqual(len(testTab.bassFeedback), 10)
         self.assertEqual(testTab.bassFeedback[0].message[:29],
                          'Measure 11, beat 3, viio6/V i')
 
         self.assertEqual(len(testTab.metricalPositionFeedback), 4)
+
 
 # ------------------------------------------------------------------------------
 
