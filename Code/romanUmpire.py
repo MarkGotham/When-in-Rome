@@ -423,19 +423,14 @@ class ScoreAndAnalysis:
                 self.slices.append(thisEntry)
 
     def writeSlicesFromScore(self,
-                             outPath: str = None,
-                             outFile: str = None):
+                             outPath: str = '.',
+                             outFile: str = 'ScoreInfoSV'):
         '''
         Optional, subsidiary method for writing out the Slice object information
         retrieved from the score to a value separated file.
 
         Having done so, that information can be re-retrieved via retrieveSlicesFromList.
         '''
-
-        if not outPath:
-            outPath = '.'
-        if not outFile:
-            outFile = 'ScoreInfoSV'
 
         with open(f'{os.path.join(outPath, outFile)}.tsv', "w") as svfile:
             svOut = csv.writer(svfile, delimiter='\t',
