@@ -206,9 +206,12 @@ class ScoreAndAnalysis:
                  tolerance: float = 0.6):
 
         self.scoreOrData = scoreOrData
+        self.name = None
+
         self.analysisLocation = analysisLocation
         self.analysisParts = analysisParts
         self.analysisPartNo = analysisPartNo
+
         self.minBeatStrength = minBeatStrength
         self.tolerance = tolerance
 
@@ -281,7 +284,9 @@ class ScoreAndAnalysis:
         '''
 
         if type(self.analysisLocation) is stream.Score:
-            self.analysis = self.analysisLocation  # TODO further validity check (has Roman numerals)
+            self.analysis = self.analysisLocation.parts[0]
+            # TODO validity checks on analysis (e.g. at least one Roman numeral)
+            self._getSeparateAnalysis()
         elif type(self.analysisLocation) is str:
             if self.analysisLocation == 'On score':
                 self._getOnScoreAnalysis()
@@ -349,7 +354,8 @@ class ScoreAndAnalysis:
         # self._feedbackOnScore()
 
         if outFile == 'Analysis_on_score':
-            outFile = self.name + '_with_analysis_onscore',
+            if self.name:
+                outFile = self.name + '_with_analysis_onscore',
 
         self.scoreWithAnalysis.write('mxl', fp=f'{os.path.join(outPath, outFile)}.mxl')
 
@@ -581,7 +587,7 @@ class ScoreAndAnalysis:
         Straight to putative 'HarmonicRange' objects.
         '''
 
-        self.analysisMeasures = len(self.analysis.getElementsByClass('Measure'))
+        self.analysisMeasures = len(self.analysis.recurse().getElementsByClass('Measure'))
 
         if self.scoreMeasures != self.analysisMeasures:
             msg = f'WARNING: There are {self.scoreMeasures} measures in the score ' \
@@ -619,8 +625,6 @@ class ScoreAndAnalysis:
         '''
 
         self.indexCount = 0
-
-        print(len(self.harmonicRanges))
 
         for index in range(len(self.harmonicRanges) - 1):
             self.harmonicRanges[index].endOffset = self.harmonicRanges[index + 1].startOffset
