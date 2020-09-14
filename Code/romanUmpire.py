@@ -136,9 +136,9 @@ class HarmonicRange:
                                  'with a relevant object: Note, Chord, or RomanNumeral.')
 
     def getCoreValues(self, source):
-        """"
+        '''
         Retrieve core variables from a relevant object: Note, Chord, or RomanNumeral.
-        """
+        '''
         self.startMeasure = int(source.measureNumber)
         self.startBeat = _intBeat(source.beat)
         self.beatStrength = source.beatStrength
@@ -146,9 +146,9 @@ class HarmonicRange:
         self.startOffset = round(source.activeSite.offset + source.offset, 2)
 
     def getMoreValuesFromRN(self, rn):
-        """"
+        '''
         Retrieve additional values specific to RomanNumeral objects.
-        """
+        '''
         self.figure = rn.figure
         self.key = rn.key
         self.pitches = [p.name for p in rn.pitches]
@@ -248,6 +248,8 @@ class ScoreAndAnalysis:
                 else:  # extension == '.csv':
                     splitMarker = ','
                 self.score = _importSV(self.scoreOrData, splitMarker=splitMarker)
+                if self.score[0][0] != '0.0':  # First offset always 0. If not, header row
+                    self.score = self.score[1:]  # Ignore header row
                 self._retrieveSlicesFromList()  # NOTE: sets totalLength and scoreMeasures
             elif extension in ['.mxl', '.musicxml', '.midi', '.mid']:  # Actual score:
                 self.score = converter.parse(self.scoreOrData)
@@ -344,12 +346,12 @@ class ScoreAndAnalysis:
                 staffGrouping.barTogether = 'Mensurstrich'
                 self.scoreWithAnalysis.insert(0, staffGrouping)
 
-        self._feedbackOnScore()
+        # self._feedbackOnScore()
 
         if outFile == 'Analysis_on_score':
             outFile = self.name + '_with_analysis_onscore',
 
-        self.scoreWithAnalysis.write(fmt='musicxml', fp=f'{os.path.join(outPath, outFile)}.musicxml')
+        self.scoreWithAnalysis.write('mxl', fp=f'{os.path.join(outPath, outFile)}.mxl')
 
     def _removeGraceNotes(self):
         '''
@@ -618,6 +620,8 @@ class ScoreAndAnalysis:
 
         self.indexCount = 0
 
+        print(len(self.harmonicRanges))
+
         for index in range(len(self.harmonicRanges) - 1):
             self.harmonicRanges[index].endOffset = self.harmonicRanges[index + 1].startOffset
             self._singleMatchUp(self.harmonicRanges[index])
@@ -842,8 +846,8 @@ class ScoreAndAnalysis:
                       metre: bool = True,
                       bass: bool = True,
                       constructiveOnly: bool = False,
-                      outPath=None,
-                      outFile=None):
+                      outPath: str = '.',
+                      outFile: str = 'Feedback'):
         '''
         Select feedback to print: any or all of:
             'pitches' for pitch HarmonicRanges;
@@ -931,10 +935,6 @@ class ScoreAndAnalysis:
             allToPrint.append('\nWARNINGS =====================\n')
             [allToPrint.append(x) for x in self.errorLog]
 
-        if not outPath:
-            outPath = '.'
-        if not outFile:
-            outFile = 'Feedback'
         text_file = open(f'{os.path.join(outPath, outFile)}.txt', "w")
         [text_file.write(x + '\n') for x in allToPrint]
         text_file.close()
