@@ -302,8 +302,7 @@ class RnAnalysis:
                                                  key.Key(localKey),
                                                  # sixthMinor=roman.Minor67Default.CAUTIONARY,
                                                  # seventhMinor=roman.Minor67Default.CAUTIONARY,
-                                                 )
-                # TODO: fix issues with sixth and seventh minor defaults
+                                                 )  # TODO: issues with sixth and seventh minor
 
             lyric = str(rn.figure)
 
@@ -654,8 +653,8 @@ class Test(unittest.TestCase):
         combinedPath = os.path.join(basePath, composer, collection, song,
                                     'human_onscore.musicxml')  # ***
 
-        pth = converter.parse(combinedPath)
-        rna = RnAnalysis(pth)
+        score = converter.parse(combinedPath)
+        rna = RnAnalysis(score)
         rna.prepList(template=False)  # ***
 
         self.assertEqual(rna.combinedList[0], '\nTime Signature: 12/8')
@@ -664,8 +663,22 @@ class Test(unittest.TestCase):
     # ------------------------------------------------------------------------------
 
     def testPartialAnalysis(self):
-        # TODO
-        pass
+
+        combinedPath = os.path.join('.', 'testPartialAnalysis.mxl')
+        score = converter.parse(combinedPath)
+
+        preludeAnalysis = RnAnalysis(score,
+                                     composer='J.S. Bach',
+                                     title='Prelude No. 1 (BWV 846)'
+                                     )
+        preludeAnalysis.chfyChordAndLabel(ignoreParts=2)
+
+        da = preludeAnalysis.deducedAnalysis
+
+        self.assertEqual(da[0], [1, 1.0, 'C: I'])
+        self.assertEqual(da[11], [12, 1.0, 'd: viio6#43'])  # TODO: fix m21's RomanNumeralFromChord
+        self.assertEqual(da[19], [20, 1.0, 'V7/IV'])
+        self.assertEqual(da[22], [23, 1.0, 'viio42'])
 
     # ------------------------------------------------------------------------------
 
@@ -681,8 +694,8 @@ class Test(unittest.TestCase):
         combinedPath = os.path.join(basePath, composer, collection, song,
                                     'score.mxl')  # ***
 
-        pth = converter.parse(combinedPath)
-        rna = RnAnalysis(pth)
+        score = converter.parse(combinedPath)
+        rna = RnAnalysis(score)
         rna.prepList(template=True)  # ***
 
         self.assertEqual(rna.combinedList[0], '\nTime Signature: 12/8')
@@ -724,6 +737,7 @@ class Test(unittest.TestCase):
 
         testString = 'ii°6'
         self.assertEqual(fixTextRn(testString), 'iio6')
+
 
 # ------------------------------------------------------------------------------
 
