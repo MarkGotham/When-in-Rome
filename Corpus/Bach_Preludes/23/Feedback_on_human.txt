@@ -1,0 +1,39 @@
+
+PITCH COVERAGE =====================
+
+I rate the pitch coverage at about 98.92%. In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 1, beat 2, viio64 in B major, indicating the pitches ['E', 'A#', 'C#'] accounting for successive slices of [['B3', 'E4', 'C#5'], ['B3', 'E4', 'A#4'], ['B3', 'E4', 'B4'], ['B3', 'E4', 'C#5']].
+Match strength estimated at 59.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 2, beat 2, V65 in B major, indicating the pitches ['A#', 'C#', 'E', 'F#'] accounting for successive slices of [['B3', 'A#4', 'F#5'], ['B3', 'A#4', 'C#5'], ['B3', 'A#4', 'D#5'], ['B3', 'A#4', 'E5']].
+Match strength estimated at 59.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+
+HARMONIC RHYTHM =====================
+
+The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
+
+
+
+BASS / INVERSION =====================
+
+Bass note match: 96.05%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
+Measure 1, beat 2, viio64 in B major, indicating the bass E for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 2, beat 2, V65 in B major, indicating the bass A# for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 13, beat 1, V43 in B major, indicating the bass C# for lowest note(s) of: ['F#3'].
+How about:
+m13 b1 V7
+
+
