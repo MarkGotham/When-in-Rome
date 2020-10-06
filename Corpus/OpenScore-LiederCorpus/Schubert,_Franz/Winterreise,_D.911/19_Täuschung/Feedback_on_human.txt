@@ -12,8 +12,8 @@ The harmonic rhythm looks good: all the chord changes take place on strong metri
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 99.61%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 99.61%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 0, beat 2.67, I in A major, indicating the bass A for lowest note(s) of: ['E4'].
 How about:
 m0 b2.67 I64
@@ -23,6 +23,6 @@ m0 b2.67 I64
 WARNINGS =====================
 
 WARNING: There are 44 measures in the score but 42 in your analysis. This is usually a question of either the beginning or end: either
-1) The piece reaches its final chord before the final measure (in which case fine), or
-2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 

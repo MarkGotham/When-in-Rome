@@ -1,7 +1,42 @@
 
 PITCH COVERAGE =====================
 
-The pitch coverage looks good: all of the chords match the corresponding sections of the score well.
+I rate the pitch coverage at about 91.42%. In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 8, beat 2.67, I64 in A major, indicating the pitches ['E', 'A', 'C#'] accounting for successive slices of [['E3', 'D4', 'B4'], ['E3', 'G#4', 'B4']].
+Match strength estimated at 34.0%.
+How about:
+m10 b1.17 V for the slice ['E3', 'G#4', 'B4']
+
+
+Measure 9, beat 1, V7 in A major, indicating the pitches ['E', 'G#', 'B', 'D'] accounting for successive slices of [['E3', 'B4'], ['E3', 'D4', 'B4'], ['C#4', 'A4'], ['A4']].
+Match strength estimated at 50.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 9, beat 1.67, I64 in A major, indicating the pitches ['E', 'A', 'C#'] accounting for successive slices of [['E3', 'B3', 'G#4'], ['E3', 'E4', 'G#4']].
+Match strength estimated at 50.0%.
+How about:
+m10 b2 V for the slice ['E3', 'B3', 'G#4']
+
+
+Measure 9, beat 2, V in A major, indicating the pitches ['E', 'G#', 'B'] accounting for successive slices of [['E3', 'G#4'], ['E3', 'B3', 'G#4'], ['A3', 'F#4'], ['F#4'], ['E3', 'G#3', 'F#4'], ['E3', 'B3', 'F#4']].
+Match strength estimated at 56.0%.
+Sorry, no suggestions - I can't find any triads or sevenths.
+
+
+Measure 10, beat 2, V65 in A major, indicating the pitches ['G#', 'B', 'D', 'E'] accounting for successive slices of [['G#3', 'B4', 'D5'], ['G#3', 'E4', 'D5'], ['A3', 'C#4', 'C#5'], ['A3', 'E4', 'C#5']].
+Match strength estimated at 58.0%.
+How about:
+m11 b2.33 viio for the slice ['G#3', 'B4', 'D5']
+m11 b2.83 I for the slice ['A3', 'E4', 'C#5']
+
+
+Measure 10, beat 2.67, I in A major, indicating the pitches ['A', 'C#', 'E'] accounting for successive slices of [['D3', 'D4', 'B4'], ['D3', 'F#4', 'B4']].
+Match strength estimated at 0.0%.
+How about:
+m12 b1.17 ii6 for the slice ['D3', 'F#4', 'B4']
+
 
 
 HARMONIC RHYTHM =====================
@@ -12,10 +47,16 @@ The harmonic rhythm looks good: all the chord changes take place on strong metri
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 98.46%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
-Measure 9, beat 1.67, I64 in A major, indicating the bass E for lowest note(s) of: ['C#4', 'A4'].
-How about:
-m9 b1.67 I6
+Bass note match: 98.39%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
+Measure 10, beat 2.67, I in A major, indicating the bass A for lowest note(s) of: ['D3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
+
+
+WARNINGS =====================
+
+WARNING: There are 15 measures in the score but 14 in your analysis. This is usually a question of either the beginning or end: either
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 

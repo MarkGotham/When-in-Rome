@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 56.93%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 56.92%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 13, beat 2, i64 in b minor, indicating the pitches ['F#', 'B', 'D'] accounting for successive slices of [['F#2', 'C#3', 'F#3', 'A#3', 'C#4', 'F#4']].
 Match strength estimated at 50.0%.
@@ -496,8 +495,8 @@ m92 b3.33 bVII64 for the slice ['F#2', 'B3', 'D#5']
 m92 b3.67 bVII for the slice ['B2', 'F#3', 'D#5']
 
 
-Measure 98, beat 1, I64 in B major, indicating the pitches ['F#', 'B', 'D#'] accounting for successive slices of [['B1', 'C#4', 'E5', 'F#5'], ['B1', 'A#3', 'E5'], ['G2', 'A#3', 'E5'], ['G2', 'G3', 'E5'], ['A#2', 'G3', 'E5'], ['A#2', 'E3', 'E5'], ['B1', 'C#4', 'E5'], ['B1', 'A#3', 'E5'], ['G2', 'A#3', 'E5'], ['G2', 'G3', 'D#5'], ['A#2', 'G3', 'D#5'], ['A#2', 'E3', 'D#5'], ['B1', 'C#4', 'C#5'], ['B1', 'A#3', 'C#5'], ['G2', 'A#3', 'C#5'], ['G2', 'G3', 'C#5'], ['A#2', 'G3', 'C#5'], ['A#2', 'E3', 'C#5']].
-Match strength estimated at 19.0%.
+Measure 98, beat 1, I64 in B major, indicating the pitches ['F#', 'B', 'D#'] accounting for successive slices of [['B1', 'C#4', 'E5'], ['B1', 'A#3', 'E5'], ['G2', 'A#3', 'E5'], ['G2', 'G3', 'E5'], ['A#2', 'G3', 'E5'], ['A#2', 'E3', 'E5'], ['B1', 'C#4', 'E5'], ['B1', 'A#3', 'E5'], ['G2', 'A#3', 'E5'], ['G2', 'G3', 'D#5'], ['A#2', 'G3', 'D#5'], ['A#2', 'E3', 'D#5'], ['B1', 'C#4', 'C#5'], ['B1', 'A#3', 'C#5'], ['G2', 'A#3', 'C#5'], ['G2', 'G3', 'C#5'], ['A#2', 'G3', 'C#5'], ['A#2', 'E3', 'C#5']].
+Match strength estimated at 18.0%.
 How about:
 m93 b3.75 viio for the slice ['A#2', 'E3', 'C#5']
 
@@ -650,8 +649,8 @@ Measure 79, V7 in d minor appears on beat 2.67.
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 36.04%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 36.04%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 14, beat 2.5, V7 in b minor, indicating the bass F# for lowest note(s) of: [].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
@@ -788,7 +787,7 @@ Measure 47, beat 1, VI in d minor, indicating the bass B- for lowest note(s) of:
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 49, beat 1, i64 in d minor, indicating the bass A for lowest note(s) of: ['F#1', 'B1'].
+Measure 49, beat 1, i64 in d minor, indicating the bass A for lowest note(s) of: ['B1', 'F#1'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -849,7 +848,7 @@ Measure 65, beat 1, V in b minor, indicating the bass F# for lowest note(s) of: 
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 66, beat 1, I in B major, indicating the bass B for lowest note(s) of: ['G2', 'A#2'].
+Measure 66, beat 1, I in B major, indicating the bass B for lowest note(s) of: ['A#2', 'G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -863,26 +862,26 @@ How about:
 m68 b1 I64
 
 
-Measure 70, beat 1, IV in B major, indicating the bass E for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 70, beat 1, IV in B major, indicating the bass E for lowest note(s) of: ['B2', 'B1', 'F#2'].
 How about:
 m70 b1 IV64
 
 
-Measure 72, beat 1, IV in B major, indicating the bass E for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 72, beat 1, IV in B major, indicating the bass E for lowest note(s) of: ['B2', 'B1', 'F#2'].
 How about:
 m72 b1 IV64
 
 
-Measure 74, beat 3, iiø42 in B major, indicating the bass B for lowest note(s) of: ['F#2', 'F#1'].
+Measure 74, beat 3, iiø42 in B major, indicating the bass B for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 75, beat 1, i in b minor, indicating the bass B for lowest note(s) of: ['F#2', 'F#1'].
+Measure 75, beat 1, i in b minor, indicating the bass B for lowest note(s) of: ['F#1', 'F#2'].
 How about:
 m75 b1 i64
 
 
-Measure 76, beat 1, i in b minor, indicating the bass B for lowest note(s) of: ['F#2', 'F#1'].
+Measure 76, beat 1, i in b minor, indicating the bass B for lowest note(s) of: ['F#1', 'F#2'].
 How about:
 m76 b1 i64
 
@@ -891,21 +890,21 @@ Measure 76, beat 2.67, iv64 in b minor, indicating the bass B for lowest note(s)
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 76, beat 3, i in b minor, indicating the bass B for lowest note(s) of: ['F#2', 'F#1'].
+Measure 76, beat 3, i in b minor, indicating the bass B for lowest note(s) of: ['F#1', 'F#2'].
 How about:
 m76 b3 i64
 
 
-Measure 77, beat 1, i in b minor, indicating the bass B for lowest note(s) of: ['F#2', 'F#1'].
+Measure 77, beat 1, i in b minor, indicating the bass B for lowest note(s) of: ['F#1', 'F#2'].
 How about:
 m77 b1 i64
 
 
-Measure 78, beat 1, i64 in d minor, indicating the bass A for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 78, beat 1, i64 in d minor, indicating the bass A for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 79, beat 1, i64 in d minor, indicating the bass A for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 79, beat 1, i64 in d minor, indicating the bass A for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -913,25 +912,25 @@ Measure 79, beat 2.67, V7 in d minor, indicating the bass A for lowest note(s) o
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 79, beat 3, i64 in d minor, indicating the bass A for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 79, beat 3, i64 in d minor, indicating the bass A for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 80, beat 1, V65/V in d minor, indicating the bass G# for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 80, beat 1, V65/V in d minor, indicating the bass G# for lowest note(s) of: ['B2', 'B1', 'F#2'].
 How about:
 m80 b1 II#643
 
 
-Measure 81, beat 1, viio43 in d minor, indicating the bass G for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 81, beat 1, viio43 in d minor, indicating the bass G for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 82, beat 1, V42 in d minor, indicating the bass G for lowest note(s) of: ['A1', 'F2', 'A2'].
+Measure 82, beat 1, V42 in d minor, indicating the bass G for lowest note(s) of: ['F2', 'A2', 'A1'].
 How about:
 m82 b1 V75#3
 
 
-Measure 83, beat 1, I6 in d minor, indicating the bass F# for lowest note(s) of: ['A1', 'F2', 'A2'].
+Measure 83, beat 1, I6 in d minor, indicating the bass F# for lowest note(s) of: ['F2', 'A2', 'A1'].
 How about:
 m83 b1 I64
 
@@ -940,15 +939,15 @@ Measure 84, beat 1, iio6 in b minor, indicating the bass E for lowest note(s) of
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 85, beat 1, i64 in b minor, indicating the bass F# for lowest note(s) of: ['G2', 'G1'].
+Measure 85, beat 1, i64 in b minor, indicating the bass F# for lowest note(s) of: ['G1', 'G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 86, beat 1, V7 in b minor, indicating the bass F# for lowest note(s) of: ['G2', 'G1'].
+Measure 86, beat 1, V7 in b minor, indicating the bass F# for lowest note(s) of: ['G1', 'G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 87, beat 1, I in B major, indicating the bass B for lowest note(s) of: ['F#2', 'F#1'].
+Measure 87, beat 1, I in B major, indicating the bass B for lowest note(s) of: ['F#1', 'F#2'].
 How about:
 m87 b1 I64
 
@@ -957,63 +956,63 @@ Measure 89, beat 1, I in B major, indicating the bass B for lowest note(s) of: [
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 90, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['F#2', 'F#1'].
+Measure 90, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 91, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['F#2', 'F#1'].
+Measure 91, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 93, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 93, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 94, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 94, beat 1, viio42 in B major, indicating the bass G for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 95, beat 3, V7 in c# minor, indicating the bass G# for lowest note(s) of: ['G2', 'B1', 'A#2'].
+Measure 95, beat 3, V7 in c# minor, indicating the bass G# for lowest note(s) of: ['A#2', 'B1', 'G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 96, beat 1, V7 in c# minor, indicating the bass G# for lowest note(s) of: ['G2', 'B1', 'A#2'].
+Measure 96, beat 1, V7 in c# minor, indicating the bass G# for lowest note(s) of: ['A#2', 'B1', 'G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 96, beat 3, i in c# minor, indicating the bass C# for lowest note(s) of: ['G2', 'B1', 'A#2'].
+Measure 96, beat 3, i in c# minor, indicating the bass C# for lowest note(s) of: ['A#2', 'B1', 'G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 97, beat 1, i in c# minor, indicating the bass C# for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 97, beat 1, i in c# minor, indicating the bass C# for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 97, beat 2, V43 in c# minor, indicating the bass D# for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 97, beat 2, V43 in c# minor, indicating the bass D# for lowest note(s) of: ['B2', 'B1', 'F#2'].
 How about:
 m97 b2 V6#42
 
 
-Measure 97, beat 3, i6 in c# minor, indicating the bass E for lowest note(s) of: ['F#2', 'B1', 'B2'].
+Measure 97, beat 3, i6 in c# minor, indicating the bass E for lowest note(s) of: ['B2', 'B1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 98, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['G2', 'B1', 'A#2'].
+Measure 98, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['A#2', 'B1', 'G2'].
 How about:
 m98 b1 I
 
 
-Measure 99, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['G2', 'B1', 'A#2'].
+Measure 99, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['A#2', 'B1', 'G2'].
 How about:
 m99 b1 I
 
 
-Measure 99, beat 2, V7 in B major, indicating the bass F# for lowest note(s) of: ['G2', 'B1', 'A#2'].
+Measure 99, beat 2, V7 in B major, indicating the bass F# for lowest note(s) of: ['A#2', 'B1', 'G2'].
 How about:
 m99 b2 V65
 
 
-Measure 100, beat 1, V6 in g# minor, indicating the bass F## for lowest note(s) of: ['G#2', 'D#2', 'G#1', 'B1', 'F#2', 'B2'].
+Measure 100, beat 1, V6 in g# minor, indicating the bass F## for lowest note(s) of: ['B2', 'D#2', 'G#1', 'B1', 'G#2', 'F#2'].
 How about:
 m100 b1 V
 
@@ -1036,63 +1035,63 @@ Measure 103, beat 3, i in g# minor, indicating the bass G# for lowest note(s) of
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 104, beat 1, V6 in g# minor, indicating the bass F## for lowest note(s) of: ['F#2', 'F#1'].
+Measure 104, beat 1, V6 in g# minor, indicating the bass F## for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 104, beat 3, V65 in g# minor, indicating the bass F## for lowest note(s) of: ['F#2', 'F#1'].
+Measure 104, beat 3, V65 in g# minor, indicating the bass F## for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 105, beat 1, iio42 in g# minor, indicating the bass G for lowest note(s) of: ['F#2', 'F#1'].
+Measure 105, beat 1, iio42 in g# minor, indicating the bass G for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 105, beat 3, i in g# minor, indicating the bass G# for lowest note(s) of: ['F#2', 'F#1'].
+Measure 105, beat 3, i in g# minor, indicating the bass G# for lowest note(s) of: ['F#1', 'F#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 106, beat 1, V in c# minor, indicating the bass G# for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 106, beat 1, V in c# minor, indicating the bass G# for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 How about:
 m106 b1 V64
 
 
-Measure 107, beat 1, V7 in c# minor, indicating the bass G# for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 107, beat 1, V7 in c# minor, indicating the bass G# for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 How about:
 m107 b1 V#643
 
 
-Measure 107, beat 3, i in c# minor, indicating the bass C# for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 107, beat 3, i in c# minor, indicating the bass C# for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 108, beat 1, i in c# minor, indicating the bass C# for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 108, beat 1, i in c# minor, indicating the bass C# for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 108, beat 3, i6 in c# minor, indicating the bass E for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 108, beat 3, i6 in c# minor, indicating the bass E for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 109, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['G#2', 'D#2', 'G#1'].
+Measure 109, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['G#2', 'G#1', 'D#2'].
 How about:
 m109 b1 I6
 
 
-Measure 110, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 110, beat 1, I64 in B major, indicating the bass F# for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 How about:
 m110 b1 I6
 
 
-Measure 110, beat 2, V7 in B major, indicating the bass F# for lowest note(s) of: ['F##2', 'F##1', 'D#2'].
+Measure 110, beat 2, V7 in B major, indicating the bass F# for lowest note(s) of: ['F##1', 'D#2', 'F##2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 111, beat 1, i in B major, indicating the bass B for lowest note(s) of: ['G#2', 'D#2', 'G#1'].
+Measure 111, beat 1, i in B major, indicating the bass B for lowest note(s) of: ['G#2', 'G#1', 'D#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 112, beat 1, bII in B major, indicating the bass C for lowest note(s) of: ['G#2', 'E2', 'D#2', 'G#1'].
+Measure 112, beat 1, bII in B major, indicating the bass C for lowest note(s) of: ['E2', 'G#2', 'G#1', 'D#2'].
 How about:
 m112 b1 bII#863
 
@@ -1101,7 +1100,7 @@ Measure 113, beat 1, i64 in B major, indicating the bass F# for lowest note(s) o
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 114, beat 1, V7 in B major, indicating the bass F# for lowest note(s) of: ['C#2', 'D#2', 'E2'].
+Measure 114, beat 1, V7 in B major, indicating the bass F# for lowest note(s) of: ['C#2', 'E2', 'D#2'].
 How about:
 m114 b1 V43
 

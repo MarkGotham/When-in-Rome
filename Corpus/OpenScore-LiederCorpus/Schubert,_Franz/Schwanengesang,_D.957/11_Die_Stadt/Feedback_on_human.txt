@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 79.6%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 79.47%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 6, beat 3.5, i in c minor, indicating the pitches ['C', 'E-', 'G'] accounting for successive slices of [['A2'], ['A2']].
 Match strength estimated at 0.0%.
@@ -23,9 +22,10 @@ m7 b3 i6 for the slice ['E-2', 'C3', 'E-3', 'G3', 'G4']
 m7 b3.75 i for the slice ['C2', 'C3', 'E-3', 'G3', 'G4']
 
 
-Measure 9, beat 1, i64 in f minor, indicating the pitches ['C', 'F', 'A-'] accounting for successive slices of [['G2', 'B2', 'D3', 'G3', 'G4', 'A-4'], ['G2', 'B2', 'D3', 'G3', 'G4'], ['G2', 'B2', 'D3', 'G3', 'G4']].
-Match strength estimated at 8.0%.
+Measure 9, beat 1, i64 in f minor, indicating the pitches ['C', 'F', 'A-'] accounting for successive slices of [['G2', 'B2', 'D3', 'G3', 'G4'], ['G2', 'B2', 'D3', 'G3', 'G4'], ['G2', 'B2', 'D3', 'G3', 'G4']].
+Match strength estimated at 0.0%.
 How about:
+m8 b1 II for the slice ['G2', 'B2', 'D3', 'G3', 'G4']
 m8 b2 II for the slice ['G2', 'B2', 'D3', 'G3', 'G4']
 m8 b2.75 II for the slice ['G2', 'B2', 'D3', 'G3', 'G4']
 
@@ -156,8 +156,8 @@ The harmonic rhythm looks good: all the chord changes take place on strong metri
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 73.33%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 73.33%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 6, beat 3.5, i in c minor, indicating the bass C for lowest note(s) of: ['A2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
@@ -166,7 +166,7 @@ Measure 8, beat 1, V in c minor, indicating the bass G for lowest note(s) of: ['
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 8, beat 3, iv6 in c minor, indicating the bass A- for lowest note(s) of: ['E-2', 'C2'].
+Measure 8, beat 3, iv6 in c minor, indicating the bass A- for lowest note(s) of: ['C2', 'E-2'].
 How about:
 m8 b3 iv64
 
@@ -196,7 +196,7 @@ Measure 12, beat 3, i6 in c minor, indicating the bass E- for lowest note(s) of:
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 13, beat 3, V in c minor, indicating the bass G for lowest note(s) of: ['E-2', 'C2'].
+Measure 13, beat 3, V in c minor, indicating the bass G for lowest note(s) of: ['C2', 'E-2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -209,7 +209,7 @@ Measure 27, beat 3.5, i in c minor, indicating the bass C for lowest note(s) of:
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 29, beat 1, V in c minor, indicating the bass G for lowest note(s) of: ['C3', 'C2'].
+Measure 29, beat 1, V in c minor, indicating the bass G for lowest note(s) of: ['C2', 'C3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -255,6 +255,6 @@ Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 WARNINGS =====================
 
 WARNING: There are 40 measures in the score but 39 in your analysis. This is usually a question of either the beginning or end: either
-1) The piece reaches its final chord before the final measure (in which case fine), or
-2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 

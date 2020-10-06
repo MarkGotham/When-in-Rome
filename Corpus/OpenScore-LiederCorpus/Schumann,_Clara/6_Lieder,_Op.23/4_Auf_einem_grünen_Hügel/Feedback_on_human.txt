@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 71.31%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 71.31%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 3, beat 1, i in a minor, indicating the pitches ['A', 'C', 'E'] accounting for successive slices of [['A4', 'C5'], ['G4', 'B4']].
 Match strength estimated at 50.0%.
@@ -215,8 +214,8 @@ Measure 13, viio43 in a minor appears on beat 1.75.
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 60.0%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 60.0%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 0, beat 2.5, i in a minor, indicating the bass A for lowest note(s) of: ['C5'].
 How about:
 m0 b2.5 i6
@@ -236,7 +235,7 @@ How about:
 m2 b2.5 i6
 
 
-Measure 15, beat 1, iv in a minor, indicating the bass D for lowest note(s) of: ['C4', 'F3', 'E3'].
+Measure 15, beat 1, iv in a minor, indicating the bass D for lowest note(s) of: ['E3', 'F3', 'C4'].
 How about:
 m15 b1 iv6
 
@@ -285,7 +284,7 @@ How about:
 m17 b2.5 i64
 
 
-Measure 19, beat 1, V in a minor, indicating the bass E for lowest note(s) of: ['G#3', 'G3'].
+Measure 19, beat 1, V in a minor, indicating the bass E for lowest note(s) of: ['G3', 'G#3'].
 How about:
 m19 b1 V#863
 
@@ -347,7 +346,7 @@ Measure 27, beat 2.5, i64 in a minor, indicating the bass E for lowest note(s) o
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 28, beat 1, V42/bII in a minor, indicating the bass E- for lowest note(s) of: ['D3', 'C3', 'E3'].
+Measure 28, beat 1, V42/bII in a minor, indicating the bass E- for lowest note(s) of: ['C3', 'E3', 'D3'].
 How about:
 m28 b1 bVI64b3
 
@@ -384,6 +383,6 @@ Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 WARNINGS =====================
 
 WARNING: There are 32 measures in the score but 34 in your analysis. This is usually a question of either the beginning or end: either
-1) The piece reaches its final chord before the final measure (in which case fine), or
-2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 

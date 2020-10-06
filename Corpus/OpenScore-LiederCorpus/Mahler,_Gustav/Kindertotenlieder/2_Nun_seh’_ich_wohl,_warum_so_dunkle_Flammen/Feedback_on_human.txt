@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 90.87%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 92.01%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 1, beat 1, i6 in g minor, indicating the pitches ['B-', 'D', 'G'] accounting for successive slices of [[], ['B-3'], ['C4'], ['D4']].
 Match strength estimated at 50.0%.
@@ -25,15 +24,8 @@ Match strength estimated at 48.0%.
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 37, beat 2, Ger65/II in E- major, indicating the pitches ['D', 'F', 'A', 'B'] accounting for successive slices of [['D-2', 'D-3', 'F3', 'B3', 'G4'], ['D-2', 'D-3', 'F3', 'B3', 'A-4']].
-Match strength estimated at 40.0%.
-How about:
-m37 b2 IIIø#643 for the slice ['D-2', 'D-3', 'F3', 'B3', 'G4']
-m37 b3 #vo6b5b3 for the slice ['D-2', 'D-3', 'F3', 'B3', 'A-4']
-
-
-Measure 38, beat 1, Ger65/II in E- major, indicating the pitches ['D', 'F', 'A', 'B'] accounting for successive slices of [['D-2', 'D-3', 'F3', 'B3', 'A-4'], ['G4'], ['G#4']].
-Match strength estimated at 13.0%.
+Measure 38, beat 1, Ger65/II in E- major, indicating the pitches ['D-', 'F', 'A-', 'B'] accounting for successive slices of [['D-2', 'D-3', 'F3', 'B3', 'A-4'], ['G4'], ['G#4']].
+Match strength estimated at 33.0%.
 How about:
 m38 b1 #vo6b5b3 for the slice ['D-2', 'D-3', 'F3', 'B3', 'A-4']
 
@@ -70,8 +62,8 @@ m58 b1 #iii64 for the slice ['B1', 'G3', 'B3', 'E4', 'G4']
 m58 b1.5 #iii64 for the slice ['B2', 'G3', 'B3', 'E4', 'G4']
 
 
-Measure 70, beat 1, Ger65/IV in C major, indicating the pitches ['D', 'F', 'A', 'B'] accounting for successive slices of [['D3', 'F3', 'G3', 'B3', 'F4'], ['E4'], ['F4'], ['G4'], ['D-3', 'F3', 'B3', 'G4']].
-Match strength estimated at 48.0%.
+Measure 70, beat 1, Ger65/IV in C major, indicating the pitches ['D-', 'F', 'A-', 'B'] accounting for successive slices of [['D3', 'F3', 'G3', 'B3', 'F4'], ['E4'], ['F4'], ['G4'], ['D-3', 'F3', 'B3', 'G4']].
+Match strength estimated at 57.0%.
 How about:
 m69 b1 V43 for the slice ['D3', 'F3', 'G3', 'B3', 'F4']
 m70 b1 Vø43 for the slice ['D-3', 'F3', 'B3', 'G4']
@@ -86,19 +78,11 @@ The harmonic rhythm looks good: all the chord changes take place on strong metri
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 89.86%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
-Measure 35, beat 1, viio7/v in C major, indicating the bass F# for lowest note(s) of: ['G2', 'D4', 'E-4', 'E4', 'B4'].
+Bass note match: 93.58%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
+Measure 35, beat 1, viio7/v in C major, indicating the bass F# for lowest note(s) of: ['G2', 'D4', 'B4', 'E-4', 'E4'].
 How about:
 m35 b1 #ivobb8b6b42
-
-
-Measure 37, beat 2, Ger65/II in E- major, indicating the bass D for lowest note(s) of: ['D-2'].
-Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
-
-
-Measure 38, beat 1, Ger65/II in E- major, indicating the bass D for lowest note(s) of: ['G#4', 'D-2', 'G4'].
-Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
 Measure 40, beat 1, V7 in E- major, indicating the bass B- for lowest note(s) of: ['B2'].
@@ -110,7 +94,7 @@ How about:
 m44 b1 V42
 
 
-Measure 51, beat 1, V7 in B- major, indicating the bass F for lowest note(s) of: ['D3', 'D2'].
+Measure 51, beat 1, V7 in B- major, indicating the bass F for lowest note(s) of: ['D2', 'D3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -119,22 +103,17 @@ How about:
 m52 b4 ii64
 
 
-Measure 58, beat 1, IV64 in C- major, indicating the bass C- for lowest note(s) of: ['E3', 'B4', 'B1', 'B2', 'B3', 'G3'].
+Measure 58, beat 1, IV64 in C- major, indicating the bass C- for lowest note(s) of: ['B2', 'B4', 'E3', 'B1', 'G3', 'B3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
-
-
-Measure 71, beat 1, Ger65/IV in C major, indicating the bass D for lowest note(s) of: ['D-3', 'B4'].
-How about:
-m71 b1 viiø7
 
 
 
 WARNINGS =====================
 
+Roman numeral allocated before the first note.
+Please check and correct.
 WARNING: There are 74 measures in the score but 73 in your analysis. This is usually a question of either the beginning or end: either
-1) The piece reaches its final chord before the final measure (in which case fine), or
-2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 
-It looks like there's a Roman numeral allocated before the start of any notes.
-Please check and correct if so.
 Roman numeral i6 in g minor, m.1: No pitches in one of the slices.

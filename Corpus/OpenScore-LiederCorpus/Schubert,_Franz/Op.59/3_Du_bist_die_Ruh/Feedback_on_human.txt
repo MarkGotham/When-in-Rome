@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 89.41%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 89.43%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 63, beat 1, I64 in E- major, indicating the pitches ['B-', 'E-', 'G'] accounting for successive slices of [['C4', 'E-4', 'A-4'], ['C4', 'A-4', 'B-4'], ['C4', 'E-4', 'C5'], ['C4', 'A-4', 'D5'], ['C4', 'E-4', 'E-5'], ['C4', 'A-4', 'E-5'], ['C4', 'A-4', 'D5']].
 Match strength estimated at 32.0%.
@@ -32,8 +31,8 @@ m65 b1 I for the slice ['E-2', 'G3', 'E-4', 'B-4']
 m65 b2 I for the slice ['E-2', 'G3', 'E-4', 'B-4']
 
 
-Measure 67, beat 1, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-3', 'A-3', 'D4', 'F4'], ['E-3', 'B-3', 'D4', 'G4'], ['E-3', 'A-3', 'D4', 'A-4'], ['E-3', 'B-3', 'D4', 'A4'], ['E-3', 'A-3', 'D4', 'B-4', 'C5'], ['E-3', 'B-3', 'D4', 'B-4'], ['E-3', 'B-3', 'D4', 'A4']].
-Match strength estimated at 46.0%.
+Measure 67, beat 1, I in E- major, indicating the pitches ['E-', 'G', 'B-'] accounting for successive slices of [['E-3', 'A-3', 'D4', 'F4'], ['E-3', 'B-3', 'D4', 'G4'], ['E-3', 'A-3', 'D4', 'A-4'], ['E-3', 'B-3', 'D4', 'A4'], ['E-3', 'A-3', 'D4', 'B-4'], ['E-3', 'B-3', 'D4', 'B-4'], ['E-3', 'B-3', 'D4', 'A4']].
+Match strength estimated at 47.0%.
 How about:
 m66 b1.5 I7 for the slice ['E-3', 'B-3', 'D4', 'G4']
 
@@ -102,8 +101,8 @@ The harmonic rhythm looks good: all the chord changes take place on strong metri
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 78.05%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 78.05%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 26, beat 1, viio in E- major, indicating the bass D for lowest note(s) of: ['E-2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 

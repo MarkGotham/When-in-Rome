@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 96.47%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 96.47%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 16, beat 1, viio43 in e minor, indicating the pitches ['A', 'C', 'D#', 'F#'] accounting for successive slices of [['E3', 'A4', 'C5', 'F#5'], ['E3', 'D#5', 'F#5'], ['E3', 'A4', 'C5', 'F#5'], ['E3', 'E4', 'F#5'], ['E3', 'A4', 'C5', 'D#5'], ['E3', 'D#5'], ['E3', 'A4', 'C5', 'D#5'], ['E3', 'E4', 'D#5']].
 Match strength estimated at 58.0%.
@@ -19,33 +18,33 @@ Sorry, no suggestions - I can't find any triads or sevenths.
 Measure 42, beat 1.5, V65/vi in e minor, indicating the pitches ['B#', 'D#', 'F#', 'G#'] accounting for successive slices of [['E3', 'G#4', 'C#5'], ['E3', 'C#5'], ['B#2', 'F#4', 'G#4', 'D#5'], ['B#2', 'D#5']].
 Match strength estimated at 58.0%.
 How about:
-m42 b1.5 vi#63 for the slice ['E3', 'G#4', 'C#5']
-m42 b1.75 #III6b5 for the slice ['B#2', 'F#4', 'G#4', 'D#5']
+m43 b1.5 vi#63 for the slice ['E3', 'G#4', 'C#5']
+m43 b1.75 #III6b5 for the slice ['B#2', 'F#4', 'G#4', 'D#5']
 
 
 Measure 43, beat 1.5, V/V in e minor, indicating the pitches ['F#', 'A#', 'C#'] accounting for successive slices of [['F#2', 'F#4', 'C#5'], ['F#2', 'A#4', 'C#5'], ['F#2', 'F#4', 'C#5'], ['F#2', 'E4', 'F#4'], ['B2', 'F#4', 'D#5'], ['B2', 'B4', 'D#5'], ['B2', 'F#4', 'D#5'], ['B2', 'D#4', 'D#5'], ['B2', 'F#4', 'D#5'], ['B2', 'B4', 'D#5'], ['C#3', 'F#4', 'D#5'], ['C#3', 'D#4', 'D#5']].
 Match strength estimated at 48.0%.
 How about:
-m43 b1.62 II for the slice ['F#2', 'A#4', 'C#5']
-m43 b2 V for the slice ['B2', 'F#4', 'D#5']
-m43 b2.25 V for the slice ['B2', 'F#4', 'D#5']
-m43 b2.5 V for the slice ['B2', 'F#4', 'D#5']
+m44 b1.62 II for the slice ['F#2', 'A#4', 'C#5']
+m44 b2 V for the slice ['B2', 'F#4', 'D#5']
+m44 b2.25 V for the slice ['B2', 'F#4', 'D#5']
+m44 b2.5 V for the slice ['B2', 'F#4', 'D#5']
 
 
 Measure 45, beat 1, V+65 in e minor, indicating the pitches ['D#', 'F##', 'A', 'B'] accounting for successive slices of [['D#3', 'A#3', 'F##4', 'D#5'], ['D#3', 'A#3', 'C#5', 'D#5'], ['D#3', 'A#3', 'F##4', 'D#5'], ['D#3', 'A#3', 'C#4', 'D#5'], ['D#3', 'A#3', 'F##4', 'C#5'], ['D#3', 'A#3', 'C#5'], ['D#3', 'A#3', 'F##4', 'B4'], ['D#3', 'A#3', 'C#4', 'B4']].
 Match strength estimated at 55.0%.
 How about:
-m45 b1 VII for the slice ['D#3', 'A#3', 'F##4', 'D#5']
-m45 b1.25 VII for the slice ['D#3', 'A#3', 'F##4', 'D#5']
-m45 b1.5 VII#7#5#3 for the slice ['D#3', 'A#3', 'F##4', 'C#5']
-m45 b1.75 V+6#5#3 for the slice ['D#3', 'A#3', 'F##4', 'B4']
+m46 b1 VII for the slice ['D#3', 'A#3', 'F##4', 'D#5']
+m46 b1.25 VII for the slice ['D#3', 'A#3', 'F##4', 'D#5']
+m46 b1.5 VII#7#5#3 for the slice ['D#3', 'A#3', 'F##4', 'C#5']
+m46 b1.75 V+6#5#3 for the slice ['D#3', 'A#3', 'F##4', 'B4']
 
 
 Measure 62, beat 1, viio43 in e minor, indicating the pitches ['A', 'C', 'D#', 'F#'] accounting for successive slices of [['E3', 'A4', 'C5', 'F#5'], ['E3', 'D#5', 'F#5'], ['E3', 'A4', 'C5', 'F#5'], ['E3', 'E4', 'F#5'], ['E3', 'A4', 'C5', 'D#5'], ['E3', 'D#5'], ['E3', 'A4', 'C5', 'D#5'], ['E3', 'E4', 'D#5']].
 Match strength estimated at 58.0%.
 How about:
-m62 b1 iiø42 for the slice ['E3', 'A4', 'C5', 'F#5']
-m62 b1.25 iiø42 for the slice ['E3', 'A4', 'C5', 'F#5']
+m63 b1 iiø42 for the slice ['E3', 'A4', 'C5', 'F#5']
+m63 b1.25 iiø42 for the slice ['E3', 'A4', 'C5', 'F#5']
 
 
 Measure 69, beat 1, V in G major, indicating the pitches ['D', 'F#', 'A'] accounting for successive slices of [['G1', 'G2', 'A4', 'C5'], ['G1', 'G2', 'D5'], ['G1', 'G2', 'A4', 'C5'], ['G1', 'G2', 'D4'], ['G1', 'G2', 'A4', 'C5'], ['G1', 'G2', 'D5'], ['G1', 'G2', 'A4', 'C5'], ['G1', 'G2', 'D4'], ['G1', 'G2', 'F#4', 'A4'], ['G1', 'G2', 'D5'], ['G1', 'G2', 'F#4', 'A4'], ['G1', 'G2', 'D4'], ['G1', 'G2', 'D4', 'F#4'], ['G1', 'G2', 'A4'], ['G1', 'G2', 'D4', 'F#4'], ['G1', 'G2', 'C4']].
@@ -74,8 +73,8 @@ Measure 70, viio64/ii in G major appears on beat 2.75.
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 88.67%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 88.67%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 2, beat 1, V in G major, indicating the bass D for lowest note(s) of: ['G2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
@@ -152,7 +151,7 @@ Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 WARNINGS =====================
 
-WARNING: There are 75 measures in the score but 74 in your analysis. This is usually a question of either the beginning or end: either
-1) The piece reaches its final chord before the final measure (in which case fine), or
-2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+WARNING: There are 76 measures in the score but 74 in your analysis. This is usually a question of either the beginning or end: either
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 

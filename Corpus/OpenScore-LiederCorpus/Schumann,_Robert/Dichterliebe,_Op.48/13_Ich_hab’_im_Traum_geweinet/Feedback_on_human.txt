@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 41.24%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 41.24%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 3, beat 1, V in e- minor, indicating the pitches ['B-', 'D', 'F'] accounting for successive slices of [['C-5']].
 Match strength estimated at 0.0%.
@@ -321,8 +320,8 @@ Measure 35, i64 in a- minor appears on beat 2.5.
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 42.14%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 42.14%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 3, beat 1, V in e- minor, indicating the bass B- for lowest note(s) of: ['C-5'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
@@ -360,10 +359,10 @@ How about:
 m6 b2.67 V
 
 
-Measure 7, beat 1, I in C- major, indicating the bass C- for lowest note(s) of: ['D-4', 'E-4', 'F-4', 'G-4'].
+Measure 7, beat 1, I in C- major, indicating the bass C- for lowest note(s) of: ['F-4', 'E-4', 'D-4', 'G-4'].
 How about:
-m7 b1 I64
 m7 b1 I6
+m7 b1 I64
 
 
 Measure 9, beat 2, vi6 in C- major, indicating the bass C- for lowest note(s) of: ['G-4'].
@@ -378,11 +377,11 @@ Measure 11, beat 1.67, VI in e- minor, indicating the bass C- for lowest note(s)
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 11, beat 2, V in e- minor, indicating the bass B- for lowest note(s) of: ['C-2', 'G4'].
+Measure 11, beat 2, V in e- minor, indicating the bass B- for lowest note(s) of: ['G4', 'C-2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 14, beat 1, V in e- minor, indicating the bass B- for lowest note(s) of: ['A-4', 'E-4'].
+Measure 14, beat 1, V in e- minor, indicating the bass B- for lowest note(s) of: ['E-4', 'A-4'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -409,7 +408,7 @@ Measure 15, beat 2.67, V43[no3] in C- major, indicating the bass D- for lowest n
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 17, beat 1, I6 in C- major, indicating the bass E- for lowest note(s) of: ['B-4', 'C-5'].
+Measure 17, beat 1, I6 in C- major, indicating the bass E- for lowest note(s) of: ['C-5', 'B-4'].
 How about:
 m17 b1 I
 
@@ -431,7 +430,7 @@ Measure 17, beat 2.67, V6 in C- major, indicating the bass B- for lowest note(s)
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 18, beat 1, I in C- major, indicating the bass C- for lowest note(s) of: ['E-2', 'B-1', 'B-4'].
+Measure 18, beat 1, I in C- major, indicating the bass C- for lowest note(s) of: ['E-2', 'B-4', 'B-1'].
 How about:
 m18 b1 I6
 
@@ -445,12 +444,12 @@ Measure 20, beat 1, III+/vi in C- major, indicating the bass C- for lowest note(
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 20, beat 2, vi6 in C- major, indicating the bass C- for lowest note(s) of: ['D-4', 'E-4', 'F-4', 'G-4'].
+Measure 20, beat 2, vi6 in C- major, indicating the bass C- for lowest note(s) of: ['F-4', 'E-4', 'D-4', 'G-4'].
 How about:
 m20 b2 vi64
 
 
-Measure 22, beat 1, iio in e- minor, indicating the bass F for lowest note(s) of: ['C-2', 'D-2'].
+Measure 22, beat 1, iio in e- minor, indicating the bass F for lowest note(s) of: ['D-2', 'C-2'].
 How about:
 m22 b1 iio64
 
@@ -468,12 +467,12 @@ How about:
 m24 b2 i6
 
 
-Measure 26, beat 1, iv in e- minor, indicating the bass A- for lowest note(s) of: ['C-2', 'G4'].
+Measure 26, beat 1, iv in e- minor, indicating the bass A- for lowest note(s) of: ['G4', 'C-2'].
 How about:
 m26 b1 iv6
 
 
-Measure 26, beat 2, i in e- minor, indicating the bass E- for lowest note(s) of: ['B-4', 'G4'].
+Measure 26, beat 2, i in e- minor, indicating the bass E- for lowest note(s) of: ['G4', 'B-4'].
 How about:
 m26 b2 i64
 
@@ -482,7 +481,7 @@ Measure 27, beat 1, i in e- minor, indicating the bass E- for lowest note(s) of:
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 28, beat 1, I in D- major, indicating the bass D- for lowest note(s) of: ['F4', 'D4', 'E-4'].
+Measure 28, beat 1, I in D- major, indicating the bass D- for lowest note(s) of: ['F4', 'E-4', 'D4'].
 How about:
 m28 b1 I6
 
@@ -500,11 +499,11 @@ Measure 30, beat 1, i64 in D- major, indicating the bass A- for lowest note(s) o
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 30, beat 2, V+64/IV in D- major, indicating the bass A for lowest note(s) of: ['E-2', 'A-1'].
+Measure 30, beat 2, V+64/IV in D- major, indicating the bass A for lowest note(s) of: ['A-1', 'E-2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 31, beat 1, IV6 in D- major, indicating the bass B- for lowest note(s) of: ['E-2', 'A-1'].
+Measure 31, beat 1, IV6 in D- major, indicating the bass B- for lowest note(s) of: ['A-1', 'E-2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
@@ -512,7 +511,7 @@ Measure 31, beat 2, iv64 in a- minor, indicating the bass A- for lowest note(s) 
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 32, beat 1, V65 in a- minor, indicating the bass G for lowest note(s) of: ['E-2', 'A-1'].
+Measure 32, beat 1, V65 in a- minor, indicating the bass G for lowest note(s) of: ['A-1', 'E-2'].
 How about:
 m32 b1 V75#3
 
@@ -532,7 +531,7 @@ How about:
 m35 b1.67 i
 
 
-Measure 35, beat 2, V7[no3] in a- minor, indicating the bass E- for lowest note(s) of: ['D-2', 'A-1'].
+Measure 35, beat 2, V7[no3] in a- minor, indicating the bass E- for lowest note(s) of: ['A-1', 'D-2'].
 How about:
 m35 b2 v62
 
@@ -545,7 +544,7 @@ Measure 35, beat 2.67, V in a- minor, indicating the bass E- for lowest note(s) 
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 36, beat 1, i in a- minor, indicating the bass A- for lowest note(s) of: ['D-3', 'G-2'].
+Measure 36, beat 1, i in a- minor, indicating the bass A- for lowest note(s) of: ['G-2', 'D-3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 

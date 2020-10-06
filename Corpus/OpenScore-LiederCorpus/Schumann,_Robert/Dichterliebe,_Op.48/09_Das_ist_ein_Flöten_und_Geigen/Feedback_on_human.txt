@@ -1,8 +1,7 @@
 
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 98.37%.
-In the following cases, the chord indicated does not seem to capture everything going on:
+I rate the pitch coverage at about 98.37%. In the following cases, the chord indicated does not seem to capture everything going on:
 
 Measure 30, beat 1, i in c minor, indicating the pitches ['C', 'E-', 'G'] accounting for successive slices of [['C3', 'C4', 'G4'], ['C3', 'D4', 'G4'], ['C4', 'G-4', 'G4', 'E5'], ['B-3', 'G-4', 'G4', 'E5'], ['A3', 'G-4', 'G4', 'E5'], ['D4', 'G-4', 'G4', 'E5']].
 Match strength estimated at 48.0%.
@@ -33,8 +32,8 @@ The harmonic rhythm looks good: all the chord changes take place on strong metri
 
 BASS / INVERSION =====================
 
-I rate the bass notes at about 97.22%.
-The following chords look ok, except for the bass note / inversion. (NB: pedals are not currently supported):
+Bass note match: 97.22%.
+The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
 Measure 75, beat 1, V7/v in g minor, indicating the bass A for lowest note(s) of: ['D4', 'D3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
@@ -59,6 +58,6 @@ Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 WARNINGS =====================
 
 WARNING: There are 85 measures in the score but 81 in your analysis. This is usually a question of either the beginning or end: either
-1) The piece reaches its final chord before the final measure (in which case fine), or
-2) There's an anacrusis in the score without accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the comparisons will not work properly. Best to put in a chord of some kind for the anacrusis.
+1) The final chord in the analysis comes before the final measure, or
+2) There's an anacrusis in the score without an accompanying harmony (i.e. the analysis is missing measure 0). In that latter case, the score and analysis will be misaligned, and the HarmonicRanges will not work properly. Best to put in a chord of some kind for the anacrusis.
 
