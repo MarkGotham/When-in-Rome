@@ -627,8 +627,10 @@ class ScoreAndAnalysis:
         self.indexCount = 0
 
         for index in range(len(self.harmonicRanges) - 1):
-            self.harmonicRanges[index].endOffset = self.harmonicRanges[index + 1].startOffset
-            self._singleMatchUp(self.harmonicRanges[index])
+            thisHR = self.harmonicRanges[index]
+            thisHR.endOffset = self.harmonicRanges[index + 1].startOffset
+            thisHR.quarterLength = thisHR.endOffset - thisHR.startOffset
+            self._singleMatchUp(thisHR)
 
         # Special case of last one.
         self.harmonicRanges[-1].endOffset = self.totalLength
