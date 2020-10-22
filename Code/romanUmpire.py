@@ -302,7 +302,7 @@ class ScoreAndAnalysis:
 
     def writeScoreWithAnalysis(self,
                                outPath: str = '.',
-                               outFile: str = 'Analysis_on_score',
+                               outFile: str = 'on_score',
                                feedback: bool = True,
                                lieder: bool = True):
         '''
@@ -353,9 +353,9 @@ class ScoreAndAnalysis:
 
         # self._feedbackOnScore()
 
-        if outFile == 'Analysis_on_score':
+        if outFile == 'on_score':
             if self.name:
-                outFile = self.name + '_with_analysis_onscore',
+                outFile = self.name + '_onscore',
 
         self.scoreWithAnalysis.write('mxl', fp=f'{os.path.join(outPath, outFile)}.mxl')
 
