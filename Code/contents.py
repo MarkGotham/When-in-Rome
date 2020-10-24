@@ -51,18 +51,19 @@ def makeOpenScoreCSV(rootPath: str = '../Corpus/OpenScore-LiederCorpus/',
 
     for root, dirs, files in os.walk(rootPath):
         for name in files:
-            if fnmatch.fnmatch(name, 'lc*.mscx'):
+            if fnmatch.fnmatch(name, 'lc*.mscz'):
                 fullPath = str(os.path.join(root, name))
                 thisEntry = fullPath.split('/')[-4:-1]
 
                 if checkForAnalyses:
-                    pathToHumanAnalysis = fullPath.replace(name, 'human.txt')
+                    pathToHumanAnalysis = fullPath.replace(name, 'analysis.txt')
                     if os.path.exists(pathToHumanAnalysis):
                         thisEntry.append('YES')
                     else:
                         thisEntry.append('N')
 
-                try:
+                if additionalInfo:
+
                     scorePath = fullPath.replace(name, 'score.mxl')
                     score = converter.parse(scorePath)
                     p0m1 = score.parts[0].measures(0, 3)
@@ -83,9 +84,6 @@ def makeOpenScoreCSV(rootPath: str = '../Corpus/OpenScore-LiederCorpus/',
                     lcNumber = name[2:-5]  # cut 'lc' and extension
                     thisEntry.append(url + lcNumber)
 
-                except:  # TODO: investigate and fix these scores!
-                    print(f'ERROR with {name}')
-
                 data.append(thisEntry)
 
     sortedData = sorted(data, key=lambda x: (x[0], x[1], x[2]))
@@ -99,11 +97,11 @@ def makeOpenScoreCSV(rootPath: str = '../Corpus/OpenScore-LiederCorpus/',
         csvOut = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        headers = ['COMPOSER', 'COLLECTION (where applicable)', 'SONG NUMBER AND TITLE', 'LYRICIST']
+        headers = ['COMPOSER', 'COLLECTION (where applicable)', 'SONG NUMBER AND TITLE']
         if checkForAnalyses:
             headers += ['HUMAN ANALYSIS']
         if additionalInfo:
-            headers += ['FIRST TS', 'FIRST KS', 'URL']
+            headers += ['LYRICIST', 'FIRST TS', 'FIRST KS', 'URL']
 
         csvOut.writerow(headers)
         for entry in sortedData:
