@@ -182,20 +182,12 @@ class RnAnalysis:
                 self.title = 'Unknown'
                 self.preamble.append('Title: ')
 
-        # TODO: compress
-        if not self.analyst:
-            self.analyst = 'Unknown'
         self.preamble.append(f'Analyst: {self.analyst}')
-
-        if not self.proofreader:
-            self.proofreader = 'Unknown'
         self.preamble.append(f'Proofreader: {self.proofreader}')
 
         if self.notes:
             for nt in self.notes:
                 self.preamble.append(f'Note: {nt}')
-
-        self.preamble.append('\n')  # One extra line at the end of the metadata preamble
 
     # ------------------------------------------------------------------------------
 
@@ -470,9 +462,9 @@ class RnAnalysis:
             if x in measureRangeEqualityStarts:
                 entry = self.measureRangeEqualities[x]
                 if entry[0] == entry[1]:  # Single measure comparison
-                    self.combinedList.append(f'm{entry[0]} = m{entry[2]}')
+                    self.combinedList.append(f'Note: m{entry[0]} = m{entry[2]}')
                 else:  # Measure range comparison
-                    self.combinedList.append(f'm{entry[0]}-{entry[1]} = m{entry[2]}-{entry[3]}')
+                    self.combinedList.append(f'Note: m{entry[0]}-{entry[1]} = m{entry[2]}-{entry[3]}')
 
             # Measure lines (analysis where provide; empty for template)
             if template:
@@ -493,8 +485,6 @@ class RnAnalysis:
         Writes the combined information to a .txt file.
         Use for both full analyses and templates.
         '''
-
-        self.prepPreamble()
 
         if not self.combinedList:
             self.prepList()
