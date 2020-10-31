@@ -52,7 +52,6 @@ from music21 import converter
 from music21 import chord
 from music21 import expressions
 from music21 import layout
-from music21 import note
 from music21 import roman
 from music21 import stream
 
@@ -529,8 +528,7 @@ class ScoreAndAnalysis:
                 rn = self._romanFromLyric(x.lyric)
                 if rn:
                     thisHarmonicRange = HarmonicRange(x)
-                    thisHarmonicRange.figure = rn.figure
-                    thisHarmonicRange.key = rn.key
+                    thisHarmonicRange.getMoreValuesFromRN(rn)
                     # TODO compress but note the gap between a note and a contextless rn
 
                     self.harmonicRanges.append(thisHarmonicRange)
@@ -889,7 +887,7 @@ class ScoreAndAnalysis:
                         [allToPrint.append(x) for x in fb.suggestions]
                         allToPrint.append('\n')
                     else:  # no suggestions
-                        if constructiveOnly == False:
+                        if not constructiveOnly:
                             allToPrint.append(fb.message)
                             allToPrint.append(fb.matchStrength)
                             allToPrint.append('Sorry, no suggestions - '
@@ -1034,12 +1032,12 @@ class Test(unittest.TestCase):
         testSeparate.runComparisons()
 
         self.assertEqual(len(testSeparate.pitchFeedback), 2)
-        self.assertEqual(testSeparate.pitchFeedback[0].message[:29],
-                         'Measure 28, beat 1, viio642/v')
+        self.assertEqual(testSeparate.pitchFeedback[0].message[:28],
+                         'Measure 28, beat 1, viio42/v')
 
         self.assertEqual(len(testSeparate.bassFeedback), 2)
-        self.assertEqual(testSeparate.bassFeedback[0].message[:29],
-                         'Measure 28, beat 1, viio642/v')
+        self.assertEqual(testSeparate.bassFeedback[0].message[:28],
+                         'Measure 28, beat 1, viio42/v')
         # Same measure raises both errors due to the bass.
 
         self.assertEqual(len(testSeparate.metricalPositionFeedback), 0)
@@ -1050,24 +1048,23 @@ class Test(unittest.TestCase):
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Schubert,_Franz'
         collection = 'Schwanengesang,_D.957'
-        song = '02_-_Kriegers_Ahnung'
+        song = '02_Kriegers_Ahnung'
         combinedPath = os.path.join(basePath, composer, collection, song)
 
-        onScoreTest = ScoreAndAnalysis(os.path.join(combinedPath, 'human_onscore.musicxml'),
+        onScoreTest = ScoreAndAnalysis(os.path.join(combinedPath, 'analysis_on_score.mxl'),
                                        analysisLocation='On score',
                                        analysisParts=1,
                                        minBeatStrength=0.25,
                                        tolerance=0.6)
 
         onScoreTest.runComparisons()
+        onScoreTest.printFeedback(outPath='.', outFile='TEST')
 
-        self.assertEqual(len(onScoreTest.pitchFeedback), 1)
-        self.assertEqual(onScoreTest.pitchFeedback[0].message[:30],
-                         'Measure 46, beat 2, viio6 in A')
+        self.assertEqual(len(onScoreTest.pitchFeedback), 0)
 
         self.assertEqual(len(onScoreTest.bassFeedback), 0)
 
-        self.assertEqual(len(onScoreTest.metricalPositionFeedback), 5)
+        self.assertEqual(len(onScoreTest.metricalPositionFeedback), 4)
 
 # ------------------------------------------------------------------------------
 
@@ -1075,19 +1072,19 @@ class Test(unittest.TestCase):
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Hensel,_Fanny_(Mendelssohn)'
         collection = '5_Lieder,_Op.10'
-        song = '1_-_Nach_Süden'
+        song = '1_Nach_Süden'
         combinedPath = os.path.join(basePath, composer, collection, song)
 
         testTab = ScoreAndAnalysis(os.path.join(combinedPath, 'slices.tsv'),
-                                   analysisLocation=os.path.join(combinedPath, 'human.txt'))
+                                   analysisLocation=os.path.join(combinedPath, 'analysis.txt'))
 
         testTab.runComparisons()
 
-        self.assertEqual(len(testTab.pitchFeedback), 4)
+        self.assertEqual(len(testTab.pitchFeedback), 2)
         self.assertEqual(testTab.pitchFeedback[0].message[:29],
                          'Measure 11, beat 3, viio6/V i')
 
-        self.assertEqual(len(testTab.bassFeedback), 10)
+        self.assertEqual(len(testTab.bassFeedback), 8)
         self.assertEqual(testTab.bassFeedback[0].message[:29],
                          'Measure 11, beat 3, viio6/V i')
 
