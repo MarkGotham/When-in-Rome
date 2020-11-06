@@ -170,6 +170,7 @@ class Feedback:
         self.startOffset = hr.startOffset
         self.measure = hr.startMeasure
         self.beat = hr.startBeat
+        self.offset = hr.startOffset
 
         self.message = msg  # for all cases
         self.matchStrength = None  # for pitch HarmonicRange only
@@ -350,7 +351,8 @@ class ScoreAndAnalysis:
                 staffGrouping.barTogether = 'Mensurstrich'
                 self.scoreWithAnalysis.insert(0, staffGrouping)
 
-        # self._feedbackOnScore()
+        if feedback:
+            self._feedbackOnScore()
 
         if outFile == 'on_score':
             if self.name:
@@ -956,28 +958,37 @@ class ScoreAndAnalysis:
             'bass' for bass notes / inversions.
         '''
 
-        totalFeedback = []
-
         if pitches:
             if not self.pitchFeedback:
                 self.comparePitches()
-                totalFeedback += [x for x in self.pitchFeedback]
+            for x in self.pitchFeedback:
+                self.insertFeedback(x, '* Pitch')
 
         if metre:
             if not self.metricalPositionFeedback:
                 self.metricalPositions()
-                totalFeedback += [x for x in self.metricalPositionFeedback]
+            for x in self.metricalPositionFeedback:
+                self.insertFeedback(x, '* Metrical position')
 
         if bass:
             if not self.bassFeedback:
                 self.compareBass()
-                totalFeedback += [x for x in self.bassFeedback]
+            for x in self.bassFeedback:
+                self.insertFeedback(x, '* Bass note')
 
-        te = expressions.TextExpression('***')
+    def insertFeedback(self,
+                       fdb: Feedback,
+                       message: str):
+        '''
+        Shared method for inserting feedback of each type in to the score.
+        '''
+        te = expressions.TextExpression(message)  # NB: Have to make a new one each time
         te.placement = 'above'
-        for x in self.totalFeedback:
-            self.score.parts[-1].startMeasure(x.startMeasure).insert(x.offset, te)
-
+        p = self.scoreWithAnalysis.parts[-1]
+        m = p.measure(fdb.measure)
+        mOffset = m.getOffsetInHierarchy(p)
+        offsetInMeasure = fdb.offset - mOffset  # TODO maybe compress, but nb not ofset nor beat
+        m.insert(offsetInMeasure, te)
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
