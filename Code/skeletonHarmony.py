@@ -37,6 +37,7 @@ in either Romantext cases (3, 4), this can be with or without a shorthand for me
 from copy import deepcopy
 import fractions
 import os
+import re
 import unittest
 
 from music21 import chord
@@ -92,6 +93,8 @@ class RnAnalysis:
                  proofreader: str = '',
                  notes: list = []
                  ):
+
+        self.combinedList = []
 
         # Score, location of analysis, total measures
         self.score = score
@@ -253,7 +256,6 @@ class RnAnalysis:
 
         self.chfyScore = reduction.stripTies().chordify()
         self.chfyScore.partName = 'Roman'
-        chNotes = self.chfyScore.recurse().notes
 
         currentIndex = 0  # Index
         currentKey = 'FAKE KEY'  # Initialise empty for inclusion of the first key
@@ -265,26 +267,34 @@ class RnAnalysis:
         keyData = self.annotationsAndLocations
         lenKeyData = len(keyData)
 
-        for ch in chNotes:
+        for ch in self.chfyScore.recurse().notes:
 
             startKey = currentKey
-            if not tonicizationsRemainInEffect:  # == False:
-                currentTonicization = None  # To reset for each chord.
+            if not tonicizationsRemainInEffect:
+                currentTonicization = None  # reset for each chord
 
             # Key Changes and Tonicization
-            if lenKeyData > currentIndex:  # Index from 0, len counts from 1. Gets all of keyData
-                if [ch.measureNumber, ch.beat] == keyData[currentIndex][0:2]:
-                    stringInQuestion = keyData[currentIndex][
-                        2]  # Before changing to new current index
-                    currentIndex += 1
-                    if '/' in stringInQuestion:  # Then it's a local tonicization
-                        currentTonicization = stringInQuestion[1:]  # After the '/'
-                        # TODO support e.g. '/g' as well as (and converting it to) relative ('/ii')
-                    else:  # Then it's a an actual modulation
+            if lenKeyData > currentIndex and [ch.measureNumber, ch.beat] == keyData[currentIndex][
+                                                                            0:2]:
+                stringInQuestion = keyData[currentIndex][2]  # Before updating current index
+                currentIndex += 1
+                if '/' in stringInQuestion:  # Then it's a local tonicization
+                    rnFigureString, currentTonicization = stringInQuestion.split('/')
+                    # TODO make use of any rnFigureString specified?
+                    # TODO support e.g. '/g' as well as (and converting it to) relative ('/ii')
+                elif ':' in stringInQuestion:  # modulation
+                    currentKey, rnFigureString = stringInQuestion.split(':')
+                    # TODO make use of any rnFigureString specified?
+                else:
+                    x = re.search('[a-gA-G]', stringInQuestion[0])
+                    if x:  # modulation without RN. NB: Doesn't support Fr43 or Ger65
                         currentKey = stringInQuestion
-                        currentTonicization = None  # Definitely reset for a key change
-                    # TODO add a condition to support m3-4 = m1-2 style annotation
-                    # TODO accept a roman.romanNumeral (not from chord)
+                        currentTonicization = None
+                    else:
+                        # TODO accept anything else as a full, user-defined Roman numeral?
+                        raise ValueError(f'Unrecognised entry {stringInQuestion} '
+                                         f'in measure {ch.measureNumber}, '
+                                         f'beat {ch.beat}')
 
             if not currentTonicization:
                 rn = roman.romanNumeralFromChord(ch, key.Key(currentKey))
@@ -440,8 +450,6 @@ class RnAnalysis:
         '''
         # TODO: option for removing duplicate analysis from repeat passages
         # TODO: option for recurring harmonies?
-
-        self.combinedList = []
 
         tsMeasures = self.timeSigMeasureDict.keys()
 
@@ -639,9 +647,8 @@ class Test(unittest.TestCase):
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Hensel,_Fanny_(Mendelssohn)'
         collection = '5_Lieder,_Op.10'
-        song = '1_-_Nach_Süden'
-        combinedPath = os.path.join(basePath, composer, collection, song,
-                                    'human_onscore.musicxml')  # ***
+        song = '1_Nach_Süden'
+        combinedPath = os.path.join(basePath, composer, collection, song, 'analysis_on_score.mxl')
 
         score = converter.parse(combinedPath)
         rna = RnAnalysis(score)
@@ -680,9 +687,8 @@ class Test(unittest.TestCase):
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Hensel,_Fanny_(Mendelssohn)'
         collection = '5_Lieder,_Op.10'
-        song = '1_-_Nach_Süden'
-        combinedPath = os.path.join(basePath, composer, collection, song,
-                                    'score.mxl')  # ***
+        song = '1_Nach_Süden'
+        combinedPath = os.path.join(basePath, composer, collection, song, 'score.mxl')
 
         score = converter.parse(combinedPath)
         rna = RnAnalysis(score)
