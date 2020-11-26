@@ -35,13 +35,14 @@ In that case, perhaps credit the original analyst too in the format: 'Analyst: [
 - [Bach Preludes](/Corpus/Bach_Preludes/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
 - [Grounds](/Corpus/Grounds/): Examples of ground bass compositions from Purcell and Bach.
 - [Nineteenth-century French and German songs](/Corpus/OpenScore-LiederCorpus/): A sample of songs from the OpenScore / 'Scores of Scores' lieder corpus ([mirroring the public-facing score collection hosted here](https://musescore.com/openscore-lieder-corpus/sets)), including analyses for the complete _Winterreise_ and _Schwanengesang_ cycles (Schubert), _Dichterliebe_ (Schumann), and many of the songs by women composers that constitute a key part of and motivation for that collection.
+- [Haydn Op. 20 String Quartets](/Corpus/HaydnOp20/): Complete annotations of Haydn's Op. 20 (6 string quartets, 24 movements), from the [MTG](https://zenodo.org/record/1095630#.X8AbrcJyZhE).
 
 The new corpora (Bach Preludes, Grounds, and 'Scores of Scores' lieder) also include the corresponding scores, templates, and feedback files.
 (Please see the original corpora for score to the converted analyses.)
 This is intended to support future contributors to this collection, making the study of these analyses and / or the submission of alternative readings as easy as possible.
 [This page](https://fourscoreandmore.org/working-in-harmony/analysis/) provides full instructions for formatting your analysis.
 
-### Every folder includes at least the following files:
+### Most folders include the following files:
 
 1. 'score.mxl'
 - What: A conversion of the corpus score into .mxl  format such that you can open it in any software editor.
