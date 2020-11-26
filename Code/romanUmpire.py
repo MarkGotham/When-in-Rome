@@ -58,6 +58,7 @@ from music21 import stream
 from copy import deepcopy
 import csv
 import os
+from typing import Union
 import unittest
 
 
@@ -198,8 +199,8 @@ class ScoreAndAnalysis:
     '''
 
     def __init__(self,
-                 scoreOrData,  # stream.Score or str path
-                 analysisLocation='On score',  # stream.Score or str path
+                 scoreOrData: Union[stream.Score, str],
+                 analysisLocation: Union[stream.Score, stream.Part, str] = 'On score',
                  analysisParts: int = 1,
                  analysisPartNo: int = -1,
                  minBeatStrength: float = 0.25,
@@ -223,11 +224,12 @@ class ScoreAndAnalysis:
         self.pitchFeedback = None
         self.metricalPositionFeedback = None
         self.bassFeedback = None
+        self.pitchScore = None
+        self.bassScore = None
         self.errorLog = []
 
         self._parseScoreData()
         self._parseAnalysis()
-        self._rnSliceMatchUp()
 
     def _parseScoreData(self):
         '''
@@ -236,11 +238,11 @@ class ScoreAndAnalysis:
             a tabular file (.tsv or .csv) having handled the slicing in advance.
         '''
 
-        if type(self.scoreOrData) is stream.Score:
+        if isinstance(self.scoreOrData, stream.Score):
             self.score = self.scoreOrData
             self._scoreInit()
 
-        elif type(self.scoreOrData) is str:
+        elif isinstance(self.scoreOrData, str):
             self.name, extension = os.path.splitext(self.scoreOrData)
 
             if extension in ['.tsv', '.csv']:
@@ -375,14 +377,22 @@ class ScoreAndAnalysis:
         for n in notesToRemove:
             n.activeSite.remove(n)
 
-    def _retrieveSlicesFromScore(self):
+    def _retrieveSlicesFromScore(self,
+                                 carryPitchesOver: bool = False):
         '''
         Extracts chord and rest info from the score as Slice objects and
         populates self.slices with a list of these Slices.
 
-        If the analysisLocation is 'On score' then first
-        removes that analysis from consideration
-        (the number of analysis parts is given by analysisParts).
+        If the analysisLocation is 'On score' then this method first
+        removes that analysis from consideration.
+        The number of analysis parts is given in the init by analysisParts.
+
+        By default, this method ignores rests, in the sense that it assumes that the
+        more recent chord remains in effect until the next pitched event.
+        As such, there will be no slices with an empty pitch list: the previous slice's
+        pitches are carried over to the next slice.
+        This includes treating single pitches as a one-entry 'chord'.
+        Override this behaviour by setting carryPitchesOver to False (returning empty pitch lists).
         '''
 
         if self.analysisLocation == 'On score':
@@ -417,7 +427,7 @@ class ScoreAndAnalysis:
                     self.prevSlicePitches = thisEntry.pitches
 
                 if 'Rest' in x.classes:
-                    if self.prevSlicePitches:
+                    if carryPitchesOver and self.prevSlicePitches:
                         thisEntry.pitches = self.prevSlicePitches
                     else:
                         thisEntry.pitches = []
@@ -672,6 +682,9 @@ class ScoreAndAnalysis:
             compareBass().
         '''
 
+        if not self.slices:
+            self._rnSliceMatchUp()
+
         self.metricalPositions()
         self.comparePitches()
         self.compareBass()
@@ -681,8 +694,11 @@ class ScoreAndAnalysis:
         Check beatStrengths and returns unlikely choices.
         '''
 
-        if self.metricalPositionFeedback is not None:  # already done
+        if self.metricalPositionFeedback:  # already done
             return
+
+        if not self.slices:
+            self._rnSliceMatchUp()
 
         self.metricalPositionFeedback = []
 
@@ -690,7 +706,9 @@ class ScoreAndAnalysis:
             if comp.beatStrength < self.minBeatStrength:
                 # if comp.beatStrength < lastBeatStrength:  # TODO: this context
 
-                msg = f'Measure {comp.startMeasure}, {comp.figure} in {comp.key} ' \
+                ky = str(comp.key).replace('-', 'b')  # Ab not A-. Only key relevant this time
+
+                msg = f'Measure {comp.startMeasure}, {comp.figure} in {ky} ' \
                       f'appears on beat {comp.startBeat}.'
                 fb = Feedback(comp, msg)
 
@@ -704,8 +722,11 @@ class ScoreAndAnalysis:
         do the chords reflect the pitch content of the score section in question?
         '''
 
-        if self.pitchFeedback is not None:  # already done
+        if self.pitchFeedback:  # already done
             return
+
+        if not self.slices:
+            self._rnSliceMatchUp()
 
         self.pitchFeedback = []
 
@@ -747,6 +768,7 @@ class ScoreAndAnalysis:
                 msg = f'Measure {comp.startMeasure}, beat {comp.startBeat}, {comp.figure} in {comp.key}, ' \
                       f'indicating the pitches {comp.pitches} ' \
                       f'accounting for successive slices of {pl}.'
+                msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
                 fb = Feedback(comp, msg)
                 fb.matchStrength = f'Match strength estimated at {round(overall * 100, 2)}%.'
                 fb.suggestions = []
@@ -767,8 +789,11 @@ class ScoreAndAnalysis:
         does not appear as the lowest note during the span in question.
         '''
 
-        if self.bassFeedback is not None:  # already done
+        if self.bassFeedback:  # already done
             return
+
+        if not self.slices:
+            self._rnSliceMatchUp()
 
         self.bassFeedback = []
 
@@ -800,6 +825,7 @@ class ScoreAndAnalysis:
                 msg = f'Measure {comp.startMeasure}, beat {comp.startBeat}, {comp.figure} in {comp.key}, ' \
                       f'indicating the bass {comp.bassPitch} ' \
                       f'for lowest note(s) of: {bassPitchesWithOctave}.'
+                msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
                 fb = Feedback(comp, msg)
                 # fb.matchStrength = N/A
                 fb.suggestions = []
