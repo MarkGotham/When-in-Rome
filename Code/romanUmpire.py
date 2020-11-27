@@ -45,7 +45,8 @@ This code accepts:
 OUTPUT
 The comparison feedback is written out as a text file
 in the local folder (by default) or elsewhere if specified.
-
+There is also an option for writing the score with analysis attached in musical notation and
+highlighting moments for which there is feedback available directly on that score.
 '''
 
 from music21 import converter
@@ -145,7 +146,8 @@ class HarmonicRange:
         self.quarterLength = round(source.quarterLength, 2)
         self.startOffset = round(source.activeSite.offset + source.offset, 2)
 
-    def getMoreValuesFromRN(self, rn):
+    def getMoreValuesFromRN(self,
+                            rn: roman.RomanNumeral):
         '''
         Retrieve additional values specific to RomanNumeral objects.
         '''
@@ -192,10 +194,6 @@ class ScoreAndAnalysis:
     The analysisLocation variable:
         defaults to 'On score' (for analyses input on the score itself);
         for separate analyses, analysisLocation should be the pre-converted rntxt file.
-
-    I.e. this class supports many input methods.
-    In all cases, everything (score/data and the optional separate analysis) should be pre-parsed.
-
     '''
 
     def __init__(self,
@@ -204,7 +202,9 @@ class ScoreAndAnalysis:
                  analysisParts: int = 1,
                  analysisPartNo: int = -1,
                  minBeatStrength: float = 0.25,
-                 tolerance: float = 0.6):
+                 tolerance: float = 0.6,
+                 carryPitchesOver: bool = True
+                 ):
 
         self.scoreOrData = scoreOrData
         self.name = None
@@ -215,6 +215,7 @@ class ScoreAndAnalysis:
 
         self.minBeatStrength = minBeatStrength
         self.tolerance = tolerance
+        self.carryPitchesOver = carryPitchesOver
 
         self.slices = []
         self.prevSlicePitches = None
@@ -230,6 +231,7 @@ class ScoreAndAnalysis:
 
         self._parseScoreData()
         self._parseAnalysis()
+        self.slicesMatchedUp: bool = False
 
     def _parseScoreData(self):
         '''
@@ -295,9 +297,9 @@ class ScoreAndAnalysis:
             else:  # analysisLocation must be a path to a Roman text file
                 if os.path.splitext(self.analysisLocation)[1] not in ['.txt', '.rntxt']:
                     msg = 'The \'analysisLocation\' argument must point to one of ' \
-                          'the path (str) to a Roman text file with extension .txt; ' \
+                          'the path (str) to a Roman text file (with extension .txt or .rntxt); ' \
                           'such a file already parsed by music21; or ' \
-                          'simple the string \'onscore\' to indicate that it\'s on the score already.'
+                          'the string \'On score\' that it\'s on the score already (default).'
                     raise ValueError(msg)
                 self.analysis = converter.parse(self.analysisLocation, format='Romantext').parts[0]
                 self._getSeparateAnalysis()
@@ -310,11 +312,11 @@ class ScoreAndAnalysis:
         '''
         Mostly to combine an off-score analysis with the corresponding score and write to disc.
 
-        Option (feedback=True, default) to include '***' above relevant moments.
+        Option (feedback=True, default) to include markers in the score
+        for moments with assocaited feedback.
 
         Error raised in the case of a call on score with analysis already on there
-        (i.e. with analysisLocation = 'On score' in the init)
-        and feedback as false.
+        (i.e. with analysisLocation = 'On score' in the init) and feedback as false.
         Nothing to add in that case.
 
         Additional presentation option (lieder=True, default) for returning the
@@ -358,7 +360,7 @@ class ScoreAndAnalysis:
 
         if outFile == 'on_score':
             if self.name:
-                outFile = self.name + '_onscore',
+                outFile = self.name + '_on_score',
 
         self.scoreWithAnalysis.write('mxl', fp=f'{os.path.join(outPath, outFile)}.mxl')
 
@@ -377,8 +379,7 @@ class ScoreAndAnalysis:
         for n in notesToRemove:
             n.activeSite.remove(n)
 
-    def _retrieveSlicesFromScore(self,
-                                 carryPitchesOver: bool = False):
+    def _retrieveSlicesFromScore(self):
         '''
         Extracts chord and rest info from the score as Slice objects and
         populates self.slices with a list of these Slices.
@@ -427,7 +428,7 @@ class ScoreAndAnalysis:
                     self.prevSlicePitches = thisEntry.pitches
 
                 if 'Rest' in x.classes:
-                    if carryPitchesOver and self.prevSlicePitches:
+                    if self.carryPitchesOver and self.prevSlicePitches:
                         thisEntry.pitches = self.prevSlicePitches
                     else:
                         thisEntry.pitches = []
@@ -629,9 +630,9 @@ class ScoreAndAnalysis:
 
     def _rnSliceMatchUp(self):
         '''
-        Compares a score-analysis pair.
-        Currently using a simple metric for proportion of notes the same
-        weighted by length (time).
+        Takes the prepared list of HarmonicRange objects (from the analysis)
+        and adds to each the corresponding part of the score (as a list of 'slices')
+        for subsequent comparison.
         '''
 
         self.indexCount = 0
@@ -652,7 +653,7 @@ class ScoreAndAnalysis:
             self.errorLog.append(msg)
 
     def _singleMatchUp(self,
-                       thisHarmonicRange: HarmonicRange):
+                       hr: HarmonicRange):
         '''
         HarmonicRange and match up of a Roman numeral
         with slices (potentially) in that range by position in score.
@@ -661,11 +662,9 @@ class ScoreAndAnalysis:
         I.e. chords should change where at least one pitch changes.
         '''
 
-        tc = thisHarmonicRange
-
         for thisSlice in self.slices[self.indexCount:]:
-            if tc.startOffset <= thisSlice.uniqueOffsetID < tc.endOffset:
-                tc.slices.append(thisSlice)
+            if hr.startOffset <= thisSlice.uniqueOffsetID < hr.endOffset:
+                hr.slices.append(thisSlice)
                 self.indexCount += 1
             else:
                 break
@@ -682,8 +681,9 @@ class ScoreAndAnalysis:
             compareBass().
         '''
 
-        if not self.slices:
+        if not self.slicesMatchedUp:
             self._rnSliceMatchUp()
+            self.slicesMatchedUp = True
 
         self.metricalPositions()
         self.comparePitches()
@@ -697,8 +697,9 @@ class ScoreAndAnalysis:
         if self.metricalPositionFeedback:  # already done
             return
 
-        if not self.slices:
+        if not self.slicesMatchedUp:
             self._rnSliceMatchUp()
+            self.slicesMatchedUp = True
 
         self.metricalPositionFeedback = []
 
@@ -725,8 +726,9 @@ class ScoreAndAnalysis:
         if self.pitchFeedback:  # already done
             return
 
-        if not self.slices:
+        if not self.slicesMatchedUp:
             self._rnSliceMatchUp()
+            self.slicesMatchedUp = True
 
         self.pitchFeedback = []
 
@@ -760,7 +762,7 @@ class ScoreAndAnalysis:
                 suggestions = []
                 for sl in comp.slices:
                     chd = chord.Chord(sl.pitches)
-                    if (chd.isTriad() or chd.isSeventh()):
+                    if chd.isTriad() or chd.isSeventh():
                         rn = roman.romanNumeralFromChord(chd, comp.key)
                         if rn.figure != comp.figure:
                             suggestions.append([sl.measure, sl.beat, rn.figure, sl.pitches])
@@ -792,8 +794,9 @@ class ScoreAndAnalysis:
         if self.bassFeedback:  # already done
             return
 
-        if not self.slices:
+        if not self.slicesMatchedUp:
             self._rnSliceMatchUp()
+            self.slicesMatchedUp = True
 
         self.bassFeedback = []
 
@@ -842,11 +845,11 @@ class ScoreAndAnalysis:
         self.bassScore = bassNumerator / self.totalLength
 
     def _proportionSimilarity(self,
-                              comp: HarmonicRange,
-                              query: Slice):
+                              hr: HarmonicRange,
+                              sl: Slice):
         '''
         Approximate measure of the 'similarity' between a
-        reference HarmonicRange object (Roman numeral, etc) and query (actual slice in score).
+        reference HarmonicRange object (Roman numeral, etc) and an actual slice of the score.
 
         Returns the proportion of score pitches accounted for.
 
@@ -856,16 +859,16 @@ class ScoreAndAnalysis:
         '''
         # TODO: Penalty for notes in the RN not used? Not here, only overall?
 
-        if len(query) == 0:
+        if len(sl) == 0:
             self.errorLog.append(
-                f'Roman numeral {comp.figure} in {comp.key}, m.{comp.startMeasure}: '
+                f'Roman numeral {hr.figure} in {hr.key}, m.{hr.startMeasure}: '
                 f'No pitches in one of the slices.'
             )
 
             return 0
 
-        intersection = [x for x in query if x in comp.pitches]
-        proportion = len(intersection) / len(query)
+        intersection = [x for x in sl if x in hr.pitches]
+        proportion = len(intersection) / len(sl)
 
         return proportion
 
@@ -1061,11 +1064,14 @@ class Test(unittest.TestCase):
     '''
 
     def testScoreInAnalysisSeparate(self):
+        '''
+        Score and analysis as separate files, both pre-parsed.
+        '''
+
         basePath = os.path.join('..', 'Corpus', 'Bach_Preludes', '1')
-
-        testSeparate = ScoreAndAnalysis(os.path.join(basePath, 'score.mxl'),
-                                        analysisLocation=os.path.join(basePath, 'human.txt'))
-
+        score = converter.parse(os.path.join(basePath, 'score.mxl'))
+        analysis = converter.parse(os.path.join(basePath, 'human.txt'), fmt='rntxt')
+        testSeparate = ScoreAndAnalysis(score, analysis)
         testSeparate.runComparisons()
 
         self.assertEqual(len(testSeparate.pitchFeedback), 2)
@@ -1082,6 +1088,10 @@ class Test(unittest.TestCase):
 # ------------------------------------------------------------------------------
 
     def testScoreInWithAnalysis(self):
+        '''
+        Score and analysis in same file, parsed here from the file path.
+        '''
+
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Schubert,_Franz'
         collection = 'Schwanengesang,_D.957'
@@ -1095,17 +1105,17 @@ class Test(unittest.TestCase):
                                        tolerance=0.6)
 
         onScoreTest.runComparisons()
-        onScoreTest.printFeedback(outPath='.', outFile='TEST')
-
         self.assertEqual(len(onScoreTest.pitchFeedback), 0)
-
         self.assertEqual(len(onScoreTest.bassFeedback), 0)
-
         self.assertEqual(len(onScoreTest.metricalPositionFeedback), 4)
 
 # ------------------------------------------------------------------------------
 
     def testTabIn(self):
+        '''
+        Score and analysis in separate files, with the score represented in tabular format.
+        '''
+
         basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
         composer = 'Hensel,_Fanny_(Mendelssohn)'
         collection = '5_Lieder,_Op.10'
