@@ -5,7 +5,9 @@ Proof-reader: Automated conversion and manual proof-reading by Mark Gotham.
 
 Time Signature: 4/4
 
+Form: Exposition
 m0 b4 Bb: I
+m1 b1 Bb: I
 m5 b1 IV b3 V42
 m6 b1 I b3 V7/IV
 m7 b1 IV b3 V43
@@ -28,6 +30,7 @@ m25 b4 V42/IV
 m26 b1 V43/ii
 m28 b3 bVII b4 vii7
 m29 b1 I b3 ii6 b4 V7
+
 m30 b1 I
 m31 b1 IV b3 ii
 m32 b1 V b3 I6
@@ -36,12 +39,8 @@ m34 b1 vii
 m35 b3 V6 b4 IV6
 m36 b1 V7/vi b3 IV b4 V65/V
 m37 b1 I64 b3 V
-m38 b1 I
-m39 b1 IV b3 ii
-m40 b1 V b3 I6
-m41 b1 vi b3 IV
-m42 b1 vii
-m43 b3 V6 b4 IV6
+
+m38-43 = m30-35
 m44 b1 V65/vi
 m45 b1 vi
 m46 b1 vii7/V
@@ -66,6 +65,9 @@ m66 b1 I b2 V7 b3 I b4 V7
 m67 b1 I b3 V7
 m68 b1 I
 m68a b4 I
+
+Form: Development
+m69 b1 I
 m72 b3 g: iv
 m73 b3 ii
 m74 b3 V
@@ -95,13 +97,9 @@ m103 b1 V7
 m109 b1 f: V7
 m113 b1 Bb: V7
 m127 b4 I
-m132 b1 IV b3 V42
-m133 b1 I b3 V7/IV
-m134 b1 IV b3 V43
-m135 b1 I b3 V7
-m136 b1 I b3 V7
-m137 b1 I
-m138 b1 V
+
+Form: Recapitulation
+m128-138 = m1-11
 m139 b1 I
 m142 b1 vii42/ii
 m143 b3 ii b4 V6

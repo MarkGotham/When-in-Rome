@@ -5,6 +5,7 @@ Proof-reader: Automated conversion and manual proof-reading by Mark Gotham.
 
 Time signature: 2/4
 
+Form: Introduction
 m1 b1 Eb: I b2 V
 m2 b1 vi
 m3 b1 vii43/ii b2 c: V6/bVII b2.5 Fr6
@@ -23,6 +24,7 @@ m15 b2.25 V6 b2.5 V42/iv b2.75 Eb: IV6
 
 Time signature: 2/2
 
+Form: Exposition
 m17 b1 IV6 b2.5 V65/vi
 m18 b1 vii6/IV b1.5 V6/V b2 ii6 b2.5 I6
 m19 b1 V43 b2.5 I
@@ -52,14 +54,14 @@ m43 b1 ii7
 m44 b1 iii65
 m45 b1 V7 b2 I64
 m46 b1 V7
+
 m50 b1 I b2 vii/iii b2.5 I
 m51 b2 vii42 b2.5 I
 m52 b2 IV b2.5 I
 m53 b1 I64 b1.5 V7 b2 I64 b2.5 V
-m54 b1 I b2 vii/iii b2.5 I
-m55 b2 vii42 b2.5 I
-m56 b2 IV b2.5 I
-m57 b1 I64 b1.5 V7 b2 I64 b2.5 V
+
+m54-57 = m50-53
+
 m58 b1 I
 m59 b1 V7
 m60 b1 I
@@ -71,6 +73,8 @@ m68 b1 I6
 m69 b1 Eb: V42/IV
 m68a b1 Bb: I6
 m69a b1 c: VI6
+
+Form: Development
 m70 b1 V6 b2 v6
 m71 b1 IV6 b2 iv6
 m72 b1 i64 b1.5 V65/V b2 V42 b2.5 i6
@@ -93,19 +97,16 @@ m102 b1 i
 m103 b1 VI6
 m105 b1 vii7
 m106 b1 Eb: IV6
-m110 b2 V65/vi
-m111 b1 vii6/IV b1.5 V6/V b2 ii6 b2.5 I6
-m112 b1 V43 b2.5 I
-m113 b1 V6 b1.5 vi b2 V7
-m114 b1 I
-m115 b1 V43
-m116 b1 I6
+
+
+Form: Recapitulation
+m110-116 = m17-23
+Note: slightly different pacing
 m117 b1 V42 b2 V
-m118 b1 I b2 V64
+m118 b1 I b2 V43
 m119 b1 I6
-m121 b1 ii65 b2 V65/V
-m122 b1 V7
-m123 b1 I6
+m120-123 = m27-30
+
 m124 b1 V
 m125 b1 V7/vi b2 vi
 m126 b1 V42 b2 I
