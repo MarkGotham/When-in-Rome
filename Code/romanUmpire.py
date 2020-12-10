@@ -909,8 +909,9 @@ class ScoreAndAnalysis:
                 pitchToPrint.append(msg)
             else:  # if len(self.pitchFeedback) > 0:
                 pitchToPrint.append(f'Total cases: {self.totalPitchFeedback}\n')
-                pitchToPrint.append(f'I rate the pitch coverage at {self.overallPitchScore}%. '
-                                    'In the following cases, the chord indicated '
+                pitchToPrint.append('Overall pitch match: '
+                                    f'{self.overallPitchScore}%.\n')
+                pitchToPrint.append('In the following cases, the chord indicated '
                                     'does not seem to capture everything going on:\n')
                 for hr in self.harmonicRanges:
                     if hr.pitchFeedbackMessage:
@@ -944,7 +945,7 @@ class ScoreAndAnalysis:
                 msg = f'Total cases: {self.totalRareRnFeedback}\n' \
                       'The following Roman numerals are perfectly ' \
                       'clear and the system has no trouble parsing them, though ' \
-                      'they are somewhat rare so may be worth reviewing:'
+                      'they are somewhat rare so may be worth reviewing:\n'
                 rareToPrint.insert(1, msg)  # between header and feedback.
 
         if metre:
@@ -973,7 +974,7 @@ class ScoreAndAnalysis:
             else:
                 bassToPrint.append(f'Total cases: {self.totalBassFeedback}\n')
                 bassToPrint.append('Overall bass note match: '
-                                   f'{round(self.overallBassScore * 100, 2)}%.')
+                                   f'{round(self.overallBassScore * 100, 2)}%.\n')
                 bassToPrint.append('In these cases, the specified bass note doesn\'t '
                                    'appear in the lowest part during. '
                                    '(NB: pedal points are not yet supported):\n')
