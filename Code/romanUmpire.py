@@ -92,8 +92,10 @@ class HarmonicRange:
     HarmonicRange objects cover part of a score, usually including:
     a Roman numeral and the corresponding score 'slices' for that range.
     In addition to details of the Roman numeral and the corresponding slices in question,
-    this class also keeps track of the start/end positions and lengths
-    in terms of both measures and quarter notes.
+    this class also keeps track of the
+        start/end positions;
+        lengths in terms of both measures and quarter notes;
+        all types of feedback generated.
 
     Usage here focusses on assessing the Roman numeral (key and figure).
     This object can also be used to assess key alone, e.g. for key finding tasks.
@@ -117,6 +119,19 @@ class HarmonicRange:
 
         self.slices = []
 
+        # Feedback
+
+        self.pitchFeedbackMessage = None
+        self.pitchMatchStrength = None  # NB for pitch only
+        self.pitchSuggestions = []
+
+        self.rareRnFeedbackMessage = None
+
+        self.metricalFeedbackMessage = None
+
+        self.bassFeedbackMessage = None
+        self.bassSuggestions = []
+
         if source:
 
             if ('NotRest' in source.classes) and ('GeneralNote' in source.classes):
@@ -126,6 +141,12 @@ class HarmonicRange:
                 # Roman. Classes include 'Chord', 'NotRest', 'GeneralNote' as well as:
                 if 'RomanNumeral' in source.classes:
                     self.getMoreValuesFromRN(source)
+
+                    if rareRn(source):
+                        msg = f'Measure {self.startMeasure}, beat {self.startBeat}: '\
+                              f'{source.figure} in {source.key}.'
+                        self.rareRnFeedbackMessage = msg
+
                 else:
                     self.figure = None
                     self.key = None
@@ -155,29 +176,6 @@ class HarmonicRange:
         self.key = rn.key
         self.pitches = [p.name for p in rn.pitches]
         self.bassPitch = rn.bass().name
-
-# ------------------------------------------------------------------------------
-
-
-class Feedback:
-    '''
-    For organising what advice to return / print.
-    All types or just some?
-    All cases or only where constructive suggestions are on offer?
-    '''
-
-    def __init__(self,
-                 hr: HarmonicRange,
-                 msg: str):
-
-        self.startOffset = hr.startOffset
-        self.measure = hr.startMeasure
-        self.beat = hr.startBeat
-        self.offset = hr.startOffset
-
-        self.message = msg  # for all cases
-        self.matchStrength = None  # for pitch HarmonicRange only
-        self.suggestions = []  # where possible
 
 
 # ------------------------------------------------------------------------------
@@ -222,11 +220,14 @@ class ScoreAndAnalysis:
 
         self.harmonicRanges = []
 
-        self.pitchFeedback = None
-        self.metricalPositionFeedback = None
-        self.bassFeedback = None
-        self.pitchScore = None
-        self.bassScore = None
+        self.totalPitchFeedback = None  # None at init, 0 when running comparison
+        self.totalMetricalFeedback = None  # sim.
+        self.totalBassFeedback = None  # sim.
+        self.totalRareRnFeedback = 0  # 0 at init (comparison works a bit differently)
+
+        self.overallPitchScore = None
+        self.overallBassScore = None
+
         self.errorLog = []
 
         self._parseScoreData()
@@ -669,51 +670,57 @@ class ScoreAndAnalysis:
             else:
                 break
 
+    def matchUp(self):
+        '''
+        Checks that the slices have been matched up and if not then does so.
+        Necessary given all the routes through.
+        '''
+        if not self.slicesMatchedUp:
+            self._rnSliceMatchUp()
+            self.slicesMatchedUp = True
+
 # ------------------------------------------------------------------------------
 
 # Assessments:
 
     def runComparisons(self):
         '''
-        Runs all three comparison types for feedback on:
+        Runs comparison types for feedback:
             metricalPositions(),
             comparePitches(), and
             compareBass().
+        NB: rareRn() runs separately. User can choose whether to display the feedback
+        but it is collected in any case.
         '''
 
-        if not self.slicesMatchedUp:
-            self._rnSliceMatchUp()
-            self.slicesMatchedUp = True
-
+        self.matchUp()
         self.metricalPositions()
         self.comparePitches()
         self.compareBass()
 
     def metricalPositions(self):
         '''
-        Check beatStrengths and returns unlikely choices.
+        Creates feedback flagging up cases of chords on weak positions.
         '''
 
-        if self.metricalPositionFeedback:  # already done
+        if self.totalMetricalFeedback:
             return
 
-        if not self.slicesMatchedUp:
-            self._rnSliceMatchUp()
-            self.slicesMatchedUp = True
+        self.totalMetricalFeedback = 0
 
-        self.metricalPositionFeedback = []
+        self.matchUp()
 
-        for comp in self.harmonicRanges:
-            if comp.beatStrength < self.minBeatStrength:
-                # if comp.beatStrength < lastBeatStrength:  # TODO: this context
+        for hr in self.harmonicRanges:
+            if hr.beatStrength < self.minBeatStrength:
+                # if hr.beatStrength < lastBeatStrength:  # TODO: this context
 
-                ky = str(comp.key).replace('-', 'b')  # Ab not A-. Only key relevant this time
+                ky = str(hr.key).replace('-', 'b')  # Ab not A-. Only key relevant this time
 
-                msg = f'Measure {comp.startMeasure}, {comp.figure} in {ky} ' \
-                      f'appears on beat {comp.startBeat}.'
-                fb = Feedback(comp, msg)
+                msg = f'Measure {hr.startMeasure}, {hr.figure} in {ky} ' \
+                      f'appears on beat {hr.startBeat}.'
+                hr.metricalFeedbackMessage = msg
 
-                self.metricalPositionFeedback.append(fb)
+                self.totalMetricalFeedback += 1
 
                 # lastBeatStrength = x.beatStrength  # TODO: this context
 
@@ -723,65 +730,63 @@ class ScoreAndAnalysis:
         do the chords reflect the pitch content of the score section in question?
         '''
 
-        if self.pitchFeedback:  # already done
+        if self.totalPitchFeedback:
             return
 
-        if not self.slicesMatchedUp:
-            self._rnSliceMatchUp()
-            self.slicesMatchedUp = True
+        self.totalPitchFeedback = 0
 
-        self.pitchFeedback = []
+        self.matchUp()
 
         pitchNumerator = 0
 
-        for comp in self.harmonicRanges:
+        for hr in self.harmonicRanges:
 
             overall = 0
 
-            harmonicRangeLength = sum([round(sl.quarterLength, 2) for sl in comp.slices])
+            harmonicRangeLength = sum([round(sl.quarterLength, 2) for sl in hr.slices])
             # Note: Avoid division by 0
 
-            for thisSlice in comp.slices:  # NB: Rest slices handled already
+            for thisSlice in hr.slices:  # NB: Rest slices handled already
                 pitchesNameNoOctave = [x[:-1] for x in thisSlice.pitches]  # Pitch only
-                proportionSame = self._proportionSimilarity(comp, pitchesNameNoOctave)
+                proportionSame = self._proportionSimilarity(hr, pitchesNameNoOctave)
                 # weighedSimilarity = proportionSame * slice.beatStrength  # TODO
                 overall += thisSlice.quarterLength * proportionSame / harmonicRangeLength
                 overall = round(overall, 2)
 
-            compLength = comp.endOffset - comp.startOffset
+            compLength = hr.endOffset - hr.startOffset
 
             if overall >= self.tolerance:
                 pitchNumerator += compLength
 
-            else:  # overall < self.tolerance:  # Process feedback and reduce pitchScore.
+            else:  # overall < self.tolerance:  # Process feedback and reduce overallPitchScore.
 
                 pitchNumerator += (compLength * overall)
 
                 # Suggestions
-                pl = [pList.pitches for pList in comp.slices]
+                pl = [pList.pitches for pList in hr.slices]
                 suggestions = []
-                for sl in comp.slices:
+                for sl in hr.slices:
                     chd = chord.Chord(sl.pitches)
                     if chd.isTriad() or chd.isSeventh():
-                        rn = roman.romanNumeralFromChord(chd, comp.key)
-                        if rn.figure != comp.figure:
+                        rn = roman.romanNumeralFromChord(chd, hr.key)
+                        if rn.figure != hr.figure:
                             suggestions.append([sl.measure, sl.beat, rn.figure, sl.pitches])
 
-                msg = f'Measure {comp.startMeasure}, beat {comp.startBeat}, {comp.figure} in {comp.key}, ' \
-                      f'indicating the pitches {comp.pitches} ' \
+                msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
+                      f'indicating the pitches {hr.pitches} ' \
                       f'accounting for successive slices of {pl}.'
                 msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
-                fb = Feedback(comp, msg)
-                fb.matchStrength = f'Match strength estimated at {round(overall * 100, 2)}%.'
-                fb.suggestions = []
+                hr.pitchFeedbackMessage = msg
+                hr.pitchMatchStrength = f'Match strength estimated at {round(overall * 100, 2)}%.'
+                hr.pitchSuggestions = []
 
                 if len(suggestions) > 0:
                     for s in suggestions:
-                        fb.suggestions.append(f'm{s[0]} b{s[1]} {s[2]} for the slice {s[3]}')
+                        hr.pitchSuggestions.append(f'm{s[0]} b{s[1]} {s[2]} for the slice {s[3]}')
 
-                self.pitchFeedback.append(fb)
+                self.totalPitchFeedback += 1
 
-            self.pitchScore = round(pitchNumerator * 100 / self.totalLength, 2)
+            self.overallPitchScore = round(pitchNumerator * 100 / self.totalLength, 2)
 
     def compareBass(self):
         '''
@@ -791,58 +796,56 @@ class ScoreAndAnalysis:
         does not appear as the lowest note during the span in question.
         '''
 
-        if self.bassFeedback:  # already done
+        if self.totalBassFeedback:
             return
 
-        if not self.slicesMatchedUp:
-            self._rnSliceMatchUp()
-            self.slicesMatchedUp = True
+        self.totalBassFeedback = 0
 
-        self.bassFeedback = []
+        self.matchUp()
 
         bassNumerator = 0
 
-        for comp in self.harmonicRanges:
+        for hr in self.harmonicRanges:
 
-            # bassPitchesWithOctave = [slice.pitches[0] for slice in comp.slices]
+            # bassPitchesWithOctave = [slice.pitches[0] for slice in hr.slices]
             bassPitchesWithOctave = []  # Sometimes the slice is a rest I guess?
-            for slice in comp.slices:
-                if len(slice.pitches) > 0:
-                    bassPitchesWithOctave.append(slice.pitches[0])
+            for s in hr.slices:
+                if len(s.pitches) > 0:
+                    bassPitchesWithOctave.append(s.pitches[0])
 
             bassPitchesNoOctave = [p[:-1] for p in bassPitchesWithOctave]
             bassPitchesWithOctave = list(set(bassPitchesWithOctave))
 
-            if comp.bassPitch not in bassPitchesNoOctave:
+            if hr.bassPitch not in bassPitchesNoOctave:
 
                 inversionSuggestions = []
 
                 for bassPitch in bassPitchesNoOctave:
-                    if bassPitch in comp.pitches:  # already retrieved
-                        suggestedPitches = comp.pitches
+                    if bassPitch in hr.pitches:  # already retrieved
+                        suggestedPitches = hr.pitches
                         suggestedPitches.append(bassPitch + '0')  # To ensure it is lowest
                         suggestedChord = chord.Chord(suggestedPitches)
-                        rn = roman.romanNumeralFromChord(suggestedChord, comp.key)
-                        inversionSuggestions.append(f'm{comp.startMeasure} b{comp.startBeat} {rn.figure}')
+                        rn = roman.romanNumeralFromChord(suggestedChord, hr.key)
+                        inversionSuggestions.append(f'm{hr.startMeasure} b{hr.startBeat} {rn.figure}')
 
-                msg = f'Measure {comp.startMeasure}, beat {comp.startBeat}, {comp.figure} in {comp.key}, ' \
-                      f'indicating the bass {comp.bassPitch} ' \
+                msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
+                      f'indicating the bass {hr.bassPitch} ' \
                       f'for lowest note(s) of: {bassPitchesWithOctave}.'
                 msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
-                fb = Feedback(comp, msg)
-                # fb.matchStrength = N/A
-                fb.suggestions = []
+                hr.bassFeedbackMessage = msg
+                # TODO: implement a corresponding matchStrength for bass?
+                hr.bassSuggestions = []
 
                 if len(inversionSuggestions) > 0:
-                    fb.suggestions = list(set(inversionSuggestions))  # Once for each suggestion
+                    hr.bassSuggestions = list(set(inversionSuggestions))  # Once for each suggestion
 
-                self.bassFeedback.append(fb)
+                self.totalBassFeedback += 1
 
-            else:  # comp.bassPitch in bassPitchesNoOctave:
-                compLength = comp.endOffset - comp.startOffset
+            else:  # hr.bassPitch in bassPitchesNoOctave:
+                compLength = hr.endOffset - hr.startOffset
                 bassNumerator += compLength
 
-        self.bassScore = bassNumerator / self.totalLength
+        self.overallBassScore = bassNumerator / self.totalLength
 
     def _proportionSimilarity(self,
                               hr: HarmonicRange,
@@ -880,133 +883,170 @@ class ScoreAndAnalysis:
                       pitches: bool = True,
                       metre: bool = True,
                       bass: bool = True,
+                      rare: bool = True,
                       constructiveOnly: bool = False,
                       outPath: str = '.',
                       outFile: str = 'Feedback'):
         '''
         Select feedback to print: any or all of:
-            'pitches' for pitch HarmonicRanges;
+            'pitches' for the pitch match between a Roman Numeral and score segment;
+            'rare' for the use of a parseable but rare Roman Numeral;
             'metre' for metrical positions; and
             'bass' for bass notes / inversions.
         If constructiveOnly is True, then the returned feedback will be limited to
         cases for which there is a corresponding alternative suggestion ready.
         '''
 
-        allToPrint = []
-
-        if (not pitches) and (not metre) and (not bass):
-            allToPrint.append('Please select at least one of pitches, metre, or bass '
-                              'to receive feedback on that / those aspect(s).')
-            return
+        if (not pitches) and (not rare) and (not metre) and (not bass):
+            raise ValueError('Please select at least one of the feedback options.')
 
         if pitches:
             self.comparePitches()
-            allToPrint.append('\nPITCH COVERAGE =====================\n')
-            if len(self.pitchFeedback) == 0:
+            pitchToPrint = ['PITCH COVERAGE =====================\n']
+            if self.totalPitchFeedback == 0:
                 msg = 'The pitch coverage looks good: ' \
                       'all of the chords match the corresponding sections of the score well.\n'
-                allToPrint.append(msg)
+                pitchToPrint.append(msg)
             else:  # if len(self.pitchFeedback) > 0:
-                allToPrint.append(f'I rate the pitch coverage at about {self.pitchScore}%. '
-                                  'In the following cases, the chord indicated '
-                                  'does not seem to capture everything going on:\n')
-                for fb in self.pitchFeedback:
-                    if len(fb.suggestions) > 0:
-                        allToPrint.append(fb.message)
-                        allToPrint.append(fb.matchStrength)
-                        allToPrint.append('How about:')
-                        [allToPrint.append(x) for x in fb.suggestions]
-                        allToPrint.append('\n')
-                    else:  # no suggestions
-                        if not constructiveOnly:
-                            allToPrint.append(fb.message)
-                            allToPrint.append(fb.matchStrength)
-                            allToPrint.append('Sorry, no suggestions - '
-                                              'I can\'t find any triads or sevenths.')
-                            allToPrint.append('\n')
-                        # Note: if constructiveOnly == True, print nothing
+                pitchToPrint.append(f'Total cases: {self.totalPitchFeedback}\n')
+                pitchToPrint.append(f'I rate the pitch coverage at {self.overallPitchScore}%. '
+                                    'In the following cases, the chord indicated '
+                                    'does not seem to capture everything going on:\n')
+                for hr in self.harmonicRanges:
+                    if hr.pitchFeedbackMessage:
+                        if len(hr.pitchSuggestions) > 0:
+                            pitchToPrint.append(hr.pitchFeedbackMessage)
+                            pitchToPrint.append(hr.pitchMatchStrength)
+                            pitchToPrint.append('How about:')
+                            for x in hr.pitchSuggestions:
+                                pitchToPrint.append(x)
+                            pitchToPrint.append('\n')
+                        else:  # no suggestions
+                            if not constructiveOnly:
+                                pitchToPrint.append(hr.pitchFeedbackMessage)
+                                pitchToPrint.append(hr.pitchMatchStrength)
+                                pitchToPrint.append('Sorry, no suggestions - '
+                                                    'I can\'t find any triads or sevenths.')
+                                pitchToPrint.append('\n')
+
+        if rare:
+            rareToPrint = ['RARE ROMAN NUMERALS =====================\n']
+            self.totalRareRnFeedback == 0
+            for hr in self.harmonicRanges:
+                if hr.rareRnFeedbackMessage:
+                    self.totalRareRnFeedback += 1
+                    rareToPrint.append(hr.rareRnFeedbackMessage + '\n')
+
+            if self.totalRareRnFeedback == 0:
+                msg = 'No rare or unconventional Roman Numerals in this analysis.\n'
+                rareToPrint.append(msg)
+            else:
+                msg = f'Total cases: {self.totalRareRnFeedback}\n' \
+                      'The following Roman numerals are perfectly ' \
+                      'clear and the system has no trouble parsing them, though ' \
+                      'they are somewhat rare so may be worth reviewing:'
+                rareToPrint.insert(1, msg)  # between header and feedback.
 
         if metre:
             self.metricalPositions()
-            allToPrint.append('\nHARMONIC RHYTHM =====================\n')
-            if len(self.metricalPositionFeedback) == 0:
+            metreToPrint = ['HARMONIC RHYTHM =====================\n']
+            if self.totalMetricalFeedback == 0:
                 msg = 'The harmonic rhythm looks good: '
-                msg += 'all the chord changes take place on strong metrical positions.'
-                allToPrint.append(msg)
-            else:  # if len(self.metricalPositionFeedback) > 0:
-                allToPrint.append('In the following cases, the chord change is '
-                                  'at an unusually weak metrical position:')
-                [allToPrint.append(fb.message) for fb in self.metricalPositionFeedback]
-            allToPrint.append('\n')
+                msg += 'all the chord changes take place on strong metrical positions.\n'
+                metreToPrint.append(msg)
+            else:
+                metreToPrint.append(f'Total cases: {self.totalMetricalFeedback}\n')
+                metreToPrint.append('In the following cases, the chord change is '
+                                    'at an unusually weak metrical position:\n')
+                for hr in self.harmonicRanges:
+                    if hr.metricalFeedbackMessage:
+                        metreToPrint.append(hr.metricalFeedbackMessage + '\n')
 
         if bass:
             self.compareBass()
-            allToPrint.append('\nBASS / INVERSION =====================\n')
-            if len(self.bassFeedback) == 0:
+            bassToPrint = ['BASS / INVERSION =====================\n']
+            if self.totalBassFeedback == 0:
                 msg = 'The inversions look good: '
                 msg += 'the bass note/s implied by the Roman numerals appear at least once '
                 msg += 'in the lowest part during the relevant span.'
-                allToPrint.append(msg)
-            else:  # len(self.bassFeedback) > 0:
-                allToPrint.append(f'Bass note match: {round(self.bassScore * 100, 2)}%.')
-                allToPrint.append('The following chords look ok, '
-                                  'except for the bass note / inversion. '
-                                  '(NB: pedal points are not currently supported):')
-                for fb in self.bassFeedback:
-                    if len(fb.suggestions) > 0:
-                        allToPrint.append(fb.message)
-                        allToPrint.append('How about:')
-                        [allToPrint.append(x) for x in fb.suggestions]
-                        allToPrint.append('\n')
-                    else:  # no suggestions
-                        if constructiveOnly == False:
-                            allToPrint.append(fb.message)
-                            allToPrint.append('Sorry, no inversion suggestions - '
-                                              'none of the bass note(s) are in the chord.')
-                            allToPrint.append('\n')
-                        # if constructiveOnly == True, print nothing
+                bassToPrint.append(msg)
+            else:
+                bassToPrint.append(f'Total cases: {self.totalBassFeedback}\n')
+                bassToPrint.append('Overall bass note match: '
+                                   f'{round(self.overallBassScore * 100, 2)}%.')
+                bassToPrint.append('In these cases, the specified bass note doesn\'t '
+                                   'appear in the lowest part during. '
+                                   '(NB: pedal points are not yet supported):\n')
+                for hr in self.harmonicRanges:
+                    if hr.bassFeedbackMessage:
+                        if len(hr.bassSuggestions) > 0:
+                            bassToPrint.append(hr.bassFeedbackMessage)
+                            bassToPrint.append('How about:')
+                            for x in hr.bassSuggestions:
+                                bassToPrint.append(x)
+                            bassToPrint.append('\n')
+                        else:  # no suggestions
+                            if not constructiveOnly:
+                                bassToPrint.append(hr.bassFeedbackMessage)
+                                bassToPrint.append('Sorry, no inversion suggestions - '
+                                                   'none of the bass note(s) are in the chord.')
+                                bassToPrint.append('\n')
 
-        if len(self.errorLog) > 0:
-            allToPrint.append('\nWARNINGS =====================\n')
-            [allToPrint.append(x) for x in self.errorLog]
-
+        # Write
         text_file = open(f'{os.path.join(outPath, outFile)}.txt', "w")
-        [text_file.write(x + '\n') for x in allToPrint]
+        if pitches:
+            for x in pitchToPrint:
+                text_file.write(x + '\n')
+            text_file.write('\n')
+        if rare:
+            for x in rareToPrint:
+                text_file.write(x + '\n')
+            text_file.write('\n')
+        if metre:
+            for x in metreToPrint:
+                text_file.write(x + '\n')
+            text_file.write('\n')
+        if bass:
+            for x in bassToPrint:
+                text_file.write(x + '\n')
+            text_file.write('\n')
+        if len(self.errorLog) > 0:
+            text_file.write('WARNINGS =====================\n')
+            for x in self.errorLog:
+                text_file.write(x + '\n')
+
         text_file.close()
 
     def _feedbackOnScore(self,
                          pitches: bool = True,
+                         rare: bool = True,
                          metre: bool = True,
                          bass: bool = True):
         '''
         Inserts comments on the score for moments where there is feedback available.
-
-        Like printFeedback, option to use any or all of:
-            'pitches' for pitch HarmonicRanges;
-            'metre' for metrical positions; and
-            'bass' for bass notes / inversions.
+        As with the printFeedback method, you can chose to any or all of the feedback types:
+        'pitches', 'rare', 'metre'; and 'bass'.
         '''
 
         if pitches:
-            if not self.pitchFeedback:
-                self.comparePitches()
-            for x in self.pitchFeedback:
-                self.insertFeedback(x, '* Pitch')
-
+            self.comparePitches()
         if metre:
-            if not self.metricalPositionFeedback:
-                self.metricalPositions()
-            for x in self.metricalPositionFeedback:
-                self.insertFeedback(x, '* Metrical position')
-
+            self.metricalPositions()
         if bass:
-            if not self.bassFeedback:
-                self.compareBass()
-            for x in self.bassFeedback:
-                self.insertFeedback(x, '* Bass note')
+            self.compareBass()
+
+        for hr in self.harmonicRanges:
+            if pitches and hr.pitchFeedbackMessage:
+                self.insertFeedback(hr, '* Pitch')
+            if rare and hr.rareRnFeedbackMessage:
+                self.insertFeedback(hr, '* Rare')
+            if metre and hr.metricalFeedbackMessage:
+                self.insertFeedback(hr, '* Beat')
+            if bass and hr.bassFeedbackMessage:
+                self.insertFeedback(hr, '* Bass')
 
     def insertFeedback(self,
-                       fdb: Feedback,
+                       hr: HarmonicRange,
                        message: str):
         '''
         Shared method for inserting feedback of each type in to the score.
@@ -1014,16 +1054,14 @@ class ScoreAndAnalysis:
         te = expressions.TextExpression(message)  # NB: Have to make a new one each time
         te.placement = 'above'
         p = self.scoreWithAnalysis.parts[-1]
-        m = p.measure(fdb.measure)
+        m = p.measure(hr.startMeasure)
         mOffset = m.getOffsetInHierarchy(p)
-        offsetInMeasure = fdb.offset - mOffset  # TODO maybe compress, but nb not ofset nor beat
+        offsetInMeasure = hr.startOffset - mOffset  # TODO compress, but note not offset nor beat
         m.insert(offsetInMeasure, te)
 
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
-
-# Static
 
 def _intBeat(beat):
     '''
@@ -1052,6 +1090,24 @@ def _importSV(pathToFile: str,
     return data
 
 
+def rareRn(rn: roman.RomanNumeral):
+    '''
+    Returns True for rare Roman numerals that will parse ok but are unusual in analyses.
+    Specifically,
+    False = Triads, Sevenths, Augmented Sixths
+    True = anything else including 9ths.
+    '''
+
+    if rn.isTriad():
+        return False
+    elif rn.isSeventh():
+        return False
+    elif rn.isAugmentedSixth():
+        return False
+
+    return True
+
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -1068,22 +1124,22 @@ class Test(unittest.TestCase):
         Score and analysis as separate files, both pre-parsed.
         '''
 
-        basePath = os.path.join('..', 'Corpus', 'Bach_Preludes', '1')
+        corpus = 'Etudes_and_Preludes'
+        composer = 'Bach,_Johann_Sebastian'
+        collection = 'The_Well-Tempered_Clavier_I'
+        piece = '1'
+
+        basePath = os.path.join('..', 'Corpus', corpus, composer, collection, piece)
         score = converter.parse(os.path.join(basePath, 'score.mxl'))
-        analysis = converter.parse(os.path.join(basePath, 'human.txt'), fmt='rntxt')
+        analysis = converter.parse(os.path.join(basePath, 'analysis.txt'), format='romantext')
         testSeparate = ScoreAndAnalysis(score, analysis)
         testSeparate.runComparisons()
 
-        self.assertEqual(len(testSeparate.pitchFeedback), 2)
-        self.assertEqual(testSeparate.pitchFeedback[0].message[:28],
+        self.assertEqual(testSeparate.totalPitchFeedback, 2)
+        self.assertEqual(testSeparate.harmonicRanges[27].pitchFeedbackMessage[:28],
                          'Measure 28, beat 1, viio42/v')
-
-        self.assertEqual(len(testSeparate.bassFeedback), 2)
-        self.assertEqual(testSeparate.bassFeedback[0].message[:28],
-                         'Measure 28, beat 1, viio42/v')
-        # Same measure raises both errors due to the bass.
-
-        self.assertEqual(len(testSeparate.metricalPositionFeedback), 0)
+        self.assertEqual(testSeparate.totalBassFeedback, 2)  # The same moments
+        self.assertEqual(testSeparate.totalMetricalFeedback, 0)
 
 # ------------------------------------------------------------------------------
 
@@ -1092,22 +1148,24 @@ class Test(unittest.TestCase):
         Score and analysis in same file, parsed here from the file path.
         '''
 
-        basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
+        corpus = 'OpenScore-LiederCorpus'
         composer = 'Schubert,_Franz'
         collection = 'Schwanengesang,_D.957'
-        song = '02_Kriegers_Ahnung'
-        combinedPath = os.path.join(basePath, composer, collection, song)
+        piece = '02_Kriegers_Ahnung'
 
-        onScoreTest = ScoreAndAnalysis(os.path.join(combinedPath, 'analysis_on_score.mxl'),
+        basePath = os.path.join('..', 'Corpus', corpus, composer, collection, piece)
+
+        onScoreTest = ScoreAndAnalysis(os.path.join(basePath, 'analysis_on_score.mxl'),
                                        analysisLocation='On score',
                                        analysisParts=1,
                                        minBeatStrength=0.25,
                                        tolerance=0.6)
 
         onScoreTest.runComparisons()
-        self.assertEqual(len(onScoreTest.pitchFeedback), 0)
-        self.assertEqual(len(onScoreTest.bassFeedback), 0)
-        self.assertEqual(len(onScoreTest.metricalPositionFeedback), 4)
+        self.assertEqual(onScoreTest.totalPitchFeedback, 0)
+        self.assertEqual(onScoreTest.totalBassFeedback, 0)
+        self.assertEqual(onScoreTest.totalRareRnFeedback, 0)
+        self.assertEqual(onScoreTest.totalMetricalFeedback, 4)
 
 # ------------------------------------------------------------------------------
 
@@ -1116,30 +1174,27 @@ class Test(unittest.TestCase):
         Score and analysis in separate files, with the score represented in tabular format.
         '''
 
-        basePath = os.path.join('..', 'Corpus', 'OpenScore-LiederCorpus')
+        corpus = 'OpenScore-LiederCorpus'
         composer = 'Hensel,_Fanny_(Mendelssohn)'
         collection = '5_Lieder,_Op.10'
-        song = '1_Nach_Süden'
-        combinedPath = os.path.join(basePath, composer, collection, song)
+        piece = '1_Nach_Süden'
 
-        testTab = ScoreAndAnalysis(os.path.join(combinedPath, 'slices.tsv'),
-                                   analysisLocation=os.path.join(combinedPath, 'analysis.txt'))
+        basePath = os.path.join('..', 'Corpus', corpus, composer, collection, piece)
+
+        testTab = ScoreAndAnalysis(os.path.join(basePath, 'slices.tsv'),
+                                   analysisLocation=os.path.join(basePath, 'analysis.txt'))
 
         testTab.runComparisons()
 
-        self.assertEqual(len(testTab.pitchFeedback), 2)
-        self.assertEqual(testTab.pitchFeedback[0].message[:29],
+        self.assertEqual(testTab.totalPitchFeedback, 2)
+        self.assertEqual(testTab.harmonicRanges[22].pitchFeedbackMessage[:29],
                          'Measure 11, beat 3, viio6/V i')
 
-        self.assertEqual(len(testTab.bassFeedback), 8)
-        self.assertEqual(testTab.bassFeedback[0].message[:29],
-                         'Measure 11, beat 3, viio6/V i')
-
-        self.assertEqual(len(testTab.metricalPositionFeedback), 4)
+        self.assertEqual(testTab.totalBassFeedback, 8)
+        self.assertEqual(testTab.totalMetricalFeedback, 4)
 
 
 # ------------------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     unittest.main()
