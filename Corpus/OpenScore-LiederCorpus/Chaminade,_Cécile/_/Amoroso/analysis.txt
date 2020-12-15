@@ -11,13 +11,16 @@ Form: Verse 1
 
 m3 b1 I64
 m4 b1 vi7 b3 V7
-m5 b1 I6 b1.5 Bb: iv63#3[add#4] b3 V7 b3.5 V+7
-m6 b1 Ib7
-m7 b1 bVI b1.5 i64 b2 Ger6
+m5 b1 I6 b1.5 bb: iv6[add4] b3 V7 b3.5 V+7
+Note: complex chord. This captures the A but not the Bb-vs-B and misses the dominant 7th sound
+m5var1 b1 I6 b1.5 e: V43 b3 bb: V7 b3.5 V+7
+Note: e: V43 reflects the dominant 7th sound but assumes enharmonics (Eb>D#, Gb>F#), and still doesn't capture it all (Bb)
+m6 b1 V7/iv
+m7 b1 VI b1.5 i64 b2 Ger65
 m8 = m7
 m9 b1 viio64/ii b2 V9 b3 V7
 m10 b1 I
-m11 b1 F: V42
+m11 b1 f: V42
 m12 b1 ivb7
 m13 b1 Eb: V+7
 m14 b1 I64 b3 I+64
