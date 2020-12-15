@@ -92,6 +92,10 @@ This code generates the 'feedback' files.
 It takes in a harmonic analysis and the corresponding score to assess how well they match.
 Stay tuned for an interactive app with a friendly interface for making use of this code.
 
+### [Anthology](/Code/anthology.py)
+
+Methods for retrieving instances of specific chords and progression from the analyses.
+
 ### [Contents](/Code/contents.py)
 
 A short script for keeping track of the ever growing corpus' contents.
@@ -138,7 +142,9 @@ The following tables set out how these options relate to each other in a minor. 
 
 ### Licence
 
-All new content in this repository, including the code, the new analyses, and the conversion (specifically) of existing analyses is available under the [CC BY-SA licence](https://creativecommons.org/licenses/by-sa/3.0/) with the exception of the [Roman Umpire](Code/romanUmpire.py) which is currently slightly more restrictive [CC BY-NC](https://creativecommons.org/licenses/by-nc/3.0/). If you wish to use the Umpire in a commercial context then please get in touch to discuss your plans.
+New content in this repository, including the new analyses, most code, and the conversion (specifically) of existing analyses is available under the [CC BY-SA licence](https://creativecommons.org/licenses/by-sa/3.0/).
+The [Roman Umpire](Code/romanUmpire.py) and [Anthology](Code/anthology.py) scripts are subject to the slightly more restrictive [CC BY-NC](https://creativecommons.org/licenses/by-nc/3.0/).
+If you wish to use these scripts in a commercial context then please get in touch to discuss your plans.
 
 For analyses that originated elsewhere and have been converted into the format used here, please refer to the original source for licence.
 Links are provided to those original sources throughout the repository including the itemised list above and within every `analysis.txt` file.
