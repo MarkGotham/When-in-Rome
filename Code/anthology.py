@@ -26,10 +26,10 @@ from music21 import roman
 
 from typing import Optional
 
+import csv
 import fnmatch
 import os
-import csv
-
+import unittest
 
 # ------------------------------------------------------------------------------
 
@@ -127,71 +127,94 @@ class RnFinder(object):
 
 # Static
 
-def isMixture(rn: roman.RomanNumeral):
-    '''
-    Checks if a RomanNumeral is an instance of modal mixture. Specifically returns True for
+def isMixture(rn: roman.RomanNumeral,
+              considerSecondaryNumerals: bool = False):
+        '''
+        Checks if a RomanNumeral is an instance of 'modal mixture' in which the chord is not
+        diatonic in the key specified, but would be would be in the parallel (German: variant)
+        major / minor and can therefore be thought of as a 'mixture' or major and minor modes, or
+        as a 'borrowing' from the one to the other.
+        Examples include i in major or I in minor (sic).
 
-    Major context:
-        scale degree 1 and triad quality minor (minor tonic chord)
-        scale degree 2 and triad quality diminished (covers both iio and iiø7 in any inversion)
-        scale degree b3 and triad quality major (e.g. Eb in C)
-        scale degree 4 and triad quality minor
-        scale degree 6 and triad quality major
-        scale degree 7 and it's a diminished seventh specifically (the triad is dim. in both)
-    Minor context:
-        scale degree 1 and triad quality major (major tonic chord)
-        scale degree 2 and triad quality minor (not diminished)
-        scale degree #3 and triad quality minor (e.g. e in c, rare)
-        scale degree 4 and triad quality major
-        scale degree 7 and it's a half diminished seventh specifically (the triad is dim. in both)
-    '''
+        Specifically, this method returns True for all and only the following cases in any
+        inversion:
 
-    accident = rn.frontAlterationAccidental
+        Major context:
+        scale degree 1 and triad quality minor (minor tonic chord);
+        scale degree 2 and triad quality diminished (covers both iio and iiø7);
+        scale degree b3 and triad quality major (e.g. Eb in C);
+        scale degree 4 and triad quality minor;
+        scale degree 5 and triad quality minor (NB: potentially controversial);
+        scale degree b6 and triad quality major;
+        scale degree b7 and triad quality major; and
+        scale degree 7 and it's a diminished seventh specifically (the triad is dim. in both).
 
-    sd = rn.scaleDegree
-    q = rn.quality
-    mode = rn.key.mode
+        Minor context:
+        scale degree 1 and triad quality major (major tonic chord);
+        scale degree 2 and triad quality minor (not diminished);
+        scale degree #3 and triad quality minor (e.g. e in c);
+        scale degree 4 and triad quality major; and
+        scale degree 7 and it's a half diminished seventh specifically (the triad is dim. in both).
+        '''
 
-    if rn.secondaryRomanNumeral:
+        if considerSecondaryNumerals and rn.secondaryRomanNumeral:
+            return rn.secondaryRomanNumeral.isMixture()
+
+        if (not rn.isTriad) and (not rn.isSeventh):
+            return False
+
+        if not rn.key.mode:  # keyObj can also be a Scale (with no mode)
+            return False
+
+        mode = rn.key.mode
+        if mode not in ('major', 'minor'):
+            return False
+
+        scaleDegree = rn.scaleDegree
+        if scaleDegree not in range(1, 8):
+            return False
+
+        quality = rn.quality
+        if quality not in ('diminished', 'major', 'minor'):
+            return False
+
+        if rn.frontAlterationAccidental:
+            frontAccidentalName = rn.frontAlterationAccidental.name
+        else:
+            frontAccidentalName = 'natural'
+
+        majorKeyMixtures = {
+            (1, 'minor', 'natural'),
+            (2, 'diminished', 'natural'),
+            (3, 'major', 'flat'),
+            (4, 'minor', 'natural'),
+            (5, 'minor', 'natural'),  # Potentially controversial
+            (6, 'major', 'flat'),
+            (7, 'major', 'flat'),  # Note diminished 7th handled separately
+        }
+
+        minorKeyMixtures = {
+            (1, 'major', 'natural'),
+            (2, 'minor', 'natural'),
+            (3, 'minor', 'sharp'),
+            (4, 'major', 'natural'),
+            # 5 N/A
+            # 6 N/A
+            # 7 half-diminished handled separately
+        }
+
+        if mode == 'major':
+            if (scaleDegree, quality, frontAccidentalName) in majorKeyMixtures:
+                return True
+            elif (scaleDegree == 7) and (rn.isDiminishedSeventh()):
+                return True
+        elif mode == 'minor':
+            if (scaleDegree, quality, frontAccidentalName) in minorKeyMixtures:
+                return True
+            elif (scaleDegree == 7) and (rn.isHalfDiminishedSeventh()):
+                return True
+
         return False
-    # TODO: consider handling of secondary Roman Numerals
-
-    if mode == 'major':
-
-        if accident:  # altered root, for the case of bIII and bVI
-            if sd in [3, 6]:
-                if (accident.name == 'flat') and (q == 'major'):
-                    return True
-        else:  # no accidental:
-            if (sd == 1) and (q == 'minor'):  # parallel minor tonic chord
-                return True
-            elif (sd == 2) and (q == 'diminished'):  # both iio and iiø7 in any inversion
-                return True
-            elif (sd == 4) and (q == 'minor'):
-                return True
-            # elif (sd == 5) and (q == 'minor'):  # TODO: maybe this?
-            #     return True
-            elif (sd == 7) and (rn.isDiminishedSeventh()):  # triad alone is dim in both
-                return True
-
-    elif mode == 'minor':
-
-        if accident:  # altered root, for the case of #iii (rare, e.g. e minor in c minor)
-            if (sd == 3) and (accident.name == 'sharp') and (q == 'minor'):
-                return True
-        else:  # no accidental:
-            if (sd == 1) and (q == 'major'):  # parallel major tonic chord
-                return True
-            elif (sd == 2) and (q == 'minor'):  # sic, not diminished.
-                return True
-            elif (sd == 4) and (q == 'major'):
-                return True
-            # ignore scale degrees 5 and 6
-            elif (sd == 7) and (rn.isHalfDiminishedSeventh()):  # because the triad is dim in both
-                return True
-
-    else:
-        raise ValueError('Key must be major or minor (keyObj.mode).')
 
 
 def dataFromRn(rn):
@@ -343,6 +366,24 @@ def process():
 
 # ------------------------------------------------------------------------------
 
-if __name__ == '__main__':
+class Test(unittest.TestCase):
 
-    oneSearchOneCorpus()
+    def testMixture(self):
+
+        for fig in ['i', 'iio', 'bIII', 'iv', 'v', 'bVI', 'bVII', 'viio7']:
+            # True, major key:
+            self.assertTrue(isMixture(roman.RomanNumeral(fig, 'A')))
+            # False, minor key:
+            self.assertFalse(isMixture(roman.RomanNumeral(fig, 'a')))
+
+        for fig in ['I', 'ii', '#iii', 'IV', 'viiø7']:
+            # False, major key:
+            self.assertFalse(isMixture(roman.RomanNumeral(fig, 'A')))
+            # True, minor key:
+            self.assertTrue(isMixture(roman.RomanNumeral(fig, 'a')))
+
+
+# ------------------------------------------------------------------------------
+
+if __name__ == '__main__':
+    unittest.main()
