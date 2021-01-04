@@ -4,14 +4,15 @@ Analyst: Mark Gotham, manually, through judicious automation, and in collaborati
 Note: Score taken from the 'Open Score' CC0 encoding at https://musescore.com/OpenScore-Lieder-Corpus
 Note: Please submit a pull request for anything inaccurate, or submit a separate analysis for an alternative reading.
 
-
 Time Signature: 3/4
 
-Form: Verse 1
+Form: Introduction
 
 m1 b1 c: i
 m2
-m3 b1 viio43/V
+m3 b1 viio43/V ||
+
+Form: Verse 1
 
 m6 b3.5 i
 m7 b1 i
@@ -20,13 +21,15 @@ m9 b1 f: i64 b3 V7
 m10 b1 i
 m11 b1 c: iv6
 m12 b1 i64 b2 V b3 i6
-m13 b1 i64 b3 V
+m13 b1 i64 b3 V ||
 
-Form: Verse 1
+Form: Verse 2
 
 m14-16 = m1-3
 
-Note: Yes, continuous diminished 7th for this entire span.
+Note: Yes, diminished 7th continues for this entire span (16-27).
+
+Form: Verse 3
 
 m27 b3.5 i
 
@@ -34,6 +37,8 @@ m28-31 = m7-10
 m32 b1 c: iv6 b2 bII6
 m33-34 = m12-13
 
+Form: Coda
+
 m35-39 = m1-5
 
-Note: Notoriously enigmatic ending. 'Resolve' to i? Retain the viio43/V?
+Note: Notoriously enigmatic ending. 'Resolve' to i? Retain the diminished 7th?
