@@ -13,7 +13,7 @@ Form: Verse 1
 m1 b1 I b4 IV64
 m2 b3 I b4 I42
 m3 b1 vi b3 I64 b4 IV
-m4 b1 I6 b3 V43 b4 vi6
+m4 b1 I6 b3 V43 b4 vi65
 m5 b1 V b3 I b4 viio7/II
 m6 b1 V7 b2 V64/ii b3 ii6 b4 viio7/iii
 m7 b1 I64 b3 IV b4 viio7/V
@@ -22,7 +22,9 @@ m8var1 b1 V b2.33 V42 b3.33 iii b4.33 V43 ||
 
 Form: Verse 2
 
-m9-11 = m1-3
+m9-10 = m1-2
+m11 vi b3 iii6 b4 IV
+Note: like m3 but with D on beat 3 this time. (See 1st ed., Breitkopf und Härtel)
 m12 b1 I6 b4 IV
 m13 b3 I6 b4 V43
 m14 b1 I b4 c: V43
@@ -37,35 +39,42 @@ m19-26 = m1-8
 
 Form: Verse 4
 
-m27 b1 I b3 V7 b4 viio7/iii
+Pedal: Eb m27 b1 m28 b1 
+m27 b1 I b3 V43 b4 viio7/iii
 m28 b1 V7/IV
 m29 b1 IV b3 viiø43
 m30 b1 V7/vi
-m31 b1 vi b3 Eb: V7
+m31 b1 vi b3 IV
 m32 b1 I6 b3 V43 b4 I
-m33 b1 V42 b2 IV b3 V b4.67 v
+m33 b1 V42 b2 IV b3 V b4 v
+m33var1 b1 V42 b2 IV b3 V b4.67 v
 m34 b1 ii
 m35 b1 Ab: IV b3 viiø43
 m36 b1 I b2 Eb: V42 b3 I b4 V6/V
 m37 b1 I64 b3 IV b4 I6
 m38 b1 V7 ||
 
-m39 b1 I b1.33 V42/iv b2.33 iv b3.33 I64 b4.33 ii65
-m40 b1 iiø42 b3 V64 b4 viio43 b4.5 VII
-m41 b1 I b2 V7 b2.5 V7/IV b3 I7 b3.5 IV b4 I
-m42 b1.5 viio7 b2.5 viio43 b3 V43 b3.5 IV b4 viio7 ||
+m39 b1 V7/iv b2 iv64 b3 I b4 iiø42[no5]
+m39var1 b1 I b1.33 V42/iv b2.33 iv6 b3.33 I64 b4.33 iiø65
+Note: ignoring the pedal and with more detailed beat positions
+m40 b1 iiø42
+m40var1 b1 iiø65 b3 V b4 iiø43
+m41 b1 I b2 V7/iv b3 iv64 b4 I
+Note: m41 like m39 displacement by a beat
 
 Form: Verse 5
 
+m42 b1 iiø42 ||
+Note: m41-42 = m39-40
 m43 b1 I
-m44 b1.5 viio7 b3 V43 b3.5 V7 b4 viio7
+m44 = m40
 m45 b1 I
-m46 b1 vi b4 viio65/V
-m47 b1 V b4 V65
-m48 b2.5 IV b4 I64
-m49 b1 V42/V b4 I64 b4.5 I
-m50 b1 IV b2.5 I b3 IV6 b3.5 V65/V b4 V7
-m51 b1 I b3 IV b3.5 IV7 b4 V7 b4.5 V
+m46 b1 c: i b4 viio43/V
+m47 b1 V b4 Eb: V65/IV
+m48 b2 IV b4 I64
+m49 b1 V43/V b4 I64
+m50 b1 IV b2 I64 b3 viiø65/V b4 V7
+m51 b1 I b3 viio42
 m52 b1 I b3 V7
 m53 b1 I
 m54 b1
