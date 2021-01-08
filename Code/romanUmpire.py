@@ -59,7 +59,7 @@ from music21 import stream
 from copy import deepcopy
 import csv
 import os
-from typing import Union
+from typing import Union, Optional
 import unittest
 
 
@@ -105,32 +105,34 @@ class HarmonicRange:
 
         # Initialise with Nones prior to (optionally) setting those values.
 
-        self.startOffset = None
-        self.endOffset = None
-        self.quarterLength = None
+        self.startOffset: Optional[float] = None
+        self.endOffset: Optional[float] = None
+        self.quarterLength: Optional[float] = None
 
-        self.startMeasure = None
-        self.endMeasure = None
-        self.measureLength = None
+        self.startMeasure: Optional[int] = None
+        self.endMeasure: Optional[int] = None
+        self.measureLength: Optional[int] = None
 
-        self.startBeat = None
-        self.endBeat = None
-        self.beatStrength = None
+        self.startBeat: Optional[float] = None
+        self.endBeat: Optional[float] = None
+        self.beatStrength: Optional[float] = None
 
-        self.slices = []
+        self.slices: Optional[list] = []
+
+        self.scorePitchUsageDict = {}
 
         # Feedback
 
-        self.pitchFeedbackMessage = None
-        self.pitchMatchStrength = None  # NB for pitch only
-        self.pitchSuggestions = []
+        self.pitchFeedbackMessage: Optional[str] = None
+        self.pitchMatchStrength: Optional[float] = None  # NB for pitch only
+        self.pitchSuggestions: Optional[list] = []
 
-        self.rareRnFeedbackMessage = None
+        self.rareRnFeedbackMessage: Optional[str] = None
 
-        self.metricalFeedbackMessage = None
+        self.metricalFeedbackMessage: Optional[str] = None
 
-        self.bassFeedbackMessage = None
-        self.bassSuggestions = []
+        self.bassFeedbackMessage: Optional[str] = None
+        self.bassSuggestions: Optional[list] = []
 
         if source:
 
@@ -148,10 +150,10 @@ class HarmonicRange:
                         self.rareRnFeedbackMessage = msg
 
                 else:
-                    self.figure = None
-                    self.key = None
-                    self.bassPitch = None
-                    self.pitches = []
+                    self.figure: Optional[str] = None
+                    self.key: Optional[str] = None
+                    self.bassPitch: Optional[str] = None
+                    self.chordPitches: Optional[list] = []
 
             else:
                 raise ValueError('Initialise a HarmonicRange object either empty, or'
@@ -174,8 +176,41 @@ class HarmonicRange:
         '''
         self.figure = rn.figure
         self.key = rn.key
-        self.pitches = [p.name for p in rn.pitches]
+        self.chordPitches = [p.nameWithOctave for p in rn.pitches]
         self.bassPitch = rn.bass().name
+
+    def makeScorePitchUsageDict(self):
+        '''
+        Make a 'ScorePitchUsageDict' dict for recording which pitches are used in the score
+        and to what extent (combined length).
+        '''
+        for s in self.slices:
+            for p in s.pitches:
+                if p in self.scorePitchUsageDict:
+                    self.scorePitchUsageDict[p] += s.quarterLength
+                else:
+                    self.scorePitchUsageDict[p] = s.quarterLength
+
+    def calculatePitchMatchStrength(self):
+        '''
+        Calculates the 'PitchMatchStrength':
+        the proportion (float between 0 and 1) of pitches in the score that are
+        accounted for by the specified harmony (weighted by length).
+        '''
+        used = 0
+        total = 0
+
+        comparison = [x[:-1] for x in self.chordPitches]  # Remove octave for comparison
+
+        for x in self.scorePitchUsageDict:
+            total += self.scorePitchUsageDict[x]
+            if x[:-1] in comparison:
+                used += self.scorePitchUsageDict[x]
+
+        if total == 0:
+            self.pitchMatchStrength = 0
+        else:
+            self.pitchMatchStrength = round((used / total), 2)
 
 
 # ------------------------------------------------------------------------------
@@ -189,9 +224,41 @@ class ScoreAndAnalysis:
         Roman numeral analysis (either on the score or as a separate Roman text analysis file);
         comparisons between the two (with HarmonicRange objects).
 
-    The analysisLocation variable:
+    This class includes methods for
+        processing feedback,
+        writing feedback and / or scores for review
+
+    Parameters:
+
+    scoreOrData:
+        a score (music21.stream.Score object) or str path to such a file.
+
+    analysisLocation:
         defaults to 'On score' (for analyses input on the score itself);
-        for separate analyses, analysisLocation should be the pre-converted rntxt file.
+        for separate analyses, analysisLocation should be the pre-converted rntxt file
+        (again, that file itself, or a str path to such a file are both accepted).
+
+    analysisParts:
+        an int for the number of analysis (i.e. non-score) parts
+        so the system knows to exclude them from score-based considerations.
+
+    analysisPartNo:
+        an int for the part number (in score order) of the analysis part where applicable.
+        Defaults to -1 (i.e. the lowest part).
+
+    minBeatStrength:
+        A float for the least beat strength acceptable before the feedback draws
+        attention to the chord change on the basis of the weak metrical position.
+
+    tolerance:
+        A float for the proportional match between the pitches of the chord and the
+        corresponding part of the piece.
+        Matches lower that this value attract pitch feedback.
+
+    carryPitchesOver:
+        Do pitches remain in effect over rests?
+        By default, this class ignores rests, leaving pitches in place until the next pitched event
+        as part fof calculating match strenth.
     '''
 
     def __init__(self,
@@ -297,10 +364,10 @@ class ScoreAndAnalysis:
                 self._getOnScoreAnalysis()
             else:  # analysisLocation must be a path to a Roman text file
                 if os.path.splitext(self.analysisLocation)[1] not in ['.txt', '.rntxt']:
-                    msg = 'The \'analysisLocation\' argument must point to one of ' \
+                    msg = "The 'analysisLocation' argument must point to one of " \
                           'the path (str) to a Roman text file (with extension .txt or .rntxt); ' \
                           'such a file already parsed by music21; or ' \
-                          'the string \'On score\' that it\'s on the score already (default).'
+                          "the string 'On score' that it's on the score already (default)."
                     raise ValueError(msg)
                 self.analysis = converter.parse(self.analysisLocation, format='Romantext').parts[0]
                 self._getSeparateAnalysis()
@@ -607,7 +674,7 @@ class ScoreAndAnalysis:
                   'This is usually a question of either the beginning or end: either\n' \
                   '1) The final chord in the analysis ' \
                   'comes before the final measure, or\n' \
-                  '2) There\'s an anacrusis in the score without an accompanying harmony ' \
+                  "2) There's an anacrusis in the score without an accompanying harmony " \
                   '(i.e. the analysis is missing measure 0). ' \
                   'In that latter case, the score and analysis will be misaligned, ' \
                   'and the HarmonicRanges will not work properly. ' \
@@ -746,21 +813,20 @@ class ScoreAndAnalysis:
             harmonicRangeLength = sum([round(sl.quarterLength, 2) for sl in hr.slices])
             # Note: Avoid division by 0
 
-            for thisSlice in hr.slices:  # NB: Rest slices handled already
-                pitchesNameNoOctave = [x[:-1] for x in thisSlice.pitches]  # Pitch only
-                proportionSame = self._proportionSimilarity(hr, pitchesNameNoOctave)
-                # weighedSimilarity = proportionSame * slice.beatStrength  # TODO
-                overall += thisSlice.quarterLength * proportionSame / harmonicRangeLength
-                overall = round(overall, 2)
+            # if hr.scorePitchUsageDict():
+            #     continue
+
+            hr.makeScorePitchUsageDict()
+            hr.calculatePitchMatchStrength()
 
             compLength = hr.endOffset - hr.startOffset
 
-            if overall >= self.tolerance:
+            if hr.pitchMatchStrength >= self.tolerance:
                 pitchNumerator += compLength
 
-            else:  # overall < self.tolerance:  # Process feedback and reduce overallPitchScore.
+            else:  # < self.tolerance so get feedback and reduce overallPitchScore
 
-                pitchNumerator += (compLength * overall)
+                pitchNumerator += (compLength * hr.pitchMatchStrength)
 
                 # Suggestions
                 pl = [pList.pitches for pList in hr.slices]
@@ -771,22 +837,22 @@ class ScoreAndAnalysis:
                         rn = roman.romanNumeralFromChord(chd, hr.key)
                         if rn.figure != hr.figure:
                             suggestions.append([sl.measure, sl.beat, rn.figure, sl.pitches])
-
-                msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
-                      f'indicating the pitches {hr.pitches} ' \
-                      f'accounting for successive slices of {pl}.'
-                msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
-                hr.pitchFeedbackMessage = msg
-                hr.pitchMatchStrength = f'Match strength estimated at {round(overall * 100, 2)}%.'
-                hr.pitchSuggestions = []
-
                 if len(suggestions) > 0:
                     for s in suggestions:
                         hr.pitchSuggestions.append(f'm{s[0]} b{s[1]} {s[2]} for the slice {s[3]}')
 
+                # Message
+                msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
+                      f'indicating the pitches {hr.chordPitches} ' \
+                      f'accounting for successive slices of {pl}.'
+                msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
+                hr.pitchFeedbackMessage = msg
+
+                # Note: pitchMatchStrength now handled above
+
                 self.totalPitchFeedback += 1
 
-            self.overallPitchScore = round(pitchNumerator * 100 / self.totalLength, 2)
+        self.overallPitchScore = round(pitchNumerator * 100 / self.totalLength, 2)
 
     def compareBass(self):
         '''
@@ -821,8 +887,8 @@ class ScoreAndAnalysis:
                 inversionSuggestions = []
 
                 for bassPitch in bassPitchesNoOctave:
-                    if bassPitch in hr.pitches:  # already retrieved
-                        suggestedPitches = hr.pitches
+                    if bassPitch in hr.chordPitches:  # already retrieved
+                        suggestedPitches = hr.chordPitches
                         suggestedPitches.append(bassPitch + '0')  # To ensure it is lowest
                         suggestedChord = chord.Chord(suggestedPitches)
                         rn = roman.romanNumeralFromChord(suggestedChord, hr.key)
@@ -870,7 +936,7 @@ class ScoreAndAnalysis:
 
             return 0
 
-        intersection = [x for x in sl if x in hr.pitches]
+        intersection = [x for x in sl if x in hr.chordPitches]
         proportion = len(intersection) / len(sl)
 
         return proportion
@@ -917,7 +983,7 @@ class ScoreAndAnalysis:
                     if hr.pitchFeedbackMessage:
                         if len(hr.pitchSuggestions) > 0:
                             pitchToPrint.append(hr.pitchFeedbackMessage)
-                            pitchToPrint.append(hr.pitchMatchStrength)
+                            pitchToPrint.append(str(hr.pitchMatchStrength))
                             pitchToPrint.append('How about:')
                             for x in hr.pitchSuggestions:
                                 pitchToPrint.append(x)
@@ -925,9 +991,9 @@ class ScoreAndAnalysis:
                         else:  # no suggestions
                             if not constructiveOnly:
                                 pitchToPrint.append(hr.pitchFeedbackMessage)
-                                pitchToPrint.append(hr.pitchMatchStrength)
+                                pitchToPrint.append(str(hr.pitchMatchStrength))
                                 pitchToPrint.append('Sorry, no suggestions - '
-                                                    'I can\'t find any triads or sevenths.')
+                                                    "I can't find any triads or sevenths.")
                                 pitchToPrint.append('\n')
 
         if rare:
@@ -975,7 +1041,7 @@ class ScoreAndAnalysis:
                 bassToPrint.append(f'Total cases: {self.totalBassFeedback}\n')
                 bassToPrint.append('Overall bass note match: '
                                    f'{round(self.overallBassScore * 100, 2)}%.\n')
-                bassToPrint.append('In these cases, the specified bass note doesn\'t '
+                bassToPrint.append("In these cases, the specified bass note doesn't "
                                    'appear in the lowest part during. '
                                    '(NB: pedal points are not yet supported):\n')
                 for hr in self.harmonicRanges:
@@ -1133,7 +1199,9 @@ class Test(unittest.TestCase):
         basePath = os.path.join('..', 'Corpus', corpus, composer, collection, piece)
         score = converter.parse(os.path.join(basePath, 'score.mxl'))
         analysis = converter.parse(os.path.join(basePath, 'analysis.txt'), format='romantext')
-        testSeparate = ScoreAndAnalysis(score, analysis)
+        testSeparate = ScoreAndAnalysis(score,
+                                        analysis,
+                                        tolerance=0.8)  # Tests setting a high bar
         testSeparate.runComparisons()
 
         self.assertEqual(testSeparate.totalPitchFeedback, 2)
@@ -1160,7 +1228,7 @@ class Test(unittest.TestCase):
                                        analysisLocation='On score',
                                        analysisParts=1,
                                        minBeatStrength=0.25,
-                                       tolerance=0.6)
+                                       tolerance=0.6)  # default value
 
         onScoreTest.runComparisons()
         self.assertEqual(onScoreTest.totalPitchFeedback, 0)
@@ -1183,11 +1251,12 @@ class Test(unittest.TestCase):
         basePath = os.path.join('..', 'Corpus', corpus, composer, collection, piece)
 
         testTab = ScoreAndAnalysis(os.path.join(basePath, 'slices.tsv'),
-                                   analysisLocation=os.path.join(basePath, 'analysis.txt'))
+                                   analysisLocation=os.path.join(basePath, 'analysis.txt'),
+                                   tolerance=0.7)
 
         testTab.runComparisons()
 
-        self.assertEqual(testTab.totalPitchFeedback, 2)
+        self.assertEqual(testTab.totalPitchFeedback, 3)
         self.assertEqual(testTab.harmonicRanges[22].pitchFeedbackMessage[:29],
                          'Measure 11, beat 3, viio6/V i')
 
