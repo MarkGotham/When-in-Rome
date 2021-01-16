@@ -120,6 +120,7 @@ class HarmonicRange:
         self.slices: Optional[list] = []
 
         self.scorePitchUsageDict = {}
+        self.pitchesInBothScoreAndChord: Optional[list] = []
 
         # Feedback
 
@@ -205,6 +206,7 @@ class HarmonicRange:
         for x in self.scorePitchUsageDict:
             total += self.scorePitchUsageDict[x]
             if x[:-1] in comparison:
+                self.pitchesInBothScoreAndChord.append(x)
                 used += self.scorePitchUsageDict[x]
 
         if total == 0:
@@ -376,12 +378,13 @@ class ScoreAndAnalysis:
                                outPath: str = '.',
                                outFile: str = 'on_score',
                                feedback: bool = True,
+                               voicingFromScore: bool = False,
                                lieder: bool = True):
         '''
         Mostly to combine an off-score analysis with the corresponding score and write to disc.
 
         Option (feedback=True, default) to include markers in the score
-        for moments with assocaited feedback.
+        for moments with associated feedback.
 
         Error raised in the case of a call on score with analysis already on there
         (i.e. with analysisLocation = 'On score' in the init) and feedback as false.
@@ -426,11 +429,33 @@ class ScoreAndAnalysis:
         if feedback:
             self._feedbackOnScore()
 
+        if voicingFromScore:
+            self.makeScoreVoiceLeadingReduction()
+
         if outFile == 'on_score':
             if self.name:
                 outFile = self.name + '_on_score',
 
         self.scoreWithAnalysis.write('mxl', fp=f'{os.path.join(outPath, outFile)}.mxl')
+
+    def makeScoreVoiceLeadingReduction(self):
+        '''
+        Takes the analysis part and replaces the default, one-stave, close-position
+        chords with voicing an spacing based on the pitches used in the score
+        for a more musical reduction.
+        '''
+
+        count = 0
+        for rn in self.scoreWithAnalysis.parts[-1].recurse().getElementsByClass('RomanNumeral'):
+            rn.pitches = self.harmonicRanges[count].pitchesInBothScoreAndChord
+            count += 1
+
+        count += 1  # sic, for off by one
+
+        if count != len(self.harmonicRanges):  # i.e. number of hrs vs RNs
+            self.errorLog.append(("There's a mismatch between the number of "
+                                  "harmonicRange and Roman numeral objects. "
+                                  "This shouldn't happen and the chords may be displaced."))
 
     def _removeGraceNotes(self):
         '''
@@ -808,16 +833,10 @@ class ScoreAndAnalysis:
 
         for hr in self.harmonicRanges:
 
-            overall = 0
-
-            harmonicRangeLength = sum([round(sl.quarterLength, 2) for sl in hr.slices])
-            # Note: Avoid division by 0
-
-            # if hr.scorePitchUsageDict():
-            #     continue
-
-            hr.makeScorePitchUsageDict()
-            hr.calculatePitchMatchStrength()
+            if not hr.scorePitchUsageDict:
+                hr.makeScorePitchUsageDict()
+            if not hr.pitchMatchStrength:
+                hr.calculatePitchMatchStrength()
 
             compLength = hr.endOffset - hr.startOffset
 
