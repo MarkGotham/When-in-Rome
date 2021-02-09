@@ -25,9 +25,10 @@ music21 repo's [roman.py](https://github.com/cuthbertLab/music21/blob/master/mus
 """
 
 from music21 import converter
+from music21 import interval
 from music21 import roman
 
-from typing import Optional
+from typing import List, Optional, Union
 
 import csv
 import fnmatch
@@ -92,7 +93,8 @@ class RnFinder(object):
                     if rn.isSeventhOfType([0, 4, 8, 11]) or rn.isSeventhOfType([0, 3, 7, 11]):
                         self.augmentedChords.append(dataFromRn(rn))
 
-    def findProgressionByRns(self, rns_list: list):
+    def findProgressionByRns(self,
+                             rns_list: List[str]):
         """
         Find a specific progression of Roman numerals in a given key input by the user as
         a list of Roman numerals figures like ['I', 'V65', 'I']
@@ -118,12 +120,120 @@ class RnFinder(object):
 
                 self.userRnProgressionList.append(info)
 
-    # def findProgressionByTypeAndRoot(self, rn1, rn2):
-    #     '''
-    #     Equivalent method for finding progressions by triad type and root motion,
-    #     including across key-changes.
-    #     '''
-    # TODO
+    def findProgressionByTypeAndRoot(self,
+                                     qualitiesList: List = ['major', 'major'],
+                                     intervalList: List[Union[str, interval.Interval]] = ['M2'],
+                                     bassOrRoot: Union['root', 'bass'] = 'root',
+                                     ):
+        '''
+        Find a specific progression of chords using Roman numerals but
+        searching by triad quality and bass or root motion.
+        The defaults seek instances of a pair of major triads with
+        the root of the second being tone higher than the first.
+        This method includes instances that traverse key change.
+
+        The logic is similar to findProgressionByRns,
+        but refactored due to the creation of interval object here.
+        '''
+
+        lnQs = len(qualitiesList)
+
+        if lnQs != len(intervalList) + 1:
+            raise ValueError('There must be exactly one more quality than interval.')
+
+        validQualities = ['diminished', 'minor', 'major', 'augmented']
+        for q in qualitiesList:
+            if q not in validQualities:
+                raise ValueError(f'All the qualities values must be in {validQualities}')
+
+        if bassOrRoot == 'bass':
+            allRelevant = [[x.quality, x.bass.name, x.figure, x.key.name] for x in self.rns]
+        elif bassOrRoot == 'root':
+            allRelevant = [[x.quality, x.root.name, x.figure, x.key.name] for x in self.rns]
+        else:
+            raise ValueError('The bassOrRoot variable must be either bass or root.')
+
+        for i in range(len(intervalList)):
+            if isinstance(intervalList[i], interval.Interval):
+                intervalList[i] = intervalList[i].name
+
+        # Add intervals
+        for x in range(len(allRelevant)):
+            thisEntry = allRelevant[x]
+            nextEntry = allRelevant[x + 1]
+            i = interval.Interval(thisEntry[1], nextEntry[1]).name  # bass or root
+            thisEntry.append(i)
+
+        for index in range(len(allRelevant) - lnQs):
+            thisRange = allRelevant[index: index + lnQs]
+            these_qualities = [x[0] for x in thisRange]
+            these_intervals = [x[-1] for x in thisRange]
+            if (these_qualities == qualitiesList) and these_intervals == intervalList:
+                info = [self.rns[index].getContextByClass('Measure').measureNumber,
+                        [x[2] for x in thisRange],  # figures
+                        [x[3] for x in thisRange],  # key(s).  TODO. better way for key changes?
+                        ]
+                self.userRnProgressionList.append(info)
+
+    def findPotentialCommonToneDiminishedSeventh(self,
+                                                 requireProlongation: bool = True):
+        """
+        Find a potential instance of the common tone diminished seventh in any form by seeking:
+        a diminished seventh,
+        which shares at least one pitch with
+        the chord before, the one after, or both.
+
+        If requireProlongation is True, the results are limited to cases where the
+        diminished seventh is preceded and followed by the same chord.
+        """
+
+        for index in range(1, len(self.rns) - 1):
+
+            info = []
+
+            thisChord = self.rns[index]
+
+            if thisChord.isDiminishedSeventh():
+
+                previousChord = self.rns[index - 1]
+                nextChord = self.rns[index + 1]
+                if requireProlongation:
+                    if previousChord != nextChord:
+                        break
+
+                pitchesNow = set([p.name for p in thisChord.pitches])
+
+                if previousChord.key == thisChord.key:  # currently required, may change
+                    if previousChord.figure != thisChord.figure:  # TODO handling of repeating RNs
+                        pitchesBefore = set([p.name for p in previousChord.pitches])
+                        if pitchesNow & pitchesBefore:  # any shared pitch(class)
+                            info = [previousChord.getContextByClass('Measure').measureNumber,
+                                    [previousChord.figure, thisChord.figure],
+                                    previousChord.key.name,
+                                    ]
+                        else:
+                            if requireProlongation:
+                                continue  # can't be without the previous chord
+
+
+                nextChord = self.rns[index + 1]
+                if nextChord.key == thisChord.key:
+                    if nextChord.figure != thisChord.figure:
+                        if requireProlongation and (nextChord.figure != previousChord.figure):
+                            # info = []
+                            continue
+                        pitchesAfter = set([p.name for p in previousChord.pitches])
+                        if pitchesNow & pitchesAfter:
+                            if info:  # before and after, add to existing (combine all three)
+                                info[1].append(nextChord.figure)
+                            else:
+                                info = [thisChord.getContextByClass('Measure').measureNumber,
+                                        [thisChord.figure, nextChord.figure],
+                                        thisChord.key.name,
+                                        ]
+
+                if info:
+                    self.userRnProgressionList.append(info)
 
 
 # ------------------------------------------------------------------------------
@@ -150,6 +260,7 @@ validSearches = ['Modal Mixture',
                  'Augmented Sixths',
                  'Neapolitan Sixths',
                  'Applied Chords',
+                 'Common Tone Diminished Sevenths',
                  'Progressions']
 
 
@@ -165,6 +276,7 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
         'Augmented Sixths',
         'Neapolitan Sixths',
         'Applied Chords',
+        'Common Tone Diminished Sevenths'
         and
         'Progressions'.
     Defaults to the 'OpenScore-LiederCorpus' and 'Modal mixture'.
@@ -232,6 +344,9 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
                 elif what == 'Applied Chords':
                     rnf.findAppliedChords()
                     tempList = rnf.appliedChords
+                elif what == 'Common Tone Diminished Sevenths':
+                    rnf.findPotentialCommonToneDiminishedSeventh()
+                    tempList = rnf.userRnProgressionList
                 elif what == 'Progressions':
                     rnf.findProgressionByRns(rns_list=progression)
                     tempList = rnf.userRnProgressionList
@@ -266,7 +381,7 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
             svOut.writerow([x for x in entry])
 
 
-def process():
+def processAll():
     """
     Runs the oneSearchOneCorpus function for all pairs of
     corpus and search terms except 'Progressions'.
