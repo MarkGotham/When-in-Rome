@@ -176,7 +176,7 @@ class HarmonicRange:
         Retrieve additional values specific to RomanNumeral objects.
         '''
         self.figure = rn.figure
-        self.key = rn.key
+        self.key = rn.key.tonicPitchNameWithCase.replace('-', 'b')
         self.chordPitches = [p.nameWithOctave for p in rn.pitches]
         self.bassPitch = rn.bass().name
 
@@ -537,26 +537,75 @@ class ScoreAndAnalysis:
 
     def writeSlicesFromScore(self,
                              outPath: str = '.',
-                             outFile: str = 'ScoreInfoSV'):
+                             outFile: str = 'slices',
+                             includeAnalysis: bool = True,
+                             changesOnly: bool = True):
         '''
-        Optional, subsidiary method for writing out the Slice object information
-        retrieved from the score to a value separated file.
+        Subsidiary method for writing out the Slice object information
+        retrieved from the score to a value separated file with columns for:
+        'offset', 'measure', 'beat', 'beatStrength', 'quarterLength', 'pitches'.
 
         Having done so, that information can be re-retrieved via retrieveSlicesFromList.
+        Among other benefits, its computationally lighter to work with sv files than scores.
+
+        Optionally, includeAnalysis adds two additional columns for 'key' and 'figure',
+        populating those columns for each change of chord in the analysis.
         '''
+
+        headers = ['offset', 'measure', 'beat', 'beatStrength', 'quarterLength', 'pitches']
+        if includeAnalysis:
+            headers += ['key', 'figure']
 
         with open(f'{os.path.join(outPath, outFile)}.tsv', "w") as svfile:
             svOut = csv.writer(svfile, delimiter='\t',
                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-            for entry in self.slices:
-                svOut.writerow([entry.uniqueOffsetID,
-                                entry.measure,
-                                entry.beat,
-                                entry.beatStrength,
-                                entry.quarterLength,
-                                entry.pitches,
-                                ])
+            if includeAnalysis:
+                for hr in self.harmonicRanges:
+                    if not hr.slices:
+                        print(f'No slices in this hr: {hr.startMeasure}')
+                        break
+                    self._writeSlice(svOut, hr.slices[0], analysis=True, key=hr.key, fig=hr.figure)
+                    if len(hr.slices) > 1:
+                        for s in hr.slices[1:]:
+                            if changesOnly:
+                                self._writeSlice(svOut, s, analysis=True)
+                                # sic, not repeating key and figure where it doesn't change
+                            else:
+                                self._writeSlice(svOut, s, analysis=True, key=hr.key, fig=hr.figure)
+
+            else:
+                for s in self.slices:
+                    self._writeSlice(svOut, s, analysis=includeAnalysis)
+
+    def _writeSlice(self,
+                    svOut,
+                    entry: Slice,
+                    analysis: bool,
+                    key: Optional[str] = '',
+                    fig: Optional[str] = '',
+                    ):
+        '''
+        Write data from one slice to a csv.
+        '''
+        if analysis:
+            svOut.writerow([entry.uniqueOffsetID,
+                            entry.measure,
+                            entry.beat,
+                            entry.beatStrength,
+                            entry.quarterLength,
+                            entry.pitches,
+                            key,
+                            fig
+                            ])
+        else:
+            svOut.writerow([entry.uniqueOffsetID,
+                            entry.measure,
+                            entry.beat,
+                            entry.beatStrength,
+                            entry.quarterLength,
+                            entry.pitches,
+                            ])
 
     def _retrieveSlicesFromList(self):
         '''
@@ -657,13 +706,19 @@ class ScoreAndAnalysis:
         'sus' with '[addX]' for suspensions/added notes.
         '''
 
-        lyric = lyric.replace(' ', '')
-        lyric = lyric.replace('\xa0', '')
+        if '//' in lyric:  # Sic. Single '/' for applied chords; double '//' for alt. and pivot
+            lyric = lyric.split('//')[-1]
 
-        lyric = lyric.replace('-', 'b')
+        replaceDict = {
+            ' ': '',
+            '\xa0': '',
+            '-': 'b',
+            '(': '[',
+            ')': ']',
+        }
 
-        lyric = lyric.replace('(', '[')
-        lyric = lyric.replace(')', ']')
+        for x in replaceDict:
+            lyric = lyric.replace(x, replaceDict[x])
 
         if 'sus' in lyric:
             lyric = lyric.replace('sus', '[add')
@@ -806,10 +861,9 @@ class ScoreAndAnalysis:
             if hr.beatStrength < self.minBeatStrength:
                 # if hr.beatStrength < lastBeatStrength:  # TODO: this context
 
-                ky = str(hr.key).replace('-', 'b')  # Ab not A-. Only key relevant this time
-
-                msg = f'Measure {hr.startMeasure}, {hr.figure} in {ky} ' \
+                msg = f'Measure {hr.startMeasure}, {hr.figure} in {hr.key} ' \
                       f'appears on beat {hr.startBeat}.'
+                # No .replace('-', 'b') this time - only relevant to key, and handled above
                 hr.metricalFeedbackMessage = msg
 
                 self.totalMetricalFeedback += 1
@@ -916,7 +970,7 @@ class ScoreAndAnalysis:
                 msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
                       f'indicating the bass {hr.bassPitch} ' \
                       f'for lowest note(s) of: {bassPitchesWithOctave}.'
-                msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
+                msg = msg.replace('-', 'b')  # E.g. Ab not A-. Key handled. Pitches, and slices here
                 hr.bassFeedbackMessage = msg
                 # TODO: implement a corresponding matchStrength for bass?
                 hr.bassSuggestions = []
