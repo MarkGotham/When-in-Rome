@@ -1056,7 +1056,7 @@ class ScoreAndAnalysis:
                     if hr.pitchFeedbackMessage:
                         if len(hr.pitchSuggestions) > 0:
                             pitchToPrint.append(hr.pitchFeedbackMessage)
-                            pitchToPrint.append(str(hr.pitchMatchStrength))
+                            pitchToPrint.append(f'Pitch match: {hr.pitchMatchStrength * 100}%')
                             pitchToPrint.append('How about:')
                             for x in hr.pitchSuggestions:
                                 pitchToPrint.append(x)
