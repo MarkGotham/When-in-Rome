@@ -434,7 +434,7 @@ class ScoreAndAnalysis:
 
         if outFile == 'on_score':
             if self.name:
-                outFile = self.name + '_on_score',
+                outFile = self.name + '_on_score'
 
         self.scoreWithAnalysis.write('mxl', fp=f'{os.path.join(outPath, outFile)}.mxl')
 
