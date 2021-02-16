@@ -12,7 +12,7 @@ Note: optionally b4.875 viio42/V
 m3 viio42/V b2.5 V/V b2.875 viio43/V b4 V6 b4.375 viio42/V b4.5 V/V b4.875 viio43/V
 m4 viio43/V b2 Eb: V6/vi b2.5 V42/ii b3 ii6 b4 I64 b4.5 V7
 
-m5 I b3 ii6 b4 viio65/vi b4.5 ii64
+m5 I b3 ii42 b4 viio65/vi b4.5 ii64
 m6 viio7/vi b2 c: V7/III b3 viio42/ii b4 V/ii b4.5 viio43/ii
 m7 V65/V b3 viio43 b4 viio6
 m8 viio7 b2 viio42 b3 V7 b4 iv6
@@ -116,11 +116,13 @@ m127 vi
 m128 I64
 m129 IV
 m130 c: i64
-m131 V65/V
-m132 V7
-m131a g: V65
+m131a b1 V65/V
+m132a b1 V7
 
 Form: Development
+
+m131b b1 g: V65
+m132b b1 V65
 
 Time Signature: 4/4
 
