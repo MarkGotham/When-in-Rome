@@ -1,6 +1,7 @@
 Composer: Beethoven
 Title: Piano Sonata 5, Op.10 No.1, Movement 1
-Analyst: Mark Gotham and Néstor Nápoles López, after Tsung-Ping Chen and Li Su, BPS dataset (ISMIR 2018), see https://github.com/Tsung-Ping/functional-harmony
+Analyst: Tsung-Ping Chen and Li Su, BPS dataset (ISMIR 2018), see https://github.com/Tsung-Ping/functional-harmony
+Proof-reader: Automated conversion and manual proof-reading by Mark Gotham.
 
 Time signature: 3/4
 
@@ -44,13 +45,12 @@ m46 V
 m47 viio7/V
 m48 V
 m49 V7
-Note: ii fits the C, but prefer V7 in context between V and I64
 m50 I64
 m51 V7
 m52 I64
-
-m53-55 = m49-51
-
+m53 ii
+m54 I64
+m55 V7
 m56 I
 m58 V43
 m60 V65
@@ -90,23 +90,24 @@ m103 V7
 m104 I
 
 Form: Development
-m106 c: I
-
+m106 I
+Note: ^ Sic, missing key change
 m109 V6/iv b3 viio43
 m113 iio6 b3 f: viio65
-
 m118 i
-m120 V64
+m120 iio
 m121 V65
-m122 V
+m122 V7
 m123 V65
 m124 i
 m125 b3 bb: V42
-
 m126 i6
-m127-132 = m119-124
-Note: Sequence
-
+m127 i
+m128 iio
+m129 V65
+m130 V
+m131 V65
+m132 i
 m134 Db: V7
 m136 I
 m137 V43
@@ -114,14 +115,14 @@ m138 I6
 m139 V65
 m140 I
 m141 viio/vi
-Note: Edit Chen+Su for accuracy and sequence
-m142 vi || f: iv b3 iv42
-m143 iio b3 iiø42
+m142 f: iv
+m143 iio
 m144 V65
 m145 V7
-m146 i || c: iv b3 iv42
-m147 iio b3 iiø42
-m148 V65
+m146 i
+m147 VI
+Note: ^ Sic, NB: D natural
+m148 c: V65
 m149 V7
 m150 i
 m151 VI
