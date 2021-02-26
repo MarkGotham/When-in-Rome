@@ -43,19 +43,40 @@ import os
 import csv
 
 from music21 import converter
+from typing import Optional, List
 
 
 # ------------------------------------------------------------------------------
 
 def makeContentsSV(corpus: str = 'OpenScore-LiederCorpus',
-                   checkForScores: bool = True,
-                   additionalInfo: bool = False):
-    """
-    Make a csv file with the contents of a corpus.
-    Specifically, finds all 'analysis.txt' files, and optionally
-    checks for whether there's a corresponding score hosted locally (checkForScores, default True),
-    retrieves additional metadata from that score.
-    """
+                   startWithAnalyses: bool = True,
+                   checkForBothScoreAndAnalysis: bool = True,
+                   additionalInfo: bool = False,
+                   composers: Optional[List] = [],
+                   write: bool = True):
+    '''
+    Create a list of lists with the contents of a corpus and (optionally) write to an SV file.
+
+    :param corpus: one of the corpora in the 'When in Rome' repository, so one of
+        'Early_Choral',
+        'Etudes_and_Preludes',
+        'OpenScore-LiederCorpus',
+        'Orchestral',
+        'Piano_Sonatas',
+        'Quartets',
+        'Variations_and_Grounds'.
+    :param startWithAnalyses: by default, find all 'analysis.txt' files, and (optionally)
+        check for whether there's a corresponding 'score.mxl' file hosted locally.
+        Setting this parameter to False flips this search, i.e.
+        start with scores, optionally find analyses.
+    :param checkForBothScoreAndAnalysis: set to False to ignore the 'other' file type
+        (score or analysis as defined by startWithAnalyses).
+    :param additionalInfo: Retrieve additional metadata from the score.
+        In all cases, this means the first time and key signatures.
+        For the lieder, it will also retrieve the lyricist (stored in score metadata).
+    :param composers: (Optionally) restrict the search to this list of composers.
+    :param write: Create an SV file and write to the corpus (note: paths hard coded).
+    '''
 
     corpora = ['Early_Choral',
                'Etudes_and_Preludes',
@@ -68,31 +89,40 @@ def makeContentsSV(corpus: str = 'OpenScore-LiederCorpus',
     if corpus not in corpora:
         raise ValueError(f'Corpus (currently {corpus}) must be one of {corpora}.')
 
+    lied = False
+    if corpus == 'OpenScore-LiederCorpus':  # Lieder-specific entries, checked several times
+        lied = True
+
     data = []
     rootPath = os.path.join('..', 'Corpus')
     corpusPath = os.path.join(rootPath, corpus)
 
+    primary, secondary = 'analysis.txt', 'score.mxl'
+    if startWithAnalyses:
+        additionalHeader = 'SCORE'
+    else:
+        primary, secondary = secondary, primary
+        additionalHeader = 'ANALYSIS'
+
     for root, dirs, files in os.walk(corpusPath):
         for name in files:
-            if fnmatch.fnmatch(name, 'analysis.txt') or fnmatch.fnmatch(name, 'analysis_A.txt'):
+            if fnmatch.fnmatch(name, primary):
+                primaryPath = str(os.path.join(root, name))
+                thisEntry = primaryPath.split('/')[-4:-1]
 
-                scoreAvailable = False
-
-                analysisPath = str(os.path.join(root, name))
-                thisEntry = analysisPath.split('/')[-4:-1]
-
-                if checkForScores:
-                    scorePath = analysisPath.replace(name, 'score.mxl')
-                    if os.path.exists(scorePath):
-                        scoreAvailable = True
+                if checkForBothScoreAndAnalysis:
+                    secondaryPath = primaryPath.replace(name, secondary)
+                    if os.path.exists(secondaryPath):
                         thisEntry.append('YES')
                     else:
                         thisEntry.append('N')
 
                 if additionalInfo:
-
-                    if scoreAvailable:
-                        score = converter.parse(scorePath)
+                    analysisPath, scorePath = primaryPath, secondaryPath
+                    if not startWithAnalyses:
+                        scorePath, analysisPath = analysisPath, scorePath
+                    if os.path.exists(scorePath):
+                        score = converter.parse(secondaryPath)
                     else:
                         score = converter.parse(analysisPath, format='Romantext')
 
@@ -104,43 +134,54 @@ def makeContentsSV(corpus: str = 'OpenScore-LiederCorpus',
                     firstKS = p0m1.recurse().getElementsByClass('KeySignature')[0]
                     thisEntry.append(str(firstKS.sharps))
 
-                    if corpus == 'OpenScore-LiederCorpus':  # Lieder-specific entries
-
+                    if lied:
                         lyricist = score.metadata.lyricist
                         if not lyricist:
                             lyricist = '[Missing entry]'
                         thisEntry.append(lyricist)
 
-                        url = 'https://musescore.com/score/'
-                        lcPath = analysisPath.replace(name, 'lc*.mscz')
-                        if os.path.exists(lcPath):
-                            lcNumber = name[2:-5]  # cut 'lc' and extension
-                            thisEntry.append(url + lcNumber)
-                        else:  # generic url for the set
-                            url = 'https://musescore.com/openscore-lieder-corpus/scores/'
-                            thisEntry.append(url)
+                if lied:
+                    url = ''
+                    pathtoFolder = primaryPath[:-len(primary)]
+                    for fileName in os.listdir(pathtoFolder):
+                        if fnmatch.fnmatch(fileName, 'lc*.mscx'):
+                            lcNumber = fileName[2:-5]  # cut 'lc' and extension
+                            url = 'https://musescore.com/score/' + lcNumber
+                            break
+                    if not url:  # failed to find one, use generic url for the set instead
+                        url = 'https://musescore.com/openscore-lieder-corpus/scores/'
+                    thisEntry.append(url)
 
                 data.append(thisEntry)
 
+    if composers:
+        data = [x for x in data if x[0] in composers]
+
     sortedData = sorted(data, key=lambda x: (x[0], x[1], x[2]))
 
-    title = corpus + '_contents' + '.tsv'
+    if write:
 
-    with open(os.path.join(rootPath, title), 'w') as csvfile:
-        csvOut = csv.writer(csvfile, delimiter='\t',
-                            quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        title = corpus + '_contents' + '.tsv'
 
-        headers = ['COMPOSER', 'COLLECTION', 'MOVEMENT']
-        if checkForScores:
-            headers += ['SCORE']
-        if additionalInfo:
-            headers += ['QUARTER LENGTH', '1ST TIME SIG', '1ST KEY SIG']
-            if corpus == 'OpenScore-LiederCorpus':  # Lieder-specific entries
-                headers += ['LYRICIST', 'URL']
+        with open(os.path.join(rootPath, title), 'w') as csvfile:
+            csvOut = csv.writer(csvfile, delimiter='\t',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        csvOut.writerow(headers)
-        for entry in sortedData:
-            csvOut.writerow([x.replace('_', ' ') for x in entry if x])
+            headers = ['COMPOSER', 'COLLECTION', 'MOVEMENT']
+            if checkForBothScoreAndAnalysis:
+                headers += [additionalHeader]
+            if additionalInfo:
+                headers += ['QUARTER LENGTH', '1ST TIME SIG', '1ST KEY SIG']
+                if lied:
+                    headers.append('LYRICIST')
+            if lied:
+                headers.append('URL')
+
+            csvOut.writerow(headers)
+            for entry in sortedData:
+                csvOut.writerow([x.replace('_', ' ') for x in entry if x])
+
+    return sortedData
 
 
 def runAll():
@@ -151,7 +192,10 @@ def runAll():
                    'Piano_Sonatas',
                    'Quartets',
                    'Variations_and_Grounds']:
-        makeContentsSV(corpus, checkForScores=True, additionalInfo=False)
+        makeContentsSV(corpus,
+                       startWithAnalyses=True,
+                       checkForBothScoreAndAnalysis=True,
+                       additionalInfo=False)
 
 
 # ------------------------------------------------------------------------------
