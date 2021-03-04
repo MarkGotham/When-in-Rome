@@ -328,7 +328,7 @@ class ScoreAndAnalysis:
                 if self.score[0][0] != '0.0':  # First offset always 0. If not, header row
                     self.score = self.score[1:]  # Ignore header row
                 self._retrieveSlicesFromList()  # NOTE: sets totalLength and scoreMeasures
-            elif extension in ['.mxl', '.musicxml', '.midi', '.mid']:  # Actual score:
+            elif extension in ['.mxl', '.musicxml', '.midi', '.mid', '.krn']:  # Actual score:
                 self.score = converter.parse(self.scoreOrData)
                 self._scoreInit()
             else:
@@ -1265,9 +1265,9 @@ def matchParts(referencePart: stream.Part,
     is no equivalent way of setting the final measure's duration.
     This function shortens the final measure's duration to match that of the score
     in the case of a part with anacrusis (no action otherwise).
-    
-    :param referencePart: the 'model' part, defining the 'correct' values. 
-    :param partToAdjust: the part to alter according to values in the referencePart. 
+
+    :param referencePart: the 'model' part, defining the 'correct' values.
+    :param partToAdjust: the part to alter according to values in the referencePart.
     :return: partToAdjust, altered.
     """
 
