@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ===============================
 THE ROMAN UMPIRE (romanUmpire.py)
 ===============================
@@ -47,7 +47,7 @@ The comparison feedback is written out as a text file
 in the local folder (by default) or elsewhere if specified.
 There is also an option for writing the score with analysis attached in musical notation and
 highlighting moments for which there is feedback available directly on that score.
-'''
+"""
 
 from music21 import converter
 from music21 import chord
@@ -70,10 +70,10 @@ import unittest
 # Three supporting object types:
 
 class Slice:
-    '''
+    """
     A reduction object corresponding to one 'vertical' slice through the score.
     A 'slice' is a momentary cross-section during which none of the notes change.
-    '''
+    """
 
     def __init__(self):
         self.uniqueOffsetID = None
@@ -88,7 +88,7 @@ class Slice:
 # ------------------------------------------------------------------------------
 
 class HarmonicRange:
-    '''
+    """
     HarmonicRange objects cover part of a score, usually including:
     a Roman numeral and the corresponding score 'slices' for that range.
     In addition to details of the Roman numeral and the corresponding slices in question,
@@ -99,7 +99,7 @@ class HarmonicRange:
 
     Usage here focusses on assessing the Roman numeral (key and figure).
     This object can also be used to assess key alone, e.g. for key finding tasks.
-    '''
+    """
 
     def __init__(self, source=None):
 
@@ -161,9 +161,9 @@ class HarmonicRange:
                                  'with a relevant object: Note, Chord, or RomanNumeral.')
 
     def getCoreValues(self, source):
-        '''
+        """
         Retrieve core variables from a relevant object: Note, Chord, or RomanNumeral.
-        '''
+        """
         self.startMeasure = int(source.measureNumber)
         self.startBeat = _intBeat(source.beat)
         self.beatStrength = source.beatStrength
@@ -172,19 +172,19 @@ class HarmonicRange:
 
     def getMoreValuesFromRN(self,
                             rn: roman.RomanNumeral):
-        '''
+        """
         Retrieve additional values specific to RomanNumeral objects.
-        '''
+        """
         self.figure = rn.figure
         self.key = rn.key.tonicPitchNameWithCase.replace('-', 'b')
         self.chordPitches = [p.nameWithOctave for p in rn.pitches]
         self.bassPitch = rn.bass().name
 
     def makeScorePitchUsageDict(self):
-        '''
+        """
         Make a 'ScorePitchUsageDict' dict for recording which pitches are used in the score
         and to what extent (combined length).
-        '''
+        """
         for s in self.slices:
             for p in s.pitches:
                 if p in self.scorePitchUsageDict:
@@ -193,11 +193,11 @@ class HarmonicRange:
                     self.scorePitchUsageDict[p] = s.quarterLength
 
     def calculatePitchMatchStrength(self):
-        '''
+        """
         Calculates the 'PitchMatchStrength':
-        the proportion (float between 0 and 1) of pitches in the score that are
+        the percentage of pitches in the score that are
         accounted for by the specified harmony (weighted by length).
-        '''
+        """
         used = 0
         total = 0
 
@@ -212,7 +212,7 @@ class HarmonicRange:
         if total == 0:
             self.pitchMatchStrength = 0
         else:
-            self.pitchMatchStrength = round((used / total), 2)
+            self.pitchMatchStrength = round((100 * used / total), 2)
 
 
 # ------------------------------------------------------------------------------
@@ -220,7 +220,7 @@ class HarmonicRange:
 
 
 class ScoreAndAnalysis:
-    '''
+    """
     Class for handling:
         'ground-truth' score data (either the score itself or a tabular representation thereof);
         Roman numeral analysis (either on the score or as a separate Roman text analysis file);
@@ -253,7 +253,7 @@ class ScoreAndAnalysis:
         attention to the chord change on the basis of the weak metrical position.
 
     tolerance:
-        A float for the proportional match between the pitches of the chord and the
+        A percentage match for the proportional match between the pitches of the chord and the
         corresponding part of the piece.
         Matches lower that this value attract pitch feedback.
 
@@ -261,7 +261,7 @@ class ScoreAndAnalysis:
         Do pitches remain in effect over rests?
         By default, this class ignores rests, leaving pitches in place until the next pitched event
         as part fof calculating match strenth.
-    '''
+    """
 
     def __init__(self,
                  scoreOrData: Union[stream.Score, str],
@@ -269,7 +269,7 @@ class ScoreAndAnalysis:
                  analysisParts: int = 1,
                  analysisPartNo: int = -1,
                  minBeatStrength: float = 0.25,
-                 tolerance: float = 0.6,
+                 tolerance: int = 60,
                  carryPitchesOver: bool = True
                  ):
 
@@ -304,11 +304,11 @@ class ScoreAndAnalysis:
         self.slicesMatchedUp: bool = False
 
     def _parseScoreData(self):
-        '''
+        """
         Handles input options for score, either:
             a score in a recognised format (e.g. musicxml), or
             a tabular file (.tsv or .csv) having handled the slicing in advance.
-        '''
+        """
 
         if isinstance(self.scoreOrData, stream.Score):
             self.score = self.scoreOrData
@@ -341,9 +341,9 @@ class ScoreAndAnalysis:
                              'a path to a valid score or tabular file.')
 
     def _scoreInit(self):
-        '''
+        """
         Subsidiary preparation of, and extractions from, the score.
-        '''
+        """
 
         self._removeGraceNotes()
         self._retrieveSlicesFromScore()
@@ -351,11 +351,11 @@ class ScoreAndAnalysis:
         self.scoreMeasures = len(self.score.parts[0].getElementsByClass('Measure'))
 
     def _parseAnalysis(self):
-        '''
+        """
         Handles input options for analysis, either:
             a music21 stream.Score in a recognised format (e.g. rntxt), or
             as lyrics on a score.
-        '''
+        """
 
         if type(self.analysisLocation) is stream.Score:
             self.analysis = self.analysisLocation.parts[0]
@@ -380,7 +380,7 @@ class ScoreAndAnalysis:
                                feedback: bool = True,
                                voicingFromScore: bool = False,
                                lieder: bool = True):
-        '''
+        """
         Mostly to combine an off-score analysis with the corresponding score and write to disc.
 
         Option (feedback=True, default) to include markers in the score
@@ -393,7 +393,7 @@ class ScoreAndAnalysis:
         Additional presentation option (lieder=True, default) for returning the
         Mensurstrich brace to the piano part of the lieder.
         Don't worry if that doesn't mean anything to you.
-        '''
+        """
 
         if self.analysisLocation == 'On score':
             if not feedback:
@@ -437,11 +437,11 @@ class ScoreAndAnalysis:
         self.scoreWithAnalysis.write('mxl', fp=os.path.join(outPath, outFile))
 
     def makeScoreVoiceLeadingReduction(self):
-        '''
+        """
         Takes the analysis part and replaces the default, one-stave, close-position
         chords with voicing an spacing based on the pitches used in the score
         for a more musical reduction.
-        '''
+        """
 
         count = 0
         for rn in self.scoreWithAnalysis.parts[-1].recurse().getElementsByClass('RomanNumeral'):
@@ -456,11 +456,11 @@ class ScoreAndAnalysis:
                                   "This shouldn't happen and the chords may be displaced."))
 
     def _removeGraceNotes(self):
-        '''
+        """
         Removes all grace notes in the score.
         They are of relatively low importance and
         can cause disproportionate problems when processing.
-        '''
+        """
 
         notesToRemove = []
         for n in self.score.recurse().notes:
@@ -471,7 +471,7 @@ class ScoreAndAnalysis:
             n.activeSite.remove(n)
 
     def _retrieveSlicesFromScore(self):
-        '''
+        """
         Extracts chord and rest info from the score as Slice objects and
         populates self.slices with a list of these Slices.
 
@@ -485,7 +485,7 @@ class ScoreAndAnalysis:
         pitches are carried over to the next slice.
         This includes treating single pitches as a one-entry 'chord'.
         Override this behaviour by setting carryPitchesOver to False (returning empty pitch lists).
-        '''
+        """
 
         if self.analysisLocation == 'On score':
             noAnalysisScore = deepcopy(self.score)
@@ -538,7 +538,7 @@ class ScoreAndAnalysis:
                              outFile: str = 'slices',
                              includeAnalysis: bool = True,
                              changesOnly: bool = True):
-        '''
+        """
         Subsidiary method for writing out the Slice object information
         retrieved from the score to a value separated file with columns for:
         'offset', 'measure', 'beat', 'beatStrength', 'quarterLength', 'pitches'.
@@ -548,7 +548,7 @@ class ScoreAndAnalysis:
 
         Optionally, includeAnalysis adds two additional columns for 'key' and 'figure',
         populating those columns for each change of chord in the analysis.
-        '''
+        """
 
         headers = ['offset', 'measure', 'beat', 'beatStrength', 'quarterLength', 'pitches']
         if includeAnalysis:
@@ -583,9 +583,9 @@ class ScoreAndAnalysis:
                     key: Optional[str] = '',
                     fig: Optional[str] = '',
                     ):
-        '''
+        """
         Write data from one slice to a csv.
-        '''
+        """
         if analysis:
             svOut.writerow([entry.uniqueOffsetID,
                             entry.measure,
@@ -606,12 +606,12 @@ class ScoreAndAnalysis:
                             ])
 
     def _retrieveSlicesFromList(self):
-        '''
+        """
         Populates self.slices with a list of
         Slice objects extracted from entries in the 'score' (here a list).
 
         Checks that the list is plausible.
-        '''
+        """
 
         lastEntryMeasure = -1
 
@@ -637,10 +637,10 @@ class ScoreAndAnalysis:
         self.scoreMeasures = thisEntry.measure
 
     def checkMonotonicIncrease(self, x):
-        '''
+        """
         For checking monotonic increment through the piece.
         if not, logs error and rejects element (slice or RN).
-        '''
+        """
 
         measure = int(x.measureNumber)
         beat = _intBeat(x.beat)
@@ -665,11 +665,11 @@ class ScoreAndAnalysis:
         return True
 
     def _getOnScoreAnalysis(self):
-        '''
+        """
         Gets an analysis hosted in the main score,
         as lyrics in one part (the lowest, by default).
         Straight to putative 'HarmonicRange' object.
-        '''
+        """
         # TODO: support type='Lyric' for alternatives?
 
         self.prevailingKey = 'FAKE KEY'
@@ -693,7 +693,7 @@ class ScoreAndAnalysis:
                     self.errorLog.append(msg)
 
     def _romanFromLyric(self, lyric):
-        '''
+        """
         Converts lyrics in recognised format into m21 Roman Numeral objects.
         Format: 'Key: Figure' for first entry and all key changes; otherwise just 'Figure'.
 
@@ -702,7 +702,7 @@ class ScoreAndAnalysis:
         '-' with 'b' for flats;
         bracket types to accept e.g. (no5) as well as the official [no5]; and
         'sus' with '[addX]' for suspensions/added notes.
-        '''
+        """
 
         if '//' in lyric:  # Sic. Single '/' for applied chords; double '//' for alt. and pivot
             lyric = lyric.split('//')[-1]
@@ -739,10 +739,10 @@ class ScoreAndAnalysis:
             return False
 
     def _getSeparateAnalysis(self):
-        '''
+        """
         Gets an analysis from a path to a RNTXT file.
         Straight to putative 'HarmonicRange' objects.
-        '''
+        """
 
         self.analysisMeasures = len(self.analysis.recurse().getElementsByClass('Measure'))
 
@@ -775,11 +775,11 @@ class ScoreAndAnalysis:
     # ------------------------------------------------------------------------------
 
     def _rnSliceMatchUp(self):
-        '''
+        """
         Takes the prepared list of HarmonicRange objects (from the analysis)
         and adds to each the corresponding part of the score (as a list of 'slices')
         for subsequent comparison.
-        '''
+        """
 
         self.indexCount = 0
 
@@ -800,13 +800,13 @@ class ScoreAndAnalysis:
 
     def _singleMatchUp(self,
                        hr: HarmonicRange):
-        '''
+        """
         HarmonicRange and match up of a Roman numeral
         with slices (potentially) in that range by position in score.
         Note that harmony changes between slice changes are
         not supported and may lead to erratic results.
         I.e. chords should change where at least one pitch changes.
-        '''
+        """
 
         for thisSlice in self.slices[self.indexCount:]:
             if hr.startOffset <= thisSlice.uniqueOffsetID < hr.endOffset:
@@ -816,10 +816,10 @@ class ScoreAndAnalysis:
                 break
 
     def matchUp(self):
-        '''
+        """
         Checks that the slices have been matched up and if not then does so.
         Necessary given all the routes through.
-        '''
+        """
         if not self.slicesMatchedUp:
             self._rnSliceMatchUp()
             self.slicesMatchedUp = True
@@ -829,14 +829,14 @@ class ScoreAndAnalysis:
     # Assessments:
 
     def runComparisons(self):
-        '''
+        """
         Runs comparison types for feedback:
             metricalPositions(),
             comparePitches(), and
             compareBass().
         NB: rareRn() runs separately. User can choose whether to display the feedback
         but it is collected in any case.
-        '''
+        """
 
         self.matchUp()
         self.metricalPositions()
@@ -844,9 +844,9 @@ class ScoreAndAnalysis:
         self.compareBass()
 
     def metricalPositions(self):
-        '''
+        """
         Creates feedback flagging up cases of chords on weak positions.
-        '''
+        """
 
         if self.totalMetricalFeedback:
             return
@@ -869,10 +869,10 @@ class ScoreAndAnalysis:
                 # lastBeatStrength = x.beatStrength  # TODO: this context
 
     def comparePitches(self):
-        '''
+        """
         Single RN-slice comparison for pitches:
         do the chords reflect the pitch content of the score section in question?
-        '''
+        """
 
         if self.totalPitchFeedback:
             return
@@ -892,12 +892,9 @@ class ScoreAndAnalysis:
 
             compLength = hr.endOffset - hr.startOffset
 
-            if hr.pitchMatchStrength >= self.tolerance:
-                pitchNumerator += compLength
+            pitchNumerator += (compLength * hr.pitchMatchStrength)
 
-            else:  # < self.tolerance so get feedback and reduce overallPitchScore
-
-                pitchNumerator += (compLength * hr.pitchMatchStrength)
+            if hr.pitchMatchStrength < self.tolerance:  # get feedback and reduce overallPitchScore
 
                 # Suggestions
                 pl = [pList.pitches for pList in hr.slices]
@@ -910,12 +907,12 @@ class ScoreAndAnalysis:
                             suggestions.append([sl.measure, sl.beat, rn.figure, sl.pitches])
                 if len(suggestions) > 0:
                     for s in suggestions:
-                        hr.pitchSuggestions.append(f'm{s[0]} b{s[1]} {s[2]} for the slice {s[3]}')
+                        hr.pitchSuggestions.append(f'm{s[0]} b{s[1]} {s[2]} for the pitches {s[3]}')
 
                 # Message
                 msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
                       f'indicating the pitches {hr.chordPitches} ' \
-                      f'accounting for successive slices of {pl}.'
+                      f'accounting for successive chord "slices" of {pl}.'
                 msg = msg.replace('-', 'b')  # Ab not A-. Relevant to key, pitches, and slices
                 hr.pitchFeedbackMessage = msg
 
@@ -923,15 +920,15 @@ class ScoreAndAnalysis:
 
                 self.totalPitchFeedback += 1
 
-        self.overallPitchScore = round(pitchNumerator * 100 / self.totalLength, 2)
+        self.overallPitchScore = round(pitchNumerator / self.totalLength, 2)
 
     def compareBass(self):
-        '''
+        """
         Single RN-slice comparison for bass pitches (inversion).
         Creates feedback for cases where
         the bass pitch indicated by the Roman numeral's inversion
         does not appear as the lowest note during the span in question.
-        '''
+        """
 
         if self.totalBassFeedback:
             return
@@ -982,12 +979,12 @@ class ScoreAndAnalysis:
                 compLength = hr.endOffset - hr.startOffset
                 bassNumerator += compLength
 
-        self.overallBassScore = bassNumerator / self.totalLength
+        self.overallBassScore = round(bassNumerator * 100 / self.totalLength, 2)
 
     def _proportionSimilarity(self,
                               hr: HarmonicRange,
                               sl: Slice):
-        '''
+        """
         Approximate measure of the 'similarity' between a
         reference HarmonicRange object (Roman numeral, etc) and an actual slice of the score.
 
@@ -996,7 +993,7 @@ class ScoreAndAnalysis:
         Note:
         This is not limited to distinct pitches:
         it returns a better score for multiple tonics, for instance.
-        '''
+        """
         # TODO: Penalty for notes in the RN not used? Not here, only overall?
 
         if len(sl) == 0:
@@ -1024,7 +1021,7 @@ class ScoreAndAnalysis:
                       constructiveOnly: bool = False,
                       outPath: str = '.',
                       outFile: str = 'Feedback'):
-        '''
+        """
         Select feedback to print: any or all of:
             'pitches' for the pitch match between a Roman Numeral and score segment;
             'rare' for the use of a parseable but rare Roman Numeral;
@@ -1032,7 +1029,7 @@ class ScoreAndAnalysis:
             'bass' for bass notes / inversions.
         If constructiveOnly is True, then the returned feedback will be limited to
         cases for which there is a corresponding alternative suggestion ready.
-        '''
+        """
 
         if (not pitches) and (not rare) and (not metre) and (not bass):
             raise ValueError('Please select at least one of the feedback options.')
@@ -1054,7 +1051,7 @@ class ScoreAndAnalysis:
                     if hr.pitchFeedbackMessage:
                         if len(hr.pitchSuggestions) > 0:
                             pitchToPrint.append(hr.pitchFeedbackMessage)
-                            pitchToPrint.append(f'Pitch match: {hr.pitchMatchStrength * 100}%')
+                            pitchToPrint.append(f'Pitch match: {hr.pitchMatchStrength}%')
                             pitchToPrint.append('How about:')
                             for x in hr.pitchSuggestions:
                                 pitchToPrint.append(x)
@@ -1062,10 +1059,11 @@ class ScoreAndAnalysis:
                         else:  # no suggestions
                             if not constructiveOnly:
                                 pitchToPrint.append(hr.pitchFeedbackMessage)
-                                pitchToPrint.append(str(hr.pitchMatchStrength))
+                                pitchToPrint.append(f'Pitch match: {hr.pitchMatchStrength}%')
                                 pitchToPrint.append('Sorry, no suggestions - '
                                                     "I can't find any triads or sevenths.")
                                 pitchToPrint.append('\n')
+                            # NB: nothing printed if no suggestions and constructiveOnly
 
         if rare:
             rareToPrint = ['RARE ROMAN NUMERALS =====================\n']
@@ -1110,8 +1108,7 @@ class ScoreAndAnalysis:
                 bassToPrint.append(msg)
             else:
                 bassToPrint.append(f'Total cases: {self.totalBassFeedback}\n')
-                bassToPrint.append('Overall bass note match: '
-                                   f'{round(self.overallBassScore * 100, 2)}%.\n')
+                bassToPrint.append(f'Overall bass note match: {self.overallBassScore}%.\n')
                 bassToPrint.append("In these cases, the specified bass note doesn't "
                                    'appear in the lowest part during. '
                                    '(NB: pedal points are not yet supported):\n')
@@ -1160,11 +1157,11 @@ class ScoreAndAnalysis:
                          rare: bool = True,
                          metre: bool = True,
                          bass: bool = True):
-        '''
+        """
         Inserts comments on the score for moments where there is feedback available.
         As with the printFeedback method, you can chose to any or all of the feedback types:
         'pitches', 'rare', 'metre'; and 'bass'.
-        '''
+        """
 
         if pitches:
             self.comparePitches()
@@ -1186,9 +1183,9 @@ class ScoreAndAnalysis:
     def insertFeedback(self,
                        hr: HarmonicRange,
                        message: str):
-        '''
+        """
         Shared method for inserting feedback of each type in to the score.
-        '''
+        """
         te = expressions.TextExpression(message)  # NB: Have to make a new one each time
         te.placement = 'above'
         p = self.scoreWithAnalysis.parts[-1]
@@ -1202,9 +1199,9 @@ class ScoreAndAnalysis:
 # ------------------------------------------------------------------------------
 
 def _intBeat(beat):
-    '''
+    """
     Beats as integers, or rounded decimals
-    '''
+    """
 
     if int(beat) == beat:
         return int(beat)
@@ -1214,9 +1211,9 @@ def _intBeat(beat):
 
 def _importSV(pathToFile: str,
               splitMarker: str = '\t'):
-    '''
+    """
     Imports TSV file data for further processing.
-    '''
+    """
 
     with open(pathToFile, 'r') as f:
         data = []
@@ -1229,12 +1226,12 @@ def _importSV(pathToFile: str,
 
 
 def rareRn(rn: roman.RomanNumeral):
-    '''
+    """
     Returns True for rare Roman numerals that will parse ok but are unusual in analyses.
     Specifically,
     False = Triads, Sevenths, Augmented Sixths, Ninths in root position
     True = anything else including 9th inversions.
-    '''
+    """
 
     if rn.isTriad():
         return False
@@ -1296,17 +1293,17 @@ def matchParts(referencePart: stream.Part,
 # ------------------------------------------------------------------------------
 
 class Test(unittest.TestCase):
-    '''
+    """
     Test the three main use cases:
         score and analysis input separately;
         score with analysis on score;
         tab in (analysis separate)
-    '''
+    """
 
     def testScoreInAnalysisSeparate(self):
-        '''
+        """
         Score and analysis as separate files, both pre-parsed.
-        '''
+        """
 
         corpus = 'Etudes_and_Preludes'
         composer = 'Bach,_Johann_Sebastian'
@@ -1318,7 +1315,7 @@ class Test(unittest.TestCase):
         analysis = converter.parse(os.path.join(basePath, 'analysis.txt'), format='romantext')
         testSeparate = ScoreAndAnalysis(score,
                                         analysis,
-                                        tolerance=0.8)  # Tests setting a high bar
+                                        tolerance=80)  # Tests setting a high bar
         testSeparate.runComparisons()
 
         self.assertEqual(testSeparate.totalPitchFeedback, 2)
@@ -1330,9 +1327,9 @@ class Test(unittest.TestCase):
     # ------------------------------------------------------------------------------
 
     def testScoreInWithAnalysis(self):
-        '''
+        """
         Score and analysis in same file, parsed here from the file path.
-        '''
+        """
 
         corpus = 'OpenScore-LiederCorpus'
         composer = 'Schubert,_Franz'
@@ -1345,7 +1342,7 @@ class Test(unittest.TestCase):
                                        analysisLocation='On score',
                                        analysisParts=1,
                                        minBeatStrength=0.25,
-                                       tolerance=0.6)  # default value
+                                       tolerance=60)  # default value
 
         onScoreTest.runComparisons()
         self.assertEqual(onScoreTest.totalPitchFeedback, 0)
@@ -1356,9 +1353,9 @@ class Test(unittest.TestCase):
     # ------------------------------------------------------------------------------
 
     def testTabIn(self):
-        '''
+        """
         Score and analysis in separate files, with the score represented in tabular format.
-        '''
+        """
 
         corpus = 'OpenScore-LiederCorpus'
         composer = 'Hensel,_Fanny_(Mendelssohn)'
@@ -1369,8 +1366,7 @@ class Test(unittest.TestCase):
 
         testTab = ScoreAndAnalysis(os.path.join(basePath, 'slices.tsv'),
                                    analysisLocation=os.path.join(basePath, 'analysis.txt'),
-                                   tolerance=0.7)
-
+                                   tolerance=70)
         testTab.runComparisons()
 
         self.assertEqual(testTab.totalPitchFeedback, 3)
