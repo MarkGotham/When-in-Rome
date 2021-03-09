@@ -1232,8 +1232,8 @@ def rareRn(rn: roman.RomanNumeral):
     '''
     Returns True for rare Roman numerals that will parse ok but are unusual in analyses.
     Specifically,
-    False = Triads, Sevenths, Augmented Sixths
-    True = anything else including 9ths.
+    False = Triads, Sevenths, Augmented Sixths, Ninths in root position
+    True = anything else including 9th inversions.
     '''
 
     if rn.isTriad():
@@ -1241,6 +1241,8 @@ def rareRn(rn: roman.RomanNumeral):
     elif rn.isSeventh():
         return False
     elif rn.isAugmentedSixth():
+        return False
+    elif rn.figure == 'V9':
         return False
 
     return True
