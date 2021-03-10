@@ -1,31 +1,33 @@
-
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 97.07%. In the following cases, the chord indicated does not seem to capture everything going on:
+Total cases: 3
 
-Measure 9, beat 1, v in B major, indicating the pitches ['F#', 'A', 'C#'] accounting for successive slices of [['B2', 'D-5'], ['B2', 'D-5', 'F#5'], ['B2', 'C#5', 'D-5', 'F#5'], ['B2', 'A4', 'D-5', 'F#5'], ['B2', 'F#4', 'D-5', 'F#5'], ['B2', 'C#4', 'D-5']].
-Match strength estimated at 36.0%.
+Overall pitch match: 90.62%.
+
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 9, beat 1, v in B, indicating the pitches ['F#5', 'A5', 'C#6'] accounting for successive chord "slices" of [['B2', 'Db5'], ['B2', 'Db5', 'F#5'], ['B2', 'C#5', 'Db5', 'F#5'], ['B2', 'A4', 'Db5', 'F#5'], ['B2', 'F#4', 'Db5', 'F#5'], ['B2', 'C#4', 'Db5']].
+Pitch match: 40.0%
 How about:
-m9 b1.17 i5bb3 for the slice ['B2', 'D-5', 'F#5']
-m9 b1.5 ib75bb3 for the slice ['B2', 'A4', 'D-5', 'F#5']
-m9 b1.67 i5bb3 for the slice ['B2', 'F#4', 'D-5', 'F#5']
+m9 b1.17 i5bb3 for the pitches ['B2', 'D-5', 'F#5']
+m9 b1.5 ib75bb3 for the pitches ['B2', 'A4', 'D-5', 'F#5']
+m9 b1.67 i5bb3 for the pitches ['B2', 'F#4', 'D-5', 'F#5']
 
 
-Measure 22, beat 2, IV64 in B- major, indicating the pitches ['B-', 'E-', 'G'] accounting for successive slices of [['F3'], ['F3', 'E-6'], ['F3', 'B-5', 'E-6'], ['F3', 'G5', 'E-6'], ['F3', 'E-5', 'E-6'], ['F3', 'B-4']].
-Match strength estimated at 49.0%.
+Measure 22, beat 2, IV64 in Bb, indicating the pitches ['Bb4', 'Eb5', 'G5'] accounting for successive chord "slices" of [['F3'], ['F3', 'Eb6'], ['F3', 'Bb5', 'Eb6'], ['F3', 'G5', 'Eb6'], ['F3', 'Eb5', 'Eb6'], ['F3', 'Bb4']].
+Pitch match: 57.14%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 24, beat 2.67, viio43/ii in B- major, indicating the pitches ['F', 'A-', 'B', 'D'] accounting for successive slices of [['G-3', 'B-3', 'C#4', 'B-4'], ['F3', 'A-3', 'B3', 'D4', 'A-4', 'B4']].
-Match strength estimated at 50.0%.
-How about:
-m24 b2.83 #iob64bb3 for the slice ['F3', 'A-3', 'B3', 'D4', 'A-4', 'B4']
-
-
-Measure 25, beat 2, ii6 in B- major, indicating the pitches ['E-', 'G', 'C'] accounting for successive slices of [['E-3', 'C5'], ['E-3', 'D5'], ['E-3', 'A4', 'D5'], ['E-3', 'F4', 'D5'], ['E-3', 'C4', 'D5'], ['E-3', 'A3', 'E-5']].
-Match strength estimated at 59.0%.
+Measure 25, beat 2, ii6 in Bb, indicating the pitches ['Eb5', 'G5', 'C6'] accounting for successive chord "slices" of [['Eb3', 'C5'], ['Eb3', 'D5'], ['Eb3', 'A4', 'D5'], ['Eb3', 'F4', 'D5'], ['Eb3', 'C4', 'D5'], ['Eb3', 'A3', 'Eb5']].
+Pitch match: 56.25%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
+
+
+RARE ROMAN NUMERALS =====================
+
+No rare or unconventional Roman Numerals in this analysis.
 
 
 HARMONIC RHYTHM =====================
@@ -33,20 +35,24 @@ HARMONIC RHYTHM =====================
 The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
 
 
-
 BASS / INVERSION =====================
 
-Bass note match: 93.22%.
-The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
-Measure 9, beat 1, v in B major, indicating the bass F# for lowest note(s) of: ['B2'].
+Total cases: 3
+
+Overall bass note match: 93.22%.
+
+In these cases, the specified bass note doesn't appear in the lowest part during. (NB: pedal points are not yet supported):
+
+Measure 9, beat 1, v in B, indicating the bass F# for lowest note(s) of: ['B2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 18, beat 1, V7 in G major, indicating the bass D for lowest note(s) of: ['G2', 'G3'].
+Measure 18, beat 1, V7 in G, indicating the bass D for lowest note(s) of: ['G2', 'G3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 22, beat 2, IV64 in B- major, indicating the bass B- for lowest note(s) of: ['F3'].
+Measure 22, beat 2, IV64 in Bb, indicating the bass Bb for lowest note(s) of: ['F3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
 
 

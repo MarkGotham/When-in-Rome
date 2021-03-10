@@ -1,149 +1,162 @@
-
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 94.4%. In the following cases, the chord indicated does not seem to capture everything going on:
+Total cases: 9
 
-Measure 2, beat 1, i in g# minor, indicating the pitches ['G#', 'B', 'D#'] accounting for successive slices of [['G#3', 'G#4'], ['F#3', 'F#4'], ['E3', 'E4'], ['D#3', 'D#4', 'G#4']].
-Match strength estimated at 50.0%.
+Overall pitch match: 87.76%.
+
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 2, beat 1, i in g#, indicating the pitches ['G#4', 'B4', 'D#5'] accounting for successive chord "slices" of [['G#3', 'G#4'], ['F#3', 'F#4'], ['E3', 'E4'], ['D#3', 'D#4', 'G#4']].
+Pitch match: 55.56%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 11, beat 3, iv65 in c# minor, indicating the pitches ['A', 'C#', 'E', 'F#'] accounting for successive slices of [['G#3', 'A#3', 'C#4', 'F#4', 'G#4', 'E5'], ['G#3', 'A#3', 'C#4', 'F#4', 'E5']].
-Match strength estimated at 55.0%.
+Measure 11, beat 3, iv65 in c#, indicating the pitches ['A4', 'C#5', 'E5', 'F#5'] accounting for successive chord "slices" of [['G#3', 'A#3', 'C#4', 'F#4', 'G#4', 'E5'], ['G#3', 'A#3', 'C#4', 'F#4', 'E5']].
+Pitch match: 54.55%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 14, beat 1, VI6 in c# minor, indicating the pitches ['C#', 'E', 'A'] accounting for successive slices of [['G#2', 'G#3', 'A4'], ['G#2', 'G#3', 'C#4', 'E4', 'A4'], ['G#2', 'G#3', 'C#4', 'E4', 'A4'], ['G#2', 'G#3', 'C#4', 'E4', 'A4'], ['G#2', 'G#3', 'E4', 'G#4']].
-Match strength estimated at 44.0%.
+Measure 14, beat 1, VI6 in c#, indicating the pitches ['C#4', 'E4', 'A4'] accounting for successive chord "slices" of [['G#2', 'G#3', 'A4'], ['G#2', 'G#3', 'C#4', 'E4', 'A4'], ['G#2', 'G#3', 'C#4', 'E4', 'A4'], ['G#2', 'G#3', 'C#4', 'E4', 'A4'], ['G#2', 'G#3', 'E4', 'G#4']].
+Pitch match: 46.15%
 How about:
-m14 b1.5 bVI42 for the slice ['G#2', 'G#3', 'C#4', 'E4', 'A4']
-m14 b2 bVI42 for the slice ['G#2', 'G#3', 'C#4', 'E4', 'A4']
-m14 b2.5 bVI42 for the slice ['G#2', 'G#3', 'C#4', 'E4', 'A4']
+m14 b1.5 bVI42 for the pitches ['G#2', 'G#3', 'C#4', 'E4', 'A4']
+m14 b2 bVI42 for the pitches ['G#2', 'G#3', 'C#4', 'E4', 'A4']
+m14 b2.5 bVI42 for the pitches ['G#2', 'G#3', 'C#4', 'E4', 'A4']
 
 
-Measure 17, beat 1, Ger65 in c# minor, indicating the pitches ['A', 'C#', 'E', 'F##'] accounting for successive slices of [['G#4']].
-Match strength estimated at 0.0%.
+Measure 17, beat 1, Ger65 in c#, indicating the pitches ['A4', 'C#5', 'E5', 'F##5'] accounting for successive chord "slices" of [['G#4']].
+Pitch match: 0.0%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 19, beat 1, v6 in c# minor, indicating the pitches ['B', 'D#', 'G#'] accounting for successive slices of [['A#4']].
-Match strength estimated at 0.0%.
+Measure 19, beat 1, v6 in c#, indicating the pitches ['B4', 'D#5', 'G#5'] accounting for successive chord "slices" of [['A#4']].
+Pitch match: 0.0%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 29, beat 3, V7/III in C# major, indicating the pitches ['B#', 'D##', 'F##', 'A#'] accounting for successive slices of [['B3', 'D#4', 'F##4', 'A#4', 'D#5']].
-Match strength estimated at 40.0%.
+Measure 29, beat 3, V7/III in C#, indicating the pitches ['B#4', 'D##5', 'F##5', 'A#5'] accounting for successive chord "slices" of [['B3', 'D#4', 'F##4', 'A#4', 'D#5']].
+Pitch match: 40.0%
 How about:
-m29 b3 bVII+#7##5#3 for the slice ['B3', 'D#4', 'F##4', 'A#4', 'D#5']
+m29 b3 bVII+#7##5#3 for the pitches ['B3', 'D#4', 'F##4', 'A#4', 'D#5']
 
 
-Measure 29, beat 4, III64 in C# major, indicating the pitches ['B#', 'E#', 'G##'] accounting for successive slices of [['B2', 'B3', 'D#4', 'G#4', 'B4'], ['B2', 'B3', 'G#4']].
-Match strength estimated at 0.0%.
+Measure 29, beat 4, III64 in C#, indicating the pitches ['B#4', 'E#5', 'G##5'] accounting for successive chord "slices" of [['B2', 'B3', 'D#4', 'G#4', 'B4'], ['B2', 'B3', 'G#4']].
+Pitch match: 0.0%
 How about:
-m29 b4 v6 for the slice ['B2', 'B3', 'D#4', 'G#4', 'B4']
+m29 b4 v6 for the pitches ['B2', 'B3', 'D#4', 'G#4', 'B4']
 
 
-Measure 35, beat 1, V in g# minor, indicating the pitches ['D#', 'F##', 'A#'] accounting for successive slices of [['D#3', 'B3', 'G#4', 'C##5'], ['D#3', 'A#3', 'F##4', 'D#5']].
-Match strength estimated at 44.0%.
+Measure 35, beat 1, V in g#, indicating the pitches ['D#5', 'F##5', 'A#5'] accounting for successive chord "slices" of [['D#3', 'B3', 'G#4', 'C##5'], ['D#3', 'A#3', 'F##4', 'D#5']].
+Pitch match: 43.75%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 45, beat 4, III+ in g# minor, indicating the pitches ['B', 'D#', 'F##'] accounting for successive slices of [['C#3', 'C#4', 'E#4', 'G##4']].
-Match strength estimated at 0.0%.
+Measure 45, beat 4, III+ in g#, indicating the pitches ['B4', 'D#5', 'F##5'] accounting for successive chord "slices" of [['C#3', 'C#4', 'E#4', 'G##4']].
+Pitch match: 0.0%
 How about:
-m45 b4 IV+5#3 for the slice ['C#3', 'C#4', 'E#4', 'G##4']
+m45 b4 IV+5#3 for the pitches ['C#3', 'C#4', 'E#4', 'G##4']
 
+
+
+RARE ROMAN NUMERALS =====================
+
+Total cases: 2
+The following Roman numerals are perfectly clear and the system has no trouble parsing them, though they are somewhat rare so may be worth reviewing:
+
+Measure 9, beat 3: V9/V in c# minor.
+
+Measure 37, beat 1: V4 in g# minor.
 
 
 HARMONIC RHYTHM =====================
 
-In the following cases, the chord change is at an unusually weak metrical position:
-Measure 23, V7 in c# minor appears on beat 4.5.
-Measure 29, viio65/v in C# major appears on beat 2.5.
+Total cases: 2
 
+In the following cases, the chord change is at an unusually weak metrical position:
+
+Measure 23, V7 in c# appears on beat 4.5.
+
+Measure 29, viio65/v in C# appears on beat 2.5.
 
 
 BASS / INVERSION =====================
 
-Bass note match: 89.54%.
-The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
-Measure 4, beat 1, i in c# minor, indicating the bass C# for lowest note(s) of: ['E4'].
-How about:
-m4 b1 i6
+Total cases: 18
 
+Overall bass note match: 89.54%.
 
-Measure 4, beat 3, VI in c# minor, indicating the bass A for lowest note(s) of: ['C#4'].
-How about:
-m4 b3 bVI6
+In these cases, the specified bass note doesn't appear in the lowest part during. (NB: pedal points are not yet supported):
 
-
-Measure 9, beat 2, i in c# minor, indicating the bass C# for lowest note(s) of: ['E3'].
-How about:
-m9 b2 i6
-
-
-Measure 10, beat 3, VI7 in c# minor, indicating the bass A for lowest note(s) of: ['G#3'].
-How about:
-m10 b3 bVI42
-
-
-Measure 10, beat 4, iio in c# minor, indicating the bass D# for lowest note(s) of: ['G#3'].
+Measure 4, beat 1, i in c#, indicating the bass C# for lowest note(s) of: ['E4'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 11, beat 2, i in c# minor, indicating the bass C# for lowest note(s) of: ['G#3'].
-How about:
-m11 b2 i64
-
-
-Measure 11, beat 3, iv65 in c# minor, indicating the bass A for lowest note(s) of: ['G#3'].
+Measure 4, beat 3, VI in c#, indicating the bass A for lowest note(s) of: ['C#4'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 14, beat 1, VI6 in c# minor, indicating the bass C# for lowest note(s) of: ['G#2'].
+Measure 9, beat 2, i in c#, indicating the bass C# for lowest note(s) of: ['E3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 14, beat 4, ii42 in c# minor, indicating the bass C# for lowest note(s) of: ['G#2'].
+Measure 10, beat 3, VI7 in c#, indicating the bass A for lowest note(s) of: ['G#3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 17, beat 1, Ger65 in c# minor, indicating the bass A for lowest note(s) of: ['G#4'].
+Measure 10, beat 4, iio in c#, indicating the bass D# for lowest note(s) of: ['G#3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 19, beat 1, v6 in c# minor, indicating the bass B for lowest note(s) of: ['A#4'].
+Measure 11, beat 2, i in c#, indicating the bass C# for lowest note(s) of: ['G#3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 29, beat 2.5, viio65/v in C# major, indicating the bass A# for lowest note(s) of: ['C#4'].
-How about:
-m29 b2.5 #ivob64bb3
-
-
-Measure 29, beat 3, V7/III in C# major, indicating the bass B# for lowest note(s) of: ['B3'].
+Measure 11, beat 3, iv65 in c#, indicating the bass A for lowest note(s) of: ['G#3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 29, beat 4, III64 in C# major, indicating the bass B# for lowest note(s) of: ['B2'].
+Measure 14, beat 1, VI6 in c#, indicating the bass C# for lowest note(s) of: ['G#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 30, beat 1, V7/IV in C# major, indicating the bass C# for lowest note(s) of: ['B2'].
-How about:
-m30 b1 Ib8642
-
-
-Measure 43, beat 4, viio6/V in c# minor, indicating the bass A# for lowest note(s) of: ['G#2'].
+Measure 14, beat 4, ii42 in c#, indicating the bass C# for lowest note(s) of: ['G#2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 45, beat 4, III+ in g# minor, indicating the bass B for lowest note(s) of: ['C#3'].
+Measure 17, beat 1, Ger65 in c#, indicating the bass A for lowest note(s) of: ['G#4'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 46, beat 1, ii in g# minor, indicating the bass A# for lowest note(s) of: ['C#3'].
-How about:
-m46 b1 ii6
+Measure 19, beat 1, v6 in c#, indicating the bass B for lowest note(s) of: ['A#4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 29, beat 2.5, viio65/v in C#, indicating the bass A# for lowest note(s) of: ['C#4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 29, beat 3, V7/III in C#, indicating the bass B# for lowest note(s) of: ['B3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 29, beat 4, III64 in C#, indicating the bass B# for lowest note(s) of: ['B2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 30, beat 1, V7/IV in C#, indicating the bass C# for lowest note(s) of: ['B2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 43, beat 4, viio6/V in c#, indicating the bass A# for lowest note(s) of: ['G#2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 45, beat 4, III+ in g#, indicating the bass B for lowest note(s) of: ['C#3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 46, beat 1, ii in g#, indicating the bass A# for lowest note(s) of: ['C#3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
 
 

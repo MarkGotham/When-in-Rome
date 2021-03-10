@@ -2,25 +2,20 @@ PITCH COVERAGE =====================
 
 Total cases: 1
 
-Overall pitch match: 99.61%.
+Overall pitch match: 94.1%.
 
 In the following cases, the chord indicated does not seem to capture everything going on:
 
-Measure 8, beat 3, V in A, indicating the pitches ['E5', 'G#5', 'B5'] accounting for successive slices of [['E3', 'B3', 'D5'], ['E3', 'A3', 'C#5'], ['E3', 'B3', 'D5']].
-Pitch match: 56.00000000000001%
+Measure 8, beat 3, V in A, indicating the pitches ['E5', 'G#5', 'B5'] accounting for successive chord "slices" of [['E3', 'B3', 'D5'], ['E3', 'A3', 'C#5'], ['E3', 'B3', 'D5']].
+Pitch match: 55.56%
 How about:
-m8 b3.33 I64 for the slice ['E3', 'A3', 'C#5']
+m8 b3.33 I64 for the pitches ['E3', 'A3', 'C#5']
 
 
 
 RARE ROMAN NUMERALS =====================
 
-Total cases: 2
-The following Roman numerals are perfectly clear and the system has no trouble parsing them, though they are somewhat rare so may be worth reviewing:
-
-Measure 4, beat 3: V9 in A major.
-
-Measure 23, beat 3: V9 in A major.
+No rare or unconventional Roman Numerals in this analysis.
 
 
 HARMONIC RHYTHM =====================

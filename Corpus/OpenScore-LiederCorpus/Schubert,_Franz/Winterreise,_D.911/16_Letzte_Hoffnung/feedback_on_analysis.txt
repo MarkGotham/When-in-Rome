@@ -1,17 +1,20 @@
-
 PITCH COVERAGE =====================
 
-I rate the pitch coverage at about 98.54%. In the following cases, the chord indicated does not seem to capture everything going on:
+Total cases: 1
 
-Measure 20, beat 3, i in e- minor, indicating the pitches ['E-', 'G-', 'B-'] accounting for successive slices of [['E-4', 'B-4', 'E-5', 'G-5'], ['D-5']].
-Match strength estimated at 50.0%.
+Overall pitch match: 87.53%.
+
+In the following cases, the chord indicated does not seem to capture everything going on:
+
+Measure 28, beat 1, v in eb, indicating the pitches ['Bb4', 'Db5', 'F5'] accounting for successive chord "slices" of [['Bb2'], ['Bb2', 'Bb3'], ['Cb3'], ['Cb3', 'Cb4'], ['Db3'], ['Db3', 'Db4'], ['Cb3'], ['Cb3', 'Cb4'], ['Bb2'], ['Bb2', 'Bb3'], ['Ab2'], ['Ab2', 'Ab3']].
+Pitch match: 50.0%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
-Measure 28, beat 1, v in e- minor, indicating the pitches ['B-', 'D-', 'F'] accounting for successive slices of [['B-2'], ['B-2', 'B-3'], ['C-3'], ['C-3', 'C-4'], ['D-3'], ['D-3', 'D-4'], ['C-3'], ['C-3', 'C-4'], ['B-2'], ['B-2', 'B-3'], ['A-2'], ['A-2', 'A-3']].
-Match strength estimated at 48.0%.
-Sorry, no suggestions - I can't find any triads or sevenths.
 
+RARE ROMAN NUMERALS =====================
+
+No rare or unconventional Roman Numerals in this analysis.
 
 
 HARMONIC RHYTHM =====================
@@ -19,70 +22,60 @@ HARMONIC RHYTHM =====================
 The harmonic rhythm looks good: all the chord changes take place on strong metrical positions.
 
 
-
 BASS / INVERSION =====================
 
-Bass note match: 93.29%.
-The following chords look ok, except for the bass note / inversion. (NB: pedal points are not currently supported):
-Measure 0, beat 3.5, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['C-4'].
-How about:
-m0 b3.5 viio64#2
+Total cases: 12
 
+Overall bass note match: 93.29%.
 
-Measure 2, beat 3.5, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['C-3'].
-How about:
-m2 b3.5 viio64#2
+In these cases, the specified bass note doesn't appear in the lowest part during. (NB: pedal points are not yet supported):
 
-
-Measure 4, beat 1, viio7/vi in e- minor, indicating the bass B for lowest note(s) of: ['B-2'].
+Measure 0, beat 3.5, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb4'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 4, beat 3.5, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['C-4'].
-How about:
-m4 b3.5 viio64#2
+Measure 2, beat 3.5, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 8, beat 3.5, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['C-4'].
-How about:
-m8 b3.5 viio64#2
+Measure 4, beat 1, viio7/vi in eb, indicating the bass B for lowest note(s) of: ['Bb2'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 19, beat 1, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['F4', 'C-4'].
-How about:
-m19 b1 viio#653
-m19 b1 viio64#2
+Measure 4, beat 3.5, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 19, beat 2.5, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['F5'].
-How about:
-m19 b2.5 viio#653
+Measure 8, beat 3.5, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 19, beat 3, V in e- minor, indicating the bass B- for lowest note(s) of: ['F5'].
-How about:
-m19 b3 V64
+Measure 19, beat 1, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb4', 'F4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 20, beat 1, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['F4', 'C-4'].
-How about:
-m20 b1 viio64#2
-m20 b1 viio#653
+Measure 19, beat 2.5, viio7 in eb, indicating the bass D for lowest note(s) of: ['F5'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 24, beat 3.5, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['C-4'].
-How about:
-m24 b3.5 viio64#2
+Measure 19, beat 3, V in eb, indicating the bass Bb for lowest note(s) of: ['F5'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 25, beat 1, viio7 in e- minor, indicating the bass D for lowest note(s) of: ['B-2', 'A-3', 'A-4', 'C-5', 'A-2', 'C-3'].
-How about:
-m25 b1 viio64#2
-m25 b1 viio6#43
+Measure 20, beat 1, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb4', 'F4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 45, beat 1, V7/iv in E- major, indicating the bass E- for lowest note(s) of: ['B-3'].
-How about:
-m45 b1 I64b3
+Measure 24, beat 3.5, viio7 in eb, indicating the bass D for lowest note(s) of: ['Cb4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 25, beat 1, viio7 in eb, indicating the bass D for lowest note(s) of: ['Bb2', 'Cb3', 'Ab2', 'Cb5', 'Ab3', 'Ab4'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
+
+Measure 45, beat 1, V7/iv in Eb, indicating the bass Eb for lowest note(s) of: ['Bb3'].
+Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
+
 
 

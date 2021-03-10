@@ -2,36 +2,36 @@ PITCH COVERAGE =====================
 
 Total cases: 4
 
-Overall pitch match: 95.45%.
+Overall pitch match: 76.78%.
 
 In the following cases, the chord indicated does not seem to capture everything going on:
 
-Measure 7, beat 1, vi in Db, indicating the pitches ['Bb4', 'Db5', 'F5'] accounting for successive slices of [['Bb2', 'Eb5'], ['A3', 'C4', 'Gb4', 'Eb5'], ['Bb3', 'Db4', 'F4', 'Db5'], ['C4', 'Eb4', 'F4', 'A4'], ['C4', 'Eb4', 'F4', 'A4'], ['Db4', 'F4', 'Bb4']].
-Pitch match: 48.0%
+Measure 7, beat 1, vi in Db, indicating the pitches ['Bb4', 'Db5', 'F5'] accounting for successive chord "slices" of [['Bb2', 'Eb5'], ['A3', 'C4', 'Gb4', 'Eb5'], ['Bb3', 'Db4', 'F4', 'Db5'], ['C4', 'Eb4', 'F4', 'A4'], ['C4', 'Eb4', 'F4', 'A4'], ['Db4', 'F4', 'Bb4']].
+Pitch match: 47.62%
 How about:
-m7 b1.33 #vø7 for the slice ['A3', 'C4', 'G-4', 'E-5']
-m7 b2 III#643 for the slice ['C4', 'E-4', 'F4', 'A4']
-m7 b2.33 III#643 for the slice ['C4', 'E-4', 'F4', 'A4']
-m7 b2.67 vi6 for the slice ['D-4', 'F4', 'B-4']
+m7 b1.33 #vø7 for the pitches ['A3', 'C4', 'G-4', 'E-5']
+m7 b2 III#643 for the pitches ['C4', 'E-4', 'F4', 'A4']
+m7 b2.33 III#643 for the pitches ['C4', 'E-4', 'F4', 'A4']
+m7 b2.67 vi6 for the pitches ['D-4', 'F4', 'B-4']
 
 
-Measure 16, beat 1, vi in Db, indicating the pitches ['Bb4', 'Db5', 'F5'] accounting for successive slices of [['Bb2', 'Eb5'], ['A3', 'C4', 'Gb4', 'Eb5'], ['Bb3', 'Db4', 'F4', 'Db5'], ['C4', 'Eb4', 'F4', 'A4'], ['C4', 'Eb4', 'F4', 'A4'], ['Db4', 'F4', 'Bb4']].
-Pitch match: 48.0%
+Measure 16, beat 1, vi in Db, indicating the pitches ['Bb4', 'Db5', 'F5'] accounting for successive chord "slices" of [['Bb2', 'Eb5'], ['A3', 'C4', 'Gb4', 'Eb5'], ['Bb3', 'Db4', 'F4', 'Db5'], ['C4', 'Eb4', 'F4', 'A4'], ['C4', 'Eb4', 'F4', 'A4'], ['Db4', 'F4', 'Bb4']].
+Pitch match: 47.62%
 How about:
-m16 b1.33 #vø7 for the slice ['A3', 'C4', 'G-4', 'E-5']
-m16 b2 III#643 for the slice ['C4', 'E-4', 'F4', 'A4']
-m16 b2.33 III#643 for the slice ['C4', 'E-4', 'F4', 'A4']
-m16 b2.67 vi6 for the slice ['D-4', 'F4', 'B-4']
+m16 b1.33 #vø7 for the pitches ['A3', 'C4', 'G-4', 'E-5']
+m16 b2 III#643 for the pitches ['C4', 'E-4', 'F4', 'A4']
+m16 b2.33 III#643 for the pitches ['C4', 'E-4', 'F4', 'A4']
+m16 b2.67 vi6 for the pitches ['D-4', 'F4', 'B-4']
 
 
-Measure 25, beat 1, V in Db, indicating the pitches ['Ab4', 'C5', 'Eb5'] accounting for successive slices of [['Ab2', 'C5'], ['Ab3', 'C4', 'Db4', 'C5'], ['Gb3', 'Bb3', 'Db4', 'Bb4']].
+Measure 25, beat 1, V in Db, indicating the pitches ['Ab4', 'C5', 'Eb5'] accounting for successive chord "slices" of [['Ab2', 'C5'], ['Ab3', 'C4', 'Db4', 'C5'], ['Gb3', 'Bb3', 'Db4', 'Bb4']].
 Pitch match: 50.0%
 How about:
-m25 b1.67 IV for the slice ['G-3', 'B-3', 'D-4', 'B-4']
+m25 b1.67 IV for the pitches ['G-3', 'B-3', 'D-4', 'B-4']
 
 
-Measure 25, beat 2, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive slices of [['Eb2', 'Ab4'], ['Eb3', 'F3', 'Cb4', 'D4', 'Ab4'], ['Eb3', 'Gb3', 'Bb3', 'Eb4', 'Gb4']].
-0.58
+Measure 25, beat 2, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb2', 'Ab4'], ['Eb3', 'F3', 'Cb4', 'D4', 'Ab4'], ['Eb3', 'Gb3', 'Bb3', 'Eb4', 'Gb4']].
+Pitch match: 58.33%
 Sorry, no suggestions - I can't find any triads or sevenths.
 
 
