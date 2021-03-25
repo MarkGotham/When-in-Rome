@@ -1,15 +1,16 @@
 Composer: Haydn, Franz Joseph
-Title: String Quartet in F Minor - No.4: Fuga a due soggetti
+Title: String Quartet in F Minor - 4: Fuga a due soggetti
 Analyst: Néstor Nápoles López, https://doi.org/10.5281/zenodo.1095617
-Proofreader: Automated translation using music21 and Mark Gotham's code.
+Proofreader: Automated translation from **harm to RomanText
 
 Time Signature: 4/4
+
 m1 f: V
-m2 i
-m3 viio
-m4 iv
-m5 iv6
-m6 V6
+m2 i b3 VI
+m3 viio b2 viio64
+m4 iv b3 i6
+m5 iv6 b2 V b3 iv
+m6 V6 b4 viio
 m7 i
 m8 i6 b3 i
 m9 V7/V
@@ -20,10 +21,10 @@ m13 V7
 m14 i b3 iv6
 m15 V65
 m16 i
-m17 i6
+m17 i6 b3 i
 m18 V43/V b3 V7/V
 m19 V
-m20 i6
+m20 i6 b3 iv
 m21 V2
 m22 b3 i6 b4 i
 m23 V65
@@ -43,7 +44,7 @@ m36 V
 m37 i6 b3 i
 m38 V65/III
 m39 III
-m40 III
+m40 III b3 VI
 m41 V7/III
 m42 V7/VI
 m43 viio7/iv
@@ -59,7 +60,7 @@ m52 V/III b3 V65/III
 m53 V/VI
 m54 V65/iv
 m55 iv
-m56 iv6
+m56 iv6 b3 iv/iv
 m57 V7/iv
 m58 bb: i
 m59 V7/VII
@@ -67,17 +68,17 @@ m60 iv/iv
 m61 V7/VI
 m62 VI b3 iv7
 m63 V65/VI
-m64 VI
+m64 VI b3 iv
 m65 V65/VI
 m66 Gb: I
 m68 V2/V
 m69 Db: I
 m71 V2/V
 m72 Ab: I
-m73 I
+m73 I b3 i
 m74 V2/v
 m75 eb: i
-m77 viio7/v
+m77 viio7/v b3 V2/v
 m78 bb: i
 m80 viio7/v b3 V2/v
 m81 f: i
@@ -89,7 +90,7 @@ m87 VI b3 iv
 m88 V7
 m89 i b3 V7/iv
 m90 f: i b3 VI
-m91 V6
+m91 V6 b4 V65
 m92 i
 m93 i6 b3 viio65
 m94 viio43
@@ -106,27 +107,27 @@ m104 V7 b3 VI
 m105 V7
 m106 i64
 m107 viio7/V
-m108 i64
+m108 i64 b3 V
 m109 V7 b4 i64
 m110 iio6
 m111 viio7
 m112 i
-m113 i6
+m113 i6 b3 VI6
 m114 V2 b3 i6
-m115 viio64/V
+m115 viio64/V b3 V2/V
 m116 V
 m117 i
 m118 V65 b3 i
 m119 viio43/V b3 V2/V
 m120 V64 b3 V6
-m121 i6
+m121 i6 b3 i
 m122 iv b3 iio
 m123 V2
 m124 i
 m125 V65
 m126 i b3 i7
 m127 VI b3 iv65
-m128 VII
+m128 VII b4 V2/III
 m129 III6 b3 V65/VI
 m130 VI
 m131 iv
@@ -136,13 +137,11 @@ m134 V
 m135 i64
 m136 V b3 i64
 m137 viio43/V
-m138 V
+m138 V b3 i64
 m139 viio7/V
 m140 viio43
 m141 i64
-m142 None
 m143 V b3 i64
-m144 None
 m145 V
 m146 i
 m147 viio7 b3 V7
@@ -157,7 +156,7 @@ m155 v
 m156 viio65/V b3 viio7/V
 m157 iv6 b3 iv
 m158 V7 b3 i
-m159 iio65
+m159 iio65 b3 V7
 m160 i
 m161 V65
 m162 i
@@ -171,9 +170,9 @@ m169 viio43
 m170 i6
 m171 viio43/V
 m172 V6
-m173 iio
+m173 iio b4 iv43
 m174 viio
-m175 viio7
+m175 viio7 b2 iio b4 iv43
 m176 viio7
 m179 i
 m180 i6 b3 iv
