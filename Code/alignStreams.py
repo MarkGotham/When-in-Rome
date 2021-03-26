@@ -34,6 +34,13 @@ def matchParts(referencePart: stream.Part,
     This function shortens the final measure's duration to match that of the score
     in the case of a part with anacrusis (no action otherwise).
 
+    3. Remove duplicated (redundant) time signatures.
+    Where analyses have repeat measures, and where those measures have a time signature,
+    the time signature is repeated leading to duplicates that are redundant.
+    This is especially common when repeating the first measure.
+    This function removes those redundant time signatures.
+    TODO: promote this up to Roman text itself.
+
     :param referencePart: the 'model' part, defining the 'correct' values.
     :param partToAdjust: the part to alter according to values in the referencePart.
     :return: partToAdjust, altered.
@@ -54,6 +61,15 @@ def matchParts(referencePart: stream.Part,
         if refLast.duration != refLast.barDuration:
             adjustLast = adjustMeasures.getElementsByClass('Measure')[-1]
             adjustLast.splitAtQuarterLength(refLast.duration.quarterLength)
+
+    currentTS = 'FAKE'
+    timeSignatures = partToAdjust.recurse().getElementsByClass('TimeSignature')
+    for ts in timeSignatures:
+        print(ts.ratioString)
+        if ts.ratioString == currentTS:
+            partToAdjust.remove(ts, recurse=True)
+        else:
+            currentTS = ts.ratioString
 
     return partToAdjust
 
