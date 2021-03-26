@@ -416,6 +416,10 @@ class ScoreAndAnalysis:
             analysis = alignStreams.matchParts(referencePart=reference,
                                                partToAdjust=analysis)
 
+            for n in analysis.recurse().notes:
+                if n.lyric:
+                    n.lyric = n.lyric.replace('-', 'b')
+
             self.scoreWithAnalysis.insert(0, analysis)
 
         if lieder:  # If lieder option is set to true and ...
