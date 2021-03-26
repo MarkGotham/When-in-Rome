@@ -1,76 +1,6 @@
 PITCH COVERAGE =====================
 
-Total cases: 12
-
-Overall pitch match: 84.34%.
-
-In the following cases, the chord indicated does not seem to capture everything going on:
-
-Measure 1, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 2, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 3, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 4, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 9, beat 3, V in bb, indicating the pitches ['F5', 'A5', 'C6'] accounting for successive chord "slices" of [['F2', 'A2', 'C3', 'F3', 'A3', 'C4', 'F4'], ['F2', 'Bb2', 'Db3', 'F3', 'Bb3', 'Db4', 'F4'], ['F2', 'G2', 'Bb2', 'G3', 'Bb3', 'F4'], ['F2', 'Bb2', 'Db3', 'Bb3', 'Db4', 'F4']].
-Pitch match: 53.85%
-How about:
-m9 b3 V53#3 for the pitches ['F2', 'A2', 'C3', 'F3', 'A3', 'C4', 'F4']
-m9 b3.5 i64 for the pitches ['F2', 'B-2', 'D-3', 'F3', 'B-3', 'D-4', 'F4']
-m9 b4.5 i64 for the pitches ['F2', 'B-2', 'D-3', 'B-3', 'D-4', 'F4']
-
-
-Measure 11, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 12, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 19, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 20, beat 3, ii in Db, indicating the pitches ['Eb4', 'Gb4', 'Bb4'] accounting for successive chord "slices" of [['Eb3', 'Bb3', 'Db4', 'F4', 'Ab4'], ['Eb3', 'Db4', 'F4', 'Gb4', 'Ab4']].
-Pitch match: 40.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 25, beat 3, V in bb, indicating the pitches ['F5', 'A5', 'C6'] accounting for successive chord "slices" of [['F2', 'A2', 'C3', 'F3', 'A3', 'C4', 'F4'], ['F2', 'Bb2', 'Db3', 'F3', 'Bb3', 'Db4', 'F4'], ['F2', 'G2', 'Bb2', 'G3', 'Bb3', 'F4'], ['F2', 'Bb2', 'Db3', 'Bb3', 'Db4', 'F4']].
-Pitch match: 53.85%
-How about:
-m25 b3 V53#3 for the pitches ['F2', 'A2', 'C3', 'F3', 'A3', 'C4', 'F4']
-m25 b3.5 i64 for the pitches ['F2', 'B-2', 'D-3', 'F3', 'B-3', 'D-4', 'F4']
-m25 b4.5 i64 for the pitches ['F2', 'B-2', 'D-3', 'B-3', 'D-4', 'F4']
-
-
-Measure 38, beat 1, I in Db, indicating the pitches ['Db4', 'F4', 'Ab4'] accounting for successive chord "slices" of [['Db3', 'Gb3', 'C4', 'Eb4', 'Ab4', 'Eb5'], ['Db3', 'Gb3', 'C4', 'Eb4', 'A4', 'Eb5'], ['Db3', 'Gb3', 'C4', 'Eb4', 'Bb4', 'Eb5'], ['Db3', 'Gb3', 'C4', 'Eb4', 'Eb5'], ['Db3', 'Gb3', 'C4', 'Eb4', 'F4', 'Eb5'], ['Db3', 'Gb3', 'C4', 'Eb4', 'Gb4', 'Eb5']].
-Pitch match: 25.53%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
-
-Measure 39, beat 1, I in Db, indicating the pitches ['Db4', 'F4', 'Ab4'] accounting for successive chord "slices" of [['C4'], ['Db4'], ['Eb4'], ['Ab3'], ['Bbb3'], ['Ab3']].
-Pitch match: 50.0%
-Sorry, no suggestions - I can't find any triads or sevenths.
-
+The pitch coverage looks good: all of the chords match the corresponding sections of the score well.
 
 
 RARE ROMAN NUMERALS =====================
@@ -80,35 +10,39 @@ No rare or unconventional Roman Numerals in this analysis.
 
 HARMONIC RHYTHM =====================
 
-Total cases: 17
+Total cases: 19
 
 In the following cases, the chord change is at an unusually weak metrical position:
+
+Measure 9, viø7 in bb appears on beat 3.5.
 
 Measure 10, V42 in Db appears on beat 3.5.
 
 Measure 10, V43 in Db appears on beat 4.5.
 
-Measure 15, viio43/V in Db appears on beat 2.5.
+Measure 15, viio43 in f appears on beat 2.5.
 
-Measure 16, viiø7 in Db appears on beat 2.5.
+Measure 16, viiø43 in Db appears on beat 2.5.
 
 Measure 18, V42 in Db appears on beat 3.5.
 
 Measure 18, V43 in Db appears on beat 4.5.
 
+Measure 25, viø7 in bb appears on beat 3.5.
+
 Measure 26, V42 in Db appears on beat 3.5.
 
 Measure 26, V43 in Db appears on beat 4.5.
 
-Measure 31, viio43/V in Db appears on beat 2.5.
+Measure 31, viio43 in f appears on beat 2.5.
 
-Measure 32, viiø7 in Db appears on beat 2.5.
+Measure 32, viiø43 in Db appears on beat 2.5.
 
 Measure 33, iiø42 in Db appears on beat 2.5.
 
 Measure 34, ii65 in Db appears on beat 1.5.
 
-Measure 34, vi6 in Db appears on beat 2.5.
+Measure 34, vi64 in Db appears on beat 2.5.
 
 Measure 34, ii7 in Db appears on beat 3.5.
 
@@ -116,14 +50,14 @@ Measure 34, V in Db appears on beat 4.5.
 
 Measure 35, I6 in Db appears on beat 1.5.
 
-Measure 35, viio65/V in Db appears on beat 2.5.
+Measure 35, viio7/V in Db appears on beat 2.5.
 
 
 BASS / INVERSION =====================
 
-Total cases: 7
+Total cases: 4
 
-Overall bass note match: 96.65%.
+Overall bass note match: 94.51%.
 
 In these cases, the specified bass note doesn't appear in the lowest part during. (NB: pedal points are not yet supported):
 
@@ -131,27 +65,15 @@ Measure 9, beat 1, iiø7 in bb, indicating the bass C for lowest note(s) of: ['E
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 15, beat 2.5, viio43/V in Db, indicating the bass Db for lowest note(s) of: ['Bb3'].
+Measure 9, beat 3.5, viø7 in bb, indicating the bass G for lowest note(s) of: ['F2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 16, beat 2.5, viiø7 in Db, indicating the bass C for lowest note(s) of: ['Gb3'].
+Measure 25, beat 3.5, viø7 in bb, indicating the bass G for lowest note(s) of: ['F2'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
-Measure 31, beat 2.5, viio43/V in Db, indicating the bass Db for lowest note(s) of: ['Bb3'].
-Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
-
-
-Measure 32, beat 2.5, viiø7 in Db, indicating the bass C for lowest note(s) of: ['Gb3'].
-Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
-
-
-Measure 34, beat 2.5, vi6 in Db, indicating the bass Db for lowest note(s) of: ['F2'].
-Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
-
-
-Measure 35, beat 2.5, viio65/V in Db, indicating the bass Bb for lowest note(s) of: ['G3'].
+Measure 38, beat 1, V9 in Db, indicating the bass Ab for lowest note(s) of: ['Db3'].
 Sorry, no inversion suggestions - none of the bass note(s) are in the chord.
 
 
