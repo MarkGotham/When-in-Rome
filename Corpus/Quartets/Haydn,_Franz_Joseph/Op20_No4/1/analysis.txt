@@ -1,9 +1,10 @@
 Composer: Haydn, Franz Joseph
 Title: String Quartet in D Major - No.1: Allegro di molto
 Analyst: Néstor Nápoles López, https://doi.org/10.5281/zenodo.1095617
-Proofreader: Automated translation using music21 and Mark Gotham's code.
+Proofreader: Automated translation from **harm to RomanText
 
 Time Signature: 3/4
+
 m1 D: I
 m3 V7
 m4 I b2 viio7 b3 I
@@ -15,7 +16,7 @@ m15 V7
 m16 I b2 viio7 b3 I
 m19 ii
 m20 b3 ii2
-m21 V65
+m21 V65 b3 I
 m22 ii65
 m23 I64 b3 V7
 m24 vi
@@ -31,7 +32,7 @@ m35 V
 m37 a: i
 m39 Ger7
 m41 V b3 viio/V
-m42 V
+m42 V b3 V2
 m43 A: I6
 m44 V
 m45 I b2 IV b3 viio/V
@@ -50,7 +51,7 @@ m57 ii6
 m58 I6
 m61 V43
 m63 I6
-m64 None b3 I6
+m64 b3 I6
 m65 V43 b3 I
 m66 ii6 b3.67 V7
 m67 I
@@ -141,12 +142,12 @@ m173 V
 m175 V7 b3 i
 m176 V2 b3 i6
 m177 V7 b3 i
-m178 iv7
-m179 III7
-m180 iio7
-m181 i b3 None
+m178 iv7 b3 -VII7
+m179 III7 b3 VI7
+m180 iio7 b3 V7
+m181 i
 m182 V65/iv b2 IV b3 iv
-m183 V b2 None b3 IV6
+m183 V b3 IV6
 m184 V65 b2 i b3 V64
 m185 i6 b2 V65/iv
 m186 iv b2 viio/V
@@ -176,7 +177,7 @@ m221 I b3 IV64
 m222 I
 m223 ii
 m224 b3 ii2
-m225 V65
+m225 V65 b3 I
 m226 IV b3 ii6
 m227 I64 b3 V7
 m228 vi
@@ -189,7 +190,7 @@ m234 V
 m236 V7 b3 I
 m237 V2 b3 I6
 m238 V7 b3 I
-m239 IV7
+m239 IV7 b2 ii6
 m240 V2
 m241 I6
 m242 IV
@@ -221,7 +222,7 @@ m273 V/IV
 m275 IV
 m276 viio/ii b3 ii
 m277 viio7 b3 I
-m278 viio/ii
+m278 viio/ii b2 ii6 b3 ii65
 m279 V2
 m281 I
 m282 b2 IV
@@ -236,6 +237,8 @@ m291 I b2 ii
 m292 I64 b3 V7
 m293 I b3 iii
 m294 I6
+m295 b3 v
+m296 b2 I b3 viio/IV
 m297 I6 b2 I
 m298 b3 N/vi
 m299 I b3 iii

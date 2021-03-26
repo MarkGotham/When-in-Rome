@@ -1,9 +1,10 @@
 Composer: Haydn, Franz Joseph
 Title: String Quartet in A Major - No.1: Allegro di molto e scherzando
 Analyst: Néstor Nápoles López, https://doi.org/10.5281/zenodo.1095617
-Proofreader: Automated translation using music21 and Mark Gotham's code.
+Proofreader: Automated translation from **harm to RomanText
 
 Time Signature: 6/8
+
 m1 A: I
 m2 b1.67 V b2 I
 m3 V b2 I
@@ -29,7 +30,7 @@ m26 I b1.67 V7 b2 I b2.67 V7
 m27 I b1.67 V7 b2 I b2.33 V b2.67 I
 m28 V7 b1.33 I b1.67 V7 b2 I b2.33 V7 b2.67 I
 m29 V7
-m31 i
+m31 i b2 iv7
 m32 D: I7 b2 I
 m33 IV b2 V7
 m34 I
@@ -39,15 +40,15 @@ m37 ii b2 V7/VI
 m38 E: V
 m39 b1.33 viio7/V b1.67 V b2.33 viio7/V b2.67 V
 m40 b1.33 viio7/V b1.67 V b2.33 viio7/V b2.67 V
-m42 I
+m42 I b2 V
 m43 I b1.33 V7 b1.67 I b2 IV b2.67 ii
 m44 I64 b1.67 V7 b2 I
-m45 i
+m45 i b2 V7
 m46 b1.33 viio7/V b2 V
 m47 b1.67 i64 b2 V b2.67 V7
 m48 b1.67 i64 b2 V b2.67 viio7/V
-m49 V b1.67 i64 b2.67 viio7/V
-m50 V b1.67 viio7/V
+m49 V b1.67 i64 b2 V b2.67 viio7/V
+m50 V b1.67 viio7/V b2 V
 m51 b1.67 I
 m53 V b2 I b2.33 V7 b2.67 I
 m54 IV b2 I64 b2.67 V
@@ -59,7 +60,7 @@ m59 I b2.67 V7
 m60 I b2.67 V7
 m61 I b2 IV
 m62 I b2 IV
-m63 I b2 V7
+m63 I b2 V7 b2.67 IV
 m64 V7/IV
 m65 V7/IV
 m66 b: V7 b2 i
@@ -120,7 +121,7 @@ m126 I b1.67 V7 b2 I b2.67 V7
 m127 I b1.67 V7 b2 I b2.33 V7 b2.67 I
 m128 V7 b1.33 I b1.67 V7 b2 I b2.33 V7 b2.67 I
 m129 V7
-m131 i
+m131 i b2 iv7
 m132 G: I7 b2 I
 m133 IV b2 V7
 m134 I
@@ -130,13 +131,15 @@ m137 i b2 V7/V
 m138 V
 m139 viio7/V b1.67 V b2 viio7 b2.67 V
 m140 viio7 b1.67 V b2 viio7 b2.67 V
-m142 I
+m142 I b2 V
 m143 I b1.67 V7 b2 IV b2.67 ii
 m144 I64 b1.67 V7 b2 I
-m145 i
+m145 i b2 V
+m146 b1.67 viio7/V b2 V
 m147 i64 b2 V
 m148 i64 b2 V
-m149 i64
+m149 i64 b2 V
+m152 b2.67 I
 m153 V b2 I
 m154 IV b2 I b2.67 V7
 m155 I
