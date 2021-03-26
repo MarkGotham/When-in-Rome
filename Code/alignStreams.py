@@ -65,7 +65,6 @@ def matchParts(referencePart: stream.Part,
     currentTS = 'FAKE'
     timeSignatures = partToAdjust.recurse().getElementsByClass('TimeSignature')
     for ts in timeSignatures:
-        print(ts.ratioString)
         if ts.ratioString == currentTS:
             partToAdjust.remove(ts, recurse=True)
         else:
