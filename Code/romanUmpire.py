@@ -348,6 +348,7 @@ class ScoreAndAnalysis:
         """
 
         self._removeGraceNotes()
+        self.score.expandRepeats()
         self._retrieveSlicesFromScore()
         self.totalLength = self.score.quarterLength
         self.scoreMeasures = len(self.score.parts[0].getElementsByClass('Measure'))
