@@ -148,7 +148,7 @@ class HarmonicRange:
                     self.getMoreValuesFromRN(source)
 
                     if rareRn(source):
-                        msg = f'Measure {self.startMeasure}, beat {self.startBeat}: '\
+                        msg = f'Measure {self.startMeasure}, beat {self.startBeat}: ' \
                               f'{source.figure} in {source.key}.'
                         self.rareRnFeedbackMessage = msg
 
@@ -262,7 +262,7 @@ class ScoreAndAnalysis:
     carryPitchesOver:
         Do pitches remain in effect over rests?
         By default, this class ignores rests, leaving pitches in place until the next pitched event
-        as part fof calculating match strenth.
+        as part of calculating match strength.
     """
 
     def __init__(self,
@@ -563,29 +563,28 @@ class ScoreAndAnalysis:
             headers += ['key', 'figure']
 
         with open(f'{os.path.join(outPath, outFile)}.tsv', "w") as svfile:
-            svOut = csv.writer(svfile, delimiter='\t',
-                               quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            self.svOut = csv.writer(svfile, delimiter='\t',
+                                    quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             if includeAnalysis:
                 for hr in self.harmonicRanges:
                     if not hr.slices:
                         print(f'No slices in this hr: {hr.startMeasure}')
                         break
-                    self._writeSlice(svOut, hr.slices[0], analysis=True, key=hr.key, fig=hr.figure)
+                    self._writeSlice(hr.slices[0], analysis=True, key=hr.key, fig=hr.figure)
                     if len(hr.slices) > 1:
                         for s in hr.slices[1:]:
                             if changesOnly:
-                                self._writeSlice(svOut, s, analysis=True)
+                                self._writeSlice(s, analysis=True)
                                 # sic, not repeating key and figure where it doesn't change
                             else:
-                                self._writeSlice(svOut, s, analysis=True, key=hr.key, fig=hr.figure)
+                                self._writeSlice(s, analysis=True, key=hr.key, fig=hr.figure)
 
             else:
                 for s in self.slices:
-                    self._writeSlice(svOut, s, analysis=includeAnalysis)
+                    self._writeSlice(s, analysis=False)
 
     def _writeSlice(self,
-                    svOut,
                     entry: Slice,
                     analysis: bool,
                     key: Optional[str] = '',
@@ -595,23 +594,23 @@ class ScoreAndAnalysis:
         Write data from one slice to a csv.
         """
         if analysis:
-            svOut.writerow([entry.uniqueOffsetID,
-                            entry.measure,
-                            entry.beat,
-                            entry.beatStrength,
-                            entry.quarterLength,
-                            entry.pitches,
-                            key,
-                            fig
-                            ])
+            self.svOut.writerow([entry.uniqueOffsetID,
+                                 entry.measure,
+                                 entry.beat,
+                                 entry.beatStrength,
+                                 entry.quarterLength,
+                                 entry.pitches,
+                                 key,
+                                 fig
+                                 ])
         else:
-            svOut.writerow([entry.uniqueOffsetID,
-                            entry.measure,
-                            entry.beat,
-                            entry.beatStrength,
-                            entry.quarterLength,
-                            entry.pitches,
-                            ])
+            self.svOut.writerow([entry.uniqueOffsetID,
+                                 entry.measure,
+                                 entry.beat,
+                                 entry.beatStrength,
+                                 entry.quarterLength,
+                                 entry.pitches,
+                                 ])
 
     def _retrieveSlicesFromList(self):
         """
@@ -968,7 +967,8 @@ class ScoreAndAnalysis:
                         suggestedPitches.append(bassPitch + '0')  # To ensure it is lowest
                         suggestedChord = chord.Chord(suggestedPitches)
                         rn = roman.romanNumeralFromChord(suggestedChord, hr.key)
-                        inversionSuggestions.append(f'm{hr.startMeasure} b{hr.startBeat} {rn.figure}')
+                        inversionSuggestions.append(
+                            f'm{hr.startMeasure} b{hr.startBeat} {rn.figure}')
 
                 msg = f'Measure {hr.startMeasure}, beat {hr.startBeat}, {hr.figure} in {hr.key}, ' \
                       f'indicating the bass {hr.bassPitch} ' \
