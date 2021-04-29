@@ -324,8 +324,8 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
                             lc = fileName[2:-5]
                             url = f'<a href="https://musescore.com/score/{lc}">{lc}</a>'
                             break
-                        if not url:
-                            print(f'No <lc*.mscx> file found in {pathtoFolder}')
+                    if not url:
+                        print(f'No <lc*.mscx> file found in {pathtoFolder}')
 
                 rnf = RnFinder(fullPath)
 
@@ -379,6 +379,17 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
 
         for entry in sortedList:
             svOut.writerow([x for x in entry])
+
+
+def allSearchesOneCorpus(corpus: str = 'OpenScore-LiederCorpus'):
+    """
+    Runs the oneSearchOneCorpus function for
+    one corpus and
+    all search terms except 'Progressions'.
+    """
+
+    for w in validSearches[:-1]:  # omit progressions
+        oneSearchOneCorpus(corpus=corpus, what=w)
 
 
 def processAll():
