@@ -62,6 +62,11 @@ def matchParts(referencePart: stream.Part,
             adjustLast = adjustMeasures.getElementsByClass('Measure')[-1]
             adjustLast.splitAtQuarterLength(refLast.duration.quarterLength)
 
+    removeDuplicateTimeSigs(partToAdjust)
+    return partToAdjust
+
+
+def removeDuplicateTimeSigs(partToAdjust: stream.Part):
     currentTS = 'FAKE'
     timeSignatures = partToAdjust.recurse().getElementsByClass('TimeSignature')
     for ts in timeSignatures:
