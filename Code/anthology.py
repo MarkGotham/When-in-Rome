@@ -74,7 +74,7 @@ class RnFinder(object):
 
         for rn in self.rns:
             # NOTE: musical logic previously here now moved to the main music21 repo
-            if rn.isNeapolitan():
+            if rn.isNeapolitan(require1stInversion=False):
                 self.neapolitanSixths.append(dataFromRn(rn))
 
     def findAugmentedSixths(self):
