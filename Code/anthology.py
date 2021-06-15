@@ -60,8 +60,9 @@ class RnFinder(object):
 
         for rn in self.rns:
             # NOTE: musical logic previously here now moved to the main music21 repo
-            if rn.isMixture():
-                self.mixtures.append(dataFromRn(rn))
+            if not rn.secondaryRomanNumeral:
+                if rn.isMixture():
+                    self.mixtures.append(dataFromRn(rn))
 
     def findAppliedChords(self):
 
