@@ -84,15 +84,31 @@ class RnFinder(object):
                 self.augmentedSixths.append(dataFromRn(rn))
 
     def findAugmentedChords(self,
-                            acceptSevenths: bool = True):
+                            acceptSevenths: bool = True,
+                            requireAugAsTriad: bool = True):
+
+        """
+        Finds cases of augmented triads (e.g. III+) in any inversion.
+
+        If acceptSevenths is True (default) then also seeks cases of
+        sevenths containing an augmented triad.
+
+        If requireAugAsTriad is True (default), then limit these sevenths to cases
+        where the augmented triad is the triad (with an added sevenths), e.g. V+7.
+        If not, accept cases where the augmented triad is
+        formed by the 3rd, 5th and 7th of the chord (e.g. minor-major sevenths).
+        """
 
         for rn in self.rns:
             if rn.isAugmentedTriad():
                 self.augmentedChords.append(dataFromRn(rn))
             elif acceptSevenths:
                 if rn.isSeventh:
-                    if rn.isSeventhOfType([0, 4, 8, 11]) or rn.isSeventhOfType([0, 3, 7, 11]):
+                    if rn.isSeventhOfType([0, 4, 8, 11]) or rn.isSeventhOfType([0, 4, 8, 10]):
                         self.augmentedChords.append(dataFromRn(rn))
+                    elif not requireAugAsTriad:
+                        if rn.isSeventhOfType([0, 3, 7, 11]):
+                            self.augmentedChords.append(dataFromRn(rn))
 
     def findProgressionByRns(self,
                              rns_list: List[str]):
