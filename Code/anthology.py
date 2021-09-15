@@ -28,7 +28,7 @@ from music21 import converter
 from music21 import interval
 from music21 import roman
 
-from typing import List, Optional, Union
+from typing import List, Union
 
 import csv
 import fnmatch
@@ -114,7 +114,7 @@ class RnFinder(object):
                              rns_list: List[str]):
         """
         Find a specific progression of Roman numerals in a given key input by the user as
-        a list of Roman numerals figures like ['I', 'V65', 'I']
+        a list of Roman numeral figures like ['I', 'V65', 'I']
         """
 
         lnrns = len(rns_list)
@@ -138,11 +138,11 @@ class RnFinder(object):
                 self.userRnProgressionList.append(info)
 
     def findProgressionByTypeAndRoot(self,
-                                     qualitiesList: List = ['major', 'major'],
-                                     intervalList: List[Union[str, interval.Interval]] = ['M2'],
-                                     bassOrRoot: Union['root', 'bass'] = 'root',
+                                     qualitiesList: List,
+                                     intervalList: List[Union[str, interval.Interval]],
+                                     bassOrRoot: str,
                                      ):
-        '''
+        """
         Find a specific progression of chords using Roman numerals but
         searching by triad quality and bass or root motion.
         The defaults seek instances of a pair of major triads with
@@ -151,7 +151,7 @@ class RnFinder(object):
 
         The logic is similar to findProgressionByRns,
         but refactored due to the creation of interval object here.
-        '''
+        """
 
         lnQs = len(qualitiesList)
 
@@ -232,7 +232,6 @@ class RnFinder(object):
                             if requireProlongation:
                                 continue  # can't be without the previous chord
 
-
                 nextChord = self.rns[index + 1]
                 if nextChord.key == thisChord.key:
                     if nextChord.figure != thisChord.figure:
@@ -257,9 +256,13 @@ class RnFinder(object):
 
 # Static
 
-def dataFromRn(rn):
-    msn = rn.getContextByClass('Measure').measureNumber
-    return [msn, rn.figure, rn.key.name.replace('-', 'b')]
+def dataFromRn(rn: roman.RomanNumeral):
+    return {'MEASURE': rn.getContextByClass('Measure').measureNumber,
+            'FIGURE': rn.figure,
+            'KEY': rn.key.name.replace('-', 'b'),
+            'BEAT': rn.beat,
+            'BEAT STRENGTH': rn.beatStrength,
+            'LENGTH': rn.quarterLength}
 
 
 # ------------------------------------------------------------------------------
@@ -283,8 +286,10 @@ validSearches = ['Modal Mixture',
 
 def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
                        what: str = 'Modal Mixture',
-                       progression: Optional[list] = [],
-                       write: bool = True):
+                       progression: list = None,
+                       write: bool = True,
+                       heads: list = None
+                       ):
     """
     Runs the search methods on a specific pair of corpus and serach term.
     Settable to find any of
@@ -300,6 +305,14 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
     If searching for a progression, set the progression variable to a list of
     Roman numerals figure strings like ['I', 'V65', 'I']
     """
+
+    if heads is None:
+        heads = ['COMPOSER',
+                 'COLLECTION',
+                 'MOVEMENT',
+                 'MEASURE',
+                 'FIGURE',
+                 'KEY']
 
     if what not in validSearches:
         raise ValueError(f'For what, please select from among {validSearches}.')
@@ -319,9 +332,13 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
         url = ''
 
     totalList = []
+    totalRns = 0
+    totalLength = 0
 
     corpusPath = os.path.join('..', 'Corpus', corpus)
     outPath = os.path.join('..', 'Anthology', corpus)
+
+    print(f'Searching for {what} within the {corpus} collection:')
 
     for dpath, dname, fname in os.walk(corpusPath):
         for name in fname:
@@ -345,6 +362,8 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
                         print(f'No <lc*.mscx> file found in {pathtoFolder}')
 
                 rnf = RnFinder(fullPath)
+                totalRns += len(rnf.rns)
+                totalLength += rnf.analysis.quarterLength
 
                 if what == 'Modal Mixture':
                     rnf.findMixtures()
@@ -369,33 +388,37 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
                     tempList = rnf.userRnProgressionList
 
                 for x in tempList:
-                    p = ids + x
+                    x['COMPOSER'] = ids[0]
+                    x['COLLECTION'] = ids[1]
+                    x['MOVEMENT'] = ids[2]
                     if lied:
-                        p += [url]
-                    totalList.append(p)
+                        x['URL'] = url
 
-    sortedList = sorted(totalList, key=lambda x: (x[0], x[1], x[2]))
+                totalList += tempList
+
+    sortedList = sorted(totalList, key=lambda x: (x['COMPOSER'],
+                                                  x['COLLECTION'],
+                                                  x['MOVEMENT']))
+
+    totalRnLength = sum([x['LENGTH'] for x in sortedList])
+    print(f'{len(sortedList)} cases from {totalRns} RNs searched overall with a '
+          f'combined length of {totalRnLength} from {totalLength}.')
 
     if not write:
         return sortedList
 
-    with open(os.path.join(outPath, what + '.tsv'), "w") as svfile:
-        svOut = csv.writer(svfile, delimiter='\t',
+    with open(os.path.join(outPath, what + '.csv'), "w") as svfile:
+        svOut = csv.writer(svfile, delimiter=',',
                            quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        heads = ['COMPOSER',
-                 'COLLECTION',
-                 'MOVEMENT',
-                 'MEASURE (START)',
-                 'FIGURE(S)',
-                 'KEY']
         if lied:
             heads.append('URL')
 
         svOut.writerow(heads)
 
         for entry in sortedList:
-            svOut.writerow([x for x in entry])
+            row = [entry[head] for head in heads]
+            svOut.writerow(row)
 
 
 def allSearchesOneCorpus(corpus: str = 'OpenScore-LiederCorpus'):
