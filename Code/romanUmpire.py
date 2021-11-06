@@ -63,6 +63,7 @@ from typing import Union, Optional
 import unittest
 
 import alignStreams
+import harmonicFunction
 
 
 # ------------------------------------------------------------------------------
@@ -382,6 +383,7 @@ class ScoreAndAnalysis:
                                outFile: str = 'on_score',
                                feedback: bool = True,
                                voicingFromScore: bool = False,
+                               includeFunctionLabels: bool = True,
                                lieder: bool = True):
         """
         Mostly to combine an off-score analysis with the corresponding score and write to disc.
@@ -420,6 +422,14 @@ class ScoreAndAnalysis:
             for n in analysis.recurse().notes:
                 if n.lyric:
                     n.lyric = n.lyric.replace('-', 'b')
+
+            if includeFunctionLabels:  # TODO stripTies() or sim?
+                for rn in analysis.recurse().getElementsByClass(roman.RomanNumeral):
+                    if rn.pitches[0].octave == 5:
+                        for p in rn.pitches:
+                            p.octave -= 1
+                    fx = harmonicFunction.figureToFunction(rn)
+                    rn.addLyric(fx)
 
             self.scoreWithAnalysis.insert(0, analysis)
 
