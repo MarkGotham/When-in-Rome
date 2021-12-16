@@ -24,6 +24,7 @@ music21 repo's [roman.py](https://github.com/cuthbertLab/music21/blob/master/mus
 
 """
 
+from music21 import chord
 from music21 import converter
 from music21 import interval
 from music21 import roman
@@ -137,60 +138,50 @@ class RnFinder(object):
 
                 self.userRnProgressionList.append(info)
 
-    def findProgressionByTypeAndRoot(self,
+    def findProgressionByTypeAndIntv(self,
                                      qualitiesList: List,
-                                     intervalList: List[Union[str, interval.Interval]],
-                                     bassOrRoot: str,
+                                     intervalList: List[Union[str, interval.Interval]] = None,
+                                     bassOrRoot: str = 'bass',
                                      ):
         """
-        Find a specific progression of chords using Roman numerals but
-        searching by triad quality and bass or root motion.
-        The defaults seek instances of a pair of major triads with
-        the root of the second being tone higher than the first.
-        This method includes instances that traverse key change.
+        Find a specific progression of Roman numerals
+        searching by chord type quality and (optionally) bass or root motion.
 
-        The logic is similar to findProgressionByRns,
-        but refactored due to the creation of interval object here.
+        For instance, to find everything that might constitute a ii-V-I progression
+        (whether or not those are the Roman numerals used), search for
+        qualitiesList=['Minor', 'Major', 'Major'], intervalList=['P4', 'P-5']. bassOrRoot='root')
+
+        This method accepts many input types.
+        For the range accepted by qualitiesList,
+        see documentation at isOfType().
+
+        Blank entries are also fine.
+        For instance, to find out how augmented chords resolve, search for
+        qualitiesList=['Augmented triad', ''].
+        To add the preceding chord as well, expand to:
+        qualitiesList=['', 'Augmented triad', ''].
+        Note that intervalList is left unspecified (we are interested in any interval succession.
+        Anytime the intervalList is left blank, the search runs on quality only.
         """
 
         lnQs = len(qualitiesList)
 
-        if lnQs != len(intervalList) + 1:
-            raise ValueError('There must be exactly one more quality than interval.')
+        if intervalList:
+            if lnQs != len(intervalList) + 1:
+                raise ValueError('There must be exactly one more chord than interval.')
 
-        validQualities = ['diminished', 'minor', 'major', 'augmented']
-        for q in qualitiesList:
-            if q not in validQualities:
-                raise ValueError(f'All the qualities values must be in {validQualities}')
-
-        if bassOrRoot == 'bass':
-            allRelevant = [[x.quality, x.bass.name, x.figure, x.key.name] for x in self.rns]
-        elif bassOrRoot == 'root':
-            allRelevant = [[x.quality, x.root.name, x.figure, x.key.name] for x in self.rns]
-        else:
-            raise ValueError('The bassOrRoot variable must be either bass or root.')
-
-        for i in range(len(intervalList)):
-            if isinstance(intervalList[i], interval.Interval):
-                intervalList[i] = intervalList[i].name
-
-        # Add intervals
-        for x in range(len(allRelevant)):
-            thisEntry = allRelevant[x]
-            nextEntry = allRelevant[x + 1]
-            i = interval.Interval(thisEntry[1], nextEntry[1]).name  # bass or root
-            thisEntry.append(i)
-
-        for index in range(len(allRelevant) - lnQs):
-            thisRange = allRelevant[index: index + lnQs]
-            these_qualities = [x[0] for x in thisRange]
-            these_intervals = [x[-1] for x in thisRange]
-            if (these_qualities == qualitiesList) and these_intervals == intervalList:
-                info = [self.rns[index].getContextByClass('Measure').measureNumber,
-                        [x[2] for x in thisRange],  # figures
-                        [x[3] for x in thisRange],  # key(s).  TODO. better way for key changes?
-                        ]
-                self.userRnProgressionList.append(info)
+        # 1. Search quality match first: quality is required
+        for index in range(len(self.rns) - lnQs):
+            theseRns = self.rns[index: index + lnQs]
+            for i in range(lnQs):
+                if not isOfType(theseRns[i], qualitiesList[i]):
+                    continue  # TODO check
+            # 2. Only search for interval match if required and if the qualities already match.
+            if intervalList:
+                if intervalMatch(theseRns, intervalList, bassOrRoot):
+                    info = dataFromRn(self.rns[index])
+                    info['FIGURE'] = [x.figure for x in theseRns]
+                    self.userRnProgressionList.append(info)
 
     def findPotentialCommonToneDiminishedSeventh(self,
                                                  requireProlongation: bool = True):
@@ -263,6 +254,137 @@ def dataFromRn(rn: roman.RomanNumeral):
             'BEAT': rn.beat,
             'BEAT STRENGTH': rn.beatStrength,
             'LENGTH': rn.quarterLength}
+
+
+# TODO possible candidate for a new music21.chord.isOfType() function
+def isOfType(thisChord, queryType):
+    """
+    Tests whether a chord (thisChord) is of a particular type (queryType).
+
+    There are only two match criteria.
+    First chords must have the same normal order.
+    This means that C major and D major do match (transposition equivalence included),
+    but C major and c minor do not (inversion equivalence excluded).
+    Second, relevant pitch spelling must also match, so
+    dominant sevenths do not match German sixth chords.
+
+    thisChord can be a chord.Chord object
+    or a roman.RomanNumeral (which inherits from chord.Chord).
+    Raises an error otherwise.
+
+    The queryType can be in almost any format.
+    First, it can also be a chord.Chord object, including the same object as thisChord:
+    >>> majorTriad = chord.Chord('C E G')
+    >>> isOfType(majorTriad, majorTriad)
+    True
+
+    Second, is anything you can use to create a chord.Chord object, i.e.
+    string of pitch names (with or without octave), or a list of
+    pitch.Pitch objects,
+    note.Note objects,
+    MIDI numbers, or
+    pitch class numbers.
+    It bear repeating here that transpositon equivalence is fine:
+    >>> isOfType(majorTriad, [2, 6, 9])
+    True
+
+    # TODO: implement chord.fromCommonName then add this:
+    # Third, it can be any string returned by music21's chord.commonName.
+    # These include fixed strings for
+    # single pitch chords (including 'note', 'unison', 'Perfect Octave', ...),
+    # dyads (e.g. 'Major Third'),
+    # triads ('minor triad'),
+    # sevenths ('dominant seventh chord'), and
+    # other special cases ('all-interval tetrachord'),
+    # The full list (based on Solomon's) can be seen at music.chord.tables.SCREF.
+    # TODO >>> isOfType(majorTriad, 'whole tone scale')
+    # TODO False
+    #
+    >>> wholeToneChord = chord.Chord([0, 2, 4, 6, 8, 10])
+    #
+    # TODO >>> isOfType(wholeToneChord, 'whole tone scale')
+    # TODO True
+    #
+    # Additionally, chord.commonName supports categories of strings like (fill in the <>)
+    # 'enharmonic equivalent to <>',
+    # '<> with octave doublings',
+    # 'forte class <>', and
+    # '<> augmented sixth chord' (and where relevant) 'in <> position'.
+    # TODO >>> isOfType(wholeToneChord, 'forte class <>' )
+    # True
+    #
+    # As with chord.commonName, chords with no common name return the Forte Class
+    # so that too is a valid entry (but only in those cases).
+    # Any well-formed Forte Class string is acceptable, as is the format 'forte class 6-36B',
+    # (which chord.commonName returns for cases with no common name):
+    # TODO >>> isOfType(wholeToneChord, '6-35')
+    # True
+
+    Raises an error if the queryType is (still!) not valid.
+    """
+    from music21 import chord
+
+    if not 'Chord' in thisChord.classes:
+        raise ValueError('Invalid thisChord: must be a chord.Chord object')
+
+    # Make reference (another chord.Chord object) from queryType
+    reference = None
+    try:
+        reference = chord.Chord(queryType)
+        # accepts string of pitches;
+        # list of ints (normal order), pitches, notes, or strings;
+        # even an existing chord.Chord object.
+    except:  # can't make a chord directly. Assume string.
+        if isinstance(queryType, str):
+            if '-' in queryType:  # take it to be a Forte class.
+                f = 'forte class '
+                if queryType.startswith(f):
+                    queryType = queryType.replace(f, '')
+                reference = chord.fromForteClass(queryType)
+            else:  # a string, not a Forte class, take it to be a common name.
+                # TODO
+                # reference = chord.fromCommonName(queryType)
+                pass
+        # else:
+        #     raise ValueError(f'Invalid queryType. Cannot make a chord.Chord from {queryType}')
+    if not reference:
+        raise ValueError(f'Invalid queryType. Cannot make a chord.Chord from {queryType}')
+
+    t = thisChord.commonName == reference.commonName
+    return t
+
+
+def intervalMatch(rnsList: list,
+                  intervalList: list,
+                  bassOrRoot: str = 'bass'):
+    """
+    Check whether the intervals (bass or root) between a succession of Roman numerals match a query.
+    Requires the creation of interval.Interval objects.
+    Minimised here to reduce load on large corpus searches.
+
+    :param rnsList: list of Roman numerals
+    :param intervalList: the query list of intervals (interval.Interval objects or directed names)
+    :param bassOrRoot: intervals between the bass notes or the roots?
+    :return: bool.
+    """
+    if bassOrRoot == 'bass':
+        pitches = [x.bass() for x in rnsList]
+    elif bassOrRoot == 'root':
+        pitches = [x.root() for x in rnsList]
+    else:
+        raise ValueError('The bassOrRoot variable must be either bass or root.')
+
+    if len(pitches) != len(intervalList) + 1:
+        raise ValueError('There must be exactly one more RN than interval.')
+
+    for i in range(len(intervalList)):
+        sourceInterval = interval.Interval(pitches[i], pitches[i + 1]).intervalClass
+        comparisonInterval = interval.Interval(intervalList[i]).intervalClass
+        # NOTE: ^ Make sure to go through interval.Interval object
+        if sourceInterval != comparisonInterval:
+            return False  # false as soon as one doesn't match
+
+    return True
 
 
 # ------------------------------------------------------------------------------
@@ -461,8 +583,26 @@ class Test(unittest.TestCase):
             # True, minor key:
             self.assertTrue(roman.RomanNumeral(fig, 'a').isMixture())
 
+    def testIsOfType(self):
+        self.assertTrue(isOfType(roman.RomanNumeral('I'), [6, 10, 1]))
+        self.assertTrue(isOfType(chord.Chord('G- B-- D-'), '3-11A'))
+
+    def testIntervalMatch(self):
+
+        rns = [roman.RomanNumeral(x) for x in ['i', 'iiø65', 'V7']]
+
+        intervalsType1 = ['M2', 'P4']
+        self.assertTrue(intervalMatch(rns, intervalsType1, bassOrRoot='root'))
+        self.assertFalse(intervalMatch(rns, intervalsType1, bassOrRoot='bass'))
+
+        intervalsType2 = ['P4', 'M2']
+        self.assertTrue(intervalMatch(rns, intervalsType2, bassOrRoot='bass'))
+        self.assertFalse(intervalMatch(rns, intervalsType2, bassOrRoot='root'))
+
 
 # ------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
     unittest.main()
