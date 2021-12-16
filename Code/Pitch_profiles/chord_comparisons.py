@@ -52,12 +52,47 @@ chord_types = ['diminished triad',
 
 # ------------------------------------------------------------------------------
 
+def best_fit_chord(usage_profile: list,
+                   reference_profile_dict: dict = chord_profiles.binary,
+                   reference_chord_names: list = chord_types,
+                   comp_type='Manhattan',
+                   return_in_chord_PCs_only: bool = False,
+                   return_score: bool = False   ):
+    """Find the best fit chord for a given usage in practice."""
+
+    best_fit_name = 'Fake'  # Fake init, immediately replaced
+    least_distance = 10  # also fake init
+    best_fit_rotation = None
+    for name in reference_chord_names:
+        for i in range(12):
+            profile = rotate(reference_profile_dict[name], i)
+            # Compare real data (score or audio) with reference
+            match = normalisation_comparison.compare_two_profiles(usage_profile,
+                                                                  profile,
+                                                                  comparison_type=comp_type)
+            if match < least_distance:
+                least_distance = match
+                best_fit_name = name
+                best_fit_rotation = i
+
+    if return_in_chord_PCs_only:
+        profile = rotate(chord_profiles.binary[best_fit_name], best_fit_rotation)
+        return profile_to_PC_list(profile)
+    return best_fit_name, best_fit_rotation
+
+
+def profile_to_PC_list(profile: list):
+    """
+    Convert a profile into a list of the indexes used
+    E.g., from a PCP to a (shorter) list of PCs.
+    """
+    return [i for i in range(len(profile)) if profile[i] > 0]
+
+
 def compare_one_source(path_to_file: str,
-                       reference_chord_names: list = chord_types,
-                       reference_profile_dict: dict = chord_profiles.binary,
-                       comp_type='Manhattan',
                        return_percent: bool = False,
-                       log_out_of_scope: bool = False):
+                       log_out_of_scope: bool = False,
+                       reference_profile_dict: dict = chord_profiles.binary):
     """
     Compares all chord segments of a single file with
     reference profiles (user-defined: default is the binary profiles).
@@ -89,21 +124,9 @@ def compare_one_source(path_to_file: str,
                 print('Out of scope chord: ', d['chord'])
             continue
 
-        # Find best fit
-        best_fit_name = 'Fake'  # Fake init, immediately replaced
-        least_distance = 10  # also fake init
-        best_fit_rotation = None
-        for name in reference_chord_names:
-            for i in range(12):
-                profile = rotate(reference_profile_dict[name], i)
-                # Compare real data (score or audio) with reference
-                match = normalisation_comparison.compare_two_profiles(d['distribution'],
-                                                                      profile,
-                                                                      comparison_type=comp_type)
-                if match < least_distance:
-                    least_distance = match
-                    best_fit_name = name
-                    best_fit_rotation = i
+        best_fit_name, best_fit_rotation = best_fit_chord(d['distribution'],
+                                                          reference_profile_dict,
+                                                          chord_types)
 
         match_success = ((best_fit_name, best_fit_rotation) == (analysis_name, analysis_root))
 
