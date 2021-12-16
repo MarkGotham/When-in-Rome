@@ -94,7 +94,7 @@ def makeContentsSV(corpus: str = 'OpenScore-LiederCorpus',
         lied = True
 
     data = []
-    rootPath = os.path.join('..', 'Corpus')
+    rootPath = os.path.join(os.path.dirname((os.path.realpath(__file__))), '..', 'Corpus')
     corpusPath = os.path.join(rootPath, corpus)
 
     primary, secondary = 'analysis.txt', 'score.mxl'
