@@ -712,7 +712,7 @@ class ScoreAndAnalysis:
     def _romanFromLyric(self, lyric):
         """
         Converts lyrics in recognised format into m21 Roman Numeral objects.
-        Format: 'Key: Figure' for first entry and all key changes; otherwise just 'Figure'.
+        Format: '<Key>: <Figure>' for first entry and all key changes; otherwise just '<Figure>'.
 
         Includes the following substitutions:
         all spaces (including non-breaking spaces) with nothing;
