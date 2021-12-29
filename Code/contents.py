@@ -28,7 +28,7 @@ As this corpus builds up incrementally from a range of sources:
 (they are present for Open Score corpora like the lieder corpus, but not for some others),
 
 3. where a full set of scores is available those scores may not have been analysed
-(only a fraction the 1,000 lieder have analyses).
+(only a fraction the > 1,000 lieder have analyses).
 
 Most metadata is retrieved from the directory structure, with optional extras which
 require score parsing to retrieve (movement length and initial time and key signatures).
