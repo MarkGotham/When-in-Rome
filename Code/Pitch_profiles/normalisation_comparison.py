@@ -13,6 +13,13 @@ Creative Commons Attribution-ShareAlike 4.0 International License
 https://creativecommons.org/licenses/by-sa/4.0/
 
 
+Citation:
+===============================
+
+Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021
+(see README.md)
+
+
 ABOUT:
 ===============================
 
@@ -473,11 +480,12 @@ class Test(unittest.TestCase):
         d = compare_two_profiles(d1, d2, comparison_type='Euclidean')
         self.assertEqual(d, 0)
 
-        # Max difference (sqrt 2) between two distributions with one distinct pitch each ...
+        # Max difference between two distributions with one distinct pitch each ...
         d1 = [1, 0]
         d2 = [0, 1]
-        d = compare_two_profiles(d1, d2, comparison_type='Euclidean')
-        self.assertEqual(d, 1.414)
+        # This equates to 2 for L1 comparison, and sqrt(2) for L2:
+        for comp, dist in (('L1', 2), ('L2', 1.414)):
+            self.assertEqual(compare_two_profiles(d1, d2, comparison_type=comp), dist)
 
         # ... likewise for complements in any dimension
         d1 = [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1]
