@@ -16,7 +16,8 @@ https://creativecommons.org/licenses/by-sa/4.0/
 Citation:
 ===============================
 
-Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021 (forthcoming)
+Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021
+(see README.md)
 
 
 ABOUT:
@@ -42,11 +43,11 @@ chord_types = ['diminished triad',
                'minor triad',
                'major triad',
                'augmented triad',
-               'diminished seventh',
-               'half-diminished seventh',
-               'minor seventh',
-               'dominant seventh',
-               'major seventh']
+               'diminished seventh chord',
+               'half-diminished seventh chord',
+               'minor seventh chord',
+               'dominant seventh chord',
+               'major seventh chord']
 # TODO consider more chords types: no 3rd, no 5th etc.
 
 
@@ -57,8 +58,16 @@ def best_fit_chord(usage_profile: list,
                    reference_chord_names: list = chord_types,
                    comp_type='Manhattan',
                    return_in_chord_PCs_only: bool = False,
-                   return_score: bool = False   ):
-    """Find the best fit chord for a given usage in practice."""
+                   return_least_distance: bool = False):
+    """
+    Find the best fit chord for a given usage in practice.
+    
+    Return options:
+    - return_in_chord_PCs_only: pitch classes of the best fit chord, e.g. (5, 8, 0)
+    - return_least_distance: best_fit_name, best_fit_rotation, and least_distance
+    - else: best_fit_name, best_fit_rotation
+    
+    """
 
     best_fit_name = 'Fake'  # Fake init, immediately replaced
     least_distance = 10  # also fake init
@@ -78,7 +87,11 @@ def best_fit_chord(usage_profile: list,
     if return_in_chord_PCs_only:
         profile = rotate(chord_profiles.binary[best_fit_name], best_fit_rotation)
         return profile_to_PC_list(profile)
-    return best_fit_name, best_fit_rotation
+    
+    if return_least_distance:
+        return best_fit_name, best_fit_rotation, least_distance
+    else:
+        return best_fit_name, best_fit_rotation
 
 
 def profile_to_PC_list(profile: list):
@@ -98,6 +111,10 @@ def compare_one_source(path_to_file: str,
     reference profiles (user-defined: default is the binary profiles).
     Returns either the number of correct guesses and the total chords compared,
     or the same expressed as a percentage (if return_percent is set to True)
+    :param path_to_file:
+    :type return_percent: bool
+    :param log_out_of_scope:
+    :param reference_profile_dict:
     """
 
     data = get_distributions.DistributionsFromTabular(path_to_file)
@@ -308,10 +325,6 @@ def roman_to_pcp(figure: str,
     >>> roman_to_pcp('ii', 'Db', root_0=True)
     [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
 
-    Optionally, rotates the PCP to situate the root at position 0
-    >>> roman_to_pcp('ii', 'Db', root_0=True)
-    [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
-
     Optionally, also return the root
     >>> roman_to_pcp('ii', 'Db', root_0=True, return_root=True)
     ([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0], 3)
@@ -347,11 +360,11 @@ def check_binary_profiles():
         "minor triad": [0, 3, 7],
         "major triad": [0, 4, 7],
         "augmented triad": [0, 4, 8],
-        "diminished seventh": [0, 3, 6, 9],
-        "half-diminished seventh": [0, 3, 6, 10],
-        "minor seventh": [0, 3, 7, 10],
-        "dominant seventh": [0, 4, 7, 10],
-        "major seventh": [0, 4, 7, 11],
+        "diminished seventh chord": [0, 3, 6, 9],
+        "half-diminished seventh chord": [0, 3, 6, 10],
+        "minor seventh chord": [0, 3, 7, 10],
+        "dominant seventh chord": [0, 4, 7, 10],
+        "major seventh chord": [0, 4, 7, 11],
     }
 
     test_dict = {}
