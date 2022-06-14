@@ -22,18 +22,12 @@ Watch this space!
 ABOUT:
 ===============================
 
-Extract features of chords, e.g. for categorisation in machine learning.
-
-Specifically, this module offers features for:
-- Individual chords
-– chord-source comparisons. *** TODO
+Extract features of chords
+and chord-source comparisons
+e.g. for categorisation tasks in machine learning.
 
 
-TODO:
-===============================
-
-Currently limited to single chord.
-TODO: expand to – chord progressions
+TODO: Currently limited to single chord. expand to – chord progressions
 
 """
 
@@ -139,7 +133,7 @@ class SingleChordFeatures:
         - rootPitchClassVector: 0-11; dimensions = 12; discrete = True
 
         Multi-hot (too many types for one-hot to be really practical)
-        - intervalVector: dimensions = 6; discrete = True
+        TODO intervalVector: dimensions = 6; discrete = True
 
         '''
 
@@ -189,7 +183,8 @@ class SingleChordFeatures:
         'T', 't', 'S', 's', 'D', 'd', and a final entry for None/Other
         to either an index position in that list, e.g. returning [3]
         or if returnOneHot, then in the format [0, 0, 0, 1, ...
-        
+
+        self.hauptFunctionVector
         dimensions = 7
         discrete = True
         '''
@@ -208,7 +203,8 @@ class SingleChordFeatures:
         and a final entry for None/Other
         to either an index position in that list, e.g. returning [3]
         or if returnOneHot, then in the format [0, 0, 0, 1, 0, 0, 0, ...
-        
+
+        self.functionVector
         dimensions = 19
         discrete = True
         '''
@@ -243,7 +239,11 @@ class SingleChordFeatures:
     def getChosenChordPCPVector(self, root_0: bool = False):
         '''
         12-element vector, with 1 or 0 for each pitch class in the chord.
-        
+        self.chosenChordPCPVector
+        dimensions = 12
+        discrete = True
+        E.g. [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0] for C major
+
         NOTE:
         - No mapping and no returnOneHot option.
         - Source PCP produced separately by combine_slice_group (get_distributions)
@@ -262,16 +262,22 @@ class SingleChordFeatures:
         self.chordTypeMatchVector = [1]
         and
         self.chordRotationMatchVector = [1]
-        Note: this is 1/0 for True/False, whether or not one hot encoding is set.
+        Note: this is 1/0 for True/False, whether or not one hot encoding is set so both are.
+        dimensions = 1
+        discrete = True
+
+        This method also keeps values for ...
 
         self.bestFitChordPCPVector
         dimensions = 12
         discrete = True
+        E.g. [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0] for C major
 
-        This method also keeps values for the various distances.
-        self.distanceToChosenChordVector (float in the range 0-1).
+        ... and the various distances.
+
+        self.distanceToChosenChordVector
         dimensions = 1
-        discrete = False (continuous)
+        discrete = False (continuous, float in the range 0-1)
         '''
 
         a, b, c = chord_comparisons.best_fit_chord(self.sourceUsageProfile,
@@ -310,8 +316,7 @@ class SingleChordFeatures:
 
     def getDistanceToChosenChord(self):
         '''
-        Get distanceToChosenChordVector.
-
+        self.distanceToChosenChordVector
         dimensions = 1
         discrete = False (continuous)
         '''
@@ -320,20 +325,29 @@ class SingleChordFeatures:
                                                              comparison_type=self.comparison_type)
 
     def getFullChordCommonnessVector(self,
-                                     thisDict = chord_usage.lieder_both):
+                                     thisDict=chord_usage.lieder_both):
         '''
         How commonly used is this exact chord?
         Calculated as a percentage usage / the top percentage
         so the range is 0-1, with 
         1 for the most commonly used chord, and 
         0 for an entry unseen in the reference corpus.
+
+        self.fullChordCommonnessVector
+        dimensions = 1
+        discrete = False (continuous)
+
         '''
         thisKey = self.rn.figure
         return [getCommonPercentage(thisDict, thisKey)]
 
     def getSimplifiedChordCommonnessVector(self):
         '''
-        Same as for getFullChordCommonnessVector, but with the simplified chord.    
+        Same as for getFullChordCommonnessVector, but with the simplified chord.
+
+        self.simplifiedChordCommonnessVector
+        dimensions = 1
+        discrete = False (continuous)
         '''
         thisDict = chord_usage.usage_dict_simplified
         thisKey = chord_usage.simplify_chord(self.rn.figure)
