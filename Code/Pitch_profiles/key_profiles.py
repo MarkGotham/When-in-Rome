@@ -16,7 +16,8 @@ https://creativecommons.org/licenses/by-sa/4.0/
 Citation:
 ===============================
 
-Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021 (forthcoming)
+Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021
+(see README.md)
 
 
 ABOUT:

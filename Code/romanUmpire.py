@@ -306,6 +306,8 @@ class ScoreAndAnalysis:
         self._parseAnalysis()
         self.slicesMatchedUp: bool = False
 
+        self.svOut = None
+
     def _parseScoreData(self):
         """
         Handles input options for score, either:

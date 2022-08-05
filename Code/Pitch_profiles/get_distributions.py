@@ -13,6 +13,13 @@ Creative Commons Attribution-NonCommercial 4.0 International License.
 https://creativecommons.org/licenses/by-nc/4.0/
 
 
+Citation:
+===============================
+
+Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021
+(see README.md)
+
+
 ABOUT:
 ===============================
 
@@ -44,8 +51,29 @@ import os
 import csv
 
 import normalisation_comparison
+import chord_features
 
 from typing import Optional
+
+# ------------------------------------------------------------------------------
+
+features_list = [
+    'chordQualityVector',
+    'thirdTypeVector',
+    'fifthTypeVector',
+    'seventhTypeVector',
+    'rootPitchClassVector',
+    'hauptFunctionVector',
+    'functionVector',
+    'chosenChordPCPVector',
+    'bestFitChordPCPVector',
+    'chordTypeMatchVector',
+    'chordRotationMatchVector',
+    'distanceToBestFitChordPCPVector',
+    'distanceToChosenChordVector',
+    'fullChordCommonnessVector',
+    'simplifiedChordCommonnessVector',
+]
 
 
 # ------------------------------------------------------------------------------
@@ -71,9 +99,22 @@ class DistributionsFromTabular:
 
                  norm: bool = False,
                  norm_type: str = 'Sum',
-                 round_places: int = 3
+                 round_places: int = 3,
+
+                 include_features: bool = True,
+                 features_to_use: Optional[list] = None
                  ):
 
+        self.include_features = include_features
+        if features_to_use and not self.include_features:
+            raise ValueError('You have attempted to define features_to_use'
+                             'but have set include_features to false. ')
+        if features_to_use:
+            self.features_to_use = features_to_use
+        else:
+            self.features_to_use = features_list
+
+        self.path_to_dir = os.path.dirname(path_to_tab)
         self.data = normalisation_comparison.importSV(path_to_tab)
 
         if columns_from_source:
@@ -88,9 +129,9 @@ class DistributionsFromTabular:
             self.chord_column = chord_column
 
         self.slices = []
-        self.distributions_by_measure = {}
-        self.distributions_by_key = None
-        self.distributions_by_chord = None
+        self.profiles_by_measure = {}
+        self.profiles_by_key = None
+        self.profiles_by_chord = None
         self.overall_distribution = [0] * 12
 
         # Normalisation
@@ -156,8 +197,9 @@ class DistributionsFromTabular:
                     this_slice['pitch_names'] = row[self.pitch_column][2:-2].split("', '")
                     this_slice['pitch_classes'] = [
                         normalisation_comparison.pitch_class_from_name(x[:-1]) for x in
-                        this_slice['pitch_names']]
-                    # NB: -1 is a hack to remove octave
+                        this_slice['pitch_names'] if x]
+                    # -1 to remove octave
+                    # and 'if x' because of occasional blank '' (no pitch) slice
 
                 if self.key_column and (len(row) > self.key_column):
                     this_slice['key'] = row[self.key_column]
@@ -169,7 +211,7 @@ class DistributionsFromTabular:
                 else:
                     this_slice['chord'] = '.'  # no change, continuation
 
-                this_slice['distribution'] = normalisation_comparison.pc_list_to_distribution(
+                this_slice['profile'] = normalisation_comparison.pc_list_to_distribution(
                     this_slice['pitch_classes'])
 
                 self.slices.append(this_slice)
@@ -181,16 +223,16 @@ class DistributionsFromTabular:
     def get_overall_distributions(self):
         """
         Retrieve a single distribution for the piece overall.
-        Uses distributions_by_measure() as an intermediary step (runs if not already).
+        Uses profiles_by_measure() as an intermediary step (runs if not already).
         """
 
         self.overall_distribution = [0] * 12
 
-        if not self.distributions_by_measure:
-            self.get_distributions_by_measure()
+        if not self.profiles_by_measure:
+            self.get_profiles_by_measure()
 
-        for m in self.distributions_by_measure.keys():
-            m_dist = self.distributions_by_measure[m]
+        for m in self.profiles_by_measure.keys():
+            m_dist = self.profiles_by_measure[m]
             for pc in range(12):
                 self.overall_distribution[pc] += m_dist[pc]
 
@@ -208,7 +250,7 @@ class DistributionsFromTabular:
 
     # Measures
 
-    def get_distributions_by_measure(self):
+    def get_profiles_by_measure(self):
         """
         Sort slice distributions into a dict where
         the keys are the measure numbers and the corresponding
@@ -217,40 +259,43 @@ class DistributionsFromTabular:
         Normalisation is optional (default = False), set at the Class init.
         """
 
+        if self.profiles_by_measure:
+            return
+
         # Get
         for s in self.slices:
             msr = s['measure']
-            if msr not in self.distributions_by_measure.keys():
-                self.distributions_by_measure[msr] = [0] * 12
+            if msr not in self.profiles_by_measure.keys():
+                self.profiles_by_measure[msr] = [0] * 12
 
             for pc in s['pitch_classes']:
-                self.distributions_by_measure[msr][pc] += s['length']
+                self.profiles_by_measure[msr][pc] += s['length']
 
         # Round and (optionally) normalise
-        for msr in self.distributions_by_measure.keys():
+        for msr in self.profiles_by_measure.keys():
             if self.norm:
-                self.distributions_by_measure[msr] = normalisation_comparison.normalise(
-                    self.distributions_by_measure[msr],
+                self.profiles_by_measure[msr] = normalisation_comparison.normalise(
+                    self.profiles_by_measure[msr],
                     normalisation_type=self.norm_type,
                     round_output=True,
                     round_places=self.round_places
                 )
             else:
-                rounded = [round(x, self.round_places) for x in self.distributions_by_measure[msr]]
-                self.distributions_by_measure[msr] = rounded
+                rounded = [round(x, self.round_places) for x in self.profiles_by_measure[msr]]
+                self.profiles_by_measure[msr] = rounded
 
     def measure_range(self,
                       start_measure: int = 1,
                       end_measure: int = 100):
         """
-        Return the combined distributions for all measure in a given range
-        from start measure to (ending at, i.e. <) end measure.
+        Return the combined distributions for measure in a given range
+        from start_measure to (ending at, i.e. <) end_measure.
         """
         combined = [0] * 12
-        for this_measure in self.distributions_by_measure.keys():
+        for this_measure in self.profiles_by_measure.keys():
             if start_measure <= this_measure < end_measure:
                 for y in range(12):
-                    combined[y] += self.distributions_by_measure[this_measure][y]
+                    combined[y] += self.profiles_by_measure[this_measure][y]
 
         return self.round_and_norm(combined)
 
@@ -258,10 +303,10 @@ class DistributionsFromTabular:
 
     # Keys and chords
 
-    def get_distributions_by_key(self):
+    def get_profiles_by_key(self):
         """
         Sort the list of slices into separate segments for each key.
-        This method populates the self.distributions_by_key list with
+        This method populates the self.profiles_by_key list with
         separate entries for each passage the analyst has determined to be in a single key.
 
         Each entry takes the form of a dict where with the following keys:
@@ -279,25 +324,25 @@ class DistributionsFromTabular:
         Normalisation is optional (default = False), set at the Class init.
         """
 
-        if self.distributions_by_key:
+        if self.profiles_by_key:
             return
-        self.distributions_by_key = []
+        self.profiles_by_key = []
         self.group_by_key_or_chord(key_or_chord='key')
 
-    def get_distributions_by_chord(self):
-        """As for get_distributions_by_key"""
+    def get_profiles_by_chord(self):
+        """As for get_profiles_by_key"""
 
-        if self.distributions_by_chord:
+        if self.profiles_by_chord:
             return
-        self.distributions_by_chord = []
+        self.profiles_by_chord = []
         self.group_by_key_or_chord(key_or_chord='chord')
 
     def group_by_key_or_chord(self, key_or_chord: str = 'key'):
         """
         Shared method for
-        get_distributions_by_key
+        get_profiles_by_key
         and
-        get_distributions_by_chord
+        get_profiles_by_chord
         """
 
         if key_or_chord not in ['key', 'chord']:
@@ -323,12 +368,12 @@ class DistributionsFromTabular:
         for this_group in list_of_list_of_all_slices:
             combined = self.combine_slice_group(this_group)
             if key_or_chord == 'key':
-                self.distributions_by_key.append(combined)
+                self.profiles_by_key.append(combined)
             elif key_or_chord == 'chord':
-                self.distributions_by_chord.append(combined)
+                self.profiles_by_chord.append(combined)
 
     def combine_slice_group(self,
-                            list_of_slices: list):
+                            list_of_slices: list,):
         """
         Shared method for synthesising a list of slice dicts into one dict with values for
 
@@ -343,7 +388,7 @@ class DistributionsFromTabular:
              'end measure' *
 
          From all the slices:
-             'distribution'
+             'profile'
              'quarter length'
 
         Also 'measure length' from the difference. *
@@ -351,9 +396,19 @@ class DistributionsFromTabular:
         * NB: end measure and measure length only reliable in so far as the original slices data
              includes splits at the start of each measure. Potentially off by one otherwise.
 
-        Abstracted enough to support grouping by:
-        - changes of key (get_distributions_by_key > self.distributions_by_key)
-        - changes of chord (get_distributions_by_chord > self.distributions_by_chord)
+        Abstracted enough to support grouping by changes of:
+        - key (get_profiles_by_key > self.profiles_by_key)
+        - chord (get_profiles_by_chord > self.profiles_by_chord)
+        - measure (get_profiles_by_measure > self.profiles_by_measure)
+
+        This method also gathers feature information as described in chord_features.get_features
+        if self.include_features is set to True (at the class init)
+
+        Note how this relates to arguments at
+        the class init:
+        - self.include_features must be True for this information to be collected
+        - self.features_to_use defines which.
+        and in write_distributions (option to write that information).
         """
 
         first_slice = list_of_slices[0]
@@ -368,13 +423,13 @@ class DistributionsFromTabular:
                  'end offset': last_slice['offset'] + last_slice['length'],
                  'end measure': last_slice['measure'],
 
-                 'distribution': [0] * 12,  # init
+                 'profile': [0] * 12,  # init
                  'quarter length': 0,  # init
                  }
 
         for s in list_of_slices:
             for pc in range(12):
-                entry['distribution'][pc] += s['distribution'][pc] * s['length']
+                entry['profile'][pc] += s['profile'][pc] * s['length']
 
             entry['quarter length'] += s['length']
             # Note: ^ Alternatively, sum([s['quarter length'] for s in list_of_slices]
@@ -382,8 +437,15 @@ class DistributionsFromTabular:
 
         # Finishing up
         entry['quarter length'] = round(entry['quarter length'], self.round_places)
-        entry['distribution'] = self.round_and_norm(entry['distribution'])
+        entry['profile'] = self.round_and_norm(entry['profile'])
         entry['measure length'] = entry['end measure'] - entry['start measure']
+
+        if self.include_features:
+            from music21 import roman
+            rn = roman.RomanNumeral(entry['chord'], entry['key'])
+            features = chord_features.SingleChordFeatures(rn, entry['profile'])
+            for feat in self.features_to_use:  # see below for list
+                entry[feat] = getattr(features, feat)
 
         return entry
 
@@ -393,74 +455,108 @@ class DistributionsFromTabular:
 
     def write_distributions(self,
                             by_what: str = 'measure',
-                            out_path: str = '.',
-                            out_file: Optional[str] = None):
+                            out_path: Optional[str] = None,
+                            out_file: Optional[str] = None,
+                            write_features: bool = False,
+                            out_format: str = '.tsv'
+                            ):
         """
         Optional, subsidiary method for writing out the distribution information
-        to a tsv file.
+        to one of '.csv', '.tsv', '.arff' and '.json'
+        which are all well-known with the possible exception of
+        .arff for recording features (documented in Vatolkin et al. ***).
 
         Support all grouping methods on this class through the by_what argument:
-            'measure': writes a row for each measure with the measure number and distribution;
-            'keys': does so for each change of key with additional information for start / end;
-            'chord': as for 'keys' but while 'keys' does not include an account of the chords
-            within that span; 'chord' does include the corresponding 'key'.
+            'measure':  writes a row for each measure with the measure number and distribution;
+            'keys':     does so for each change of key with additional information for start / end;
+            'chord':    as for 'keys' but while 'keys' does not include an account of the chords
+                        within that span; 'chord' does include the corresponding 'key'.
 
+        Set write_features to True (bool, default is False) to include feature information.
+        Note how this relates to arguments at the class init:
+        - self.include_features must be True for this information to be collected at all.
+        - self.features_to_use defines which features.
         """
 
-        possible_headers = ['distribution',
-                            'start offset',
-                            'end offset',
-                            'quarter length',
-                            'start measure',
-                            'end measure',
-                            'measure length'
-                            ]
+        # Check valid
 
+        valid_formats = ['.csv', '.tsv', '.arff', '.json']
+        if out_format not in valid_formats:
+            raise ValueError(f'Invalid out_format: must one of {valid_formats}')
+
+        valid_by_what = ['measure', 'key', 'chord']
+        if by_what not in valid_by_what:
+            raise ValueError(f'Invalid `by_what` argument: must be one of {valid_by_what}')
+
+        # Headers
         if by_what == 'measure':
+            headers = ['measure', 'profile']
+        else:  # 'key', 'chord'
+            headers = ['profile',
+                       'start offset',
+                       'end offset',
+                       'quarter length',
+                       'start measure',
+                       'end measure',
+                       'measure length'
+                       ]
 
-            if not self.distributions_by_measure:
-                self.get_distributions_by_measure()
+        if write_features:
+            headers += features_list
 
-            headers = ['Measure', 'Distribution']
+        # Data: get_ / profiles_by_ / measure, key, chord, / ()
+        # NB: don't need 'if not getattr('. There's a check / return at the start of each method
+        getattr(self, 'get_profiles_by_' + by_what)()  # Note to self, () outside
+        data = getattr(self, 'profiles_by_' + by_what)
 
-            if not out_file:
-                out_file = 'Distributions_by_measure'
+        # 'key', 'chord'
+        if out_format != '.arff' and by_what != 'measure':
+            if by_what == 'chord':
+                headers = ['chord'] + headers
+            headers = ['key'] + headers  # in both cases 'key', 'chord'
 
-        elif by_what == 'key':
+        # Write
 
-            if not self.distributions_by_key:
-                self.get_distributions_by_key()
+        if not out_path:
+            out_path = self.path_to_dir  # i.e. same as source
 
-            headers = ['key'] + possible_headers
+        if not out_file:
+            out_file = 'profiles'
+            if write_features:
+                out_file += '_and_features'
+            out_file += f'_by_{by_what}'
+        full_path = str(os.path.join(out_path, out_file)) + out_format
 
-            if not out_file:
-                out_file = 'Keys_and_distributions'
-
-        elif by_what == 'chord':
-
-            if not self.distributions_by_chord:
-                self.get_distributions_by_chord()
-
-            headers = ['key', 'chord'] + possible_headers
-
-            if not out_file:
-                out_file = 'Chords_and_distributions'
-
+        if out_format == '.json':
+            import json
+            with open(full_path, 'w') as f:
+                json.dump(data, f)
+            return
         else:
-            raise ValueError(f'Invalid `by_what` argument: {by_what}')
+            delimiter = ','  # Init for '.csv' or '.arff'
+            if out_format == '.tsv':  # Alter for '.tsv'
+                delimiter = '\t'
+            with open(full_path, "w") as sv_file:
+                svOut = csv.writer(sv_file, delimiter=delimiter,
+                                   quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        with open(f'{os.path.join(out_path, out_file)}.tsv', "w") as sv_file:
-            svOut = csv.writer(sv_file, delimiter='\t',
-                               quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                # Headers
+                if out_format == '.arff':
+                    svOut.writerow([f"@RELATION \'Chord features for {out_file}\'"])
+                    for h in headers:
+                        svOut.writerow([f"@ATTRIBUTE \'{h}\' NUMERIC"])  # TODO check types
+                    svOut.writerow([f"@DATA"])
+                else:  # tsv, csv
+                    svOut.writerow(headers)
 
-            svOut.writerow(headers)
-
-            if by_what == 'measures':
-                for k in self.distributions_by_measure:
-                    svOut.writerow([k, self.distributions_by_measure[k]])
-            elif by_what in ['key', 'chord']:
-                for entry in getattr(self, 'distributions_by_' + by_what):
-                    svOut.writerow([entry[h] for h in headers])
+                # Data
+                if by_what == 'measure':
+                    for k in self.profiles_by_measure:
+                        svOut.writerow([k, self.profiles_by_measure[k]])
+                elif by_what in ['key', 'chord']:
+                    for entry in data:
+                        # svOut.writerow([entry[h] for h in headers])
+                        svOut.writerow([str(entry[h]) for h in headers])
 
     def round_and_norm(self,
                        dist: list):
@@ -486,15 +582,33 @@ class Test(unittest.TestCase):
 
         p = base_path + 'Reichardt,_Louise/Zwölf_Gesänge,_Op.3/01_Frühlingsblumen/'
         test_p = DistributionsFromTabular(path_to_tab=p + 'slices_with_analysis.tsv')
-        test_p.get_distributions_by_key()
-        self.assertEqual(len(test_p.distributions_by_key), 1)  # i.e. only one key
+        test_p.get_profiles_by_key()
+        self.assertEqual(len(test_p.profiles_by_key), 1)  # i.e. only one key
 
         q = base_path + 'Schumann,_Clara/Lieder,_Op.12/04_Liebst_du_um_Schönheit/'
         test_q = DistributionsFromTabular(path_to_tab=q + 'slices_with_analysis.tsv')
-        test_q.get_distributions_by_key()
-        self.assertEqual(len(test_q.distributions_by_key), 9)  # i.e. 9 local key areas
-        self.assertEqual(test_q.distributions_by_key[0]['key'], 'Db')  # Starting in Db
-        self.assertEqual(test_q.distributions_by_key[-1]['key'], 'Db')  # And ending there too
+        test_q.get_profiles_by_key()
+        self.assertEqual(len(test_q.profiles_by_key), 9)  # i.e. 9 local key areas
+        self.assertEqual(test_q.profiles_by_key[0]['key'], 'Db')  # Starting in Db
+        self.assertEqual(test_q.profiles_by_key[-1]['key'], 'Db')  # And ending there too
+
+        new_path = '../Example/'
+        test_r = DistributionsFromTabular(path_to_tab=new_path + 'slices_with_analysis.tsv')
+        self.assertEqual(test_q.get_profiles_by_key(),
+                         test_r.get_profiles_by_key())  # i.e. exact copy of corpus entry
+
+        test_s = DistributionsFromTabular(path_to_tab=new_path + 'slices_with_analysis.tsv',
+                                          include_features=True)
+
+        # NB: WRITES
+        valid_formats = ['.csv', '.tsv', '.arff', '.json']
+        valid_by_what = ['key', 'chord', 'measure']
+        for vf in valid_formats:
+            for vbw in valid_by_what:
+                for this_bool in [False, True]:
+                    test_r.write_distributions(by_what=vbw,
+                                               write_features=this_bool,
+                                               out_format=vf)
 
 
 # ------------------------------------------------------------------------------

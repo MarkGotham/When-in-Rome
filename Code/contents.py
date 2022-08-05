@@ -18,6 +18,7 @@ ABOUT:
 ===============================
 
 A simple script for keeping track of the 'When in Rome' corpus collection.
+(i.e., what's there currently; see also `update.py` for populating the corpus).
 
 As this corpus builds up incrementally from a range of sources:
 
