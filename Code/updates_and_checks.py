@@ -37,7 +37,7 @@ from typing import Optional, Union
 
 import romanUmpire
 
-from music21 import converter, stream
+from music21 import converter, stream, romanText
 
 # ------------------------------------------------------------------------------
 
@@ -53,6 +53,8 @@ corpora = [
 
 
 # ------------------------------------------------------------------------------
+
+# Get file lists
 
 def get_corpus_files(corpus: str = 'OpenScore-LiederCorpus',
                      file_name: Optional[str] = '',
@@ -209,7 +211,7 @@ def process_corpus(corpus: str = 'OpenScore-LiederCorpus',
 
 # ------------------------------------------------------------------------------
 
-# Scores
+# Get, convert, move scores and analyses
 
 def convert_musescore_score_corpus(in_path: Union[str, os.PathLike],
                                    out_path: Union[str, os.PathLike],
@@ -353,6 +355,18 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
             shutil.copy(in_path + f,
                         str(working_path) + '/DCML_analysis.tsv'
                         )
+
+
+def convert_DCML_tsv_analyses(corpus: str = 'Quartets') -> None:
+    """
+    Convert local copies of DCML's analysis files (.tsv) to rntxt.
+
+    TODO placeholder draft for Malcolm. Check this + v2 converter, and write to parent dir ***
+    """
+
+    file_paths = get_corpus_files(corpus=corpus, file_name='DCML_analysis.tsv')
+    for f in file_paths:
+        romanText.tsvConverter.TsvHandler(f)
 
 
 # ------------------------------------------------------------------------------
