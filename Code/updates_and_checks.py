@@ -39,7 +39,6 @@ import romanUmpire
 
 from music21 import converter, stream
 
-
 # ------------------------------------------------------------------------------
 
 corpora = [
@@ -360,6 +359,50 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
 
 # Checks
 
+def check_all_parse(corpus: str = 'OpenScore-LiederCorpus',
+                    analysis_not_score: bool = True,
+                    count_files: bool = True,
+                    count_rns: bool = True
+                    ) -> None:
+    """
+    Check all files parse successfully
+    (throws and error on the first case to fail if not).
+
+    Run on either analyses (analysis_not_score = True, default) or scores (false).
+    Optionally count the number of files and (if analyses) also the Roman Numerals therein.
+
+    :param analysis_not_score: If true, check analysis files; if false then scores.
+    :param corpus: the sub-corpus to search over. Leave blank ('') to run all corpora.
+    :param count_files: count+print the total number of analysis files (bool, optional).
+    :param count_rns: count+print the total Roman numerals in all analysis files (bool, optional).
+    """
+
+    if analysis_not_score:
+        files = get_analyses(corpus=corpus)
+    else:
+        files = get_corpus_files(corpus=corpus, file_name='score.mxl')
+
+    if count_files:
+        print(f'{len(files)} files found ... now checking they all parse ...')
+
+    rns = 0
+
+    for f in files:
+        if analysis_not_score:
+            if count_rns:
+                a = converter.parse(f, format='romantext')
+                rns += len(a.getElementsByClass('RomanNumeral'))
+            else:
+                converter.parse(f, format='romantext')
+        else:
+            converter.parse(f)
+
+    print('All parse')
+
+    if analysis_not_score and count_rns:
+        print(f'{rns} total Roman Numerals.')
+
+
 def anacrusis_number_error(p: stream.Part
                            ) -> bool:
     '''
@@ -381,37 +424,6 @@ def anacrusis_number_error(p: stream.Part
         return True
     elif m.measureNumber == 1 and m.duration != m.barDuration:
         return True
-
-
-def check_all_analyses_parse(corpus: str = 'OpenScore-LiederCorpus',
-                             count_files: bool = True,
-                             count_rns: bool = True
-                             ) -> None:
-    """
-    Check all analysis files parse successful
-    (throws and error on the first analysis to fail if not).
-    Optionally count the number of analysis files and Roman Numerals therein.
-
-    :param corpus: the sub-corpus to search over. Leave blank ('') to run all corpora.
-    :param count_files: count+print the total number of analysis files (bool, optional).
-    :param count_rns: count+print the total Roman numerals in all analysis files (bool, optional).
-    """
-
-    files = get_analyses(corpus=corpus)
-    if count_files:
-        print(f'{len(files)} analyses found ... now checking they all parse ...')
-
-    rns = 0
-
-    for f in files:
-        a = converter.parse(f, format='romantext')
-        if count_rns:
-            rns += len(a.getElementsByClass('RomanNumeral'))
-
-    print('All analyses parse')
-
-    if count_rns:
-        print(f'{rns} total Roman Numerals.')
 
 
 def find_incomplete_measures(part: stream.Part
