@@ -394,9 +394,6 @@ def convert_DCML_tsv_analyses(corpus: str = 'Quartets') -> None:
         )
         print(f"Wrote {out_path}")
 
-if __name__ == "__main__":
-    convert_DCML_tsv_analyses()
-
 
 # ------------------------------------------------------------------------------
 
