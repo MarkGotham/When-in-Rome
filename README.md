@@ -33,6 +33,8 @@ Converted from other formats:
 - 27 sets of keyboard Variations by [Mozart,_Wolfgang_Amadeus](/Corpus/Variations_and_Grounds/Mozart) and [Beethoven](/Corpus/Variations_and_Grounds/Beethoven,_Ludwig_van/), from [Devaney et al.'s 'TAVERN' project, ISMIR 2015](https://github.com/jcdevaney/TAVERN)
 - [Beethoven string quartets](/Corpus/Quartets/Beethoven,_Ludwig_van/) (complete, 16 string quartets, 70 movements): originating from the [DCMLab's 'ABC' corpus](https://github.com/DCMLab/ABC), with a small amount of error-correction and proof-reading to ensure parsing. (Proof-read version coming soon).
 - [Beethoven Piano Sonata](/Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/) (complete first movements, 32 movements), from Tsung-Ping Chen and Li Su's ['BPS-FH' dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
+- [Haydn Op. 20 String Quartets](/Corpus/Quartets/Haydn,_Franz_Joseph/): Complete annotations of Haydn's Op. 20 (6 string quartets, 24 movements), from the [MTG dataset](https://zenodo.org/record/1095630#.X8AbrcJyZhE). Translation contributed by [@napulen](https://github.com/napulen).
+- [Key Modulations and Tonicizations](Corpus/Textbooks/): Modulation examples annotated from five music theory textbooks. Published in [Nápoles López et al. 2020](https://dl.acm.org/doi/10.1145/3424911.3425515). Translation contributed by [@napulen](https://github.com/napulen).
 
 Originally in the 'RomanText' format (no conversion needed):
 - [Monteverdi madrigals](/Corpus/Early_Choral/Monteverdi,_Claudio/): Complete scores and analyses for books 3–5 of the Monteverdi madrigals (48 works), from [this part](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/monteverdi) of the music21 corpus.
@@ -43,7 +45,6 @@ Originally in the 'RomanText' format (no conversion needed):
 - [Bach Preludes](/Corpus/Etudes_and_Preludes/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
 - Ground bass examples from Purcell and Bach (within [this folder](/Corpus/Variations_and_Grounds/))
 - [Nineteenth-century songs](/Corpus/OpenScore-LiederCorpus/): A sample of songs from the OpenScore / 'Scores of Scores' lieder corpus ([mirroring the public-facing score collection hosted here](https://musescore.com/openscore-lieder-corpus/sets)), including analyses for the complete [_Winterreise_](/Corpus/OpenScore-LiederCorpus/Schubert,_Franz/Winterreise,_D.911/) and [_Schwanengesang_](/Corpus/OpenScore-LiederCorpus/Schubert,_Franz/Schwanengesang,_D.957/) cycles (Schubert), [_Dichterliebe_](/Corpus/OpenScore-LiederCorpus/Schumann,_Robert/Dichterliebe,_Op.48/) (Schumann), and many of the songs by women composers that constitute a key part of and motivation for that collection.
-- [Haydn Op. 20 String Quartets](/Corpus/Quartets/Haydn,_Franz_Joseph/): Complete annotations of Haydn's Op. 20 (6 string quartets, 24 movements), from the [MTG dataset](https://zenodo.org/record/1095630#.X8AbrcJyZhE).
 
 The new corpora (Bach Preludes, Grounds, and 'Scores of Scores' lieder) also include the corresponding scores, templates, and feedback files.
 (Please see the original corpora for score to the converted analyses.)
