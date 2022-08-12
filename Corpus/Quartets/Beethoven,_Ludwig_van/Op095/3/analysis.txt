@@ -3,75 +3,76 @@ Title: String quartet Op. 95, Movement 3
 Analyst: Neuwirth et al. ABC dataset. See https://github.com/DCMLab/ABC
 Proofreader: 
 
-m1 f: viio7/V b1.25 i64 b1.5 viio65/V
-m3 b1.25 v6 b1.5 viio43/V
-m5 b1.25 c: V65
-m6 i b1.25 i(9) b1.62 i
-m7 iv(4) b1.19 iv b1.25 iv(9) b1.44 iv b1.5 V(6) b1.62 V
+Time Signature: 3/4
+m1 f: viio7/V b2 i64 b3 viio65/V
+m3 b2 v6 b3 viio43/V
+m5 b2 c: V65
+m6 i b2 i[add9] b3.5 i
+m7 iv[no3][add4] b1.75 iv b2 iv[add9] b2.75 iv b3 V[no5][add6] b3.5 V
 m8 i2
-m9 f: V b1.25 i6 b1.5 iio6
-m10 b1.25 i6 b1.5 V64
-m11 V6 b1.25 i b1.5 iio
-m12 b1.25 i6 b1.5 iio
-m13 b1.25 V6 b1.62 V65
-m14 i6 b1.25 i(9) b1.62 i
-m15 iv(4) b1.12 iv b1.25 iv(9) b1.38 iv b1.5 V(6) b1.62 V
-m16 VI(2) b1.19 VI b1.25 i64 b1.44 V2 b1.5 i6 b1.69 V43
-m17 i64 b1.25 V7 b1.62 i64
-m18 #viø2 b1.25 V7 b1.5 i64
-m19 #viio43 b1.25 i6(9#7) b1.44 i6 b1.62 iio
-m20 b1.25 i(94) b1.44 i b1.62 #viio7
-m21 b1.25 i(#72) b1.5 i b1.62 iio
-m22 b1.25 i(42) b1.5 i6 b1.62 #viio43
-m23 i6 b1.25 iio(72) b1.44 iio b1.62 i
-m24 i6 b1.19 #viø43 b1.25 V43(9) b1.44 V43 b1.62 i
+m9 f: V b2 i6 b3 iio6
+m10 b2 i6 b3 V64
+m11 V6 b2 i b3 iio
+m12 b2 i6 b3 iio
+m13 b2 V6 b3.5 V65
+m14 i6 b2 i[add9] b3.5 i
+m15 iv[no3][add4] b1.5 iv b2 iv[add9] b2.5 iv b3 V[no5][add6] b3.5 V
+m16 VI[no1][add2] b1.75 VI b2 i64 b2.75 V2 b3 i6 b3.75 V43
+m17 i64 b2 V7 b3.5 i64
+m18 #viø2 b2 V7 b3 i64
+m19 #viio43 b2 i6[no8][add9][add#7] b2.75 i6 b3.5 iio
+m20 b2 i[no3][add9][add4] b2.75 i b3.5 #viio7
+m21 b2 i[no1][add#7][add2] b3 i b3.5 iio
+m22 b2 i[no3][no1][add4][add2] b3 i6 b3.5 #viio43
+m23 i6 b2 iio[no1][add7][add2] b2.75 iio b3.5 i
+m24 i6 b1.75 #viø43 b2 V43[add9] b2.75 V43 b3.5 i
 m25 VI
 m26 bII
-m27 #viio b1.19 V7 b1.25 i b1.5 VI b1.69 V
-m28 viio/V b1.19 V
-m29 b1.25 #viio6 b1.62 i
-m30 b1.25 #viio64 b1.62 i6
+m27 #viio b1.75 V7 b2 i b3 VI b3.75 V
+m28 viio/V b1.75 V
+m29 b2 #viio6 b3.5 i
+m30 b2 #viio64 b3.5 i6
 m31 iv
-m32 #viio65 b1.25 i
-m33 i b1.25 VI b1.5 VId7
-m34 V(64) b1.5 V7
-m35 i b1.25 i2 b1.44 ii64 b1.5 VId7 b1.69 V7
-m36 i b1.5 V43 b1.69 V
-m37 i b1.19 i64
-m38 i6 b1.19 i
-m39 b1.5 V
-m40 i b1.25 viio7/V
-m41 i b1.25 Gb: I
+m32 #viio65 b2 i
+m33 i b2 VI b3 VId7
+m34 Cad64 b3 V7
+m35 i b2 i2 b2.75 ii64 b3 VId7 b3.75 V7
+m36 i b3 V43 b3.75 V
+m37 i b1.75 i64
+m38 i6 b1.75 i
+m39 b3 V
+m40 i b2 viio7/V
+m41 i b2 Gb: I
 m45 IV
 m46 viio/ii
 m47 ii6
-m48 V(64)
+m48 Cad64
 m49 V7
-m50 I b1.5 IV6
-m51 I6 b1.25 ii
-m52 I b1.5 ii
-m53 IV6 b1.25 I
+m50 I b3 IV6
+m51 I6 b2 ii
+m52 I b3 ii
+m53 IV6 b2 I
 m55 I64
 m57 IV6
 m58 #viio65/ii
 m59 ii6
-m60 V(64)
+m60 Cad64
 m61 V7
-m62 I b1.5 IV
-m63 I b1.25 ii
-m64 I b1.5 V43
-m65 b1.25 #i
+m62 I b3 IV
+m63 I b2 ii
+m64 I b3 V43
+m65 b2 #i
 m66 D: I
 m68 V2/IV
 m69 IV6
 m70 #viio65/ii
 m71 ii6
-m72 V(64)
+m72 Cad64
 m73 V7
-m74 I b1.5 IV
-m75 I b1.25 ii
-m76 I b1.5 ii6
-m77 b1.25 viio6 b1.5 I
+m74 I b3 IV
+m75 I b2 ii
+m76 I b3 ii6
+m77 b2 viio6 b3 I
 m81 b: V43
 m82 i
 m83 V65
@@ -80,48 +81,48 @@ m85 iv6
 m87 iiø2
 m88 iv6
 m89 iiø2
-m90 V(64)
+m90 Cad64
 m91 V
-m92 V7(+9)
+m92 V7[add9]
 m93 i
 m103 c: #viio7
-m104 b1.25 iv64 b1.5 #viio65
-m106 #viio65 b1.25 i6 b1.5 #viio2
-m108 V65(9) b1.25 V65
-m109 i b1.25 i(9) b1.62 i
-m110 iv(4) b1.12 iv b1.25 iv(9) b1.38 iv b1.5 V(6) b1.62 V7
+m104 b2 iv64 b3 #viio65
+m106 #viio65 b2 i6 b3 #viio2
+m108 V65[add9] b2 V65
+m109 i b2 i[add9] b3.5 i
+m110 iv[no3][add4] b1.5 iv b2 iv[add9] b2.5 iv b3 V[no5][add6] b3.5 V7
 m111 f: V2
-m112 V b1.25 i6 b1.5 iv
-m113 iio6 b1.25 i6 b1.5 V64
-m114 V6 b1.25 i b1.5 iio
-m115 iv b1.25 i6 b1.5 iio
-m116 V6(9) b1.25 V65
-m117 i b1.25 i(9) b1.62 i
-m118 iv b1.62 V
-m119 VI(2) b1.19 VI b1.25 i64 b1.44 V2 b1.5 i6 b1.69 V43
-m120 i64 b1.25 i64(4) b1.62 i64
-m121 #viø2 b1.25 V7 b1.62 i64
-m122 #viio43 b1.25 i6(#72) b1.44 i6 b1.62 iio
-m123 b1.25 i(94) b1.44 i b1.62 #viio7
-m124 b1.25 i(#72) b1.5 i b1.62 iio
-m125 b1.25 i6 b1.62 #viio43
-m126 i6 b1.25 iio(97) b1.44 iio b1.62 i
-m127 i6 b1.19 #viø43 b1.25 V43(#9) b1.44 V43 b1.62 i
+m112 V b2 i6 b3 iv
+m113 iio6 b2 i6 b3 V64
+m114 V6 b2 i b3 iio
+m115 iv b2 i6 b3 iio
+m116 V6[add9] b2 V65
+m117 i b2 i[add9] b3.5 i
+m118 iv b3.5 V
+m119 VI[no1][add2] b1.75 VI b2 i64 b2.75 V2 b3 i6 b3.75 V43
+m120 i64 b2 i64[no3][add4] b3.5 i64
+m121 #viø2 b2 V7 b3.5 i64
+m122 #viio43 b2 i6[no8][no1][add#7][add2] b2.75 i6 b3.5 iio
+m123 b2 i[no3][add9][add4] b2.75 i b3.5 #viio7
+m124 b2 i[no1][add#7][add2] b3 i b3.5 iio
+m125 b2 i6 b3.5 #viio43
+m126 i6 b2 iio[add9][add7] b2.75 iio b3.5 i
+m127 i6 b1.75 #viø43 b2 V43[add#9] b2.75 V43 b3.5 i
 m128 VI
 m129 bII
-m130 #viio b1.19 V7 b1.25 i b1.69 V
-m131 b1.44 V
-m132 b1.25 #viio6 b1.62 i
-m133 b1.25 #viio64 b1.62 i6
+m130 #viio b1.75 V7 b2 i b3.75 V
+m131 b2.75 V
+m132 b2 #viio6 b3.5 i
+m133 b2 #viio64 b3.5 i6
 m134 iv
-m135 #viio65 b1.25 i
-m136 i b1.25 VI b1.5 V(64)
-m137 b1.5 V7
-m138 i b1.25 VI(2) b1.5 VId7
-m139 V(64) b1.5 V7
+m135 #viio65 b2 i
+m136 i b2 VI b3 Cad64
+m137 b3 V7
+m138 i b2 VI[no1][add2] b3 VId7
+m139 Cad64 b3 V7
 m140 i
-m141 i6 b1.19 i
-m143 b1.25 viio7/V
+m141 i6 b1.75 i
+m143 b2 viio7/V
 m144 #viio6
 m145 #viio43/iv
 m146 D: I
@@ -129,53 +130,53 @@ m148 V2/IV
 m149 IV6
 m150 #viio65/ii
 m151 ii6
-m152 V(64)
+m152 Cad64
 m153 V7
-m154 I b1.5 IV
-m155 I b1.25 ii
-m156 I b1.5 ii6
-m157 b1.25 viio6 b1.5 I
+m154 I b3 IV
+m155 I b2 ii
+m156 I b3 ii6
+m157 b2 viio6 b3 I
 m160 V2/IV
 m161 IV6
 m162 viio65/IV
 m163 c: #viio43
 m164 V65
 m165 i
-m166 b1.5 iio
-m167 b1.25 V/IV
+m166 b3 iio
+m167 b2 V/IV
 m168 V2/IV
 m171 IV6
 m172 #viio65/ii
 m173 ii6
-m174 V(64)
+m174 Cad64
 m175 V7
-m176 f: V b1.5 i64
-m177 b1.5 V
-m178 V b1.25 V7 b1.5 i64
-m179 b1.5 V7
-m180 V(9) b1.25 V b1.5 V7
-m181 ii6 b1.25 iio(2) b1.5 iio
-m182 V/V b1.25 V2/V b1.5 V6
-m183 b1.25 V(9) b1.5 V
-m184 i64 b1.25 V7 b1.62 i64
-m185 #viø2 b1.25 V7 b1.62 i64
-m186 #viio43 b1.25 i6(72) b1.44 i6 b1.62 iio
-m187 b1.25 i(94) b1.44 i b1.62 #viio7
-m188 b1.25 i(#72) b1.5 i b1.62 iio
-m189 b1.25 i6(94) b1.5 i6 b1.62 #viio43
-m190 i6 b1.25 iio(97) b1.44 iio b1.62 i
-m191 i6 b1.19 #viø43 b1.25 V43(#9) b1.44 V43 b1.62 i
+m176 f: V b3 i64
+m177 b3 V
+m178 V b2 V7 b3 i64
+m179 b3 V7
+m180 V[add9] b2 V b3 V7
+m181 ii6 b2 iio[no1][add2] b3 iio
+m182 V/V b2 V2/V b3 V6
+m183 b2 V[add9] b3 V
+m184 i64 b2 V7 b3.5 i64
+m185 #viø2 b2 V7 b3.5 i64
+m186 #viio43 b2 i6[no8][no1][add7][add2] b2.75 i6 b3.5 iio
+m187 b2 i[no3][add9][add4] b2.75 i b3.5 #viio7
+m188 b2 i[no1][add#7][add2] b3 i b3.5 iio
+m189 b2 i6[no3][add9][add4] b3 i6 b3.5 #viio43
+m190 i6 b2 iio[add9][add7] b2.75 iio b3.5 i
+m191 i6 b1.75 #viø43 b2 V43[add#9] b2.75 V43 b3.5 i
 m192 VI
-m193 bII b1.25 bII(64) b1.62 bII
-m194 #viio b1.19 V7 b1.25 i b1.69 V
-m196 b1.25 #viio6 b1.62 i
-m197 b1.25 #viio64 b1.62 i6
+m193 bII b2 bII[no5][no3][add6][add4] b3.5 bII
+m194 #viio b1.75 V7 b2 i b3.75 V
+m196 b2 #viio6 b3.5 i
+m197 b2 #viio64 b3.5 i6
 m198 iv
-m199 #viio65 b1.25 i
-m200 i b1.25 i2 b1.5 V(964)
-m201 V(64) b1.5 V7
-m202 i b1.25 i2 b1.5 VId7
-m203 V(64) b1.5 V7
+m199 #viio65 b2 i
+m200 i b2 i2 b3 V[no5][no3][add9][add6][add4]
+m201 Cad64 b3 V7
+m202 i b2 i2 b3 VId7
+m203 Cad64 b3 V7
 m204 i
-m206 b1.5 V
+m206 b3 V
 m207 i
