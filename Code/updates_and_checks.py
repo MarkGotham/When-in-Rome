@@ -31,13 +31,14 @@ See also 'contents.py' for updating corpus contents lists.
 
 import json
 import os
+import re
 import shutil
 
 from typing import Optional, Union
 
 import romanUmpire
 
-from music21 import converter, stream, romanText
+from music21 import converter, metadata, stream, romanText
 
 # ------------------------------------------------------------------------------
 
@@ -360,13 +361,38 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
 def convert_DCML_tsv_analyses(corpus: str = 'Quartets') -> None:
     """
     Convert local copies of DCML's analysis files (.tsv) to rntxt.
-
-    TODO placeholder draft for Malcolm. Check this + v2 converter, and write to parent dir ***
     """
 
+    # TODO what are the possible values of 'corpus'?
+    genre_strs = {"Quartets": "String quartet"}
+    try:
+        genre_str = genre_strs[corpus]
+    except KeyError:
+        raise ValueError(
+            f"corpus='{corpus}', but must be in {set(genre_strs.keys())}"
+        )
     file_paths = get_corpus_files(corpus=corpus, file_name='DCML_analysis.tsv')
+
     for f in file_paths:
-        romanText.tsvConverter.TsvHandler(f)
+        # m = re.match(f)
+        m = re.search(r"Op0*(?P<opus>\d+)(_No0?(?P<num>\d+))?/0*(?P<mvmt>\d+)", f)
+        work_str = (
+            f"{genre_str} Op. {m.group('opus')}" 
+            + ("" if m.group('num')is None else f" No. {m.group('num')}") 
+            + f", Movement {m.group('mvmt')}")
+        stream = romanText.tsvConverter.TsvHandler(f, dcml_version=2).toM21Stream()
+        
+        stream.insert(0, metadata.Metadata())
+        stream.metadata.composer = {"Quartets": "Beethoven"}[corpus]
+        stream.metadata.analyst = {
+            "Quartets": "Neuwirth et al. ABC dataset. See https://github.com/DCMLab/ABC"
+        }[corpus]
+        stream.metadata.title = work_str
+        out_path = os.path.join(os.path.dirname(os.path.dirname(f)), 'analysis.txt')
+        converter.subConverters.ConverterRomanText().write(
+            stream, 'romanText', fp=out_path
+        )
+        print(f"Wrote {out_path}")
 
 
 # ------------------------------------------------------------------------------
