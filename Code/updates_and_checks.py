@@ -374,12 +374,13 @@ def convert_DCML_tsv_analyses(corpus: str = 'Quartets') -> None:
     file_paths = get_corpus_files(corpus=corpus, file_name='DCML_analysis.tsv')
 
     for f in file_paths:
-        # m = re.match(f)
         m = re.search(r"Op0*(?P<opus>\d+)(_No0?(?P<num>\d+))?/0*(?P<mvmt>\d+)", f)
         work_str = (
             f"{genre_str} Op. {m.group('opus')}" 
             + ("" if m.group('num')is None else f" No. {m.group('num')}") 
             + f", Movement {m.group('mvmt')}")
+        out_path = os.path.join(os.path.dirname(os.path.dirname(f)), 'analysis.txt')
+        print(f"Processing {out_path} ...", end="", flush=True)
         stream = romanText.tsvConverter.TsvHandler(f, dcml_version=2).toM21Stream()
         
         stream.insert(0, metadata.Metadata())
@@ -388,11 +389,11 @@ def convert_DCML_tsv_analyses(corpus: str = 'Quartets') -> None:
             "Quartets": "Neuwirth et al. ABC dataset. See https://github.com/DCMLab/ABC"
         }[corpus]
         stream.metadata.title = work_str
-        out_path = os.path.join(os.path.dirname(os.path.dirname(f)), 'analysis.txt')
+        
         converter.subConverters.ConverterRomanText().write(
             stream, 'romanText', fp=out_path
         )
-        print(f"Wrote {out_path}")
+        print(" done.")
 
 
 # ------------------------------------------------------------------------------
@@ -523,3 +524,15 @@ def find_incomplete_measures_corpus(corpus: str = 'OpenScore-LiederCorpus',
     return out_dict
 
 # ------------------------------------------------------------------------------
+
+# script
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--rebuild-abc", action="store_true")
+    args = parser.parse_args()
+    if args.rebuild_abc:
+        convert_DCML_tsv_analyses()
+    else:
+        parser.print_help()
