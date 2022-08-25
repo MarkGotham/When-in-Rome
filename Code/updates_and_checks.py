@@ -212,6 +212,52 @@ def process_corpus(corpus: str = 'OpenScore-LiederCorpus',
 
 # ------------------------------------------------------------------------------
 
+# Automated analyses from augmentednet
+
+def make_automated_analyses(corpus: str = 'OpenScore-LiederCorpus') -> None:
+    """
+    Create automated analyses using augmentednet (Nápoles López et al. 2021).
+    :param corpus: Which corpus (or all). See notes at `get_corpus_files`
+    :return: None
+
+    TODO: untested draft based on (adapted from) https://github.com/MarkGotham/When-in-Rome/pull/47
+    """
+
+    from AugmentedNet.inference import batch, predict
+    from AugmentedNet.utils import tensorflowGPUHack
+    from tensorflow import keras
+
+    tensorflowGPUHack()
+    modelPath = "AugmentedNet.hdf5"
+    model = keras.models.load_model(modelPath)
+
+    files = get_corpus_files(corpus=corpus,
+                             file_name='score.mxl')
+
+    for path in files:
+        pathrntxt = path.replace(".mxl", "_annotated.rntxt")
+        annotatedScore = path.replace(".mxl", "_annotated.xml")
+        annotationCSV = path.replace(".mxl", "_annotated.csv")
+        newrntxt = path.replace("score.mxl", "analysis_automatic.rntxt")
+        print(path)
+        if os.path.isfile(newrntxt):
+            print("... Already present, skipping.")
+            continue
+        try:
+            predict(model, inputPath=path)
+        except:
+            print("... Failure to predict, skipping.")
+            pass
+        if os.path.isfile(annotatedScore):
+            os.remove(annotatedScore)
+        if os.path.isfile(annotationCSV):
+            os.remove(annotationCSV)
+        if os.path.isfile(pathrntxt):
+            shutil.move(pathrntxt, newrntxt)
+
+
+# ------------------------------------------------------------------------------
+
 # Get, convert, move scores and analyses
 
 def convert_musescore_score_corpus(in_path: Union[str, os.PathLike],
