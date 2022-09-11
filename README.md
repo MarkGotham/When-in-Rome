@@ -46,26 +46,27 @@ Might we suggest that if you're looking for:
 
 ### (Almost) all folders include:
 
-1. `score.mxl`
-- What: A conversion of the corpus score into `.mxl` format for consistency and compressed to minimise file/corpus size.
-- How to use: Open in any software for music notation (e.g., [MuseScore](https://musescore.org/)).
+- `score.mxl`
+ - What: A conversion of the corpus score into `.mxl` format for consistency and compressed to minimise file/corpus size.
+ - How to use: Open in any software for music notation (e.g., [MuseScore](https://musescore.org/)).
 
-1. `analysis.txt`
-- What: A human analysis in plain text.
-- How to use: Open in any text editor. You can also use these analyses as a kind of template for your own, by creating a copy and editing only the moments you disagree with.
-1. `analysis_automatic.txt`.
-- What: An automatic analysis made by [AugmentedNet](https://github.com/napulen/AugmentedNet) - a machine learning architecture which, in turn, is built on this meta-corpus' data.
-- How to use: In exactly the same way as a human analysis, e.g., as a template (same format, same parsing routines).
+- `analysis.txt`
+ - What: A human analysis in plain text.
+ - How to use: Open in any text editor. You can also use these analyses as a kind of template for your own, by creating a copy and editing only the moments you disagree with.
+ 
+- `analysis_automatic.txt`.
+ - What: An automatic analysis made by [AugmentedNet](https://github.com/napulen/AugmentedNet) - a machine learning architecture which, in turn, is built on this meta-corpus' data.
+ - How to use: In exactly the same way as a human analysis, e.g., as a template (same format, same parsing routines).
 
 ### Some folders include:
 
-1. `Working/`, e.g., `Working/BPS_in_transit.csv` on the Beethoven sonatas
-- What: A copy of original and/or intermediary formats for conversions.
-- How to use: As a point of reference for full disclosure on the conversion process.
+- `Working/`, e.g., `Working/BPS_in_transit.csv` on the Beethoven sonatas
+ - What: A copy of original and/or intermediary formats for conversions.
+ - How to use: As a point of reference for full disclosure on the conversion process.
 
-1. `analysis_<analyst>.txt`
-- What: An alternative analysis, e.g., copy of an original analysis exactly as converted for cases where significant changes have been made.
-- How to use: As a point of reference for full disclosure on the conversion process.
+- `analysis_<analyst>.txt`
+ - What: An alternative analysis, e.g., copy of an original analysis exactly as converted for cases where significant changes have been made.
+ - How to use: As a point of reference for full disclosure on the conversion process.
 
 ### Optional extra files (not included but easy to generate):
 
