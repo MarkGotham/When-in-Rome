@@ -7,7 +7,7 @@ Note: Please submit a pull request for anything inaccurate, or submit a separate
 Form: Verse 1
 
 Time Signature: 6/8
-m1 E: I b2 V7
+m1 ||: E: I b2 V7
 m2 I b2 V42/IV b2.33 IV6 b2.67 I64
 m3 IV b2 IV6 b2.33 I64 b2.67 IV
 m4 I6 b1.67 ii6 b2 V
@@ -20,19 +20,29 @@ m10 IV64 b2 V7
 m11 V7/IV
 m12 IV b2 V7
 m13 I b2.67 V7
-m14 I ||
+m14 I || :||
 
 Form: Verse 2
-m15-18 = m1-4
+Note: was m15-18 = m1-4, but this will lead to copied repeats
+m15 E: I b2 V7
+m16 I b2 V42/IV b2.33 IV6 b2.67 I64
+m17 IV b2 IV6 b2.33 I64 b2.67 IV
+m18 I6 b1.67 ii6 b2 V
 m19 iii b2 c#: iv
 m20 V7
 m21 i b1.33 V42/iv b1.67 iv6 b2 i64 b2.33 iv b2.67 viio7/V
 m22 i64 b1.67 V b2 i
 m23 E: V7/IV
-m24-28 = m10-14
+Note: was m24-28 = m10-14, but this will lead to copied repeats
+m24 IV64 b2 V7
+m25 V7/IV
+m26 IV b2 V7
+m27 I b2.67 V7
+m28 I ||
 
 Form: Verse 3
-m29-32 = m1-4
+Note: was m29-32 = m1-4, but this will lead to copied repeats
+m29-32 = m15-18
 m33 V/vi b2 ii
 m34-39 = m6-11
 m40 IV

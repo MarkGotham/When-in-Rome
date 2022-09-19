@@ -14,7 +14,7 @@ m5 b1 I64 b2 viio43/ii
 m8 b1 V7
 
 Forme: Verse 1
-m9 b1 I b2 V6
+m9 ||: b1 I b2 V6
 m10 b1 IV6
 m11 b1 V7
 m13 b1 I b2 IV6
@@ -50,7 +50,9 @@ m39 b1 V7
 m40 b1 I
 
 Forme: Verse 2
-m41-56 = m9-24
+Note: was m41-56 = m9-24, changed due to music21 repeat issue
+m41 b1 I b2 V6
+m42-56 = m10-24
 m57 b1 iv6/vi
 m58 b1 V/vi
 m59 b1 iv6/vi
@@ -66,6 +68,8 @@ m68 b1 I
 
 Forme: Coda
 m69-75 = m33-39
-m76-83 = m1-8
+Note: was m76-83 = m1-8 but this leads to copied repeats
+m76-82 = m1-7
+m83 b1 V7 :||
 m84 b1 I
 

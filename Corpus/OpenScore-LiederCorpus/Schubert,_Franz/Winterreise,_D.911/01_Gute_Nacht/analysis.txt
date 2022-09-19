@@ -11,11 +11,13 @@ m3 i b2.5 viio43
 m4 i b2.5 iv
 m5 i64 b2 iv6
 m6 i64 b2 V
-m7 i
+m7 ||: i
 m9 iiø42
 m10 i b2 i64 b2.5 V7
 
-m11-14 = m7-10
+Note: was m11-14 = m7-10, changed due to music21 repeat issue
+m11 i
+m12-14 = m8-10
 
 m15 i b2 F: V7
 m16 I b2 vi b2.5 V43/V
@@ -37,9 +39,10 @@ m30-32 = m26-28
 
 m33-37 = m1-5
 
-m38 i64 b2 V7
+m38 i64 b2 V7 :||
 
-m39-41 = m7-9
+Note: was m39-41 = m7-9, changed due to music21 repeat issue
+m39-41 = m11-13
 
 m42 i b1.5 i64 b2.5 V43
 

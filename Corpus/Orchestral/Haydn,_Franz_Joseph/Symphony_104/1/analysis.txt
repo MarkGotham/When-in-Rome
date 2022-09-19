@@ -8,8 +8,9 @@ Form: Introduction (Adagio), Phase 1
 
 Time Signature: 2/2
 
-m1 b1 d: b1 i[no3no5] b2 V[no3no5]
-m2 = m1
+Note: forward repeat bar is missing, unclear if it should be here or at start of Allegro
+m1 ||: b1 d: b1 i[no3no5] b2 V[no3no5]
+m2 b1 d: b1 i[no3no5] b2 V[no3no5]
 m3 b1 i6 b2 V42
 m4 = m3
 m5 b1 i6 b2 F: V43
@@ -27,7 +28,7 @@ m13 b1 d: iv b1.5 iio6 b2 i64 b2.5 V7
 
 Form: Phase 3
 
-m14 = m1
+m14 b1 d: b1 i[no3no5] b2 V[no3no5]
 m15 b1 i[no3no5] b2 iv[no3no5] b2.5 bII6
 m16 b1 i64 b2 V b2.5 V7
 
@@ -169,6 +170,7 @@ m119 b1 I64 b2 V7
 m120 b1 I b2.5 V
 m121 b1 I b2.5 V
 m122 b1 I
+m123 :||
 
 Form: Development, Phase 1 (Bm to Em)
 

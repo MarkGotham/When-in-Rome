@@ -2,7 +2,9 @@ Composer: Josephine Lang
 Title: 6 Lieder, Op.12 - No.3: Abermals am See
 Analyst: Anonymous contributor via the 'Working in Harmony' app: https://fourscoreandmore.org/apps/working-in-harmony/
 Proofreader: Mark Gotham
-Note: Based on 'Open Score' CC0 encoding at https://musescore.com/OpenScore-Lieder-Corpus
+Note: Based on 'Open Score' CC0 encoding at https://musescore.com/OpenScore-Lieder-Corpus
+
+
 Time Signature: 3/4
 
 m1 B: iv
@@ -25,10 +27,12 @@ m23 I
 
 Form: Verse 1
 
-m27 I
+m27 ||: I
 m29 V7
 
-m31-34 = m27-30
+Note: was m31-34 = m27-30, changed due to music21 repeat issue
+m31 I
+m33 V7
 
 m35 V7/IV
 
@@ -42,7 +46,10 @@ m45 V
 
 m47 V65 
 Note: Chromatic neighbour chords
-m49 V7 m51-54 = m47-50
+m49 V7 
+
+m51-54 = m47-50
+
 m55 Eb: I
 Note: enharmonic modulation (Eb=D#=III)
 m57 V
@@ -52,12 +59,17 @@ m61 V7
 
 Form: Verse 2
 
-m63-82 = m27-46m83-90 = m47-54
+Note: was m63-82 = m27-46, changed due to music21 repeat issue
+m63 I
+m64-82 = m28-46
+m83-90 = m47-54
 m91-98 = m55-62
 
 Form: Verse 3
 
-m99-102 = m27-30
+Note: was m99-102 = m27-30, changed due to music21 repeat issue
+m99 I
+m101 V7
 m103 I
 m105 iv
 m107 V42
@@ -81,5 +93,5 @@ m127 I
 Form: Coda
 
 m128-152 = m1-25
-m153a V
+m153a V :||
 m153b I

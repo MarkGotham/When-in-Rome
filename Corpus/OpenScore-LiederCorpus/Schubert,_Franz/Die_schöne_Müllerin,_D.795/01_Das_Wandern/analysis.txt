@@ -6,9 +6,11 @@ Note: Based on 'Open Score' CC0 encoding at https://musescore.com/OpenScore-Lied
 
 Time Signature: 2/4
 
-m1 Bb: I
+m1 ||: Bb: I
 m2 V7 b2 I
-m3-4 = m1-2
+Note: was m3-4 = m1-2 but changed due to music21 repeat issue
+m1 I
+m2 V7 b2 I
 
 Form: Verse
 
@@ -33,4 +35,4 @@ m16var1 V
 m17 Bb: V7 b2 I
 m18 V7 b2 I
 m19 = m18
-m20 = m18
+m20 V7 b2 I :||
