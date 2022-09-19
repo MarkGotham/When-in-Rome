@@ -6,15 +6,17 @@ Note: Based on 'Open Score' CC0 encoding at https://musescore.com/OpenScore-Lied
 
 
 Time Signature: 2/4
-m1 E: I
+m1 ||: E: I
 m2 I
 m3 V65
-m4 = m1
+m4 I
 m5 V b2.5 V7
-m6 = m1
+m6 I
 m7 V
 m8 I6
-m9-13 = m1-5
+Note: was m9-13 = m1-5 but changed due to music21 repeat issue
+m9 I
+m10-13 = m2-5
 m14 I64
 m15 V
 m16 I
@@ -26,13 +28,13 @@ m21 = m7
 m22 i
 m23 i
 m24 V
-m25 = m1
-m26 = m1
+m25 I
+m26 I
 m27 I42
 m28 IV6
 m29 V7
 m30 I64
 m31 V
 m32 I
-m33 I
+m33 I :||
 

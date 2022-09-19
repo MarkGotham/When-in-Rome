@@ -9,7 +9,7 @@ Time Signature: 2/4
 m0 b2.5 G: V
 
 Form: Verse 1
-m1 I b2 V7
+m1 ||: I b2 V7
 m2 I
 m3 V7 b2 I
 m4 V b2 V42/IV
@@ -19,7 +19,10 @@ m7 I64/V b2 V7/V
 m8 V b2 V7 ||
 
 Form: Verse 2
-m9-13 = m1-5
+Note: was m9-13 = m1-5 but changed due to music21 repeat issue
+m9 I b2 V7
+m10-13 = m2-5
 m14 ii6 b2 viio7/V
 m15 V7
-m16 I
+m16a I :||
+m16b I

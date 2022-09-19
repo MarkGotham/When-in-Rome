@@ -9,11 +9,12 @@ m1 f#: i b2 V43
 m2 i b2 V43
 m3 i b2 i64 b3 V7
 m4 i
-m5 i
+m5 ||: i
 m7 V
 m8 i
 
-m9-10 = m5-6
+Note: was m9-10 = m5-6, changed due to music21 repeat issue
+m9: i
 
 m11 i64 b3 V7
 m12 viio7/iv
@@ -37,4 +38,4 @@ m27 f#: i64 b3 V7
 m28-30 = m14-16
 
 m31 i b3 V7
-m32 i
+m32 i :||
