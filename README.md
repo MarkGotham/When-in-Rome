@@ -106,7 +106,8 @@ This corpus involves the combination of new analyses with conversions of those o
 
 Converted from other formats:
 - the [DCMLab's](https://github.com/DCMLab/) standard ([conversion code here](https://github.com/cuthbertLab/music21/blob/master/music21/romanText/tsvConverter.py)):
- - [Beethoven string quartets](/Corpus/Quartets/Beethoven,_Ludwig_van/) (complete, 16 string quartets, 70 movements): originating from the [DCMLab's 'ABC' corpus](https://github.com/DCMLab/ABC).
+ - [Beethoven string quartets](/Corpus/Quartets/Beethoven,_Ludwig_van/) (complete, 16 string quartets, 70 movements): originating from the ['ABC' corpus](https://github.com/DCMLab/ABC).
+ - [Mozart Piano Sonatas](/Corpus/Piano_Sonatas/Mozart,_Wolfgang_Amadeus/) (complete, 18 sonatas): originating from the [this  corpus](https://github.com/DCMLab/mozart_piano_sonatas).
 - krn format (with thanks to [@napulen](https://github.com/napulen)):
   - 27 sets of keyboard Variations by [Mozart,_Wolfgang_Amadeus](/Corpus/Variations_and_Grounds/Mozart,_Wolfgang_Amadeus/) and [Beethoven](/Corpus/Variations_and_Grounds/Beethoven,_Ludwig_van/), from [Devaney et al.'s 'TAVERN' project, ISMIR 2015](https://github.com/jcdevaney/TAVERN)
   - [Haydn Op. 20 String Quartets](/Corpus/Quartets/Haydn,_Franz_Joseph/): Complete annotations of Haydn's Op. 20 (6 string quartets, 24 movements), from the [MTG dataset](https://zenodo.org/record/1095630#.X8AbrcJyZhE)
