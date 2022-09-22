@@ -110,6 +110,40 @@ def get_analyses(corpus: str = 'OpenScore-LiederCorpus',
     return get_corpus_files(corpus=corpus, file_name=f)
 
 
+def clear_the_decks(corpus: str = '',
+                    fileTypeToStay = ['analysis.txt', 'analysis_automatic.rntxt', 'score.mxl'],
+                    fileTypeToGo: list = ['analysis_on_score.mxl', 'slices.tsv',],
+                    delete: bool = True
+                    ) -> list:
+    """
+    When in Rome now supports many variant subsidiary files 
+    but does not include them by default.
+    Having created them, use this to reset (delete).
+    
+    :param corpus:
+    :param fileTypeToStay: Which file types we definitely keep.
+    :param fileTypeToGo: Which file types that definitely go.
+    :param delete: Bool. Delete or just report by printing to log.
+    :return: files not accounted for the explicit lists of those to keep and those to remove.
+    """
+
+    miscellany = []
+    filesToGo = []
+    
+    for g in fileTypeToGo:
+        filesToGo += get_corpus_files(corpus=corpus, file_name=g)
+    
+    for f in filesToGo:
+        print('Removing: ', f)
+        if delete:
+            os.remove(f)
+            
+    for s in fileTypeToStay:
+        miscellany += get_corpus_files(corpus=corpus, file_name=g)
+    
+    return miscellany
+
+
 # ------------------------------------------------------------------------------
 
 # Roman Umpire
