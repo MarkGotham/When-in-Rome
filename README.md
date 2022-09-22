@@ -44,6 +44,9 @@ Might we suggest that if you're looking for:
 
 - `<files>`: See the following sub-sections.
 
+The [Key Modulations and Tonicizations](Corpus/Textbooks/) corpus is a slight exception: we preserve the organisation of that corpus by author, title, example number, e.g., `Corpus/Textbooks/Aldwell,_Edward/Harmony_and_Voice_Leading/2a/`. So the `<genre>` is `Textbooks`, the `<composer>` is the author, the `<set>` is the title, and the `<movement>` is the example number.
+We find this more logical that re-organisation by composer.
+
 ### (Almost) all folders include:
 
 - `score.mxl`
