@@ -1208,6 +1208,8 @@ class ScoreAndAnalysis:
         """
         te = expressions.TextExpression(message)  # NB: Have to make a new one each time
         te.placement = 'above'
+        te.style.color = 'red'
+        # Known issue: ^ This works within musicXML but readers like MuseScore don't show it.
         p = self.scoreWithAnalysis.parts[-1]
         m = p.measure(hr.startMeasure)
         mOffset = m.getOffsetInHierarchy(p)
