@@ -40,16 +40,14 @@ Currently limited to single chord. Expand to progressions
 
 """
 
-import chord_comparisons
-import get_distributions
+from . import chord_comparisons
+from . import get_distributions
+from .. import CORPUS_FOLDER
 
 from typing import Union
 
-import unittest
-
 from music21.analysis import harmonicFunction as hf
 from music21 import roman
-
 
 # ------------------------------------------------------------------------------
 
@@ -253,7 +251,7 @@ lieder_both_simple = {'V': 32.168, 'I': 29.136, 'i': 13.78, 'ii': 5.679, 'vii': 
 
 # Code
 
-def get_usage(base_path: str = '../../Corpus/OpenScore-LiederCorpus/',
+def get_usage(base_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
               weight_by_length: bool = True,
               sort_dict: bool = True,
               percentages: bool = True,
@@ -290,9 +288,9 @@ def get_usage(base_path: str = '../../Corpus/OpenScore-LiederCorpus/',
             raise ValueError(f"Cannot load {path_to_file}")  # .split('/')[-4:-1]}")
             # print(f"failing to load {path_to_file.split('/')[-4:-1]}")
 
-        data.get_distributions_by_chord()
+        data.get_profiles_by_chord()
 
-        for d in data.distributions_by_chord:
+        for d in data.profiles_by_chord:
             # Mode
             if mode == 'major' and not d['key'][0].isupper():  # Major e.g. 'C', 'Ab'.
                 continue
@@ -457,27 +455,3 @@ def simplify_chord(rn: Union[roman.RomanNumeral, str],
         else:
             if ignoreOtherAlt:  # added etc., but keep root alt
                 return rn.romanNumeral
-
-
-# ------------------------------------------------------------------------------
-
-class Test(unittest.TestCase):
-
-    def test_counter_of_use(self):
-        base_path = '../../Corpus/OpenScore-LiederCorpus/'
-        # base_path += 'Reichardt,_Louise/'  # smaller test case
-        for mode_corpus_pair in [('major', lieder_major, lieder_major_simple),
-                                 ('minor', lieder_minor, lieder_minor_simple),
-                                 ('both', lieder_both, lieder_both_simple)
-                                 ]:
-            usage = get_usage(base_path=base_path, mode=mode_corpus_pair[0], plateau=0.01)
-            self.assertEqual(usage, mode_corpus_pair[1])
-
-            simplified_usage = simplify_usage_dict(usage)
-            self.assertEqual(simplified_usage, mode_corpus_pair[2])
-
-
-# ------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    unittest.main()

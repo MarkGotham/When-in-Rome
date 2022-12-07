@@ -37,7 +37,8 @@ import shutil
 from pathlib import PurePath
 from typing import Optional, Union
 
-import romanUmpire
+from . import romanUmpire
+from . import CORPUS_FOLDER
 
 from music21 import converter, metadata, stream, romanText
 
@@ -75,7 +76,7 @@ def get_corpus_files(corpus: str = 'OpenScore-LiederCorpus',
     if corpus != '' and corpus not in corpora:
         raise ValueError(f"Invalid corpus: must be one of {corpora} or an empty string (for all)")
 
-    base_path = os.path.join(os.path.dirname((os.path.realpath(__file__))), '..', 'Corpus', corpus)
+    base_path = str(CORPUS_FOLDER / corpus)
 
     paths = []
 

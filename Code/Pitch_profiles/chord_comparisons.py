@@ -30,12 +30,12 @@ building those prototype profiles from a user-defined corpus of sources.
 
 """
 
-import chord_profiles
-import get_distributions
-import normalisation_comparison
+from . import chord_profiles
+from . import get_distributions
+from . import normalisation_comparison
+from .. import CORPUS_FOLDER
 
 import os
-
 
 # ------------------------------------------------------------------------------
 
@@ -293,7 +293,7 @@ def normalise_dict(dict_of_profiles: dict,
 # ------------------------------------------------------------------------------
 
 
-def get_files(root_path: str = '../../Corpus/OpenScore-LiederCorpus/',
+def get_files(root_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
               file_name: str = 'slices_with_analysis.tsv'):
     paths = []
     for dpath, dname, fname in os.walk(root_path):
@@ -380,8 +380,8 @@ def test_corpus_build():
     Run the build process on Schubert's Winterreise and check nothing's changed
     (ie, it matches the values in chord_profiles).
     """
-    base_path = '../../Corpus/OpenScore-LiederCorpus/'
-    base_path += 'Schubert,_Franz/Winterreise,_D.911/'
+    base_path = CORPUS_FOLDER / 'OpenScore-LiederCorpus'
+    base_path = str(base_path / 'Schubert,_Franz' / 'Winterreise,_D.911')
     build = build_profiles_from_corpus(base_path)
     assert build == chord_profiles.winterreise
 
@@ -393,8 +393,8 @@ def test_corpus_comparison():
     profiles built from the  full lieder dataset (reference),
     and check nothing's changed.
     """
-    base_path = '../../Corpus/OpenScore-LiederCorpus/'
-    base_path += 'Schubert,_Franz/Winterreise,_D.911/'
+    base_path = CORPUS_FOLDER / 'OpenScore-LiederCorpus'
+    base_path = str(base_path / 'Schubert,_Franz' / 'Winterreise,_D.911')
     comps = corpus_chord_comparison(base_path, reference_profile_dict=chord_profiles.lieder_sum)
     assert comps == (2013, 546, 96, 2655, 78.664)
 

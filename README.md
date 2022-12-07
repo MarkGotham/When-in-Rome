@@ -75,7 +75,7 @@ We find this more logical that re-organisation by composer.
 
 This repo. includes code and clear instructions for creating any or all of the following additional files for the whole meta-corpus, or for a specific sub-corpus.
 
-The [example folder](./Code/Example/) contains all of these files for one example score: 
+The [example folder](./Tests/Resources/Example/) contains all of these files for one example score: 
 Clara Schumann's Lieder, Op.12, No.4, 'Liebst du um Schönheit'.
 Most of the variants derive from the options for pitch class profile generations, creating files in the form: `profiles_<and_features_>by_<segmentation_type>.<format>`
 - `<and_features_>` (optional) includes harmonic feature information. See notes at [Code/Pitch_profiles/chord_features.py](Code/Pitch_profiles/chord_features.py)
