@@ -264,7 +264,7 @@ def get_usage(base_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
     
     Choose mode = 'major', 'minor', 'both'.
     It usually makes sense to separate by mode 
-    (e.g. usage of 'i' varies signifiantly between major and minor).
+    (e.g. usage of 'i' varies significantly between major and minor).
     
     Optionally set a plateau for minimum usage, ignoring one-offs.
     By default this value is 0.0 (i.e. there is no such plateau). 
