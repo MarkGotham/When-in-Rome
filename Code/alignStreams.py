@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from music21 import converter
-from music21 import chord
-from music21 import expressions
-from music21 import layout
-from music21 import roman
 from music21 import stream
-
-import os
 
 
 # ------------------------------------------------------------------------------

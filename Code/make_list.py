@@ -1,6 +1,5 @@
 # ------------------------------------------------------------------------------
 
-import unittest
 from music21 import roman
 from itertools import combinations
 import csv
@@ -90,23 +89,3 @@ class RNlists:
 
             for sublist in self.allRomanListOfLists:
                 csvOut.writerow([x for x in sublist])
-
-# ------------------------------------------------------------------------------
-
-class Test(unittest.TestCase):
-
-    def testList(self):
-
-        figs = RNlists(listLength=3, maxFig=4)
-        figs.rnArray()
-
-        self.assertIsInstance(figs.allRomanListOfLists, list)
-        self.assertIsInstance(figs.allRomanListOfLists[0], list)
-        self.assertEqual(len(figs.allRomanListOfLists), 6)
-        self.assertEqual(len(figs.allRomanListOfLists[0]), 84)
-        self.assertEqual(figs.allRomanListOfLists[0][0][0], 'bio2')
-
-# ------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    unittest.main()
