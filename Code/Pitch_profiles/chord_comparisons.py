@@ -118,14 +118,14 @@ def compare_one_source(path_to_file: str,
     """
 
     data = get_distributions.DistributionsFromTabular(path_to_file)
-    data.get_distributions_by_chord()
+    data.get_profiles_by_chord()
 
     correct = 0
     incorrect = 0
     out_of_scope = 0
-    total = len(data.distributions_by_chord)
+    total = len(data.profiles_by_chord)
 
-    for d in data.distributions_by_chord:
+    for d in data.profiles_by_chord:
 
         # Human analysis
         analysis_pcp, analysis_root = roman_to_pcp(d['chord'], d['key'],
@@ -141,7 +141,7 @@ def compare_one_source(path_to_file: str,
                 print('Out of scope chord: ', d['chord'])
             continue
 
-        best_fit_name, best_fit_rotation = best_fit_chord(d['distribution'],
+        best_fit_name, best_fit_rotation = best_fit_chord(d['profile'],
                                                           reference_profile_dict,
                                                           chord_types)
 
@@ -206,9 +206,9 @@ def build_profiles_from_corpus(base_path: str,
 
     for path_to_file in files:
         data = get_distributions.DistributionsFromTabular(path_to_file)
-        data.get_distributions_by_chord()
+        data.get_profiles_by_chord()
 
-        for d in data.distributions_by_chord:
+        for d in data.profiles_by_chord:
             analysis_pcp, root_pc = roman_to_pcp(d['chord'], d['key'],
                                                  root_0=True,
                                                  return_root=True)  # NB: rotation this time
@@ -216,7 +216,7 @@ def build_profiles_from_corpus(base_path: str,
             # Check analysis within scope
             analysis_name = get_chord_name_from_binary_pcp(analysis_pcp)
             if analysis_name:
-                rotated_data_pcp = rotate(d['distribution'], - root_pc)
+                rotated_data_pcp = rotate(d['profile'], - root_pc)
                 for pc in range(12):
                     new_dict[analysis_name][pc] += rotated_data_pcp[pc]
             else:
@@ -345,83 +345,8 @@ def roman_to_pcp(figure: str,
     else:
         return pcp
 
-
-# ------------------------------------------------------------------------------
-
-# Tests
-
-def check_binary_profiles():
-    """
-    Create the binary profiles dict from scratch (normal forms) and check they match.
-    """
-
-    normal_forms_dict = {
-        "diminished triad": [0, 3, 6],
-        "minor triad": [0, 3, 7],
-        "major triad": [0, 4, 7],
-        "augmented triad": [0, 4, 8],
-        "diminished seventh chord": [0, 3, 6, 9],
-        "half-diminished seventh chord": [0, 3, 6, 10],
-        "minor seventh chord": [0, 3, 7, 10],
-        "dominant seventh chord": [0, 4, 7, 10],
-        "major seventh chord": [0, 4, 7, 11],
-    }
-
-    test_dict = {}
-    for norm in normal_forms_dict:
-        pcp = pitch_class_list_to_profile(normal_forms_dict[norm])
-        test_dict[norm] = pcp
-
-    assert test_dict == chord_profiles.binary
-
-
-def test_corpus_build():
-    """
-    Run the build process on Schubert's Winterreise and check nothing's changed
-    (ie, it matches the values in chord_profiles).
-    """
-    base_path = CORPUS_FOLDER / 'OpenScore-LiederCorpus'
-    base_path = str(base_path / 'Schubert,_Franz' / 'Winterreise,_D.911')
-    build = build_profiles_from_corpus(base_path)
-    assert build == chord_profiles.winterreise
-
-
-def test_corpus_comparison():
-    """
-    Run the comparison process for
-    Schubert's Winterreise (source) against
-    profiles built from the  full lieder dataset (reference),
-    and check nothing's changed.
-    """
-    base_path = CORPUS_FOLDER / 'OpenScore-LiederCorpus'
-    base_path = str(base_path / 'Schubert,_Franz' / 'Winterreise,_D.911')
-    comps = corpus_chord_comparison(base_path, reference_profile_dict=chord_profiles.lieder_sum)
-    assert comps == (2013, 546, 96, 2655, 78.664)
-
-
-def test_normalisation():
-    """
-    Test normalisation of dicts and match to existing collections.
-    """
-    for source_name in ['beethoven', 'lieder', 'winterreise']:
-        source = getattr(chord_profiles, source_name)
-        norm_source = normalise_dict(source, 'l1')
-        assert norm_source == getattr(chord_profiles, source_name + '_sum')
-        for key in norm_source:
-            sum_source = sum(source[key])
-            assert round(sum_source, 2) == 1
-
-
-def run_tests():
-    check_binary_profiles()
-    test_corpus_build()
-    test_corpus_comparison()
-    test_normalisation()
-
-
 # ------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-    run_tests()
