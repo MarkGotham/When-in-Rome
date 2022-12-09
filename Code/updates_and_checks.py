@@ -59,12 +59,12 @@ corpora = [
 
 # Get file lists
 
-def get_corpus_files(corpus: str = 'OpenScore-LiederCorpus',
+def get_corpus_files(corpus: str = '',
                      file_name: Optional[str] = '*.*',
                      ) -> list:
     '''
     Get and return paths to files matching conditions for the given file_name.
-    :param corpus: the sub-corpus to search over. Empty string ('') to run all corpora.
+    :param corpus: the sub-corpus to search over. Empty string ('') to run all corpora (default value).
     :param file_name: select all files that are compliant with this file_name, using
      the usual wildcard '*' to match patterns. Examples:
       - *.mxl searches for all .mxl files
@@ -73,7 +73,7 @@ def get_corpus_files(corpus: str = 'OpenScore-LiederCorpus',
     :return: list of file paths.
     '''
 
-    if corpus != '' and corpus not in corpora:
+    if corpus not in ['', *corpora]:
         raise ValueError(f"Invalid corpus: must be one of {corpora} or an empty string (for all)")
 
     return [str(x) for x in (CORPUS_FOLDER / corpus).rglob(file_name)]
