@@ -29,7 +29,7 @@ jobs:
         $CONDA/bin/conda update -n base -c defaults conda  # update conda
         $CONDA/bin/conda init "$SHELL"
         exec "$SHELL"
-        $CONDA/bin/conda env update --file environment.yml --name runner  # update the environment
+        $CONDA/bin/conda env create --file environment.yml --name runner  # update the environment
         $CONDA/bin/conda activate runner
         pip install flake8
     - name: Lint with flake8
