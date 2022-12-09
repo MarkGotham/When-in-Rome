@@ -1,9 +1,7 @@
 import unittest
 
-from Code import CORPUS_FOLDER
 from Code.Pitch_profiles import chord_profiles
-from Code.Pitch_profiles.chord_comparisons import pitch_class_list_to_profile, build_profiles_from_corpus, \
-    corpus_chord_comparison, normalise_dict
+from Code.Pitch_profiles.chord_comparisons import pitch_class_list_to_profile, normalise_dict
 
 
 class Test(unittest.TestCase):
