@@ -1,6 +1,6 @@
 import unittest
 
-from Code.Pitch_profiles import chord_profiles
+from Code.Resources import chord_profiles
 from Code.Pitch_profiles.chord_comparisons import pitch_class_list_to_profile, normalise_dict
 
 
