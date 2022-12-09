@@ -1,6 +1,6 @@
 import unittest
 
-from Code.Pitch_profiles import key_profiles
+from Code.Resources import key_profiles_literature
 from Code.Pitch_profiles.normalisation_comparison import normalise, compare_two_profiles, best_key
 
 
@@ -50,16 +50,16 @@ class Test(unittest.TestCase):
         with the first segment of Beethoven Sonata no.1 (f minor).
         """
         data = [20.03, 1.0, 0.0, 0.0, 10.36, 15.2, 0.0, 15.2, 13.86, 0.0, 11.52, 0.0]
-        for mod in [key_profiles.AardenEssen,
-                    key_profiles.AlbrechtShanahan,
-                    key_profiles.BellmanBudge,
-                    key_profiles.KrumhanslKessler,
-                    key_profiles.KrumhanslSchmuckler,
-                    key_profiles.PrinceSchumuckler,
-                    key_profiles.QuinnWhite,
-                    key_profiles.Sapp,
-                    key_profiles.TemperleyKostkaPayne,
-                    key_profiles.TemperleyDeClerq
+        for mod in [key_profiles_literature.AardenEssen,
+                    key_profiles_literature.AlbrechtShanahan,
+                    key_profiles_literature.BellmanBudge,
+                    key_profiles_literature.KrumhanslKessler,
+                    key_profiles_literature.KrumhanslSchmuckler,
+                    key_profiles_literature.PrinceSchumuckler,
+                    key_profiles_literature.QuinnWhite,
+                    key_profiles_literature.Sapp,
+                    key_profiles_literature.TemperleyKostkaPayne,
+                    key_profiles_literature.TemperleyDeClerq
                     ]:
             for comp in ['Euclidean', 'Manhattan']:
                 k = best_key(data, mod, comparison_type=comp)
@@ -83,11 +83,11 @@ class Test(unittest.TestCase):
         """
         flat_profile = [1.5] * 12
         comps = ['L1', 'L2']
-        mods = [(key_profiles.KrumhanslKessler, 'c'),
-                (key_profiles.AlbrechtShanahan, 'c'),
-                (key_profiles.Sapp, 'c'),
-                (key_profiles.TemperleyDeClerq, 'c'),
-                (key_profiles.QuinnWhite, 'bb'),
+        mods = [(key_profiles_literature.KrumhanslKessler, 'c'),
+                (key_profiles_literature.AlbrechtShanahan, 'c'),
+                (key_profiles_literature.Sapp, 'c'),
+                (key_profiles_literature.TemperleyDeClerq, 'c'),
+                (key_profiles_literature.QuinnWhite, 'bb'),
                 ]
         for mod in mods:
             for comp in comps:

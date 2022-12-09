@@ -30,14 +30,13 @@ e.g. for categorisation tasks in machine learning.
 TODO: Currently limited to single chord. expand to – chord progressions
 
 """
+from music21.analysis import harmonicFunction as hf
 
 from . import chord_comparisons
-from . import chord_profiles
-from . import chord_usage
 from . import normalisation_comparison
+from ..Resources import chord_profiles, chord_usage_stats
 
-from music21 import analysis
-from music21 import roman
+from music21 import analysis, roman
 
 from typing import Union, Optional
 
@@ -323,7 +322,7 @@ class SingleChordFeatures:
                                                              comparison_type=self.comparison_type)
 
     def getFullChordCommonnessVector(self,
-                                     thisDict=chord_usage.lieder_both):
+                                     thisDict=chord_usage_stats.lieder_both):
         '''
         How commonly used is this exact chord?
         Calculated as a percentage usage / the top percentage
@@ -347,8 +346,8 @@ class SingleChordFeatures:
         dimensions = 1
         discrete = False (continuous)
         '''
-        thisDict = chord_usage.usage_dict_simplified
-        thisKey = chord_usage.simplify_chord(self.rn.figure)
+        thisDict = chord_usage_stats.usage_dict_simplified
+        thisKey = simplify_chord(self.rn.figure)
         return [getCommonPercentage(thisDict, thisKey)]
 
 
@@ -365,3 +364,75 @@ def getCommonPercentage(thisDict, thisKey):
         return 0
 
     return round(thisPercent / maxPercent, 3)
+
+
+def simplify_chord(rn: Union[roman.RomanNumeral, str],
+                   hauptHarmonicFunction: bool = False,
+                   fullHarmonicFunction: bool = False,
+                   ignoreInversion: bool = False,
+                   ignoreRootAlt: bool = False,
+                   ignoreOtherAlt: bool = True,
+                   ):
+    """
+    Given a chord (expressed as a roman.RomanNumeral or figure str),
+    simplify that chord in one or more ways:
+
+    hauptHarmonicFunction:
+        returns the basic function like T, S, D.
+        E.g., 'I' becomes 'T'.
+        See notes at music21.analysis.harmonicFunction
+
+    fullHarmonicFunction:
+        Likewise, but supports Nebenfunktionen, e.g. Tp.
+        E.g., 'vi' in a major key becomes 'Tp'.
+        Again, see notes at music21.analysis.harmonicFunction
+
+    ignoreInversion:
+        E.g., '#ivo65' becomes '#ivo'.
+
+    ignoreRootAlt:
+        E.g., '#ivo' becomes 'ivo'.
+        (NB: Not usually desirable!)
+
+    ignoreOtherAlt:
+        Ignore modifications of and added, removed, or chromatically altered tones.
+        So '#ivo[add#6]' becomes '#ivo'.
+
+    These are all settable separately, and so potentially combinable,
+    but note that there is a hierarchy here.
+    For instance, anything involving the function labels currently makes all the others
+    reductant.
+
+    >>> rn = roman.RomanNumeral('#ivo65[add4]/v')
+    >>> rn.figure
+    '#ivo65[add4]/v'
+
+    >>> rn.primaryFigure
+    '#ivo65[add4]'
+
+    >>> rn = roman.RomanNumeral('#ivo65[add4]')
+    >>> rn.romanNumeral
+    '#iv'
+
+    >>> rn.romanNumeralAlone
+    'iv'
+
+    """
+
+    if isinstance(rn, str):
+        rn = roman.RomanNumeral(rn)
+
+    if hauptHarmonicFunction or fullHarmonicFunction:
+        return hf.romanToFunction(rn, hauptHarmonicFunction=hauptHarmonicFunction)
+
+    if any([ignoreInversion, ignoreRootAlt, ignoreOtherAlt]):
+        # TODO fully, separate handling. Make a convenience fx in m21
+        # See doc notes above on .romanNumeral, .romanNumeralAlone, etc
+        # HOw to handle secondary? rn.primaryFigure - follow m21 conventions
+        # ignoreAdded = rn.romanNumeral
+        # ignore # vs .figure vs .romanNumeralAlone
+        if ignoreRootAlt:
+            return rn.romanNumeralAlone
+        else:
+            if ignoreOtherAlt:  # added etc., but keep root alt
+                return rn.romanNumeral

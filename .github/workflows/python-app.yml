@@ -19,14 +19,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+#    - name: Set up Python 3.10
+#      uses: actions/setup-python@v3
+#      with:
+#        python-version: "3.10"
+    - name: Set up conda
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: "3.10"
+        miniconda-version: latest
+        environment-file: environment.yml
     - name: Install dependencies
       run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        $CONDA/bin/conda env update --file environment.yml --name base
+#         $CONDA is an environment variable pointing to the root of the miniconda directory
+#        $CONDA/bin/conda update -n base -c defaults conda  # update conda
+#        $CONDA/bin/conda env create --file environment.yml --name runner  # update the environment
+#        $CONDA/bin/conda init bash
+#        exec "$SHELL"
+#        $CONDA/bin/conda activate runner
+        pip install flake8
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names

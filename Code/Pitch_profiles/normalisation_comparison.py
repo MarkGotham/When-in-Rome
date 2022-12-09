@@ -33,6 +33,7 @@ import numpy as np
 import math
 
 from . import key_profiles
+from ..Resources.key_profiles_literature import AlbrechtShanahan, QuinnWhite
 
 # ------------------------------------------------------------------------------
 
@@ -329,7 +330,7 @@ def compare_two_profiles(data1: list,  # e.g. source
 
 
 def compare_all_rotations(source,
-                          reference: dict = key_profiles.QuinnWhite,
+                          reference: dict = QuinnWhite,
                           comparison_type: str = 'Euclidean',
                           mode: str = 'major'):
     """
@@ -439,7 +440,7 @@ def best_major_minor_both(major_options: list,
 
 
 def best_key(dist: list,
-             model: dict = key_profiles.AlbrechtShanahan,
+             model: dict = AlbrechtShanahan,
              comparison_type: str = 'Euclidean'):
     """
     Run the comparisons for both major and minor over a given model usage
