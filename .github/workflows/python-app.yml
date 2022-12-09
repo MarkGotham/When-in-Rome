@@ -27,6 +27,8 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         $CONDA/bin/conda update -n base -c defaults conda  # update conda
+        $CONDA/bin/conda init "$SHELL"
+        exec "$SHELL"
         $CONDA/bin/conda env update --file environment.yml --name runner  # update the environment
         $CONDA/bin/conda activate runner
         pip install flake8
