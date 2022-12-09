@@ -5,6 +5,8 @@ from music21 import converter
 
 from Code.romanUmpire import ScoreAndAnalysis
 from Code import CORPUS_FOLDER
+from . import TEST_RESOURCES_FOLDER
+
 
 class Test(unittest.TestCase):
     """
@@ -71,21 +73,14 @@ class Test(unittest.TestCase):
         Score and analysis in separate files, with the score represented in tabular format.
         """
 
-        corpus = 'OpenScore-LiederCorpus'
-        composer = 'Hensel,_Fanny_(Mendelssohn)'
-        collection = '5_Lieder,_Op.10'
-        piece = '1_Nach_Süden'
-
-        basePath = str(CORPUS_FOLDER / corpus / composer / collection / piece)
-
-        testTab = ScoreAndAnalysis(os.path.join(basePath, 'slices.tsv'),
-                                   analysisLocation=os.path.join(basePath, 'analysis.txt'),
+        basePath = TEST_RESOURCES_FOLDER / "Example"
+        testTab = ScoreAndAnalysis(str(basePath / 'slices.tsv'),
+                                   analysisLocation=str(basePath / 'analysis.txt'),
                                    tolerance=70)
         testTab.runComparisons()
 
-        self.assertEqual(testTab.totalPitchFeedback, 3)
-        self.assertEqual(testTab.harmonicRanges[22].pitchFeedbackMessage[:29],
-                         'Measure 11, beat 3, viio6/V i')
-
-        self.assertEqual(testTab.totalBassFeedback, 8)
-        self.assertEqual(testTab.totalMetricalFeedback, 4)
+        self.assertEqual(testTab.totalPitchFeedback, 17)
+        self.assertEqual(testTab.harmonicRanges[4].pitchFeedbackMessage[:28],
+                         'Measure 2, beat 3, ii7 in Db')
+        self.assertEqual(testTab.totalBassFeedback, 4)
+        self.assertEqual(testTab.totalMetricalFeedback, 19)
