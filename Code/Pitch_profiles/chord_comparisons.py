@@ -30,10 +30,10 @@ building those prototype profiles from a user-defined corpus of sources.
 
 """
 
-from . import chord_profiles
 from . import get_distributions
 from . import normalisation_comparison
 from .. import CORPUS_FOLDER
+from ..Resources import chord_profiles
 
 import os
 

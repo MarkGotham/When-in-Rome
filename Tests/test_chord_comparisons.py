@@ -1,9 +1,7 @@
 import unittest
 
-from Code import CORPUS_FOLDER
-from Code.Pitch_profiles import chord_profiles
-from Code.Pitch_profiles.chord_comparisons import pitch_class_list_to_profile, build_profiles_from_corpus, \
-    corpus_chord_comparison, normalise_dict
+from Code.Resources import chord_profiles
+from Code.Pitch_profiles.chord_comparisons import pitch_class_list_to_profile, normalise_dict
 
 
 class Test(unittest.TestCase):
@@ -31,28 +29,6 @@ class Test(unittest.TestCase):
             test_dict[norm] = pcp
 
         self.assertEqual(test_dict, chord_profiles.binary)
-
-    def test_corpus_build(self):
-        """
-        Run the build process on Schubert's Winterreise and check nothing's changed
-        (ie, it matches the values in chord_profiles).
-        """
-        base_path = CORPUS_FOLDER / 'OpenScore-LiederCorpus'
-        base_path = str(base_path / 'Schubert,_Franz' / 'Winterreise,_D.911')
-        build = build_profiles_from_corpus(base_path)
-        self.assertEqual(build, chord_profiles.winterreise)
-
-    def test_corpus_comparison(self):
-        """
-        Run the comparison process for
-        Schubert's Winterreise (source) against
-        profiles built from the  full lieder dataset (reference),
-        and check nothing's changed.
-        """
-        base_path = CORPUS_FOLDER / 'OpenScore-LiederCorpus'
-        base_path = str(base_path / 'Schubert,_Franz' / 'Winterreise,_D.911')
-        comps = corpus_chord_comparison(base_path, reference_profile_dict=chord_profiles.lieder_sum)
-        self.assertEqual(comps, (2013, 546, 96, 2655, 78.664))
 
     def test_normalisation(self):
         """

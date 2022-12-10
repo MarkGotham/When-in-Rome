@@ -1,7 +1,8 @@
 import unittest
 
-from Code.Pitch_profiles.chord_usage import lieder_major, lieder_major_simple, lieder_minor, lieder_minor_simple, \
-    lieder_both, lieder_both_simple, get_usage, simplify_usage_dict
+from Code.Pitch_profiles.chord_usage import get_usage, simplify_usage_dict
+from Code.Resources.chord_usage_stats import lieder_major, lieder_major_simple, lieder_minor, lieder_minor_simple, \
+    lieder_both, lieder_both_simple
 from Code import CORPUS_FOLDER
 
 class Test(unittest.TestCase):
