@@ -214,8 +214,8 @@ def process_corpus(corpus: str = 'OpenScore-LiederCorpus',
                                   combine=combine,
                                   slices=slices,
                                   feedback=feedback)
-            except:
-                print(f'Error with: {pth}')
+            except Exception as e:
+                print(f'Error with: {pth}. {e}')
 
 
 # ------------------------------------------------------------------------------
