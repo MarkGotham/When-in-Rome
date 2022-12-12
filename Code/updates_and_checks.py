@@ -34,7 +34,7 @@ import os
 import re
 import shutil
 
-from pathlib import PurePath, Path
+from pathlib import Path
 from typing import Optional, Union
 
 from . import romanUmpire
@@ -429,7 +429,7 @@ def convert_DCML_tsv_analyses(corpus: str = 'Quartets',
         new_dir = os.path.dirname(os.path.dirname(f))
         out_path = os.path.join(new_dir, 'analysis.txt')
         
-        path_parts = PurePath(os.path.realpath(new_dir)).parts
+        path_parts = Path(os.path.realpath(new_dir)).parts
         
         genre, composer, opus, movement = path_parts[-4:]
         genre = genre[:-1].replace('_', ' ')  # Cut plural 's'
