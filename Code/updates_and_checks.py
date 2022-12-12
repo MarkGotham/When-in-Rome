@@ -59,37 +59,24 @@ corpora = [
 
 # Get file lists
 
-def get_corpus_files(corpus: str = 'OpenScore-LiederCorpus',
-                     file_name: Optional[str] = '',
-                     name_end: Optional[str] = ''
+def get_corpus_files(corpus: str = '',
+                     file_name: Optional[str] = '*.*',
                      ) -> list:
     '''
-    Get and return paths to files matching conditions for either
-    the whole file name (file_name) or only the end (extension or otherwise).
-    If the entire file name is specified, end is ignored.
-    :param corpus: the sub-corpus to search over. Empty string ('') to run all corpora.
-    :param file_name: a full file name (optional)
-    :param name_end: the end of the file name (file extension or otherwise, optional)
+    Get and return paths to files matching conditions for the given file_name.
+    :param corpus: the sub-corpus to search over. Empty string ('') to run all corpora (default value).
+    :param file_name: select all files that are compliant with this file_name, using
+     the usual wildcard '*' to match patterns. Examples:
+      - *.mxl searches for all .mxl files
+      - slices* searches for all files starting with slices
+      - analysis_automatic.rntxt searches for all exact matches of that file name
     :return: list of file paths.
     '''
 
-    if corpus != '' and corpus not in corpora:
+    if corpus not in ['', *corpora]:
         raise ValueError(f"Invalid corpus: must be one of {corpora} or an empty string (for all)")
 
-    base_path = str(CORPUS_FOLDER / corpus)
-
-    paths = []
-
-    for dpath, dname, fname in os.walk(base_path):
-        for name in fname:
-            if file_name:
-                if name == file_name:
-                    paths.append(str(os.path.join(dpath, name)))
-            elif name_end:  # ignored if search on whole file name
-                if name.endswith(name_end):
-                    paths.append(str(os.path.join(dpath, name)))
-
-    return paths
+    return [str(x) for x in (CORPUS_FOLDER / corpus).rglob(file_name)]
 
 
 def get_analyses(corpus: str = 'OpenScore-LiederCorpus',
