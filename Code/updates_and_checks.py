@@ -34,7 +34,7 @@ import os
 import re
 import shutil
 
-from pathlib import PurePath
+from pathlib import PurePath, Path
 from typing import Optional, Union
 
 from . import romanUmpire
@@ -169,41 +169,26 @@ def process_one_score(path_to_score: str,
     stopping_message = 'file exists and overwrite set to False. Stopping'
 
     if combine:
-        if overwrite:
+        if overwrite or not os.path.exists(Path(write_path) / 'analysis_on_score.mxl'):
             t.writeScoreWithAnalysis(outPath=write_path,
                                      outFile='analysis_on_score')
         else:
-            hypothetical_path = os.path.join(path_to_score, 'analysis_on_score.mxl')
-            if os.path.exists(hypothetical_path):
-                print('analysis_on_score ' + stopping_message)
-            else:
-                t.writeScoreWithAnalysis(outPath=write_path,
-                                         outFile='analysis_on_score')
+            print('analysis_on_score ' + stopping_message)
 
     if slices:
         t.matchUp()  # Sic, necessary here and only here
-        if overwrite:
+        if overwrite or not os.path.exists(Path(write_path) / 'slices_with_analysis.tsv'):
             t.writeSlicesFromScore(outPath=write_path,
                                    outFile='slices_with_analysis')
         else:
-            hypothetical_path = os.path.join(path_to_score, 'slices_with_analysis.tsv')
-            if os.path.exists(hypothetical_path):
-                print('slices_with_analysis ' + stopping_message)
-            else:
-                t.writeSlicesFromScore(outPath=write_path,
-                                       outFile='slices_with_analysis')
+            print('slices_with_analysis ' + stopping_message)
 
     if feedback:
-        if overwrite:
+        if overwrite or not os.path.exists(Path(write_path) / 'feedback_on_analysis.txt'):
             t.printFeedback(outPath=write_path,
                             outFile='feedback_on_analysis')
         else:
-            hypothetical_path = os.path.join(path_to_score, 'feedback_on_analysis.txt')
-            if os.path.exists(hypothetical_path):
-                print('feedback_on_analysis ' + stopping_message)
-            else:
-                t.printFeedback(outPath=write_path,
-                                outFile='feedback_on_analysis')
+            print('feedback_on_analysis ' + stopping_message)
 
 
 def process_corpus(corpus: str = 'OpenScore-LiederCorpus',
