@@ -534,4 +534,4 @@ class DistributionsFromTabular:
                                                       round_output=True,
                                                       round_places=self.round_places)
         else:
-            return [round(x, self.round_places) for x in dist]
+            return list(np.round(dist, self.round_places))
