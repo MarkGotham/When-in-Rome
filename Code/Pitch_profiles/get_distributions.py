@@ -89,15 +89,6 @@ class DistributionsFromTabular:
 
                  columns_from_source: bool = False,
 
-                 offset_column: int = 0,
-                 measure_column: int = 1,
-                 beat_column: float = 2,
-                 # beat_strength_column: float = 3,
-                 length_column: int = 4,
-                 pitch_column: int = 5,
-                 key_column: int = 6,
-                 chord_column: int = 7,
-
                  norm: bool = False,
                  norm_type: str = 'Sum',
                  round_places: int = 3,
@@ -121,13 +112,7 @@ class DistributionsFromTabular:
         if columns_from_source:
             self._get_headers()
         else:
-            self.offset_column = offset_column
-            self.measure_column = measure_column
-            self.beat_column = beat_column
-            self.length_column = length_column
-            self.pitch_column = pitch_column
-            self.key_column = key_column
-            self.chord_column = chord_column
+            self.headers = ["offset", "measure", "beat", "beat_strength", "length", "pitch", "key", "chord"]
 
         # Normalisation
         self.norm = norm
@@ -140,32 +125,6 @@ class DistributionsFromTabular:
         By default this does not run (default values or user-defined).
         """
         self.headers = self.data[0]
-
-        self.pitch_column = None
-        self.length_column = None
-        self.measure_column = None
-        self.offset_column = None
-        self.beat_column = None
-        self.key_column = None
-        self.chord_column = None
-
-        for index in range(len(self.headers)):
-            this_header = self.headers[index].lower()
-            if 'pitch' in this_header:
-                self.pitch_column = index
-            elif 'length' in this_header:
-                self.length_column = index
-            elif 'measure' in this_header:
-                self.measure_column = index
-            elif 'offset' in this_header:
-                self.offset_column = index
-            elif ('beat' in this_header) and not ('strength' in this_header):
-                self.beat_column = index
-            elif 'key' in this_header:
-                self.key_column = index
-            elif 'chord' in this_header:
-                self.chord_column = index
-
         self.data = self.data[1:]  # remove header row
 
     @cached_property
@@ -175,31 +134,31 @@ class DistributionsFromTabular:
         """
         slices = []
         for row in self.data:
-            if len(row) > self.pitch_column:
+            if len(row) > self.headers.index('pitch'):
 
                 # Obligatory entries (fail if missing)
-                this_slice = {'measure': int(row[self.measure_column]),
-                              'beat': float(row[self.beat_column]),
-                              'length': float(row[self.length_column])}
+                this_slice = {'measure': int(row[self.headers.index('measure')]),
+                              'beat': float(row[self.headers.index('beat')]),
+                              'length': float(row[self.headers.index('length')])}
 
-                if self.offset_column is not None:  # often column 0
-                    this_slice['offset'] = float(row[self.offset_column])
+                if 'offset' in self.headers:  # often column 0
+                    this_slice['offset'] = float(row[self.headers.index('offset')])
 
-                if self.pitch_column:
-                    this_slice['pitch_names'] = row[self.pitch_column][2:-2].split("', '")
+                if 'pitch' in self.headers:
+                    this_slice['pitch_names'] = row[self.headers.index('pitch')][2:-2].split("', '")
                     this_slice['pitch_classes'] = [
                         normalisation_comparison.pitch_class_from_name(x[:-1]) for x in
                         this_slice['pitch_names'] if x]
                     # -1 to remove octave
                     # and 'if x' because of occasional blank '' (no pitch) slice
 
-                if self.key_column and (len(row) > self.key_column):
-                    this_slice['key'] = row[self.key_column]
+                if 'key' in self.headers and (len(row) > self.headers.index('key')):
+                    this_slice['key'] = row[self.headers.index('key')]
                 else:
                     this_slice['key'] = '.'  # no change, continuation
 
-                if self.chord_column and (len(row) > self.chord_column):
-                    this_slice['chord'] = row[self.chord_column]
+                if 'chord' in self.headers and (len(row) > self.headers.index('chord')):
+                    this_slice['chord'] = row[self.headers.index('chord')]
                 else:
                     this_slice['chord'] = '.'  # no change, continuation
 
