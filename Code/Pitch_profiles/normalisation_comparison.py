@@ -178,7 +178,6 @@ def importSV(pathToFile: str,
         for row_num, line in enumerate(f):
             values = line.strip().split(splitMarker)
             data.append([v.strip('\"') for v in values])
-    f.close()
 
     return data
 
