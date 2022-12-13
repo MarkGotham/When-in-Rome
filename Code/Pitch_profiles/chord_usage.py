@@ -88,8 +88,6 @@ def get_usage(base_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
             raise ValueError(f"Cannot load {path_to_file}")  # .split('/')[-4:-1]}")
             # print(f"failing to load {path_to_file.split('/')[-4:-1]}")
 
-        data.get_profiles_by_chord()
-
         for d in data.profiles_by_chord:
             # Mode
             if mode == 'major' and not d['key'][0].isupper():  # Major e.g. 'C', 'Ab'.

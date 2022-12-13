@@ -118,7 +118,6 @@ def compare_one_source(path_to_file: str,
     """
 
     data = get_distributions.DistributionsFromTabular(path_to_file)
-    data.get_profiles_by_chord()
 
     correct = 0
     incorrect = 0
@@ -206,8 +205,6 @@ def build_profiles_from_corpus(base_path: str,
 
     for path_to_file in files:
         data = get_distributions.DistributionsFromTabular(path_to_file)
-        data.get_profiles_by_chord()
-
         for d in data.profiles_by_chord:
             analysis_pcp, root_pc = roman_to_pcp(d['chord'], d['key'],
                                                  root_0=True,

@@ -48,6 +48,7 @@ and timing information as appropriate to the data source with start, end and len
 
 import os
 import csv
+from functools import cached_property
 
 from . import normalisation_comparison
 from . import chord_features
@@ -128,9 +129,6 @@ class DistributionsFromTabular:
             self.chord_column = chord_column
 
         self.slices = []
-        self.profiles_by_measure = {}
-        self.profiles_by_key = None
-        self.profiles_by_chord = None
         self.overall_distribution = [0] * 12
 
         # Normalisation
@@ -248,8 +246,8 @@ class DistributionsFromTabular:
     # ------------------------------------------------------------------------------
 
     # Measures
-
-    def get_profiles_by_measure(self):
+    @cached_property
+    def profiles_by_measure(self):
         """
         Sort slice distributions into a dict where
         the keys are the measure numbers and the corresponding
@@ -257,31 +255,28 @@ class DistributionsFromTabular:
 
         Normalisation is optional (default = False), set at the Class init.
         """
-
-        if self.profiles_by_measure:
-            return
-
-        # Get
+        profiles_by_measure = {}
         for s in self.slices:
             msr = s['measure']
-            if msr not in self.profiles_by_measure.keys():
-                self.profiles_by_measure[msr] = [0] * 12
+            if msr not in profiles_by_measure.keys():
+                profiles_by_measure[msr] = [0] * 12
 
             for pc in s['pitch_classes']:
-                self.profiles_by_measure[msr][pc] += s['length']
+                profiles_by_measure[msr][pc] += s['length']
 
         # Round and (optionally) normalise
-        for msr in self.profiles_by_measure.keys():
+        for msr in profiles_by_measure.keys():
             if self.norm:
-                self.profiles_by_measure[msr] = normalisation_comparison.normalise(
-                    self.profiles_by_measure[msr],
+                profiles_by_measure[msr] = normalisation_comparison.normalise(
+                    profiles_by_measure[msr],
                     normalisation_type=self.norm_type,
                     round_output=True,
                     round_places=self.round_places
                 )
             else:
-                rounded = [round(x, self.round_places) for x in self.profiles_by_measure[msr]]
-                self.profiles_by_measure[msr] = rounded
+                rounded = [round(x, self.round_places) for x in profiles_by_measure[msr]]
+                profiles_by_measure[msr] = rounded
+        return profiles_by_measure
 
     def measure_range(self,
                       start_measure: int = 1,
@@ -302,7 +297,8 @@ class DistributionsFromTabular:
 
     # Keys and chords
 
-    def get_profiles_by_key(self):
+    @cached_property
+    def profiles_by_key(self):
         """
         Sort the list of slices into separate segments for each key.
         This method populates the self.profiles_by_key list with
@@ -322,21 +318,14 @@ class DistributionsFromTabular:
 
         Normalisation is optional (default = False), set at the Class init.
         """
+        return self._group_by_key_or_chord(key_or_chord='key')
 
-        if self.profiles_by_key:
-            return
-        self.profiles_by_key = []
-        self.group_by_key_or_chord(key_or_chord='key')
-
-    def get_profiles_by_chord(self):
+    @cached_property
+    def profiles_by_chord(self):
         """As for get_profiles_by_key"""
+        return self._group_by_key_or_chord(key_or_chord='chord')
 
-        if self.profiles_by_chord:
-            return
-        self.profiles_by_chord = []
-        self.group_by_key_or_chord(key_or_chord='chord')
-
-    def group_by_key_or_chord(self, key_or_chord: str = 'key'):
+    def _group_by_key_or_chord(self, key_or_chord):
         """
         Shared method for
         get_profiles_by_key
@@ -363,13 +352,7 @@ class DistributionsFromTabular:
 
         # Once more for the final group
         list_of_list_of_all_slices.append(this_group)
-
-        for this_group in list_of_list_of_all_slices:
-            combined = self.combine_slice_group(this_group)
-            if key_or_chord == 'key':
-                self.profiles_by_key.append(combined)
-            elif key_or_chord == 'chord':
-                self.profiles_by_chord.append(combined)
+        return [self.combine_slice_group(this_group) for this_group in list_of_list_of_all_slices]
 
     def combine_slice_group(self,
                             list_of_slices: list,):
