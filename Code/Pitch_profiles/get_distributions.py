@@ -54,6 +54,7 @@ from . import normalisation_comparison
 from . import chord_features
 
 from typing import Optional
+import numpy as np
 
 # ------------------------------------------------------------------------------
 
@@ -128,15 +129,10 @@ class DistributionsFromTabular:
             self.key_column = key_column
             self.chord_column = chord_column
 
-        self.slices = []
-        self.overall_distribution = [0] * 12
-
         # Normalisation
         self.norm = norm
         self.norm_type = norm_type
         self.round_places = round_places
-
-        self._get_slices_distributions()
 
     def _get_headers(self):
         """
@@ -172,13 +168,12 @@ class DistributionsFromTabular:
 
         self.data = self.data[1:]  # remove header row
 
-    def _get_slices_distributions(self):
+    @cached_property
+    def slices(self):
         """
         Process slices including making distributions for each.
         """
-
-        self.slices = []
-
+        slices = []
         for row in self.data:
             if len(row) > self.pitch_column:
 
@@ -211,37 +206,24 @@ class DistributionsFromTabular:
                 this_slice['profile'] = normalisation_comparison.pc_list_to_distribution(
                     this_slice['pitch_classes'])
 
-                self.slices.append(this_slice)
+                slices.append(this_slice)
+        return slices
 
     # ------------------------------------------------------------------------------
 
     # Overall
 
-    def get_overall_distributions(self):
+    @cached_property
+    def overall_distribution(self):
         """
         Retrieve a single distribution for the piece overall.
         Uses profiles_by_measure() as an intermediary step (runs if not already).
         """
+        overall_distribution = np.zeros(12)
+        for m, m_dist in self.profiles_by_measure.items():
+            overall_distribution += np.array(m_dist)
 
-        self.overall_distribution = [0] * 12
-
-        if not self.profiles_by_measure:
-            self.get_profiles_by_measure()
-
-        for m in self.profiles_by_measure.keys():
-            m_dist = self.profiles_by_measure[m]
-            for pc in range(12):
-                self.overall_distribution[pc] += m_dist[pc]
-
-        if self.norm:
-            self.overall_distribution = normalisation_comparison.normalise(
-                self.overall_distribution,
-                normalisation_type=self.norm_type,
-                round_output=True,
-                round_places=self.round_places)
-        else:
-            rounded = [round(x, self.round_places) for x in self.overall_distribution]
-            self.overall_distribution = rounded
+        return self.round_and_norm(list(overall_distribution))
 
     # ------------------------------------------------------------------------------
 
