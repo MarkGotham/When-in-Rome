@@ -27,7 +27,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: latest
-        environment-file: environment.yml
+        environment-file: ./environment.yml
     - name: Install dependencies
       run: |
 #         $CONDA is an environment variable pointing to the root of the miniconda directory
