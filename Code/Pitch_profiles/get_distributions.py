@@ -48,11 +48,13 @@ and timing information as appropriate to the data source with start, end and len
 
 import os
 import csv
+from functools import cached_property
 
 from . import normalisation_comparison
 from . import chord_features
 
 from typing import Optional
+import numpy as np
 
 # ------------------------------------------------------------------------------
 
@@ -87,15 +89,6 @@ class DistributionsFromTabular:
 
                  columns_from_source: bool = False,
 
-                 offset_column: int = 0,
-                 measure_column: int = 1,
-                 beat_column: float = 2,
-                 # beat_strength_column: float = 3,
-                 length_column: int = 4,
-                 pitch_column: int = 5,
-                 key_column: int = 6,
-                 chord_column: int = 7,
-
                  norm: bool = False,
                  norm_type: str = 'Sum',
                  round_places: int = 3,
@@ -119,26 +112,12 @@ class DistributionsFromTabular:
         if columns_from_source:
             self._get_headers()
         else:
-            self.offset_column = offset_column
-            self.measure_column = measure_column
-            self.beat_column = beat_column
-            self.length_column = length_column
-            self.pitch_column = pitch_column
-            self.key_column = key_column
-            self.chord_column = chord_column
-
-        self.slices = []
-        self.profiles_by_measure = {}
-        self.profiles_by_key = None
-        self.profiles_by_chord = None
-        self.overall_distribution = [0] * 12
+            self.headers = ["offset", "measure", "beat", "beat_strength", "length", "pitch", "key", "chord"]
 
         # Normalisation
         self.norm = norm
         self.norm_type = norm_type
         self.round_places = round_places
-
-        self._get_slices_distributions()
 
     def _get_headers(self):
         """
@@ -146,110 +125,70 @@ class DistributionsFromTabular:
         By default this does not run (default values or user-defined).
         """
         self.headers = self.data[0]
-
-        self.pitch_column = None
-        self.length_column = None
-        self.measure_column = None
-        self.offset_column = None
-        self.beat_column = None
-        self.key_column = None
-        self.chord_column = None
-
-        for index in range(len(self.headers)):
-            this_header = self.headers[index].lower()
-            if 'pitch' in this_header:
-                self.pitch_column = index
-            elif 'length' in this_header:
-                self.length_column = index
-            elif 'measure' in this_header:
-                self.measure_column = index
-            elif 'offset' in this_header:
-                self.offset_column = index
-            elif ('beat' in this_header) and not ('strength' in this_header):
-                self.beat_column = index
-            elif 'key' in this_header:
-                self.key_column = index
-            elif 'chord' in this_header:
-                self.chord_column = index
-
         self.data = self.data[1:]  # remove header row
 
-    def _get_slices_distributions(self):
+    @cached_property
+    def slices(self):
         """
         Process slices including making distributions for each.
         """
-
-        self.slices = []
-
+        slices = []
         for row in self.data:
-            if len(row) > self.pitch_column:
+            if len(row) > self.headers.index('pitch'):
 
                 # Obligatory entries (fail if missing)
-                this_slice = {'measure': int(row[self.measure_column]),
-                              'beat': float(row[self.beat_column]),
-                              'length': float(row[self.length_column])}
+                this_slice = {'measure': int(row[self.headers.index('measure')]),
+                              'beat': float(row[self.headers.index('beat')]),
+                              'length': float(row[self.headers.index('length')])}
 
-                if self.offset_column is not None:  # often column 0
-                    this_slice['offset'] = float(row[self.offset_column])
+                if 'offset' in self.headers:  # often column 0
+                    this_slice['offset'] = float(row[self.headers.index('offset')])
 
-                if self.pitch_column:
-                    this_slice['pitch_names'] = row[self.pitch_column][2:-2].split("', '")
+                if 'pitch' in self.headers:
+                    this_slice['pitch_names'] = row[self.headers.index('pitch')][2:-2].split("', '")
                     this_slice['pitch_classes'] = [
                         normalisation_comparison.pitch_class_from_name(x[:-1]) for x in
                         this_slice['pitch_names'] if x]
                     # -1 to remove octave
                     # and 'if x' because of occasional blank '' (no pitch) slice
 
-                if self.key_column and (len(row) > self.key_column):
-                    this_slice['key'] = row[self.key_column]
+                if 'key' in self.headers and (len(row) > self.headers.index('key')):
+                    this_slice['key'] = row[self.headers.index('key')]
                 else:
                     this_slice['key'] = '.'  # no change, continuation
 
-                if self.chord_column and (len(row) > self.chord_column):
-                    this_slice['chord'] = row[self.chord_column]
+                if 'chord' in self.headers and (len(row) > self.headers.index('chord')):
+                    this_slice['chord'] = row[self.headers.index('chord')]
                 else:
                     this_slice['chord'] = '.'  # no change, continuation
 
                 this_slice['profile'] = normalisation_comparison.pc_list_to_distribution(
                     this_slice['pitch_classes'])
 
-                self.slices.append(this_slice)
+                slices.append(this_slice)
+        return slices
 
     # ------------------------------------------------------------------------------
 
     # Overall
 
-    def get_overall_distributions(self):
+    @cached_property
+    def overall_distribution(self):
         """
         Retrieve a single distribution for the piece overall.
         Uses profiles_by_measure() as an intermediary step (runs if not already).
         """
+        overall_distribution = np.zeros(12)
+        for m, m_dist in self.profiles_by_measure.items():
+            overall_distribution += np.array(m_dist)
 
-        self.overall_distribution = [0] * 12
-
-        if not self.profiles_by_measure:
-            self.get_profiles_by_measure()
-
-        for m in self.profiles_by_measure.keys():
-            m_dist = self.profiles_by_measure[m]
-            for pc in range(12):
-                self.overall_distribution[pc] += m_dist[pc]
-
-        if self.norm:
-            self.overall_distribution = normalisation_comparison.normalise(
-                self.overall_distribution,
-                normalisation_type=self.norm_type,
-                round_output=True,
-                round_places=self.round_places)
-        else:
-            rounded = [round(x, self.round_places) for x in self.overall_distribution]
-            self.overall_distribution = rounded
+        return self.round_and_norm(list(overall_distribution))
 
     # ------------------------------------------------------------------------------
 
     # Measures
-
-    def get_profiles_by_measure(self):
+    @cached_property
+    def profiles_by_measure(self):
         """
         Sort slice distributions into a dict where
         the keys are the measure numbers and the corresponding
@@ -257,31 +196,28 @@ class DistributionsFromTabular:
 
         Normalisation is optional (default = False), set at the Class init.
         """
-
-        if self.profiles_by_measure:
-            return
-
-        # Get
+        profiles_by_measure = {}
         for s in self.slices:
             msr = s['measure']
-            if msr not in self.profiles_by_measure.keys():
-                self.profiles_by_measure[msr] = [0] * 12
+            if msr not in profiles_by_measure.keys():
+                profiles_by_measure[msr] = [0] * 12
 
             for pc in s['pitch_classes']:
-                self.profiles_by_measure[msr][pc] += s['length']
+                profiles_by_measure[msr][pc] += s['length']
 
         # Round and (optionally) normalise
-        for msr in self.profiles_by_measure.keys():
+        for msr in profiles_by_measure.keys():
             if self.norm:
-                self.profiles_by_measure[msr] = normalisation_comparison.normalise(
-                    self.profiles_by_measure[msr],
+                profiles_by_measure[msr] = normalisation_comparison.normalise(
+                    profiles_by_measure[msr],
                     normalisation_type=self.norm_type,
                     round_output=True,
                     round_places=self.round_places
                 )
             else:
-                rounded = [round(x, self.round_places) for x in self.profiles_by_measure[msr]]
-                self.profiles_by_measure[msr] = rounded
+                rounded = [round(x, self.round_places) for x in profiles_by_measure[msr]]
+                profiles_by_measure[msr] = rounded
+        return profiles_by_measure
 
     def measure_range(self,
                       start_measure: int = 1,
@@ -302,7 +238,8 @@ class DistributionsFromTabular:
 
     # Keys and chords
 
-    def get_profiles_by_key(self):
+    @cached_property
+    def profiles_by_key(self):
         """
         Sort the list of slices into separate segments for each key.
         This method populates the self.profiles_by_key list with
@@ -322,21 +259,14 @@ class DistributionsFromTabular:
 
         Normalisation is optional (default = False), set at the Class init.
         """
+        return self._group_by_key_or_chord(key_or_chord='key')
 
-        if self.profiles_by_key:
-            return
-        self.profiles_by_key = []
-        self.group_by_key_or_chord(key_or_chord='key')
-
-    def get_profiles_by_chord(self):
+    @cached_property
+    def profiles_by_chord(self):
         """As for get_profiles_by_key"""
+        return self._group_by_key_or_chord(key_or_chord='chord')
 
-        if self.profiles_by_chord:
-            return
-        self.profiles_by_chord = []
-        self.group_by_key_or_chord(key_or_chord='chord')
-
-    def group_by_key_or_chord(self, key_or_chord: str = 'key'):
+    def _group_by_key_or_chord(self, key_or_chord):
         """
         Shared method for
         get_profiles_by_key
@@ -363,13 +293,7 @@ class DistributionsFromTabular:
 
         # Once more for the final group
         list_of_list_of_all_slices.append(this_group)
-
-        for this_group in list_of_list_of_all_slices:
-            combined = self.combine_slice_group(this_group)
-            if key_or_chord == 'key':
-                self.profiles_by_key.append(combined)
-            elif key_or_chord == 'chord':
-                self.profiles_by_chord.append(combined)
+        return [self.combine_slice_group(this_group) for this_group in list_of_list_of_all_slices]
 
     def combine_slice_group(self,
                             list_of_slices: list,):
@@ -569,4 +493,4 @@ class DistributionsFromTabular:
                                                       round_output=True,
                                                       round_places=self.round_places)
         else:
-            return [round(x, self.round_places) for x in dist]
+            return list(np.round(dist, self.round_places))

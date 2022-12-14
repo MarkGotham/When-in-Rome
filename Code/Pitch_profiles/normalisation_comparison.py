@@ -178,7 +178,6 @@ def importSV(pathToFile: str,
         for row_num, line in enumerate(f):
             values = line.strip().split(splitMarker)
             data.append([v.strip('\"') for v in values])
-    f.close()
 
     return data
 
@@ -206,7 +205,6 @@ def data_by_heading(file_path: str,
 # ------------------------------------------------------------------------------
 
 # Numeracy
-
 def normalise(distribution: list,
               normalisation_type: str = 'Euclidean',
               round_output: bool = True,
@@ -223,30 +221,24 @@ def normalise(distribution: list,
     to N decimal places (set by round_places, default=3).
     """
 
-    max_use = max(distribution)
-    if max_use == 0:
+    if np.max(distribution) == 0:
         return distribution  # All 0s: don't divide by 0 (or indeed do anything!)
 
     normalisation_type = normalisation_type.lower()
-
     if normalisation_type in ['euclidean', 'l2']:
-        val = math.sqrt(sum([x ** 2 for x in distribution]))
-
+        norm_ord = 2
     elif normalisation_type in ['sum', 'manhattan', 'l1']:
-        val = sum(distribution)
-
+        norm_ord = 1
     elif normalisation_type in ['max', 'maximum', 'infinity']:
-        val = max_use
-
+        norm_ord = np.inf
     else:
         raise ValueError('Invalid normalisation_type')
-
-    norm_dist = [(x / val) for x in distribution]
+    norm_dist = distribution / np.linalg.norm(distribution, ord=norm_ord)
 
     if round_output:
-        return [round(x, round_places) for x in norm_dist]
+        return list(np.round(norm_dist, round_places))
     else:
-        return norm_dist
+        return list(norm_dist)
 
 
 def check_length_match(x: list,
