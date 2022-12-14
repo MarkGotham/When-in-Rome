@@ -1,6 +1,7 @@
 """
 This script is a starting point to do any kinds of analysis one might want.
-It stores the information on each piece inside a pandas dataframe
+It stores the information on each piece inside a pandas dataframe.
+Therefore, it requires the pandas package to be installed
 """
 from pathlib import Path
 
