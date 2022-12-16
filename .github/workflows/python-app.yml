@@ -27,8 +27,15 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: WhenInRome
-          miniconda-version: latest
           environment-file: ./environment.yml
+#          python-version: 3.5
+#          condarc-file: etc/example-condarc.yml
+          auto-activate-base: false
+#      - uses: conda-incubator/setup-miniconda@v2
+#        with:
+#          activate-environment: WhenInRome
+#          miniconda-version: latest
+#          environment-file: ./environment.yml
       - name: Install dependencies
         run: |
   #         $CONDA is an environment variable pointing to the root of the miniconda directory
