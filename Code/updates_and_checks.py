@@ -464,41 +464,32 @@ def convert_DCML_tsv_analyses(corpus: str = 'Quartets',
 
 # Checks
 
-def check_repeats_are_valid(pathToScore: str) -> bool:
+def repeats_are_valid(score: stream.Score, print_all: bool = True) -> None:
     """
     Quick and simple check that start and end repeats match up.
-    Specifically, iterates through the measures on the highest part
+    Specifically, iterates through the barlines on the highest part
     and raises a value error in the case of:
-    two starts without and end,
+    two starts without an end,
     or two ends without a start.
-
-    Prints a log of every repeat it finds,
-    raises an error in the case of an issue,
-    returns True if no such issues.
     """
-    score = converter.parse(pathToScore)
-    last_repeat = ''  # starting condition
-    for measure in score.parts[0].recurse().getElementsByClass(stream.Measure):
-        if measure.leftBarline and str(measure.leftBarline) == str(bar.Repeat(direction='start')):
-            # ^ N.B.: actually need the second part? Are left barlines used for anything else?
-            if last_repeat == 'start':
-                # Two starts! Time to end!'
-                raise ValueError(
-                    f'Second successive start repeat found in measure {measure.measureNumber}.')
+    last_repeat = ""  # starting condition
+    for barline in score.parts[0].recurse().getElementsByClass(bar.Barline):
+        measure_num = barline.getContextByClass(stream.Measure).measureNumber
+        if str(barline) == str(bar.Repeat(direction="start")):
+            if print_all:
+                print(f"Start repeat in measure\t{measure_num}")
+            if last_repeat == "start":
+                raise ValueError(f"Second successive start repeat found in measure {measure_num}.")
             else:
-                print(f'start repeat in measure {measure.measureNumber}')
-                last_repeat = 'start'
-        if measure.rightBarline and str(measure.rightBarline) == str(bar.Repeat(direction='end')):
-            # ^ N.B.: str until equality works
-            if last_repeat == 'end':
-                # Two ends! Time to stop!'
-                raise ValueError(
-                    f'Second successive end repeat found in measure {measure.measureNumber}.')
+                last_repeat = "start"
+        if str(barline) == str(bar.Repeat(direction="end")):
+            if print_all:
+                print(f"End repeat in measure\t{measure_num}")
+            if last_repeat == "end":
+                raise ValueError(f"Second successive end repeat found in measure {measure_num}.")
             else:
-                print(f'end repeat in measure {measure.measureNumber}')
-                last_repeat = 'end'
-
-    return True
+                last_repeat = "end"
+    return
 
 
 def check_all_parse(corpus: str = 'OpenScore-LiederCorpus',
