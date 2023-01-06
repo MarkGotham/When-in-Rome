@@ -489,7 +489,7 @@ def remote_scores(convert_and_write_local: bool = False) -> None:
 
         for movt in movements:
             remote_URL_path = remote_base_path + f"{sonata_number}-{movt}.krn"
-            movement_path = os.path.join(sonata_path, movement)
+            movement_path = os.path.join(sonata_path, movt)
             this_metadata = {"sonata_number": sonata_number,
                              "movement": movt,
                              "remote_URL_path": remote_URL_path
