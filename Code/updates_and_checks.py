@@ -40,7 +40,7 @@ from typing import Optional, Union
 from . import romanUmpire
 from . import CORPUS_FOLDER
 
-from music21 import bar, converter, metadata, stream, romanText
+from music21 import bar, converter, environment, metadata, stream, romanText
 
 # ------------------------------------------------------------------------------
 
@@ -438,9 +438,9 @@ def convert_DCML_tsv_analyses(corpus: str = "Quartets",
             work_str += f" {opus}"  # Straightforward K number, always 3 digits
         elif "Beethoven" in composer:
             m = re.search(r"Op0*(?P<opus>\d+)(_No0?(?P<num>\d+))?", opus)
-            work_str += f" Op. {m.group("opus")}"
+            work_str += f" Op. {m.group('opus')}"
             if m.group("num"):
-                work_str += f" No. {m.group("num")}"
+                work_str += f" No. {m.group('num')}"
         work_str += f", Movement {movement}"  # Both cases
 
         print(f"Processing {out_path} ...", end="", flush=True)
@@ -455,6 +455,62 @@ def convert_DCML_tsv_analyses(corpus: str = "Quartets",
             analysis, "romanText", fp=out_path
         )
         print(" done.")
+
+
+def remote_scores(convert_and_write_local: bool = False) -> None:
+    """
+    Reference (by default) or (optionally) retrieve externally hosted scores.
+    This is designed to prevent duplication and automatically include source updates.
+    It makes sense for those in a format which can be directly parsed by music21
+    (i.e., not MuseScore files conversion of which requires `mscore`).
+
+    :param convert_and_write_local: If true, convert to mxl and write a local copy.
+        *** Warning *** this means changing your music21 environment settings while in progress.
+        (They will be returned to the previous state at the end).
+        If false, simply write "remote_score.json" files with the remote path and some metadata.
+        Please also check and observe the licence of all scores, especially those hosted externally.
+    :return: None
+
+    TODO: option to CURL a local copy of the source and convert from there (bypass m21 environment).
+    """
+
+    local_base_path = os.path.join(CORPUS_FOLDER, "Piano_Sonatas",
+                                   "Beethoven,_Ludwig_van")
+    remote_base_path = "https://raw.githubusercontent.com/craigsapp/beethoven-piano-sonatas" \
+                       "/master/kern/sonata"
+    opus_strings = os.listdir(local_base_path)
+
+    sonata_number = 0
+
+    for o in opus_strings:
+        sonata_number += 1
+        sonata_path = os.path.join(local_base_path, o)
+        movements = [x for x in os.listdir(sonata_path)]
+
+        for movt in movements:
+            remote_URL_path = remote_base_path + f"{sonata_number}-{movt}.krn"
+            movement_path = os.path.join(sonata_path, movement)
+            this_metadata = {"sonata_number": sonata_number,
+                             "movement": movt,
+                             "remote_URL_path": remote_URL_path
+                             }
+
+            if convert_and_write_local:
+                before = environment.Environment()["autoDownload"]  # Get current setting
+                during = "allow"
+                if before != during:
+                    print(
+                        "Warning: temporarily changing music21 environment.Environment() "
+                        f"autoDownload settings from {before} to {during}."
+                    )
+                    environment.set("autoDownload", "allow")  # Change current setting
+                    score = converter.parse(remote_URL_path)  # And do anything with it
+                    score.write("mxl", os.path.join(movement_path, "score.mxl"))
+                    environment.set("autoDownload", before)  # Restore settings as they were
+            else:
+                write_path = os.path.join(movement_path, "remote_score.json")
+                with open(write_path, "w") as json_file:
+                    json.dump(this_metadata, json_file)
 
 
 # ------------------------------------------------------------------------------
@@ -623,10 +679,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--rebuild_DCML_ABC", action="store_true")
     parser.add_argument("--rebuild_DCML_Mozart", action="store_true")
+    parser.add_argument("--rebuild_remote_Beethoven_sonata_list", action="store_true")
     args = parser.parse_args()
     if args.rebuild_DCML_ABC:
         convert_DCML_tsv_analyses(corpus="Quartets")
     elif args.rebuild_DCML_Mozart:
         convert_DCML_tsv_analyses(corpus="Piano_Sonatas")
+    elif args.rebuild_remote_Beethoven_sonata_list:
+        remote_scores()
     else:
         parser.print_help()
