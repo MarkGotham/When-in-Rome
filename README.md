@@ -1,6 +1,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/MarkGotham/When-in-Rome)
 ![GitHub issues](https://img.shields.io/github/issues-raw/MarkGotham/When-in-Rome)
 ![GitHub last commit](https://img.shields.io/github/last-commit/MarkGotham/When-in-Rome)
+![GitHub repo size](https://img.shields.io/github/repo-size/MarkGotham/When-in-Rome)
 
 # When in Rome
 
