@@ -9,8 +9,8 @@ Mark Gotham, 2020-21
 LICENCE:
 ===============================
 
-Creative Commons Attribution-NonCommercial 4.0 International License.
-https://creativecommons.org/licenses/by-nc/4.0/
+Creative Commons Attribution-ShareAlike 4.0 International License
+https://creativecommons.org/licenses/by-sa/4.0/
 
 
 Citation:

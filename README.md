@@ -2,13 +2,14 @@
 ![GitHub issues](https://img.shields.io/github/issues-raw/MarkGotham/When-in-Rome)
 ![GitHub last commit](https://img.shields.io/github/last-commit/MarkGotham/When-in-Rome)
 ![GitHub repo size](https://img.shields.io/github/repo-size/MarkGotham/When-in-Rome)
+![License](https://img.shields.io/badge/license-CC%20BY--SA%204.0-9)
 
 # When in Rome
 
-'When in Rome' brings together all of the world's harmonic analyses in encoded formats into a single, consistent repository.
+'When in Rome' brings together all of the world's functional harmonic analyses in encoded formats into a single, consistent repository.
 This enables musicians and developers to interact with that great body of work at scale, with minimal overheads.
 
-In total, there are now approximately 450 analyses and 100,000 Roman numerals in here.
+In total, there are now approximately 500 analyses and 100,000 Roman numerals in here.
 
 Additionally, 'When in Rome' provides code for working with this corpora, building on top of the [music21](https://github.com/cuthbertLab/music21/) library for music analysis.
 
@@ -144,12 +145,15 @@ It takes in a harmonic analysis and the corresponding score to assess how well t
 
 ### Licence
 
-New content in this repository, including the new analyses, most code, and the conversion (specifically) of existing analyses is available under the [CC BY-SA licence](https://creativecommons.org/licenses/by-sa/3.0/).
-The [Roman Umpire](Code/romanUmpire.py) and [Anthology](Code/anthology.py) scripts are subject to the slightly more restrictive [CC BY-NC](https://creativecommons.org/licenses/by-nc/3.0/).
-If you wish to use these scripts in a commercial context then please get in touch to discuss your plans.
+New content in this repository, including the new analyses, code, and the conversion (specifically) of existing analyses is available under the [CC BY-SA licence](https://creativecommons.org/licenses/by-sa/4.0/) (a free culture licence).
 
 For analyses that originated elsewhere and have been converted into the format used here, please refer to the original source for licence.
 Links are provided to those original sources throughout the repository including the itemised list above and within every `analysis.txt` file.
+
+These external licences vary.
+As far as we can tell, all the content here is either original or properly credited and fair to use in this way.
+If you think you see an issue please let us know.
+Again, if you are simply looking for a scores in a maximally permissive licence, then hea to the [OpenScore collections](https://github.com/openscore) which are notable for using CC0.
 
 For research and other public-facing projects making use of this work, please cite or otherwise acknowledge one or more of the papers listed below as appropriate to your project.
 
