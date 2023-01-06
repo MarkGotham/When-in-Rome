@@ -170,29 +170,10 @@ Please feel free to re-analyse these works by using the existing analysis as a t
 - For more thoroughly divergent analyses, a new file may be warranted. In that case, perhaps credit the original analyst too in the format - `Analyst: [Your name] after [their name]`
 - For any cases of clear errors, please submit a pull request with the correction.
 
-For details of the RomanText format used to encode analyses here, see our [technical specification paper](http://archives.ismir.net/ismir2019/paper/000012.pdf) or the relevant corners of the music21's [code](https://github.com/cuthbertLab/music21/tree/master/music21/romanText), [module reference](http://web.web.mit.edu/music21/doc/moduleReference/moduleRoman.html), or (if in doubt) [user guide](http://web.mit.edu/music21/doc/usersGuide/usersGuide_23_romanNumerals.html)
-
-### Spotlight on 6^ and 7^ in minor mode
-
-This is one aspect of roman numeral analysis that is particularly liable to inconsistency and in need of a clear protocol.
-Here, we follow the music21 default of 'quality', which is among four supported options:
-- Quality: the status of the triad as major or minor (upper or lower case, not accounting for diminished / augmented at this stage) alters the output chord’s root. In this case, ‘vii’ in a minor returns g# minor and the same holds for a diminished alteration (’viio’ = g# diminished). ‘VII’ sets the root to G natural, so ‘VII’ = G major and VII+ is G augmented.
-- Cautionary: like 'quality', except that the ‘cautionary’ option ignores one chromatic alteration in the ‘sensible’ direction. So, ‘#vii’ would return g# minor, and not g## minor. Likewise, ‘bVII’ would be G major and not Gb major. This is useful to accommodating cases much of the realistic variation in minor mode conventions — the single, ‘sensible' sharp or flat is like a ‘cautionary accidental’. Further sharps and flats in the ‘sensible’ direction, and any sharps / flats in the opposite direction do change the root.
-- Sharp / Raised: explicitly sets the 6th and / or 7th degrees to ‘Sharp / Raised’ (F# and G# in a minor).
-- Flat / Lowered: the same for flatten / lowered roots (F and G in a minor).
-
-The following tables set out how these options relate to each other in a minor. The first moves in a logical direction for  sharp / flat direction modifications. The second sets out the opposite direction, largely for the sake of completeness.
-
-|“Right” direction|##vii|#vii|vii|VII|bVII|bbVII|
-|---|---|---|---|---|---|---|
-|Quality|g###|g##|g#|G|Gb|Gbb|
-|Cautionary|g##|g#|g#|G|G|Gb|
-|Sharp / Raised|g###|g##|g#|G#|G|Gb|
-|Flat / Lowered|g##|g#|g|G|Gb|Gbb|
-
-|“Wrong” direction|bbvii|bvii|vii|VII|VII#|VII##|
-|---|---|---|---|---|---|---|
-|Quality|gb|g|g#|G|G#|G##|
-|Cautionary|gb|g|g#|G|G#|G##|
-|Sharp / Raised|gb|g|g#|G#|G##|G###|
-|Flat / Lowered|gbb|gb|g|G|G#|G##|
+For more details of the RomanText format used to encode analyses here, see:
+- the [technical specification paper](http://archives.ismir.net/ismir2019/paper/000012.pdf), or 
+- the relevant corners of the music21's
+  - [code](https://github.com/cuthbertLab/music21/tree/master/music21/romanText),
+  - [module reference](http://web.web.mit.edu/music21/doc/moduleReference/moduleRoman.html), or 
+  - (if in doubt) [user guide](http://web.mit.edu/music21/doc/usersGuide/usersGuide_23_romanNumerals.html)
+- this repository's own ["quick start" guide to writing in RomanText](syntax.md).
