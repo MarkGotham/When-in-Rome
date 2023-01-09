@@ -478,7 +478,7 @@ def remote_scores(convert_and_write_local: bool = False) -> None:
                                    "Beethoven,_Ludwig_van")
     remote_base_path = "https://raw.githubusercontent.com/craigsapp/beethoven-piano-sonatas" \
                        "/master/kern/sonata"
-    opus_strings = os.listdir(local_base_path)
+    opus_strings = sorted(os.listdir(local_base_path))
 
     sonata_number = 0
 
@@ -488,7 +488,8 @@ def remote_scores(convert_and_write_local: bool = False) -> None:
         movements = [x for x in os.listdir(sonata_path)]
 
         for movt in movements:
-            remote_URL_path = remote_base_path + f"{sonata_number}-{movt}.krn"
+            sonata_string = str(sonata_number).zfill(2)  # zeo-pad sonatas e.g., 01
+            remote_URL_path = remote_base_path + f"{sonata_string}-{movt}.krn"
             movement_path = os.path.join(sonata_path, movt)
             this_metadata = {"sonata_number": sonata_number,
                              "movement": movt,
