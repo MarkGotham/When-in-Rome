@@ -79,8 +79,17 @@ We find this more logical that re-organisation by composer.
   - How to use: As a point of reference for full disclosure on the conversion process.
 
 - `analysis_<analyst>.txt`
-  - What: An alternative analysis, e.g., copy of an original analysis exactly as converted for cases where significant changes have been made.
-  - How to use: As a point of reference for full disclosure on the conversion process.
+  - What: An alternative analysis. This takes one of two forms:
+    - A copy of an original analysis exactly as converted for cases where significant changes 
+      have been made to that analysis. See, for example,
+      [this edit](/Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/Op010_No1/1/analysis.txt)
+      [of this "original"](/Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/Op010_No1/1/analysis_BPS.txt)
+    - A second analysis of the same work. The ['TAVERN'](https://github.com/jcdevaney/TAVERN) 
+      dataset includes pairs of analyses of the same work. In order to ensure there is exactly 
+      one `analysis.txt` throughout, we name the pair `analysis.txt` (note not 
+      `analysis_A.txt`) and `analysis_B.txt`.
+  - How to use: All such text files can be opened in the normal way. "Original conversions" 
+    serve as a point of reference for full disclosure on the conversion process.
 
 ### Optional extra files (not included but easy to generate):
 
