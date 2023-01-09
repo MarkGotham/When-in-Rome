@@ -722,8 +722,13 @@ class ScoreAndAnalysis:
         'sus' with '[addX]' for suspensions/added notes.
         """
 
-        if '//' in lyric:  # Sic. Single '/' for applied chords; double '//' for alt. and pivot
-            lyric = lyric.split('//')[-1]
+        splitter_pairs = [('//', 1),  # Single '/' = applied chord; double '//' for alt. and pivot
+                          ("\n", 0)  # case of two-line lyric as in RN + "\n"+ FN.
+                     ]
+
+        for this_string, this_position in splitter_pairs:
+            if this_string in lyric:
+                lyric = lyric.split(this_string)[this_position]
 
         replaceDict = {
             ' ': '',
