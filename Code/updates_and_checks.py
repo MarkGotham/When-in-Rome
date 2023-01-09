@@ -455,25 +455,51 @@ def convert_DCML_tsv_analyses(corpus: str = "Quartets",
         print(" done.")
 
 
-def remote_scores(convert_and_write_local: bool = False) -> None:
+def remote_scores(local_path: list = ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
+                  write_score: bool = False
+                  ) -> None:
     """
     Reference (by default) or (optionally) retrieve externally hosted scores.
     This is designed to prevent duplication and automatically include source updates.
     It makes sense for those in a format which can be directly parsed by music21
     (i.e., not MuseScore files conversion of which requires `mscore`).
 
-    :param convert_and_write_local: If true, convert to mxl and write a local copy.
-        *** Warning *** this means changing your music21 environment settings while in progress.
-        (They will be returned to the previous state at the end).
+    TODO: option to CURL a local copy of the source and convert from there (bypass m21 environment).
+
+    :param local_path: the local path (within When in Rome) to the corpus expressed as a list.
+    :param write_score: If true, convert to mxl and write a local copy.
+        (See notes and warning at the `convert_and_write_local` function.)
         If false, simply write "remote_score.json" files with the remote path and some metadata.
         Please also check and observe the licence of all scores, especially those hosted externally.
     :return: None
 
-    TODO: option to CURL a local copy of the source and convert from there (bypass m21 environment).
     """
 
-    local_base_path = os.path.join(CORPUS_FOLDER, "Piano_Sonatas",
-                                   "Beethoven,_Ludwig_van")
+    valid_local_paths = [
+        ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
+        # ["Variations_and_Grounds", "Beethoven,_Ludwig_van"],
+        # ["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus"]
+    ]
+
+    if local_path == ["Piano_Sonatas", "Beethoven,_Ludwig_van"]:
+        remote_Sapp_Beethoven(local_path=local_path, write_score=write_score)
+    # elif local_path == ["Variations_and_Grounds", "Beethoven,_Ludwig_van"]:
+    #     pass  # TODO
+    # elif local_path == ["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus"]
+    #     pass  # TODO
+    else:
+        raise ValueError(f"Invalid local_path. Chose one of {valid_local_paths}")
+
+
+def remote_Sapp_Beethoven(local_path,
+                          write_score: bool = False
+                          ) -> None:
+    """
+    Remote score for the Beethoven piano sonatas from Craig Sapp.
+    Returns: None
+    """
+
+    local_base_path = os.path.join(CORPUS_FOLDER, *local_path)
     remote_base_path = "https://raw.githubusercontent.com/craigsapp/beethoven-piano-sonatas" \
                        "/master/kern/sonata"
     opus_strings = sorted(os.listdir(local_base_path))
@@ -494,22 +520,43 @@ def remote_scores(convert_and_write_local: bool = False) -> None:
                              "remote_URL_path": remote_URL_path
                              }
 
-            if convert_and_write_local:
-                before = environment.Environment()["autoDownload"]  # Get current setting
-                during = "allow"
-                if before != during:
-                    print(
-                        "Warning: temporarily changing music21 environment.Environment() "
-                        f"autoDownload settings from {before} to {during}."
-                    )
-                    environment.set("autoDownload", "allow")  # Change current setting
-                    score = converter.parse(remote_URL_path)  # And do anything with it
-                    score.write("mxl", os.path.join(movement_path, "score.mxl"))
-                    environment.set("autoDownload", before)  # Restore settings as they were
+            if write_score:
+                convert_and_write_local(remote_URL_path=remote_URL_path,
+                                        local_path=movement_path)
             else:
                 write_path = os.path.join(movement_path, "remote_score.json")
                 with open(write_path, "w") as json_file:
                     json.dump(this_metadata, json_file)
+
+
+def convert_and_write_local(remote_URL_path,
+                            local_path,
+                            ):
+    """
+    Given a remote path (URL) to a score that music21 can convert,
+    and a local path to a directory within When in Rome.
+    retrieve the remote score, convert, and write a local copy as "score.mxl".
+
+    *** Warning *** this means changing your music21 environment settings while in progress.
+    (They will be returned to the previous state at the end).
+
+    Returns: None
+    """
+    before = environment.Environment()["autoDownload"]  # Get current setting
+    during = "allow"
+
+    if before != during:
+        print(
+            "Warning: temporarily changing music21 environment.Environment() "
+            f"autoDownload settings from {before} to {during}."
+        )
+        environment.set("autoDownload", "allow")  # Change current setting
+
+    score = converter.parse(remote_URL_path)  # And do anything with it
+    score.write("mxl", os.path.join(local_path, "score.mxl"))
+
+    if before != during:
+        environment.set("autoDownload", before)  # Restore settings as they were
 
 
 # ------------------------------------------------------------------------------
