@@ -293,10 +293,8 @@ def convert_musescore_score_corpus(in_path: Union[str, os.PathLike],
     For information about `mscore` and a within-app plugin alternative, see
     https://musescore.org/en/handbook/3/command-line-options#Run_a_batch_job_converting_multiple_documents
 
-    Possible TODO:
-    Consider running directly from URL (i.e., not a local copy), e.g., ...
+    TODO when implementing curl option for copying remote files, include that option here:
     https://raw.githubusercontent.com/DCMLab/mozart_piano_sonatas/main/scores/K279-1.mscx
-    ... though this doesn"t seem to be supported by mscore.
     """
 
     valid_formats = [".mscx", ".mscz", ".mxl", ".pdf", ".mid"]
