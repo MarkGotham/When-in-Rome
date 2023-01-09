@@ -54,6 +54,15 @@ We find this more logical that re-organisation by composer.
 - `score.mxl`
   - What: A conversion of the corpus score into `.mxl` format for consistency and compressed to minimise file/corpus size.
   - How to use: Open in any software for music notation (e.g., [MuseScore](https://musescore.org/)).
+  - Where there is no local `score.mxl`, there is a `remote_score.json` instead. 
+    - This file points to an externally hosted score _in a format which music21 can parse_. 
+    - This is designed to prevent duplication and automatically include source updates.
+    - Note that MuseScore files are included in a local conversion (`.mxl`) rather than remote.
+      - This is because music21 cannot parse them and conversion requires the `mscore` package 
+        (see `Code.updates_and_checks.convert_musescore_score_corpus`).
+    - For downloading a local copy of remote files, see `Code.updates_and_checks.remote_scores` 
+      and the argument `convert_and_write_local`. Read those docs for details and warnings.
+    - Please check and observe the licence of all scores, especially those hosted externally.
 
 - `analysis.txt`
   - What: A human analysis in plain text.
