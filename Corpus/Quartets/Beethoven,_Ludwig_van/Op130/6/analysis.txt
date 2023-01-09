@@ -1,6 +1,6 @@
-Composer: Beethoven
-Title: String quartet Op. 130, Movement 6
-Analyst: Neuwirth et al. ABC dataset. See https://github.com/DCMLab/ABC
+Composer: Beethoven, Ludwig van
+Title: Quartet Op. 130, Movement 6
+Analyst: DCMLab. See https://github.com/DCMLab/
 Proofreader: 
 
 Time Signature: 2/4
@@ -34,8 +34,10 @@ m28 b1.5 V7/IV
 m29 V7/V
 m30 IV
 m31 V43
-m32 I b1.5 I6
-m33 V V
+m32a b1.5 I6
+m33a V
+m32b I
+m33b V
 m34 I
 m35 viio/V b2 V64
 m36 V+6/iii b1.5 I6
@@ -94,9 +96,11 @@ m92 V65
 m93 I
 m94 V65
 m95 I
-m96 I I b2.5 V/ii
-m97 ii I
-m98 viio6
+m96a I b2.5 V/ii
+m97a ii
+m96b I
+m97b I
+m98b viio6
 m101 vi6
 m102 #viio6/vi
 m104 vi

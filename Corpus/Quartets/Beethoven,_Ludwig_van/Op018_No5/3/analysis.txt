@@ -1,6 +1,6 @@
-Composer: Beethoven
-Title: String quartet Op. 18 No. 5, Movement 3
-Analyst: Neuwirth et al. ABC dataset. See https://github.com/DCMLab/ABC
+Composer: Beethoven, Ludwig van
+Title: Quartet Op. 18 No. 5, Movement 3
+Analyst: DCMLab. See https://github.com/DCMLab/
 Proofreader: 
 
 Time Signature: 2/4
@@ -63,7 +63,8 @@ m59 b2.5 V2/IV
 m60 IV6 b1.5 IV b2 I
 m62 V
 m63 V7
-m64 V7 V7 b2 I b2 I
+m64a V7 b2 I
+m64b V7 b2 I
 m65 I b2 ii6 b2.5 viio7/V
 m66 V b1.5 viio43/V b2 V6
 m67 V/vi b2.5 V7/vi
@@ -86,15 +87,17 @@ m83 b2 I b2.5 V7
 m84 I6 b1.38 V65 b2 I
 m86 A: viio7/V
 m87 V7
-m88 I[no3][no1][add7][add4][add2] I[no3][no1][add7][add4][add2] b2 I b2 I
+m88a I[no3][no1][add7][add4][add2] b2 I
+m88b I[no3][no1][add7][add4][add2] b2 I
 m89 D: I6 b2 V2/IV
 m90 IV6 b2 I6
 m91 b2.5 V2/IV
 m92 IV6 b2 I
 m94 V43 b2 V65
 m95 b1.88 V7
-m96 I[no3][no1][add4][add2] Bb: I b2 D: I
-m98 b1.25 Bb: I b2.75 I6
+m96a I[no3][no1][add4][add2] b2 I
+m96b Bb: I
+m98 b1.25 I b2.75 I6
 m99 V7
 m100 I b2.5 I6
 m101 V b2 v

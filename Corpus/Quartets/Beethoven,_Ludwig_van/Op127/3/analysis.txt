@@ -1,6 +1,6 @@
-Composer: Beethoven
-Title: String quartet Op. 127, Movement 3
-Analyst: Neuwirth et al. ABC dataset. See https://github.com/DCMLab/ABC
+Composer: Beethoven, Ludwig van
+Title: Quartet Op. 127, Movement 3
+Analyst: DCMLab. See https://github.com/DCMLab/
 Proofreader: 
 
 Time Signature: 3/4
@@ -39,7 +39,8 @@ m32 V65 b3 I b3.5 V65
 m33 V2 b1.5 I6 b2 viiø65 b2.5 vi65 b3 V6 b3.5 IV6
 m34 iii6[add6] b1.5 ii6 b2 I6[add2] b2.5 viio6 b3 I b3.5 V6
 m35 IV6 b1.5 V7
-m36 I I
+m36a I
+m36b I
 m40 c: V b2.5 V65
 m41 i b3 V
 m42 i
@@ -120,7 +121,8 @@ m118 V6 b2 V
 m119 V7[addb9] b2 V7[add9] b3 V7
 m120 Cad64 b2 V7 b3 Cad64
 m121 V7 b2.5 ii6 b3 vi43 b3.5 V43
-m122 I I b2 viio/V b3 V
+m122a I
+m122b I b2 viio/V b3 V
 m123 b2 ii6 b3 V6
 m124 b2 viio b3 I
 m125 V65 b3 V43/V
@@ -151,8 +153,9 @@ m162 Db: I6 b2 I64
 m163 b2 I6
 m164 V2 b2 V7
 m166 I6 b2 I
-m167 I I b2 eb: i
-m168 Db: V
+m167a I b2 eb: i
+m167b Db: I
+m168 V
 m169 I
 m170 V
 m171 I
