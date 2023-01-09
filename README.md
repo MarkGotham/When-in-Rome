@@ -152,6 +152,10 @@ Originally in the 'RomanText' format (no conversion needed):
 ## Code and Lists
 
 For developers, please see the individual code files for details of what they do and how.
+
+Run code scripts from the repo's base directory (`When-in-Rome`) using the format:
+`>>> python3 -m Code.<name_of_file>`
+
 Briefly, this repo. includes:
 - [The Roman Umpire](/Code/romanUmpire.py) for providing automatic 'feedback' files.
 It takes in a harmonic analysis and the corresponding score to assess how well they match.
