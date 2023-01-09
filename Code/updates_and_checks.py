@@ -477,18 +477,29 @@ def remote_scores(local_path: list = ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
 
     valid_local_paths = [
         ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
-        # ["Variations_and_Grounds", "Beethoven,_Ludwig_van"],
-        # ["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus"]
+        ["Variations_and_Grounds", "Beethoven,_Ludwig_van", "_"],
+        ["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus", "_"]
     ]
 
-    if local_path == ["Piano_Sonatas", "Beethoven,_Ludwig_van"]:
+    if local_path == valid_local_paths[0]:
         remote_Sapp_Beethoven(local_path=local_path, write_score=write_score)
-    # elif local_path == ["Variations_and_Grounds", "Beethoven,_Ludwig_van"]:
-    #     pass  # TODO
-    # elif local_path == ["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus"]
-    #     pass  # TODO
+    elif local_path == valid_local_paths[1]:
+        remote_TAVERN(local_path=local_path, Beethoven=True, write_score=write_score)
+    elif local_path == valid_local_paths[2]:
+        remote_TAVERN(local_path=local_path, Beethoven=False, write_score=write_score)
     else:
         raise ValueError(f"Invalid local_path. Chose one of {valid_local_paths}")
+
+
+raw_git = 'https://raw.githubusercontent.com/'
+
+
+def list_dir_sorted_not_hidden(dir: os.PathLike
+                               ) -> os.PathLike:
+    """
+    Convenience function for os.listdir with sorting and ignoring hidden files.
+    """
+    return sorted([f for f in os.listdir(dir) if not f.startswith(".")])
 
 
 def remote_Sapp_Beethoven(local_path,
@@ -500,23 +511,22 @@ def remote_Sapp_Beethoven(local_path,
     """
 
     local_base_path = os.path.join(CORPUS_FOLDER, *local_path)
-    remote_base_path = "https://raw.githubusercontent.com/craigsapp/beethoven-piano-sonatas" \
-                       "/master/kern/sonata"
-    opus_strings = sorted(os.listdir(local_base_path))
+    remote_base_path = raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/sonata"
+    opus_strings = list_dir_sorted_not_hidden(local_base_path)
 
     sonata_number = 0
 
     for o in opus_strings:
         sonata_number += 1
         sonata_path = os.path.join(local_base_path, o)
-        movements = [x for x in os.listdir(sonata_path)]
+        movements = list_dir_sorted_not_hidden(sonata_path)
 
         for movt in movements:
             sonata_string = str(sonata_number).zfill(2)  # zeo-pad sonatas e.g., 01
             remote_URL_path = remote_base_path + f"{sonata_string}-{movt}.krn"
             movement_path = os.path.join(sonata_path, movt)
             this_metadata = {"sonata_number": sonata_number,
-                             "movement": movt,
+                             "movement": int(movt),
                              "remote_URL_path": remote_URL_path
                              }
 
@@ -527,6 +537,61 @@ def remote_Sapp_Beethoven(local_path,
                 write_path = os.path.join(movement_path, "remote_score.json")
                 with open(write_path, "w") as json_file:
                     json.dump(this_metadata, json_file)
+
+
+def remote_TAVERN(local_path,
+                  Beethoven: bool = True,
+                  write_score: bool = False
+                  ) -> None:
+    """
+    Remote scores for the TAVERN variations.
+
+    Args:
+        local_path: See notes at remote_scores
+        Beethoven (bool): `True` for the Beethoven side of the collection, `False` for Mozart.
+        write_score: See notes at remote_scores
+    Returns: None
+    """
+
+    local_base_path = os.path.join(CORPUS_FOLDER, *local_path)
+    remote_base_path = raw_git + "jcdevaney/TAVERN/blob/master/"
+    if Beethoven:
+        remote_base_path += "Beethoven/"
+    else:
+        remote_base_path += "Mozart/"
+
+    opus_strings = list_dir_sorted_not_hidden(local_base_path)
+
+    for o in opus_strings:
+        local_path = os.path.join(local_base_path, o)
+        if Beethoven:
+            if o.startswith("Op"):
+                opus_numbering_type = "Opus"
+                work_number = int(o[2:])
+                remote_URL_path = remote_base_path + f"Opus{work_number}/Krn/Opus{work_number}.xml"
+            elif o.startswith("WoO"):  # WoO_63 > B063/Krn/Wo063.xml
+                opus_numbering_type = "Werke ohne Opuszahl"
+                work_number = int(o[4:])
+                remote_URL_path = remote_base_path + f"B0{work_number}/Krn/Wo0{work_number}.xml"
+            else:
+                raise ValueError("Invalid opus name")
+        else:  # o.startswith("K"):  # "Mozart"
+            opus_numbering_type = "Köchel-Verzeichnis"
+            work_number = int(o[1:])
+            remote_URL_path = remote_base_path + f"{o}/Krn/{o}.krn"  # xml not always there
+
+        if write_score:
+            convert_and_write_local(remote_URL_path=remote_URL_path,
+                                    local_path=local_path)
+        else:
+            this_metadata = {"opus_numbering_type": opus_numbering_type,
+                             "work_number": work_number,
+                             "remote_URL_path": remote_URL_path
+                             }
+
+            write_path = os.path.join(local_path, "remote_score.json")
+            with open(write_path, "w") as json_file:
+                json.dump(this_metadata, json_file)
 
 
 def convert_and_write_local(remote_URL_path,
@@ -726,12 +791,18 @@ if __name__ == "__main__":
     parser.add_argument("--rebuild_DCML_ABC", action="store_true")
     parser.add_argument("--rebuild_DCML_Mozart", action="store_true")
     parser.add_argument("--rebuild_remote_Beethoven_sonata_list", action="store_true")
+    parser.add_argument("--rebuild_remote_Beethoven_variations_list", action="store_true")
+    parser.add_argument("--rebuild_remote_Mozart_variations_list", action="store_true")
     args = parser.parse_args()
     if args.rebuild_DCML_ABC:
         convert_DCML_tsv_analyses(corpus="Quartets")
     elif args.rebuild_DCML_Mozart:
         convert_DCML_tsv_analyses(corpus="Piano_Sonatas")
     elif args.rebuild_remote_Beethoven_sonata_list:
-        remote_scores()
+        remote_scores()  # default
+    elif args.rebuild_remote_Beethoven_variations_list:
+        remote_scores(["Variations_and_Grounds", "Beethoven,_Ludwig_van", "_"])
+    elif args.rebuild_remote_Mozart_variations_list:
+        remote_scores(["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus", "_"])
     else:
         parser.print_help()
