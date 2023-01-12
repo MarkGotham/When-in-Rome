@@ -154,7 +154,13 @@ Originally in the 'RomanText' format (no conversion needed):
 For developers, please see the individual code files for details of what they do and how.
 
 Run code scripts from the repo's base directory (`When-in-Rome`) using the format:
+
 `>>> python3 -m Code.<name_of_file>`
+
+For example, this is the syntax for processing one score (feedback, slices, etc.):
+
+`>>> python3 -m Code.updates_and_checks --process_one_score OpenScore-LiederCorpus/Bonis,
+_Mel/_/Allons_prier!`
 
 Briefly, this repo. includes:
 - [The Roman Umpire](/Code/romanUmpire.py) for providing automatic 'feedback' files.
