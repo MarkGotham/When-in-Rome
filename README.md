@@ -49,12 +49,14 @@ Might we suggest that if you're looking for:
 The [Key Modulations and Tonicizations](Corpus/Textbooks/) corpus is a slight exception: we preserve the organisation of that corpus by author, title, example number, e.g., `Corpus/Textbooks/Aldwell,_Edward/Harmony_and_Voice_Leading/2a/`. So the `<genre>` is `Textbooks`, the `<composer>` is the author, the `<set>` is the title, and the `<movement>` is the example number.
 We find this more logical that re-organisation by composer.
 
-### (Almost) all folders include:
+### All folders include:
 
-- `score.mxl`
-  - What: A conversion of the corpus score into `.mxl` format for consistency and compressed to minimise file/corpus size.
+- `score.mxl` or `remote_score.json`
+  - What: `score.mxl` is a copy of the score in the compresed musicXML format. 
+    This is provided for all new scores, as well as all originating elsewhere  
+    where that original is _in a format which music21 cannot parse_.
   - How to use: Open in any software for music notation (e.g., [MuseScore](https://musescore.org/)).
-  - Where there is no local `score.mxl`, there is a `remote_score.json` instead. 
+  - Where there is no local `score.mxl`, there is a `remote_score.json` instead. Please note:
     - This file points to an externally hosted score _in a format which music21 can parse_. 
     - This is designed to prevent duplication and automatically include source updates.
     - Note that MuseScore files are included in a local conversion (`.mxl`) rather than remote.
@@ -66,10 +68,13 @@ We find this more logical that re-organisation by composer.
 
 - `analysis.txt`
   - What: A human analysis in plain text.
-  - How to use: Open in any text editor. You can also use these analyses as a kind of template for your own, by creating a copy and editing only the moments you disagree with.
+  - How to use: Open in any text editor. 
+    You can also use these analyses as a kind of template for your own, 
+    by creating a copy and editing only the moments you disagree with.
  
-- `analysis_automatic.txt`.
-  - What: An automatic analysis made by [AugmentedNet](https://github.com/napulen/AugmentedNet) - a machine learning architecture which, in turn, is built on this meta-corpus' data.
+- `analysis_automatic.rntxt`.
+  - What: An automatic analysis made by [AugmentedNet](https://github.com/napulen/AugmentedNet) - 
+    a machine learning architecture which, in turn, is built on this meta-corpus' data.
   - How to use: In exactly the same way as a human analysis, e.g., as a template (same format, same parsing routines).
 
 ### Some folders include:
