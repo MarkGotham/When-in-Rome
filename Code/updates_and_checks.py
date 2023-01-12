@@ -60,16 +60,17 @@ corpora = [
 # Get file lists
 
 def get_corpus_files(corpus: str = "",
-                     file_name: Optional[str] = "*.*",
+                     file_name: Optional[str] = "score.mxl",
                      ) -> list:
     """
     Get and return paths to files matching conditions for the given file_name.
     :param corpus: the sub-corpus to run. Leave blank ("") to run all corpora.
-    :param file_name: select all files that are compliant with this file_name.
-    Specify either the exact files name (e.g., "analysis_automatic.rntxt") or
+    :param file_name: select all files matching this file_name.
+    Defaults to "score.mxl".
+    Alternatively, specify either an exact file name (e.g., "analysis_automatic.rntxt") or
     use the wildcard "*" to match patterns. Examples:
       - "*.mxl" searches for all .mxl files
-      - "slices*" searches for all files starting with slices
+      - "slices*" searches for all files starting with "slices"
     :return: list of file paths.
     """
 
@@ -133,9 +134,9 @@ def clear_the_decks(corpus: str = "",
 
 # Roman Umpire
 
-def process_one_score(path_to_score: str,
-                      path_to_analysis,  # NB "On Score" option
-                      write_path: str,
+def process_one_score(path_to_score: Union[str, os.PathLike],
+                      path_to_analysis: Optional[str] = None,
+                      write_path: Optional[str] = None,
                       combine: bool = True,
                       slices: bool = True,
                       feedback: bool = True,
@@ -147,8 +148,8 @@ def process_one_score(path_to_score: str,
     quicker to parse than musicXML), and
     "feedback" (txt written feedback on the score-analysis match).
 
-    :param path_to_score:
-    :param path_to_analysis: a string as path, or simply "On score" *** (see romanUmpire).
+    :param path_to_score: path to a file or simply the string
+    :param path_to_analysis: path to a file or simply the string "On score" *** (see romanUmpire).
     :param write_path: where to write any new files to.
     :param combine: create an `analysis_on_score` file with the two combined.
     :param slices: create a "slices.tsv" representation.
@@ -160,8 +161,13 @@ def process_one_score(path_to_score: str,
         print("No action requested: set at least one of combine, slices, or feedback to true.")
         return
 
-    t = romanUmpire.ScoreAndAnalysis(path_to_score,
-                                     analysisLocation=path_to_analysis)
+    if path_to_analysis is None:
+        path_to_analysis = path_to_score
+    if write_path is None:
+        write_path = path_to_score
+
+    t = romanUmpire.ScoreAndAnalysis(Path(path_to_score) / "score.mxl",
+                                     analysisLocation=Path(path_to_score) / "analysis.txt")
 
     stopping_message = "file exists and overwrite set to False. Stopping"
 
@@ -196,24 +202,23 @@ def process_corpus(corpus: str = "OpenScore-LiederCorpus",
     """
     Corpus wide implementation of `process_one_score`. See docs there.
     """
-    files = get_corpus_files(corpus=corpus,
-                             file_name="analysis.txt")
+    analysis_paths = get_corpus_files(corpus=corpus,
+                                      file_name="analysis.txt")
 
-    for path_to_analysis in files:
-        pth = path_to_analysis[:-len("analysis.txt")]
-        print(pth)
-        analysis_exist = os.path.exists(pth + "analysis_on_score.mxl")
-        if overwrite or (not analysis_exist):
+    for p in analysis_paths:
+        pth_to_dir = p.parent
+        print("Processing: ", pth_to_dir)
+        already_exist = os.path.exists(Path(pth_to_dir) / "analysis_on_score.mxl")
+        if overwrite or (not already_exist):
             try:
-                process_one_score(os.path.join(pth, "score.mxl"),
-                                  path_to_analysis,  # i.e. with "analysis"
-                                  pth,
+                process_one_score(pth_to_dir,
                                   combine=combine,
                                   slices=slices,
                                   feedback=feedback,
                                   overwrite=overwrite)
+                print("... done.")
             except Exception as e:
-                print(f"Error with: {pth}. {e}")
+                print(f"... error: {e}")
 
 
 # ------------------------------------------------------------------------------
@@ -788,13 +793,18 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("path_to_score", type=str,
+                        help="Run one score/analysis update using within-corpus path.")
+    parser.add_argument("--process_one_score", action="store_true",)
     parser.add_argument("--rebuild_DCML_ABC", action="store_true")
     parser.add_argument("--rebuild_DCML_Mozart", action="store_true")
     parser.add_argument("--rebuild_remote_Beethoven_sonata_list", action="store_true")
     parser.add_argument("--rebuild_remote_Beethoven_variations_list", action="store_true")
     parser.add_argument("--rebuild_remote_Mozart_variations_list", action="store_true")
     args = parser.parse_args()
-    if args.rebuild_DCML_ABC:
+    if args.process_one_score:
+        process_one_score(path_to_score=CORPUS_FOLDER / args.path_to_score)
+    elif args.rebuild_DCML_ABC:
         convert_DCML_tsv_analyses(corpus="Quartets")
     elif args.rebuild_DCML_Mozart:
         convert_DCML_tsv_analyses(corpus="Piano_Sonatas")

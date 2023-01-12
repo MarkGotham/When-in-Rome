@@ -266,7 +266,7 @@ class ScoreAndAnalysis:
     """
 
     def __init__(self,
-                 scoreOrData: Union[stream.Score, str],
+                 scoreOrData: Union[stream.Score, str, os.PathLike],
                  analysisLocation: Union[stream.Score, stream.Part, str] = 'On score',
                  analysisParts: int = 1,
                  analysisPartNo: int = -1,
@@ -318,7 +318,7 @@ class ScoreAndAnalysis:
             self.score = self.scoreOrData
             self._scoreInit()
 
-        elif isinstance(self.scoreOrData, str):
+        elif isinstance(self.scoreOrData, (str, os.PathLike)):
             self.name, extension = os.path.splitext(self.scoreOrData)
 
             if extension in ['.tsv', '.csv']:
@@ -362,22 +362,24 @@ class ScoreAndAnalysis:
             as lyrics on a score.
         """
 
-        if type(self.analysisLocation) is stream.Score:
+        if isinstance(self.analysisLocation, stream.Score):
             self.analysis = self.analysisLocation.parts[0]
             # TODO validity checks on analysis (e.g. at least one Roman numeral)
             self._getSeparateAnalysis()
-        elif type(self.analysisLocation) is str:
+        elif isinstance(self.analysisLocation, (str, os.PathLike)):
             if self.analysisLocation == 'On score':
                 self._getOnScoreAnalysis()
             else:  # analysisLocation must be a path to a Roman text file
                 if os.path.splitext(self.analysisLocation)[1] not in ['.txt', '.rntxt']:
-                    msg = "The 'analysisLocation' argument must point to one of " \
-                          'the path (str) to a Roman text file (with extension .txt or .rntxt); ' \
-                          'such a file already parsed by music21; or ' \
-                          "the string 'On score' that it's on the score already (default)."
+                    msg = "When the `analysisLocation` argument points to a file path, " \
+                          "that file must have the extension `.txt` or `.rntxt`."
                     raise ValueError(msg)
                 self.analysis = converter.parse(self.analysisLocation, format='Romantext').parts[0]
                 self._getSeparateAnalysis()
+        else:
+            raise TypeError(f'The `analysisLocation` argument (currently {self.analysisLocation} '
+                            'must be a music21 stream.Score() or '
+                            'a path to a valid file.')
 
     def writeScoreWithAnalysis(self,
                                outPath: str = '.',
@@ -724,7 +726,7 @@ class ScoreAndAnalysis:
 
         splitter_pairs = [('//', 1),  # Single '/' = applied chord; double '//' for alt. and pivot
                           ("\n", 0)  # case of two-line lyric as in RN + "\n"+ FN.
-                     ]
+                          ]
 
         for this_string, this_position in splitter_pairs:
             if this_string in lyric:
