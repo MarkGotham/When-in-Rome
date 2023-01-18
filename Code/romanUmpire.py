@@ -419,8 +419,8 @@ class ScoreAndAnalysis:
             analysis.partName = 'Analysis'
 
             reference = self.scoreWithAnalysis.parts[0].template()
-            analysis = alignStreams.matchParts(referencePart=reference,
-                                               partToAdjust=analysis)
+            analysis = alignStreams.matchParts(reference_part=reference,
+                                               part_to_adjust=analysis)
 
             for n in analysis.recurse().notes:
                 if n.lyric:
