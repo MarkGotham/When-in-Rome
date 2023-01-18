@@ -317,21 +317,7 @@ def convert_musescore_score_corpus(in_path: Union[str, os.PathLike],
     for f in os.listdir(in_path):
         if f.endswith(in_format):
             if corpus_name == "ABC":
-                g = f.split("op")[1]  # n01op18-1_01.mscx >>> 18-1_01.mscx
-                g = g.split(".")[0]  # 18-1_01.mscx >>> 18-1_01
-                cln, mvt = g.split("_")  # 18-1_01 >>> 18-1, 01
-                mvt = mvt[1]  # Remove DCML padding "01" >>> "1". Never 10+ mvts
-                no = ""
-                if "-" in cln:  # Only if applicable. 18-1 >>> 18, 1
-                    cln, no = cln.split("-")
-                    no = "No" + no  # No1
-                if len(cln) == 2:  # 18, 59 etc.
-                    cln = "0" + cln  # Add padding. Op100+ in collection.
-                cln = "Op" + cln
-                if no:
-                    cln = "_".join([cln, no])  # Op018_No1
-                mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
-                # Op18_No1
+                cln, mvt = dcml_ABC_to_local(f)
             elif corpus_name == "mozart_piano_sonatas":
                 cln, mvt = f.split("-")  # e.g., K279-1.mscx >>> K279, 1.mcsx
                 mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
@@ -378,21 +364,7 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
     for f in os.listdir(in_path):
         if f.endswith(".tsv"):
             if corpus_name == "ABC":
-                g = f.split("op")[1]  # n01op18-1_01.mscx >>> 18-1_01.mscx
-                g = g.split(".")[0]  # 18-1_01.mscx >>> 18-1_01
-                cln, mvt = g.split("_")  # 18-1_01 >>> 18-1, 01
-                mvt = mvt[1]  # Remove DCML padding "01" >>> "1". Never 10+ mvts
-                no = ""
-                if "-" in cln:  # Only if applicable. 18-1 >>> 18, 1
-                    cln, no = cln.split("-")
-                    no = "No" + no  # No1
-                if len(cln) == 2:  # 18, 59 etc.
-                    cln = "0" + cln  # Add padding. Op100+ in collection.
-                cln = "Op" + cln
-                if no:
-                    cln = "_".join([cln, no])  # Op018_No1
-                mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
-                # Op18_No1
+                cln, mvt = dcml_ABC_to_local(f)
             elif corpus_name == "mozart_piano_sonatas":
                 cln, mvt = f.split("-")  # e.g., K279-1.mscx >>> K279, 1.mcsx
                 mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
@@ -414,6 +386,32 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
                         os.path.join(working_path, "DCML_analysis.tsv")
                         )
             print(" done.")
+
+
+def dcml_ABC_to_local(f: str):
+    """
+    Converts from DCML ABC file names to local convertion
+    Args:
+        f: a DCML ABC file name like `n01op18-1_01.mscx`
+
+    Returns: list
+    """
+    g = f.split("op")[1]  # n01op18-1_01.mscx >>> 18-1_01.mscx
+    g = g.split(".")[0]  # 18-1_01.mscx >>> 18-1_01
+    cln, mvt = g.split("_")  # 18-1_01 >>> 18-1, 01
+    mvt = mvt[1]  # Remove DCML padding "01" >>> "1". Never 10+ mvts
+    no = ""
+    if "-" in cln:  # Only if applicable. 18-1 >>> 18, 1
+        cln, no = cln.split("-")
+        no = "No" + no  # No1
+    if len(cln) == 2:  # 18, 59 etc.
+        cln = "0" + cln  # Add padding. Op100+ in collection.
+    cln = "Op" + cln
+    if no:
+        cln = "_".join([cln, no])  # Op018_No1
+    mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
+
+    return [cln, mvt]
 
 
 def convert_DCML_tsv_analyses(corpus: str = "Quartets",
