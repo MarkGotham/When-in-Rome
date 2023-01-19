@@ -35,7 +35,7 @@ from . import romanUmpire
 from . import CORPUS_FOLDER
 from . import get_corpus_files
 
-from music21 import bar, converter, stream
+from music21 import bar, converter, romanText, stream
 
 
 # ------------------------------------------------------------------------------
@@ -381,6 +381,32 @@ def find_incomplete_measures_corpus(corpus: str = "OpenScore-LiederCorpus",
         [print(x) for x in titles]
 
     return out_dict
+
+
+def retrieve_unprocessed(
+        s: stream.Score,
+        tag: str = "Form"
+) -> str:
+    """
+    Retrieve tagged but unprocessed information from a romanText file.
+
+    Note that this complements the processed metadata.Metadata information
+    which includes not only composer, title, etc.
+    but also the "analyst" and "proofreader".
+
+    Args:
+        s (stream.Score): only makes sense if this stream is a parsed romantext analysis.
+        tag (str): the tag to find. Defaults to "Form" for retrieving formal labels.
+        Other options include further analyst annotations ("Note").
+
+    Returns: str
+
+    """
+    unprocessed = s.recurse().getElementsByClass(romanText.translate.RomanTextUnprocessedMetadata)
+    for u in unprocessed:
+        if "tag" in u.__dict__:
+            if u.__dict__["tag"] == tag:
+                return u.__dict__["data"]
 
 
 # ------------------------------------------------------------------------------
