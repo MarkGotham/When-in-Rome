@@ -161,6 +161,10 @@ def copy_DT_analysis_files(
     Copy Dmitri's analysis files (romantext)
     from a local copy of his corpus to the relevant folder of WiR.
     TODO use direct URLs if ever released in that way.
+
+    Currently
+    - Bach chorales only
+    - also writes remote score files
     """
 
     # Chorales
@@ -171,6 +175,16 @@ def copy_DT_analysis_files(
         src = chorales_DT / f"riemenschneider{num}.txt"
         dest = chorales_WiR / num / "analysis.txt"
         shutil.copy(src, dest)
+
+        this_metadata = {"catalogue_type": "Riemenschneider",
+                         "catalogue_number": x,  # no zero-pad
+                         "remote_URL_path": raw_git + f"MarkGotham/Chorale-Corpus/"
+                                                      f"{num}/short_score.mxl"
+                         }
+
+        write_path = chorales_WiR / num / "remote_score.json"
+        with open(write_path, "w") as json_file:
+            json.dump(this_metadata, json_file)
 
 
 def dcml_ABC_to_local(f: str):
