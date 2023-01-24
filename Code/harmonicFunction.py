@@ -40,14 +40,17 @@ from typing import Union
 def functionToFigure(harmonicFunctionLabel: str):
     """
     See notes at music21.analysis.harmonicFunction.functionToRoman
+    Here, simple wrapper for string only in and out.
     """
-    return hf.functionToRoman(harmonicFunctionLabel)
+    return str(hf.functionToRoman(harmonicFunctionLabel).figure)
 
 
-def figureToFunction(romanNumeralFigure: Union[str, roman.RomanNumeral],
+def figureToFunction(romanNumeralFigure: roman.RomanNumeral,
                      simplified: bool = False):
     """
     See notes at music21.analysis.harmonicFunction.romanToFunction
+    Here, roman.RomanNumeral input (as there, required for key)
+    but string output only.
     """
 
     # Adapt to m21 types - always RomanNumeral
@@ -55,15 +58,15 @@ def figureToFunction(romanNumeralFigure: Union[str, roman.RomanNumeral],
         romanNumeralFigure = roman.RomanNumeral(romanNumeralFigure)
 
     # Special cases: hard code here for now. TODO
-    # NB: analyst specified figure for Cad64, romanNumeralAlone otherwise
+    # NB: analyst specified `.figure` for "Cad64", `.romanNumeralAlone` otherwise
     if romanNumeralFigure.figure == "Cad64":
         returnString = "D"
     elif romanNumeralFigure.romanNumeralAlone == "vii":  # includes all "ø", "o", etc.
         returnString = "D"
 
     else:
-        returnString = hf.romanToFunction(romanNumeralFigure,
-                                          onlyHauptHarmonicFunction=simplified)
+        returnString = str(hf.romanToFunction(romanNumeralFigure,
+                                              onlyHauptHarmonicFunction=simplified))
 
     if romanNumeralFigure.secondaryRomanNumeral:
         returnString = f"({returnString})"
