@@ -155,7 +155,9 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
 
 
 def copy_DT_analysis_files(
-        in_path: str | os.PathLike
+        in_path: str | os.PathLike,
+        do_chorales: bool = False,
+        do_Monteverdi: bool = True,
 ) -> None:
     """
     Copy Dmitri's analysis files (romantext)
@@ -163,28 +165,59 @@ def copy_DT_analysis_files(
     TODO use direct URLs if ever released in that way.
 
     Currently
-    - Bach chorales only
-    - also writes remote score files
+    - Bach chorales and Monteverdi madrigals only (expansion of music21 provision)
+    - also writes remote score files (chorales on
+
+    TODO DRY
     """
 
-    # Chorales
-    chorales_WiR = CORPUS_FOLDER / "Early_Choral" / "Bach,_Johann_Sebastian" / "Chorales"
-    chorales_DT = Path(in_path) / "Bach Chorales"
-    for x in range(1, 372):
-        num = str(x).zfill(3)
-        src = chorales_DT / f"riemenschneider{num}.txt"
-        dest = chorales_WiR / num / "analysis.txt"
-        shutil.copy(src, dest)
+    if do_chorales:
 
-        this_metadata = {"catalogue_type": "Riemenschneider",
-                         "catalogue_number": x,  # no zero-pad
-                         "remote_URL_path": raw_git + f"MarkGotham/Chorale-Corpus/"
-                                                      f"{num}/short_score.mxl"
-                         }
+        chorales_WiR = CORPUS_FOLDER / "Early_Choral" / "Bach,_Johann_Sebastian" / "Chorales"
+        chorales_DT = Path(in_path) / "Bach Chorales"
+        chorales_MG = raw_git + f"MarkGotham/Chorale-Corpus/"
 
-        write_path = chorales_WiR / num / "remote_score.json"
-        with open(write_path, "w") as json_file:
-            json.dump(this_metadata, json_file)
+        for x in range(1, 372):
+            num = str(x).zfill(3)
+            src = chorales_DT / f"riemenschneider{num}.txt"
+            dst = chorales_WiR / num / "analysis.txt"
+            shutil.copy(src, dst)
+
+            this_metadata = {"catalogue_type": "Riemenschneider",
+                             "catalogue_number": x,  # no zero-pad
+                             "remote_URL_path": chorales_MG + f"{num}/short_score.mxl"
+                             }
+
+            write_path = chorales_WiR / num / "remote_score.json"
+            with open(write_path, "w") as json_file:
+                json.dump(this_metadata, json_file)
+
+    if do_Monteverdi:
+
+        monte_WiR = CORPUS_FOLDER / "Early_Choral" / "Monteverdi,_Claudio"
+        monte_DT = Path(in_path) / "Monteverdi"
+        monte_m21 = raw_git + "cuthbertLab/music21/master/music21/corpus/monteverdi/"
+
+        for this_file in os.listdir(monte_DT):
+
+            # Shared:
+            book, number = this_file.split(".")[1:3]  # "madrigal.{book}.{number}.<ext>"
+            dst = monte_WiR / f"Madrigals_Book_{book}" / number.zfill(2)
+
+            # Analyses from DT:
+            analysis_src = monte_DT / this_file
+            analysis_dst = dst / "analysis.txt"
+            shutil.copy(analysis_src, analysis_dst)
+
+            # Scores: remote point to music21 (currently no separate DT urls available)
+            this_metadata = {"book": int(book),
+                             "number": int(number),
+                             "remote_URL_path": monte_m21 + f"madrigal.{book}.{number}.mxl"
+                             }
+
+            write_path = dst / "remote_score.json"
+            with open(write_path, "w") as json_file:
+                json.dump(this_metadata, json_file)
 
 
 def dcml_ABC_to_local(f: str):
