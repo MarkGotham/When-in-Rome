@@ -7,11 +7,15 @@ class Test(unittest.TestCase):
 
     def testList(self):
 
-        figs = RNlists(listLength=3, maxFig=4)
-        figs.rnArray()
+        figs = RNlists(listLength=3, maxFig=4, write=False)
+        self.assertIsInstance(figs.rn_Array, list)
+        self.assertIsInstance(figs.rn_Array[0], list)
+        self.assertEqual(len(figs.rn_Array), 6)
+        self.assertEqual(len(figs.rn_Array[0]), 84)
+        self.assertEqual(figs.rn_Array[0][0][0], 'bio2')
 
-        self.assertIsInstance(figs.allRomanListOfLists, list)
-        self.assertIsInstance(figs.allRomanListOfLists[0], list)
-        self.assertEqual(len(figs.allRomanListOfLists), 6)
-        self.assertEqual(len(figs.allRomanListOfLists[0]), 84)
-        self.assertEqual(figs.allRomanListOfLists[0][0][0], 'bio2')
+
+# ------------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    Test()

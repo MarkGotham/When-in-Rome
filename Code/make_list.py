@@ -48,6 +48,7 @@ class RNlists:
                  write: bool = True,
                  ):
 
+        self.rn_Array = []
         self.figs = None
         self.listLength = listLength
         self.maxFig = maxFig
@@ -104,6 +105,8 @@ class RNlists:
                 with open(REPO_FOLDER / "Lists" / f"{fig}.tsv", "a") as csvfile:
                     csvOut = csv.writer(csvfile, delimiter="\t", quoting=csv.QUOTE_MINIMAL)
                     csvOut.writerow([x for x in this_list_of_lists])
+            else:
+                self.rn_Array.append(this_list_of_lists)
 
 
 # ------------------------------------------------------------------------------
