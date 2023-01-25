@@ -28,7 +28,6 @@ import re
 import shutil
 
 from pathlib import Path
-from typing import Union
 
 from . import REPO_FOLDER
 from . import CORPUS_FOLDER
@@ -39,13 +38,14 @@ from music21 import converter, environment, metadata, romanText
 
 # ------------------------------------------------------------------------------
 
-def convert_musescore_score_corpus(in_path: Union[str, os.PathLike],
-                                   out_path: Union[str, os.PathLike],
-                                   corpus_name: str = "mozart_piano_sonatas",
-                                   in_format: str = ".mscx",
-                                   out_format: str = ".mxl",
-                                   write: bool = True,
-                                   ) -> list:
+def convert_musescore_score_corpus(
+        in_path: str | os.PathLike,
+        out_path: str | os.PathLike,
+        corpus_name: str = "mozart_piano_sonatas",
+        in_format: str = ".mscx",
+        out_format: str = ".mxl",
+        write: bool = True,
+) -> list:
     """
     Basic script for creating or updating a
     `<corpus_name>_corpus_conversion.json` file with
@@ -112,10 +112,11 @@ def convert_musescore_score_corpus(in_path: Union[str, os.PathLike],
     return out_data
 
 
-def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
-                                 out_path: Union[str, os.PathLike],
-                                 corpus_name: str = "mozart_piano_sonatas",
-                                 ) -> None:
+def copy_DCML_tsv_analysis_files(
+        in_path: str | os.PathLike,
+        out_path: str | os.PathLike,
+        corpus_name: str = "mozart_piano_sonatas",
+) -> None:
     """
     Copy DCML analysis files (.tsv) to the relevant
     `working` folder of this repo.
@@ -156,17 +157,20 @@ def copy_DCML_tsv_analysis_files(in_path: Union[str, os.PathLike],
 
 def copy_DT_analysis_files(
         in_path: str | os.PathLike,
-        do_chorales: bool = False,
+        do_chorales: bool = True,
         do_Monteverdi: bool = True,
+        do_Beethoven: bool = False,
 ) -> None:
     """
     Copy Dmitri's analysis files (romantext)
     from a local copy of his corpus to the relevant folder of WiR.
+    Also uses or writes `remote_score.json` files as appropriate to each sub-corpus.
     TODO use direct URLs if ever released in that way.
 
-    Currently
-    - Bach chorales and Monteverdi madrigals only (expansion of music21 provision)
-    - also writes remote score files (chorales on
+    Current sub-corpora:
+    - Bach chorales (expansion of music21 provision)
+    - Monteverdi madrigals (expansion of music21 provision)
+    - Beethoven sonatas (use existing `remote_score.json` files)
 
     TODO DRY
     """
@@ -181,16 +185,16 @@ def copy_DT_analysis_files(
             num = str(x).zfill(3)
             src = chorales_DT / f"riemenschneider{num}.txt"
             dst = chorales_WiR / num / "analysis.txt"
-            shutil.copy(src, dst)
+            # shutil.copy(src, dst)
 
-            this_metadata = {"catalogue_type": "Riemenschneider",
-                             "catalogue_number": x,  # no zero-pad
-                             "remote_URL_path": chorales_MG + f"{num}/short_score.mxl"
-                             }
+            this_metadata = dict(catalogue_type="Riemenschneider",
+                                 catalogue_number=x,
+                                 remote_URL_path=chorales_MG + f"{num}/short_score.mxl"
+                                 )
 
             write_path = chorales_WiR / num / "remote_score.json"
             with open(write_path, "w") as json_file:
-                json.dump(this_metadata, json_file)
+                json.dump(this_metadata, json_file, indent=4)
 
     if do_Monteverdi:
 
@@ -199,7 +203,6 @@ def copy_DT_analysis_files(
         monte_m21 = raw_git + "cuthbertLab/music21/master/music21/corpus/monteverdi/"
 
         for this_file in os.listdir(monte_DT):
-
             # Shared:
             book, number = this_file.split(".")[1:3]  # "madrigal.{book}.{number}.<ext>"
             dst = monte_WiR / f"Madrigals_Book_{book}" / number.zfill(2)
@@ -207,20 +210,22 @@ def copy_DT_analysis_files(
             # Analyses from DT:
             analysis_src = monte_DT / this_file
             analysis_dst = dst / "analysis.txt"
-            shutil.copy(analysis_src, analysis_dst)
+            # shutil.copy(analysis_src, analysis_dst)
 
             # Scores: remote point to music21 (currently no separate DT urls available)
-            this_metadata = {"book": int(book),
-                             "number": int(number),
-                             "remote_URL_path": monte_m21 + f"madrigal.{book}.{number}.mxl"
-                             }
+            this_metadata = dict(book=int(book),
+                                 number=int(number),
+                                 remote_URL_path=monte_m21 + f"madrigal.{book}.{number}.mxl"
+                                 )
 
             write_path = dst / "remote_score.json"
             with open(write_path, "w") as json_file:
-                json.dump(this_metadata, json_file)
+                json.dump(this_metadata, json_file, indent=4)
 
 
-def dcml_ABC_to_local(f: str):
+def dcml_ABC_to_local(
+        f: str
+) -> list:
     """
     Converts from DCML ABC file names to local convertion
     Args:
@@ -246,14 +251,16 @@ def dcml_ABC_to_local(f: str):
     return [cln, mvt]
 
 
-def convert_DCML_tsv_analyses(corpus: str = "Quartets",
-                              # overwrite: bool = True
-                              ) -> None:
+def convert_DCML_tsv_analyses(
+        corpus: str = "Quartets",
+        # overwrite: bool = True
+) -> None:
     """
     Convert local copies of DCML analysis files (.tsv) to rntxt.
     """
 
-    file_paths = get_corpus_files(corpus=corpus, file_name="DCML_analysis.tsv")
+    file_paths = get_corpus_files(sub_corpus_path=CORPUS_FOLDER / corpus,
+                                  file_name="DCML_analysis.tsv")
 
     for f in file_paths:
 
@@ -290,9 +297,10 @@ def convert_DCML_tsv_analyses(corpus: str = "Quartets",
         print(" done.")
 
 
-def remote_scores(local_path: list = ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
-                  write_score: bool = False
-                  ) -> None:
+def remote_scores(
+        local_path: list = ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
+        write_score: bool = False
+) -> None:
     """
     Reference (by default) or (optionally) retrieve externally hosted scores.
     This is designed to prevent duplication and automatically include source updates.
@@ -317,7 +325,7 @@ def remote_scores(local_path: list = ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
     ]
 
     if local_path == valid_local_paths[0]:
-        remote_Sapp_Beethoven(local_path=local_path, write_score=write_score)
+        remote_Beethoven(local_path=local_path, write_score=write_score)
     elif local_path == valid_local_paths[1]:
         remote_TAVERN(local_path=local_path, Beethoven=True, write_score=write_score)
     elif local_path == valid_local_paths[2]:
@@ -329,24 +337,39 @@ def remote_scores(local_path: list = ["Piano_Sonatas", "Beethoven,_Ludwig_van"],
 raw_git = 'https://raw.githubusercontent.com/'
 
 
-def list_dir_sorted_not_hidden(this_dir: os.PathLike
-                               ) -> list:
+def list_dir_sorted_not_hidden(
+        this_dir: os.PathLike
+) -> list:
     """
     Convenience function for os.listdir with sorting and ignoring hidden files.
     """
     return sorted([f for f in os.listdir(this_dir) if not f.startswith(".")])
 
 
-def remote_Sapp_Beethoven(local_path,
-                          write_score: bool = False
-                          ) -> None:
+def remote_Beethoven(
+        local_path,
+        write_score: bool = False,
+        external_corpus: str = "Sapp"
+) -> None:
     """
-    Remote score for the Beethoven piano sonatas from Craig Sapp.
+    Remote scores for the Beethoven piano sonatas.
+
+    :param local_path: See notes at `remote_scores`.
+    :param write_score: See notes at `remote_scores`.
+    :param external_corpus: Which external corpus to use.
+        Only `Sapp` is currently supported.
+
     Returns: None
     """
 
     local_base_path = os.path.join(CORPUS_FOLDER, *local_path)
-    remote_base_path = raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/sonata"
+
+    if external_corpus == "Sapp":
+        remote_base_path = raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/sonata"
+    else:
+        raise ValueError("Invalid external_corpus: only `Sapp` is currently supported")
+        # TODO any other corpora that emerge.
+
     opus_strings = list_dir_sorted_not_hidden(local_base_path)
 
     sonata_number = 0
@@ -357,13 +380,19 @@ def remote_Sapp_Beethoven(local_path,
         movements = list_dir_sorted_not_hidden(sonata_path)
 
         for movt in movements:
-            sonata_string = str(sonata_number).zfill(2)  # zeo-pad sonatas e.g., 01
+            sonata_string = str(sonata_number).zfill(2)  # zero-pad sonatas e.g., 01
+            m = re.search(r"Op0*(?P<opus>\d+)(_No0?(?P<num>\d+))?", o)
+            opus_number = [int(m.group("opus"))]
+            if m.group("num"):
+                opus_number.append(int(m.group("num")))
             remote_URL_path = remote_base_path + f"{sonata_string}-{movt}.krn"
             movement_path = os.path.join(sonata_path, movt)
-            this_metadata = {"sonata_number": sonata_number,
-                             "movement": int(movt),
-                             "remote_URL_path": remote_URL_path
-                             }
+            this_metadata = dict(catalogue_type="Opus",
+                                 catalogue_number=opus_number,
+                                 sonata_number=sonata_number,
+                                 movement=int(movt),
+                                 remote_URL_path=remote_URL_path
+                                 )
 
             if write_score:
                 convert_and_write_local(remote_URL_path=remote_URL_path,
@@ -371,13 +400,14 @@ def remote_Sapp_Beethoven(local_path,
             else:
                 write_path = os.path.join(movement_path, "remote_score.json")
                 with open(write_path, "w") as json_file:
-                    json.dump(this_metadata, json_file)
+                    json.dump(this_metadata, json_file, indent=4)
 
 
-def remote_TAVERN(local_path,
-                  Beethoven: bool = True,
-                  write_score: bool = False
-                  ) -> None:
+def remote_TAVERN(
+        local_path,
+        Beethoven: bool = True,
+        write_score: bool = False
+) -> None:
     """
     Remote scores for the TAVERN variations.
 
@@ -399,34 +429,35 @@ def remote_TAVERN(local_path,
 
     for o in opus_strings:
         local_path = os.path.join(local_base_path, o)
+        cat_type = "Opus"
         if Beethoven:
             if o.startswith("Op"):
-                catalogue_type = "Opus"
-                catalogue_number = int(o[2:])
-                remote_URL_path = remote_base_path + f"Opus{catalogue_number}/Krn/Opus{catalogue_number}.xml"
+                # cat_type = "Opus"
+                cat_number = int(o[2:])
+                remote_URL_path = remote_base_path + f"Opus{cat_number}/Krn/Opus{cat_number}.xml"
             elif o.startswith("WoO"):  # WoO_63 > B063/Krn/Wo063.xml
-                catalogue_type = "Werke ohne Opuszahl"
-                catalogue_number = int(o[4:])
-                remote_URL_path = remote_base_path + f"B0{catalogue_number}/Krn/Wo0{catalogue_number}.xml"
+                cat_type = "Werke ohne Opuszahl"
+                cat_number = int(o[4:])
+                remote_URL_path = remote_base_path + f"B0{cat_number}/Krn/Wo0{cat_number}.xml"
             else:
                 raise ValueError("Invalid opus name")
         else:  # o.startswith("K"):  # "Mozart"
-            catalogue_type = "Köchel-Verzeichnis"
-            catalogue_number = int(o[1:])
+            cat_type = "Köchel-Verzeichnis"
+            cat_number = int(o[1:])
             remote_URL_path = remote_base_path + f"{o}/Krn/{o}.krn"  # xml not always there
 
         if write_score:
             convert_and_write_local(remote_URL_path=remote_URL_path,
                                     local_path=local_path)
         else:
-            this_metadata = {"catalogue_type": catalogue_type,
-                             "catalogue_number": catalogue_number,
-                             "remote_URL_path": remote_URL_path
-                             }
+            this_metadata = dict(catalogue_type=cat_type,
+                                 catalogue_number=cat_number,
+                                 remote_URL_path=remote_URL_path
+                                 )
 
             write_path = os.path.join(local_path, "remote_score.json")
             with open(write_path, "w") as json_file:
-                json.dump(this_metadata, json_file)
+                json.dump(this_metadata, json_file, indent=4)
 
 
 def convert_and_write_local(remote_URL_path,
