@@ -157,7 +157,7 @@ def copy_DCML_tsv_analysis_files(
 
 def copy_DT_analysis_files(
         in_path: str | os.PathLike,
-        sub_corpora: list = ["Chorales", "Monteverdi", "Beethoven"],
+        sub_corpora: list | None = None,
 ) -> None:
     """
     Copy analysis files (romantext) from Dmitri
@@ -172,6 +172,15 @@ def copy_DT_analysis_files(
 
     TODO DRY
     """
+
+    valid_sub_corpora = ["Chorales", "Monteverdi", "Beethoven"]
+
+    if sub_corpora is None:
+        sub_corpora = valid_sub_corpora
+    else:
+        a = [x for x in sub_corpora if x not in valid_sub_corpora]
+        if any(a):
+            raise ValueError(f"Invalid sub-corpus: {a}")
 
     if "Chorales" in sub_corpora:
 
