@@ -28,4 +28,4 @@ def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
 
     assert sub_corpus_path.is_relative_to(CORPUS_FOLDER)
 
-    return [str(x) for x in sub_corpus_path.rglob(file_name)]
+    return [str(x) for x in sub_corpus_path.rglob(file_name) if not str(x).startswith(".")]
