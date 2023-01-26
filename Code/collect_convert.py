@@ -157,12 +157,10 @@ def copy_DCML_tsv_analysis_files(
 
 def copy_DT_analysis_files(
         in_path: str | os.PathLike,
-        do_chorales: bool = True,
-        do_Monteverdi: bool = True,
-        do_Beethoven: bool = False,
+        sub_corpora: list = ["Chorales", "Monteverdi", "Beethoven"],
 ) -> None:
     """
-    Copy Dmitri's analysis files (romantext)
+    Copy analysis files (romantext) from Dmitri
     from a local copy of his corpus to the relevant folder of WiR.
     Also uses or writes `remote_score.json` files as appropriate to each sub-corpus.
     TODO use direct URLs if ever released in that way.
@@ -175,7 +173,7 @@ def copy_DT_analysis_files(
     TODO DRY
     """
 
-    if do_chorales:
+    if "Chorales" in sub_corpora:
 
         chorales_WiR = CORPUS_FOLDER / "Early_Choral" / "Bach,_Johann_Sebastian" / "Chorales"
         chorales_DT = Path(in_path) / "Bach Chorales"
@@ -185,7 +183,7 @@ def copy_DT_analysis_files(
             num = str(x).zfill(3)
             src = chorales_DT / f"riemenschneider{num}.txt"
             dst = chorales_WiR / num / "analysis.txt"
-            # shutil.copy(src, dst)
+            shutil.copy(src, dst)
 
             this_metadata = dict(catalogue_type="Riemenschneider",
                                  catalogue_number=x,
@@ -196,7 +194,7 @@ def copy_DT_analysis_files(
             with open(write_path, "w") as json_file:
                 json.dump(this_metadata, json_file, indent=4)
 
-    if do_Monteverdi:
+    if "Monteverdi" in sub_corpora:
 
         monte_WiR = CORPUS_FOLDER / "Early_Choral" / "Monteverdi,_Claudio"
         monte_DT = Path(in_path) / "Monteverdi"
@@ -210,7 +208,7 @@ def copy_DT_analysis_files(
             # Analyses from DT:
             analysis_src = monte_DT / this_file
             analysis_dst = dst / "analysis.txt"
-            # shutil.copy(analysis_src, analysis_dst)
+            shutil.copy(analysis_src, analysis_dst)
 
             # Scores: remote point to music21 (currently no separate DT urls available)
             this_metadata = dict(book=int(book),
@@ -221,6 +219,28 @@ def copy_DT_analysis_files(
             write_path = dst / "remote_score.json"
             with open(write_path, "w") as json_file:
                 json.dump(this_metadata, json_file, indent=4)
+
+    if "Beethoven" in sub_corpora:
+
+        base_WiR = CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van"
+        base_DT = Path(in_path) / "Beethoven"
+
+        for this_file in get_corpus_files(sub_corpus_path=base_WiR, file_name="remote_score.json"):
+            with open(this_file, "r") as json_file:
+                data = json.load(json_file)
+                opus = data["catalogue_number"]
+                dt_file_name = "op" + str(opus[0]).zfill(3)  # op002no1-1.txt
+                if len(opus) > 1:  # includes number
+                    dt_file_name += f"no{opus[1]}"
+                dt_file_name += f"-{data['movement']}.txt"
+                src = base_DT / dt_file_name
+                print(f"Getting {dt_file_name} ...")
+                if src.exists():
+                    dst = this_file.parent / "analysis_DT.txt"
+                    shutil.move(src, dst)
+                    print("... moved")
+                else:
+                    print("... does not exist")
 
 
 def dcml_ABC_to_local(
@@ -334,7 +354,7 @@ def remote_scores(
         raise ValueError(f"Invalid local_path. Chose one of {valid_local_paths}")
 
 
-raw_git = 'https://raw.githubusercontent.com/'
+raw_git = "https://raw.githubusercontent.com/"
 
 
 def list_dir_sorted_not_hidden(
