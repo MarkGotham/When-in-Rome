@@ -4,6 +4,8 @@ CODE_FOLDER = Path(__file__).parent
 REPO_FOLDER = CODE_FOLDER.parent
 CORPUS_FOLDER = REPO_FOLDER / "Corpus"
 
+DT_BASE = REPO_FOLDER.parent / "TAOM" / "TAOMfiles" / "Music"
+
 
 # ------------------------------------------------------------------------------
 
