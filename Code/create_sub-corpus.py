@@ -134,6 +134,7 @@ def chopin(move_analyses: bool = True) -> None:
     for item in source["items"]:
 
         md = dict()
+        md["composer"] = get_composer(source)
 
         for i in range(len(source["item_keys"])):
             md[source["item_keys"][i]] = item[i]
