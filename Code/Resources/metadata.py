@@ -53,8 +53,7 @@ chorales = dict(
     )
 
 madrigals = dict(
-    genre_WiR="Early_Choral",
-    composer="Monteverdi,_Claudio",
+    path_within_WiR=["Early_Choral", "Monteverdi,_Claudio"],
     item_keys=("Book", "Number"),
     items=(
         (3, 20),  # "Madrigals_Book_3"
