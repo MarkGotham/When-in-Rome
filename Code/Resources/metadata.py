@@ -42,7 +42,7 @@ URLs are initialised here with the base and extended when created.
 
 # ------------------------------------------------------------------------------
 
-raw_git = "https://raw.githubusercontent.com/"
+from .. import raw_git
 
 chorales = dict(
     path_within_WiR=["Early_Choral", "Bach,_Johann_Sebastian", "Chorales"],
