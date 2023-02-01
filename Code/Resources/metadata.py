@@ -158,3 +158,71 @@ chopin = dict(
     remote_score_krn=raw_git + "craigsapp/chopin-mazurkas/master/kern/",
     )
 
+lvb_commit = "f131d6dac8605ae7be9f874637330f0b73d11e2f"
+
+sonatas_Beethoven = dict(
+    path_within_WiR=["Piano_Sonatas", "Beethoven,_Ludwig_van"],
+    item_keys=("Opus", "Number", "Name", "Movements"),
+    items=(
+        (2, 1, None, 4),
+        (2, 2, None, 4),
+        (2, 3, None, 4),
+
+        (7, None, 4),
+
+        (10, 1, None, 3),
+        (10, 2, None, 3),
+        (10, 3, None, 4),
+
+        (13, None, "Pathetique", 3),
+
+        (14, 1, None, 3),
+        (14, 2, None, 4),
+
+        (22, None, 4),
+
+        (26, None, 4),
+
+        (27, 1, None, 4),
+        (27, 2, "Moonlight", 3),
+
+        (28, None, "Pastorale", 4),
+
+        (31, 1, None, 3),
+        (31, 2, None, 3),
+        (31, 3, None, 4),
+
+        (49, 1, None, 2),
+        (49, 2, None, 2),
+
+        (53, None, 3),
+        (54, None, 2),
+        (57, None, "Appassionata", 3),
+        (78, None, 2),
+        (79, None, "Sonatina", 3),
+        ("81a", None, "Les Adieux", 3),
+        (90, None, 2),
+        (101, None, 4),
+        (106, None, "Hammerklavier", 4),
+        (109, None, 3),
+        (110, None, 3),
+        (111, None, 2)
+    ),
+    analysis_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
+    remote_score_krn=raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/",
+    # No such split file issues here
+)
+
+sonatas_Mozart = dict(
+    path_within_WiR=["Piano_Sonatas", "Mozart,_Wolfgang_Amadeus"],
+    item_keys=("Köchel-Verzeichnis",),
+    items=(
+        (279, 280, 281, 282, 283, 284, 309, 310, 311, 330, 331, 332, 333, 457, 533, 545, 570, 576)
+    ),  # always 3 movements so no need to specify
+    analysis_source=raw_git + f"DCMLab/mozart_piano_sonatas/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/mozart_piano_sonatas/MS3/",
+    analysis_DT_source="Mozart",  # NB no public listing, so relative path only
+    # remote_score_krn=raw_git + "craigsapp/mozart-piano-sonatas/master/kern/",
+    # Omit ^ Split files too complex (e.g., "sonata06-3m.krn").
+)
