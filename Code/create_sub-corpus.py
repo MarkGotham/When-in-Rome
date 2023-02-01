@@ -129,7 +129,7 @@ def chopin(move_analyses: bool = True) -> None:
 
     source = metadata.chopin
     parent_dir_path = make_parent_dirs(source)
-    chopin_DT = DT_BASE / "Chopin"
+    dt = DT_BASE / "Chopin"
 
     for item in source["items"]:
 
@@ -144,8 +144,7 @@ def chopin(move_analyses: bool = True) -> None:
             brown_string += f"-{md['Brown Catalogue'][1]}"
 
         new_dir = parent_dir_path / brown_string
-        if not new_dir.exists():
-            new_dir.mkdir
+        make_dir(new_dir)
 
         # Opus
         opus_string = ""
@@ -170,7 +169,7 @@ def chopin(move_analyses: bool = True) -> None:
             md["remote_score_krn"] = source["remote_score_krn"] + sapp_dt_string + ".krn"
 
         if move_analyses:
-            src = chopin_DT / f"{sapp_dt_string}.txt"
+            src = dt / f"{sapp_dt_string}.txt"
             if src.exists():
                 print(f"Processing {src} ...")
                 dst = new_dir / "analysis_DT.txt"
