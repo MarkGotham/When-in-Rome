@@ -169,16 +169,47 @@ def chopin(move_analyses: bool = True) -> None:
             md["remote_score_krn"] = source["remote_score_krn"] + sapp_dt_string + ".krn"
 
         if move_analyses:
-            src = dt / f"{sapp_dt_string}.txt"
-            if src.exists():
-                print(f"Processing {src} ...")
-                dst = new_dir / "analysis_DT.txt"
-                shutil.move(src, dst)
-                print("done")
-            else:
-                print(f"Error with {src}")
+            move_and_report(dt / f"{sapp_dt_string}.txt", new_dir / "analysis_DT.txt")
 
         write_json(md, parent_dir_path / brown_string / "remote.json")
+
+
+def mozart(move_analyses: bool = True) -> None:
+
+    source = metadata.sonatas_Mozart
+    parent_dir_path = make_parent_dirs(source)
+    dt = DT_BASE / "Mozart"
+
+    count = 0
+
+    for item in source["items"]:
+
+        md = dict()
+        count += 1
+        md["sonata_number"] = count
+        md[source["item_keys"][0]] = item  # Köchel
+
+        # Brown, Mkdir
+        koechel_string = f"K{item}"
+
+        k_dir = parent_dir_path / koechel_string
+        make_dir(k_dir)
+
+        for movement in range(1, 3 + 1):
+            mvt_dir = k_dir / str(movement)
+            make_dir(mvt_dir)
+
+            km_string = koechel_string + "-" + str(movement)
+
+            md["analysis_source"] = source["analysis_source"] + f"{km_string}.tsv"
+            md["remote_score_mscx"] = source["remote_score_mscx"] + f"{km_string}.mscx"
+            md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{km_string}.txt"
+
+            if move_analyses:
+                move_and_report(dt / f"{km_string}.txt", mvt_dir / "analysis_DT.txt")
+                # No K533
+
+            write_json(md, mvt_dir / "remote.json")
 
 
 # ------------------------------------------------------------------------------
@@ -227,6 +258,15 @@ def make_parent_dirs(
     return parent_dir_path
 
 
+def move_and_report(src, dest):
+    print(f"Processing {src} ...")
+    if src.exists():
+        shutil.move(src, dest)
+        print("... done")
+    else:
+        print(f"... Error with {src}")
+
+
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -234,9 +274,14 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--chorales", action="store_true")
-    parser.add_argument("--madrigals", action="store_true")
-    parser.add_argument("--chopin", action="store_true")
+    arg_strings = ("--chorales",
+                   "--madrigals",
+                   "--chopin",
+                   "--mozart"
+                   )
+
+    for x in arg_strings:
+        parser.add_argument(x, action="store_true")
 
     args = parser.parse_args()
 
@@ -246,5 +291,7 @@ if __name__ == "__main__":
         madrigals()
     elif args.chopin:
         chopin()
+    elif args.mozart:
+        mozart()
     else:
         parser.print_help()
