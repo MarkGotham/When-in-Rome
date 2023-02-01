@@ -8,6 +8,29 @@ from . import TEST_FOLDER
 DCML_base = TEST_FOLDER.parent.parent
 
 
+def test_DCML_Mozart_analyses(
+        theirs: Path = DCML_base / "mozart_piano_sonatas",
+) -> None:
+    """
+    Check DCML "mozart_piano_sonatas" files names have
+    corresponding folders in WiR in the expected pattern.
+    """
+
+    ours = TEST_FOLDER.parent / "Corpus"
+    for x in metadata.sonatas_Mozart["path_within_WiR"]:
+        ours = ours / x
+
+    for f in os.listdir(theirs):
+        if f.endswith(".tsv"):
+            cln, mvt = f.split("-")  # e.g., K279-1.mscx >>> K279, 1.mcsx
+            cln = cln[1:]  # drop the K
+            mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
+
+            test_path = ours / cln / mvt
+
+            assert (test_path.exists())
+
+
 def get_DCML_Chopin_analyses(
         in_path: Path = DCML_base / "romantic_piano_corpus" / "chopin_mazurkas"
 ) -> list:
@@ -47,6 +70,8 @@ def get_DCML_Chopin_analyses(
 
 if __name__ == "__main__":
     # Not unittests because the local copy is required.
+
+    test_DCML_Mozart_analyses()
 
     # Chopin
     assert(get_DCML_Chopin_analyses() == metadata.chopin["items"])
