@@ -59,6 +59,15 @@ def get_analyses(
     return get_corpus_files(sub_corpus_path=corpus, file_name=f)
 
 
+def rename_analyses(corpus: Path = CORPUS_FOLDER,
+                    name_before: str = "analysis.txt",
+                    name_after: str = "analysis_with_name.txt",
+                    ) -> None:
+    f = get_corpus_files(corpus, name_before)
+    for file in f:
+        shutil.move(file, file.parent / name_after)
+
+
 def clear_the_decks(
         corpus: Path = CORPUS_FOLDER,
         file_types=None,
