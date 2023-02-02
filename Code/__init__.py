@@ -32,4 +32,4 @@ def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
 
     assert sub_corpus_path.is_relative_to(CORPUS_FOLDER)
     assert sub_corpus_path.exists()
-    return [str(x) for x in sub_corpus_path.rglob(file_name)]
+    return [x for x in sub_corpus_path.rglob(file_name)]
