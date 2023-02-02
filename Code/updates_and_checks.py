@@ -299,7 +299,9 @@ def check_all_parse(
         files = get_corpus_files(sub_corpus_path=corpus, file_name="score.mxl")
 
     if count_files:
-        print(f"{len(files)} files found ... now checking they all parse ...")
+        print(f"{len(files)} files found ... ")
+        distinct_works = set([("-").join(x.split("/")[:-1]) for x in files])
+        print(f"... on {len(distinct_works)} distinct works ...")
 
     rns = 0
 
