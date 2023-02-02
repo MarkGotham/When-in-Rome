@@ -9,7 +9,7 @@
 'When in Rome' brings together all of the world's functional harmonic analyses in encoded formats into a single, consistent repository.
 This enables musicians and developers to interact with that great body of work at scale, with minimal overheads.
 
-In total, there are now approximately 500 analyses and 100,000 Roman numerals in here.
+In total, there are now approximately 2,000 analyses.
 
 Additionally, 'When in Rome' provides code for working with this corpora, building on top of the [music21](https://github.com/cuthbertLab/music21/) library for music analysis.
 
@@ -51,12 +51,12 @@ We find this more logical that re-organisation by composer.
 
 ### All folders include:
 
-- `score.mxl` or `remote_score.json`
-  - What: `score.mxl` is a copy of the score in the compresed musicXML format. 
+- `score.mxl` or a `remote.json` file including links to external score files 
+  - What: `score.mxl` is a copy of the score in the compressed musicXML format. 
     This is provided for all new scores, as well as all originating elsewhere  
     where that original is _in a format which music21 cannot parse_.
   - How to use: Open in any software for music notation (e.g., [MuseScore](https://musescore.org/)).
-  - Where there is no local `score.mxl`, there is a `remote_score.json` instead. Please note:
+  - Where there is no local `score.mxl`, there is a `remote.json` instead. Please note:
     - This file points to an externally hosted score _in a format which music21 can parse_. 
     - This is designed to prevent duplication and automatically include source updates.
     - Note that MuseScore files are included in a local conversion (`.mxl`) rather than remote.
@@ -79,9 +79,11 @@ We find this more logical that re-organisation by composer.
 
 ### Some folders include:
 
-- `Working/`, e.g., `Working/BPS_in_transit.csv` on the Beethoven sonatas
-  - What: A copy of original and/or intermediary formats for conversions.
-  - How to use: As a point of reference for full disclosure on the conversion process.
+- `remote.json` files 
+  - What: this provides additional information about remote content including paths to external 
+    scores as discussed above.
+  - Additionally, we take the opportunity to provide metadata including composer name and one or 
+    more sets of catalogue information (`Opus` and/or equivalent).
 
 - `analysis_<analyst>.txt`
   - What: An alternative analysis. This takes one of two forms:
@@ -93,6 +95,8 @@ We find this more logical that re-organisation by composer.
       dataset includes pairs of analyses of the same work. In order to ensure there is exactly 
       one `analysis.txt` throughout, we name the pair `analysis.txt` (note not 
       `analysis_A.txt`) and `analysis_B.txt`.
+    - We likewise organise cases of two separate corpora of analyses of the same music this way.
+      - The set which is complete takes precedence for the `analysis.txt` name.
   - How to use: All such text files can be opened in the normal way. "Original conversions" 
     serve as a point of reference for full disclosure on the conversion process.
 
@@ -133,26 +137,56 @@ This corpus involves the combination of new analyses with conversions of those o
 ### Corpora originating elsewhere
 
 Converted from other formats:
-- the [DCMLab's](https://github.com/DCMLab/) standard ([conversion code here](https://github.com/cuthbertLab/music21/blob/master/music21/romanText/tsvConverter.py)):
-  - [Beethoven string quartets](/Corpus/Quartets/Beethoven,_Ludwig_van/) (complete, 16 string quartets, 70 movements): originating from the ['ABC' corpus](https://github.com/DCMLab/ABC).
-  - [Mozart Piano Sonatas](/Corpus/Piano_Sonatas/Mozart,_Wolfgang_Amadeus/) (complete, 18 sonatas): originating from ['The Annotated Mozart Sonatas' corpus](https://github.com/DCMLab/mozart_piano_sonatas).
+- the [DCMLab's](https://github.com/DCMLab/) standard
+  ([conversion code here](https://github.com/cuthbertLab/music21/blob/master/music21/romanText/tsvConverter.py)):
+  - [Beethoven string quartets](/Corpus/Quartets/Beethoven,_Ludwig_van/) 
+    (complete, 16 string quartets, 70 movements): originating from the
+    ['ABC' corpus](https://github.com/DCMLab/ABC).
+  - [Mozart Piano Sonatas](/Corpus/Piano_Sonatas/Mozart,_Wolfgang_Amadeus/) (complete, 18 sonatas): 
+    originating from ['The Annotated Mozart Sonatas' corpus](https://github.com/DCMLab/mozart_piano_sonatas).
+  - Several collections including the 
+    [Chopin Mazurkas](/Corpus/Keyboard_Other/Chopin,_Frédéric/Mazurkas) (56 works):
+    originating from DCML's ['romantic_piano_corpus'](https://github.com/DCMLab/romantic_piano_corpus).
 - krn format (with thanks to [@napulen](https://github.com/napulen)):
-  - 27 sets of keyboard Variations by [Mozart,_Wolfgang_Amadeus](/Corpus/Variations_and_Grounds/Mozart,_Wolfgang_Amadeus/) and [Beethoven](/Corpus/Variations_and_Grounds/Beethoven,_Ludwig_van/), from [Devaney et al.'s 'TAVERN' project, ISMIR 2015](https://github.com/jcdevaney/TAVERN)
-  - [Haydn Op. 20 String Quartets](/Corpus/Quartets/Haydn,_Franz_Joseph/): Complete annotations of Haydn's Op. 20 (6 string quartets, 24 movements), from the [MTG dataset](https://zenodo.org/record/1095630#.X8AbrcJyZhE)
-  - [Key Modulations and Tonicizations](Corpus/Textbooks/): Modulation examples annotated from five music theory textbooks. Published in [Nápoles López et al. 2020](https://dl.acm.org/doi/10.1145/3424911.3425515).
+  - 27 sets of keyboard Variations by 
+    [Mozart,_Wolfgang_Amadeus](/Corpus/Variations_and_Grounds/Mozart,_Wolfgang_Amadeus/) and 
+    [Beethoven](/Corpus/Variations_and_Grounds/Beethoven,_Ludwig_van/), from 
+    [The 'TAVERN' project, (Devaney et al. ISMIR 2015)](https://github.com/jcdevaney/TAVERN)
+  - [Haydn Op. 20 String Quartets](/Corpus/Quartets/Haydn,_Franz_Joseph/): 
+    Complete annotations of Haydn's Op. 20 (6 string quartets, 24 movements), from the  
+    [MTG dataset](https://zenodo.org/record/1095630#.X8AbrcJyZhE)
+  - [Key Modulations and Tonicizations](Corpus/Textbooks/): Modulation examples annotated from 
+    five music theory textbooks.
+    Published in [Nápoles López et al. 2020](https://dl.acm.org/doi/10.1145/3424911.3425515).
 - other:
-  - [Beethoven Piano Sonata](/Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/) (complete first movements, 32 movements), from Tsung-Ping Chen and Li Su's ['BPS-FH' dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
+  - [Beethoven Piano Sonata](/Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/) 
+    (complete first movements, 32 movements), from Tsung-Ping Chen and Li Su's
+    ['BPS-FH' dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
 
-
-Originally in the 'RomanText' format (no conversion needed):
-- [Monteverdi madrigals](/Corpus/Early_Choral/Monteverdi,_Claudio/): Complete scores and analyses for books 3–5 of the Monteverdi madrigals (48 works), from [this part](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/monteverdi) of the music21 corpus (but updated since that version).
-- [Bach Chorales](/Corpus/Early_Choral/Bach,_Johann_Sebastian/Chorales): the sample of 20 analyses in [this part](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/bach/choraleAnalyses) of the music21 corpus.
+Originally in the 'RomanText' format (no conversion needed), analysed by 
+Dmitri Tymoczko and colleagues, and included in the supplementary to Tymoczko's forthcoming "TAOM":
+- [Monteverdi madrigals](/Corpus/Early_Choral/Monteverdi,_Claudio/): Complete scores and 
+  analyses for books 3–5 of the Monteverdi madrigals (48 works) also to be seen in 
+  [this part](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/monteverdi)  
+  of the music21 corpus (but updated since that version).
+- [Bach Chorales](/Corpus/Early_Choral/Bach,_Johann_Sebastian/Chorales): 371 chorales, of which 
+  a subset of 20 was first released on music21.
+- Several further collections including a second set of analyses for most of the  
+  [ChopinMazurkas](/Corpus/Keyboard_Other/Chopin,_Frédéric/Mazurkas)
 
 
 ### New corpora by MG and colleagues
-- [Bach Preludes](/Corpus/Etudes_and_Preludes/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/): Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
+- [Bach Preludes](/Corpus/Etudes_and_Preludes/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/):
+  Complete preludes from the first book of Bach's Well Tempered Clavier (24 analyses)
 - [Ground bass works](/Corpus/Variations_and_Grounds/) by Bach and Purcell.
-- [Nineteenth-century songs](/Corpus/OpenScore-LiederCorpus/): A sample of songs from the OpenScore / 'Scores of Scores' lieder corpus ([mirroring the public-facing score collection hosted here](https://musescore.com/openscore-lieder-corpus/sets)), including analyses for the complete [_Winterreise_](/Corpus/OpenScore-LiederCorpus/Schubert,_Franz/Winterreise,_D.911/) and [_Schwanengesang_](/Corpus/OpenScore-LiederCorpus/Schubert,_Franz/Schwanengesang,_D.957/) cycles (Schubert), [_Dichterliebe_](/Corpus/OpenScore-LiederCorpus/Schumann,_Robert/Dichterliebe,_Op.48/) (Schumann), and many of the songs by women composers that constitute a key part of and motivation for that collection.
+- [Nineteenth-century songs](/Corpus/OpenScore-LiederCorpus/): A sample of songs from the 
+  OpenScore / 'Scores of Scores' lieder corpus  
+  ([mirroring the public-facing score collection hosted here](https://musescore.
+  com/openscore-lieder-corpus/sets)), including analyses for the complete
+  [_Winterreise_](/Corpus/OpenScore-LiederCorpus/Schubert,_Franz/Winterreise,_D.911/) and  
+  [_Schwanengesang_](/Corpus/OpenScore-LiederCorpus/Schubert,_Franz/Schwanengesang,_D.957/) cycles (Schubert),  
+  [_Dichterliebe_](/Corpus/OpenScore-LiederCorpus/Schumann,_Robert/Dichterliebe,_Op.48/) (Schumann), 
+- and many of the songs by women composers that constitute a key part of and motivation for that collection.
 
 ## Code and Lists
 
@@ -178,15 +212,21 @@ It takes in a harmonic analysis and the corresponding score to assess how well t
 
 ### Licence
 
-New content in this repository, including the new analyses, code, and the conversion (specifically) of existing analyses is available under the [CC BY-SA licence](https://creativecommons.org/licenses/by-sa/4.0/) (a free culture licence).
+New content in this repository, including the new analyses, code, and the conversion 
+(specifically) of existing analyses is available under the
+[CC BY-SA licence](https://creativecommons.org/licenses/by-sa/4.0/) (a free culture licence).
 
-For analyses that originated elsewhere and have been converted into the format used here, please refer to the original source for licence.
-Links are provided to those original sources throughout the repository including the itemised list above and within every `analysis.txt` file.
+For analyses that originated elsewhere and have been converted into the format used here,
+please refer to the original source for licence.
+Links are provided to those original sources throughout the repository including the 
+itemised list above and within every `analysis.txt` file.
 
 These external licences vary.
-As far as we can tell, all the content here is either original or properly credited and fair to use in this way.
+As far as we can tell, all the content here is either original to this repo,  
+or properly credited and fair to use in this way.
 If you think you see an issue please let us know.
-Again, if you are simply looking for a scores in a maximally permissive licence, then hea to the [OpenScore collections](https://github.com/openscore) which are notable for using CC0.
+Again, if you are simply looking for a scores in a maximally permissive licence, then hea to the 
+[OpenScore collections](https://github.com/openscore) which are notable for using CC0.
 
 For research and other public-facing projects making use of this work, please cite or otherwise acknowledge one or more of the papers listed below as appropriate to your project.
 
