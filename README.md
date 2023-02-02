@@ -6,12 +6,15 @@
 
 # When in Rome
 
-'When in Rome' brings together all of the world's functional harmonic analyses in encoded formats into a single, consistent repository.
-This enables musicians and developers to interact with that great body of work at scale, with minimal overheads.
+'When in Rome' brings together the world's functional harmonic analyses in encoded formats 
+into a single, consistent repository.
+This enables musicians and developers to interact with that great body of work at scale, 
+with minimal overheads.
 
-In total, there are now approximately 2,000 analyses.
+In total, there are now approximately 2,000 analyses of 1,500 distinct works.
 
-Additionally, 'When in Rome' provides code for working with this corpora, building on top of the [music21](https://github.com/cuthbertLab/music21/) library for music analysis.
+Additionally, 'When in Rome' provides code for working with these corpora, 
+building on the [music21](https://github.com/cuthbertLab/music21/) library for music analysis.
 
 ## Is it for me?
 
