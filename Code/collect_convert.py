@@ -16,7 +16,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 ABOUT:
 ===============================
 Collect external files and / or convert them for inclusion in "When in Rome"
-or reference to the via the `remote_score.json` files.
+or reference to the via the `remote.json` files.
 
 """
 
@@ -32,6 +32,8 @@ from pathlib import Path
 from . import REPO_FOLDER
 from . import CORPUS_FOLDER
 from . import get_corpus_files
+from . import DT_BASE
+from . import raw_git
 
 from music21 import converter, environment, metadata, romanText
 
@@ -112,63 +114,22 @@ def convert_musescore_score_corpus(
     return out_data
 
 
-def copy_DCML_tsv_analysis_files(
-        in_path: str | os.PathLike,
-        out_path: str | os.PathLike,
-        corpus_name: str = "mozart_piano_sonatas",
-) -> None:
-    """
-    Copy DCML analysis files (.tsv) to the relevant
-    `working` folder of this repo.
-
-    TODO: DRY - refactor with `convert_musescore_score_corpus`
-    """
-
-    valid_corpora = ["ABC", "mozart_piano_sonatas"]
-    if corpus_name not in valid_corpora:
-        raise ValueError(f"Invalid in_format: must be one of {valid_corpora}")
-
-    for f in os.listdir(in_path):
-        if f.endswith(".tsv"):
-            if corpus_name == "ABC":
-                cln, mvt = dcml_ABC_to_local(f)
-            elif corpus_name == "mozart_piano_sonatas":
-                cln, mvt = f.split("-")  # e.g., K279-1.mscx >>> K279, 1.mcsx
-                mvt = mvt.split(".")[0]  # e.g.,  1.mcsx >>> 1
-
-            # if not isdir, mkdir
-            cln_path = os.path.join(out_path, cln)
-            if not os.path.isdir(cln_path):
-                os.mkdir(cln_path)
-            mvt_path = os.path.join(cln_path, mvt)
-            if not os.path.isdir(mvt_path):
-                os.mkdir(mvt_path)
-            working_path = os.path.join(mvt_path, "Working")
-            if not os.path.isdir(working_path):
-                os.mkdir(working_path)
-
-            print(f"Processing {working_path} ...", end="", flush=True)
-
-            shutil.copy(in_path + f,
-                        os.path.join(working_path, "DCML_analysis.tsv")
-                        )
-            print(" done.")
-
-
 def copy_DT_analysis_files(
-        in_path: str | os.PathLike,
+        in_path: Path = DT_BASE,
         sub_corpora: list | None = None,
 ) -> None:
     """
     Copy analysis files (romantext) from Dmitri
     from a local copy of his corpus to the relevant folder of WiR.
-    Also uses or writes `remote_score.json` files as appropriate to each sub-corpus.
-    TODO use direct URLs if ever released in that way.
+    Also uses or writes `remote.json` files as appropriate to each sub-corpus.
+
+    Note: this functionality also provided as part of `create_sub-corpus`.
+    Use this to update only DT analyses.
 
     Current sub-corpora:
     - Bach chorales (expansion of music21 provision)
     - Monteverdi madrigals (expansion of music21 provision)
-    - Beethoven sonatas (use existing `remote_score.json` files)
+    - Beethoven sonatas (use existing `remote.json` files)
 
     TODO DRY
     """
@@ -185,8 +146,7 @@ def copy_DT_analysis_files(
     if "Chorales" in sub_corpora:
 
         chorales_WiR = CORPUS_FOLDER / "Early_Choral" / "Bach,_Johann_Sebastian" / "Chorales"
-        chorales_DT = Path(in_path) / "Bach Chorales"
-        chorales_MG = raw_git + f"MarkGotham/Chorale-Corpus/"
+        chorales_DT = in_path / "Bach Chorales"
 
         for x in range(1, 372):
             num = str(x).zfill(3)
@@ -194,20 +154,10 @@ def copy_DT_analysis_files(
             dst = chorales_WiR / num / "analysis.txt"
             shutil.copy(src, dst)
 
-            this_metadata = dict(catalogue_type="Riemenschneider",
-                                 catalogue_number=x,
-                                 remote_URL_path=chorales_MG + f"{num}/short_score.mxl"
-                                 )
-
-            write_path = chorales_WiR / num / "remote_score.json"
-            with open(write_path, "w") as json_file:
-                json.dump(this_metadata, json_file, indent=4)
-
     if "Monteverdi" in sub_corpora:
 
         monte_WiR = CORPUS_FOLDER / "Early_Choral" / "Monteverdi,_Claudio"
-        monte_DT = Path(in_path) / "Monteverdi"
-        monte_m21 = raw_git + "cuthbertLab/music21/master/music21/corpus/monteverdi/"
+        monte_DT = in_path / "Monteverdi"
 
         for this_file in os.listdir(monte_DT):
             # Shared:
@@ -219,22 +169,12 @@ def copy_DT_analysis_files(
             analysis_dst = dst / "analysis.txt"
             shutil.copy(analysis_src, analysis_dst)
 
-            # Scores: remote point to music21 (currently no separate DT urls available)
-            this_metadata = dict(book=int(book),
-                                 number=int(number),
-                                 remote_URL_path=monte_m21 + f"madrigal.{book}.{number}.mxl"
-                                 )
-
-            write_path = dst / "remote_score.json"
-            with open(write_path, "w") as json_file:
-                json.dump(this_metadata, json_file, indent=4)
-
     if "Beethoven" in sub_corpora:
 
         base_WiR = CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van"
-        base_DT = Path(in_path) / "Beethoven"
+        base_DT = in_path / "Beethoven"
 
-        for this_file in get_corpus_files(sub_corpus_path=base_WiR, file_name="remote_score.json"):
+        for this_file in get_corpus_files(sub_corpus_path=base_WiR, file_name="remote.json"):
             with open(this_file, "r") as json_file:
                 data = json.load(json_file)
                 opus = data["catalogue_number"]
@@ -280,12 +220,83 @@ def dcml_ABC_to_local(
     return [cln, mvt]
 
 
+def get_and_convert_analyses_with_json(
+        to_base: Path = CORPUS_FOLDER / "Keyboard_Other" / "Chopin,_Frédéric",
+        from_base: Path | None = REPO_FOLDER.parent / "romantic_piano_corpus" / "chopin_mazurkas",
+        local_not_online: bool = True,
+        overwrite: bool = True
+) -> None:
+    """
+    Convert DCML analysis files (in `.tsv` format) to the local standard of Roman text
+    and write to the appropriate local directory location.
+
+    The default arguments provide an example use case for Chopin Mazurkas.
+
+    The json data must include an "analysis_source" key with a value ending ".tsv"
+    Raises a `ValueError` otherwise.
+
+    Args:
+        to_base (Path): A directory within the "When in Rome" directory "Corpus"
+        from_base (Path): A local path for the repo to move or convert from (required for local).
+        local_not_online (bool): If True, get file from local copy (`from_base` required);
+            if False, then get the file directly from the URL. TODO: url condition untested.
+        overwrite: If the destination file already exist and overwrite is True, then no action.
+    """
+
+    file_paths = get_corpus_files(sub_corpus_path=to_base,
+                                  file_name="remote.json")
+
+    if local_not_online:
+        if not from_base:
+            raise ValueError("The argument `from_base` is required for `local_not_online`.")
+        assert from_base.exists()
+
+    for file_path in file_paths:
+
+        this_dir = Path(file_path).parents[0]
+        out_path = this_dir / "analysis.txt"
+        if out_path.exists() and overwrite is False:
+            print(f"Analysis already present for {file_path} ... skipping.")
+            continue
+
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+            if data["analysis_source"]:
+                url = data["analysis_source"]
+                if not url.endswith("tsv"):
+                    raise ValueError("Invalid format")
+                    # url.endswith("txt"):  # perhaps this shutil for rntxt files here?
+                file_name = url.split("/")[-1]
+
+                if local_not_online:
+                    path_to_source = from_base / "harmonies" / file_name
+                else:  # online
+                    # TODO check/dev m21 acceptance of url as path (scores fine; romantext?)
+                    path_to_source = url
+
+            print(f"Processing {out_path} ...", end="", flush=True)
+            analysis = romanText.tsvConverter.TsvHandler(path_to_source,
+                                                         dcml_version=2
+                                                         ).toM21Stream()
+            analysis.insert(0, metadata.Metadata())
+            analysis.metadata.composer = data["composer"]
+            analysis.metadata.analyst = "DCMLab (https://github.com/DCMLab/). Licence CC-BY-NC-SA."
+            analysis.metadata.title = data["analysis_source"].split("/")[-1][:-4]  # their file name
+            analysis.metadata.proofreader = "See the source repository for details."
+
+            converter.subConverters.ConverterRomanText().write(
+                analysis, "romanText", fp=out_path
+            )
+            print(" done.")
+
+
 def convert_DCML_tsv_analyses(
         corpus: str = "Quartets",
         # overwrite: bool = True
 ) -> None:
     """
     Convert local copies of DCML analysis files (.tsv) to rntxt.
+    TODO: fully remove / replace with `get_and_convert_analyses_from_json`
     """
 
     file_paths = get_corpus_files(sub_corpus_path=CORPUS_FOLDER / corpus,
@@ -341,7 +352,7 @@ def remote_scores(
     :param local_path: the local path (within When in Rome) to the corpus expressed as a list.
     :param write_score: If true, convert to mxl and write a local copy.
         (See notes and warning at the `convert_and_write_local` function.)
-        If false, simply write "remote_score.json" files with the remote path and some metadata.
+        If false, simply write "remote.json" files with the remote path and some metadata.
         Please also check and observe the licence of all scores, especially those hosted externally.
     :return: None
 
@@ -361,9 +372,6 @@ def remote_scores(
         remote_TAVERN(local_path=local_path, Beethoven=False, write_score=write_score)
     else:
         raise ValueError(f"Invalid local_path. Chose one of {valid_local_paths}")
-
-
-raw_git = "https://raw.githubusercontent.com/"
 
 
 def list_dir_sorted_not_hidden(
@@ -427,7 +435,7 @@ def remote_Beethoven(
                 convert_and_write_local(remote_URL_path=remote_URL_path,
                                         local_path=movement_path)
             else:
-                write_path = os.path.join(movement_path, "remote_score.json")
+                write_path = os.path.join(movement_path, "remote.json")
                 with open(write_path, "w") as json_file:
                     json.dump(this_metadata, json_file, indent=4)
 
@@ -441,9 +449,9 @@ def remote_TAVERN(
     Remote scores for the TAVERN variations.
 
     Args:
-        local_path: See notes at remote_scores
+        local_path: See notes at remotes
         Beethoven (bool): `True` for the Beethoven side of the collection, `False` for Mozart.
-        write_score: See notes at remote_scores
+        write_score: See notes at remotes
     Returns: None
     """
 
@@ -484,7 +492,7 @@ def remote_TAVERN(
                                  remote_URL_path=remote_URL_path
                                  )
 
-            write_path = os.path.join(local_path, "remote_score.json")
+            write_path = os.path.join(local_path, "remote.json")
             with open(write_path, "w") as json_file:
                 json.dump(this_metadata, json_file, indent=4)
 
@@ -526,18 +534,22 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--DCML_ABC", action="store_true")
-    parser.add_argument("--DCML_Mozart", action="store_true")
+    arg_strings = ("--DCML_ABC",
+                   "--DCML_Mozart",
+                   "--DT_analyses",
+                   "--get_and_convert_analyses_with_json",
+                   "--remote_Beethoven_sonata_list",
+                   "--remote_Beethoven_variations_list",
+                   "--remote_Mozart_variations_list"
+                   )
 
-    parser.add_argument("--DT_analyses", action="store_true")
+    for x in arg_strings:
+        parser.add_argument(x, action="store_true")
+
     parser.add_argument("--DT_base_path", type=str,
                         required=False,
-                        default=REPO_FOLDER.parent / "TAOM" / "TAOMfiles" / "Music",
+                        default=DT_BASE,
                         help="Local base_path to the DT corpus up to the `Music` directory")
-
-    parser.add_argument("--remote_Beethoven_sonata_list", action="store_true")
-    parser.add_argument("--remote_Beethoven_variations_list", action="store_true")
-    parser.add_argument("--remote_Mozart_variations_list", action="store_true")
 
     args = parser.parse_args()
 
@@ -547,6 +559,8 @@ if __name__ == "__main__":
         convert_DCML_tsv_analyses(corpus="Piano_Sonatas")
     elif args.DT_analyses:
         copy_DT_analysis_files(in_path=args.DT_base_path)
+    elif args.get_and_convert_analyses_with_json:
+        get_and_convert_analyses_with_json()
     elif args.remote_Beethoven_sonata_list:
         remote_scores()  # default
     elif args.remote_Beethoven_variations_list:
