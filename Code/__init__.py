@@ -20,6 +20,7 @@ def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
         sub_corpus_path: the sub-corpus to run.
             Defaults to CORPUS_FOLDER (all corpora).
             Accepts any sub-path of the meta-corpus folder (i.e., "When-in-Rome/Corpus/...")
+            Checks ensure both that the path .exists and .is_relative_to(CORPUS_FOLDER)
         file_name (str): select all files matching this file_name. Defaults to "score.mxl".
         Alternatively, specify either an exact file name (e.g., "analysis_automatic.rntxt") or
         use the wildcard "*" to match patterns. Examples:
@@ -30,5 +31,5 @@ def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
     """
 
     assert sub_corpus_path.is_relative_to(CORPUS_FOLDER)
-
-    return [str(x) for x in sub_corpus_path.rglob(file_name) if not str(x).startswith(".")]
+    assert sub_corpus_path.exists()
+    return [str(x) for x in sub_corpus_path.rglob(file_name)]
