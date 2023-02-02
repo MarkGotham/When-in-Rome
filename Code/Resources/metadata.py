@@ -210,6 +210,7 @@ sonatas_Beethoven = dict(
     ),
     analysis_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
+    analysis_DT_source="Beethoven",  # NB no public listing, so relative path only
     remote_score_krn=raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/",
     # No such split file issues here
 )
