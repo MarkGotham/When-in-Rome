@@ -168,7 +168,7 @@ sonatas_Beethoven = dict(
         (2, 2, None, 4),
         (2, 3, None, 4),
 
-        (7, None, 4),
+        (7, None, None, 4),
 
         (10, 1, None, 3),
         (10, 2, None, 3),
@@ -179,9 +179,9 @@ sonatas_Beethoven = dict(
         (14, 1, None, 3),
         (14, 2, None, 4),
 
-        (22, None, 4),
+        (22, None, None, 4),
 
-        (26, None, 4),
+        (26, None, None, 4),
 
         (27, 1, None, 4),
         (27, 2, "Moonlight", 3),
@@ -195,18 +195,18 @@ sonatas_Beethoven = dict(
         (49, 1, None, 2),
         (49, 2, None, 2),
 
-        (53, None, 3),
-        (54, None, 2),
+        (53, None, None, 3),
+        (54, None, None, 2),
         (57, None, "Appassionata", 3),
-        (78, None, 2),
+        (78, None, None, 2),
         (79, None, "Sonatina", 3),
         ("81a", None, "Les Adieux", 3),
-        (90, None, 2),
-        (101, None, 4),
+        (90, None, None, 2),
+        (101, None, None, 4),
         (106, None, "Hammerklavier", 4),
-        (109, None, 3),
-        (110, None, 3),
-        (111, None, 2)
+        (109, None, None, 3),
+        (110, None, None, 3),
+        (111, None, None, 2)
     ),
     analysis_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
