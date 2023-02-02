@@ -190,9 +190,7 @@ def mozart(move_analyses: bool = True) -> None:
         md["sonata_number"] = count
         md[source["item_keys"][0]] = item  # Köchel
 
-        # Brown, Mkdir
         koechel_string = f"K{item}"
-
         k_dir = parent_dir_path / koechel_string
         make_dir(k_dir)
 
@@ -209,6 +207,53 @@ def mozart(move_analyses: bool = True) -> None:
             if move_analyses:
                 move_and_report(dt / f"{km_string}.txt", mvt_dir / "analysis_DT.txt")
                 # No K533
+
+            write_json(md, mvt_dir / "remote.json")
+
+
+def beethoven(move_analyses: bool = True) -> None:
+
+    source = metadata.sonatas_Beethoven
+    parent_dir_path = make_parent_dirs(source)
+    dt = DT_BASE / "Beethoven"
+
+    count = 0
+
+    for item in source["items"]:
+
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number, Name, Movements
+
+        count += 1
+        md["sonata_number"] = count
+
+        opus_number_str = f"Op{str(md['Opus']).zfill(3)}"
+        if md['Number']:
+            opus_number_str += f"_No{md['Number']}"
+
+        wir_dir = opus_number_str
+        dt_file_name = wir_dir.lower().replace("_", "")
+
+        if md['Name']:
+            wir_dir += f"({md['Name']})"
+
+        make_dir(parent_dir_path / wir_dir)
+
+        for movement in range(1, item[-1] + 1):  # last entry is number of movements
+            md["movement"] = movement
+            mvt_dir = parent_dir_path / wir_dir / str(movement)
+            make_dir(mvt_dir)
+
+            sonata_string = str(md['sonata_number']).zfill(2) + "-" + str(movement)  # 01-1
+            dt_mvt = f"{dt_file_name}-{str(movement)}.txt"  # op002no1-1.txt
+
+            md["analysis_source"] = source["analysis_source"] + f"{sonata_string}.tsv"
+            md["remote_score_mscx"] = source["remote_score_mscx"] + f"{sonata_string}.mscx"
+
+            dt_file = dt / dt_mvt
+            if dt_file.exists():
+                md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{dt_mvt}"
+                if move_analyses:
+                    move_and_report(dt_file, mvt_dir / "analysis_DT.txt")
 
             write_json(md, mvt_dir / "remote.json")
 
@@ -245,6 +290,19 @@ def make_dir(this_path: Path):
         this_path.mkdir()
 
 
+def expand_catalogue(
+        item_keys: list | tuple,
+        items_list: list | tuple,
+) -> dict:
+    """
+    Expand the catalogue metadata for one work as provided.
+    """
+    this_dict = {}
+    for k in range(len(item_keys)):
+        this_dict[item_keys[k]] = items_list[k]
+    return this_dict
+
+
 def make_parent_dirs(
         source: dict
 ) -> Path:
@@ -262,7 +320,7 @@ def make_parent_dirs(
 def move_and_report(src, dest):
     print(f"Processing {src} ...")
     if src.exists():
-        shutil.move(src, dest)
+        shutil.copy(src, dest)
         print("... done")
     else:
         print(f"... Error with {src}")
@@ -278,7 +336,8 @@ if __name__ == "__main__":
     arg_strings = ("--chorales",
                    "--madrigals",
                    "--chopin",
-                   "--mozart"
+                   "--mozart",
+                   "--beethoven"
                    )
 
     for x in arg_strings:
@@ -294,5 +353,7 @@ if __name__ == "__main__":
         chopin()
     elif args.mozart:
         mozart()
+    elif args.beethoven:
+        beethoven()
     else:
         parser.print_help()
