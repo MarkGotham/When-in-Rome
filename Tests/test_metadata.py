@@ -2,6 +2,7 @@ import os
 import re
 from pathlib import Path
 
+import unittest
 from Code.Resources import metadata
 from . import TEST_FOLDER
 
@@ -66,6 +67,24 @@ def get_DCML_Chopin_analyses(
         all_out.append((bi_parts, opus_parts))
 
     return tuple(sorted(all_out, key=lambda ind: ind[0]))
+
+
+class Test(unittest.TestCase):
+
+    def test_metadata(self):
+        for md in (
+                # metadata.chorales,  # special case items = 371
+                metadata.chopin,
+                metadata.madrigals,
+                metadata.sonatas_Mozart,
+                metadata.sonatas_Beethoven,
+        ):
+            k = len(md["item_keys"])
+            for i in md["items"]:
+                if isinstance(i, int):  # Mozart ssa items = 371
+                    assert(k == 1)
+                else:
+                    assert(len(i) == k)
 
 
 if __name__ == "__main__":
