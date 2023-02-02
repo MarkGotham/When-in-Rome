@@ -172,24 +172,14 @@ def copy_DT_analysis_files(
     if "Beethoven" in sub_corpora:
 
         base_WiR = CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van"
-        base_DT = in_path / "Beethoven"
 
         for this_file in get_corpus_files(sub_corpus_path=base_WiR, file_name="remote.json"):
             with open(this_file, "r") as json_file:
                 data = json.load(json_file)
-                opus = data["catalogue_number"]
-                dt_file_name = "op" + str(opus[0]).zfill(3)  # op002no1-1.txt
-                if len(opus) > 1:  # includes number
-                    dt_file_name += f"no{opus[1]}"
-                dt_file_name += f"-{data['movement']}.txt"
-                src = base_DT / dt_file_name
-                print(f"Getting {dt_file_name} ...")
-                if src.exists():
+                if "analysis_DT_source" in data.keys():  # "Beethoven/op002no1-1.txt"
+                    src = in_path / data["analysis_DT_source"]
                     dst = this_file.parent / "analysis_DT.txt"
                     shutil.move(src, dst)
-                    print("... moved")
-                else:
-                    print("... does not exist")
 
 
 def dcml_ABC_to_local(
@@ -275,6 +265,9 @@ def get_and_convert_analyses_with_json(
                     path_to_source = url
 
             print(f"Processing {out_path} ...", end="", flush=True)
+            if not path_to_source.exists():
+                print(" no such file. Stopping.")
+                continue
             analysis = romanText.tsvConverter.TsvHandler(path_to_source,
                                                          dcml_version=2
                                                          ).toM21Stream()
