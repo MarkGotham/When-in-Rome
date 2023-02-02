@@ -106,6 +106,7 @@ def madrigals(move_analyses: bool = True) -> None:
             md = dict()
             md["book"] = book
             md["number"] = number
+            md["composer"] = get_composer(source)
             md["analysis_source"] = source["analysis_source"] + f"/{m21_dt_string}.txt"
             md["remote_score_mxl"] = source["remote_score_mxl"] + f"{m21_dt_string}.mxl"
 
@@ -188,6 +189,7 @@ def mozart(move_analyses: bool = True) -> None:
         md = dict()
         count += 1
         md["sonata_number"] = count
+        md["composer"] = get_composer(source)
         md[source["item_keys"][0]] = item  # Köchel
 
         koechel_string = f"K{item}"
@@ -225,6 +227,7 @@ def beethoven(move_analyses: bool = True) -> None:
 
         count += 1
         md["sonata_number"] = count
+        md["composer"] = get_composer(source)
 
         opus_number_str = f"Op{str(md['Opus']).zfill(3)}"
         if md['Number']:
