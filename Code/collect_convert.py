@@ -210,6 +210,32 @@ def dcml_ABC_to_local(
     return [cln, mvt]
 
 
+ours_theirs_pairs = (
+    (CORPUS_FOLDER / "Quartets" / "Beethoven,_Ludwig_van",
+     REPO_FOLDER.parent / "ABC"),
+    (CORPUS_FOLDER / "Piano_Sonatas" / "Mozart,_Wolfgang_Amadeus",
+     REPO_FOLDER.parent / "mozart_piano_sonatas"),
+    (CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "beethoven_piano_sonatas"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Chopin,_Frédéric",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "chopin_mazurkas"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Debussy,_Claude",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "debussy_suite_bergamasque"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Dvořák,_Antonín",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "dvorak_silhouettes"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Grieg,_Edvard",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "grieg_lyric_pieces"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Liszt,_Franz",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "liszt_pelerinage"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Medtner,_Nikolai",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "medtner_tales"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Schumann,_Robert",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "schumann_kinderszenen"),
+    (CORPUS_FOLDER / "Keyboard_Other" / "Tchaikovsky,_Pyotr",
+     REPO_FOLDER.parent / "romantic_piano_corpus" / "tchaikovsky_seasons"),
+)
+
+
 def get_and_convert_analyses_with_json(
         to_base: Path = CORPUS_FOLDER / "Keyboard_Other" / "Chopin,_Frédéric",
         from_base: Path | None = REPO_FOLDER.parent / "romantic_piano_corpus" / "chopin_mazurkas",
@@ -232,6 +258,7 @@ def get_and_convert_analyses_with_json(
             if False, then get the file directly from the URL. TODO: url condition untested.
         overwrite: If the destination file already exist and overwrite is True, then no action.
     """
+    assert (to_base, from_base) in ours_theirs_pairs
 
     file_paths = get_corpus_files(sub_corpus_path=to_base,
                                   file_name="remote.json")
