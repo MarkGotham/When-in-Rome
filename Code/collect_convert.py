@@ -236,6 +236,11 @@ ours_theirs_pairs = (
 )
 
 
+def update_all_DCML_analyses_from_json():
+    for x in ours_theirs_pairs:
+        get_and_convert_analyses_with_json(x[0], x[1])
+
+
 def get_and_convert_analyses_with_json(
         to_base: Path = CORPUS_FOLDER / "Keyboard_Other" / "Chopin,_Frédéric",
         from_base: Path | None = REPO_FOLDER.parent / "romantic_piano_corpus" / "chopin_mazurkas",
@@ -560,7 +565,8 @@ if __name__ == "__main__":
                    "--get_and_convert_analyses_with_json",
                    "--remote_Beethoven_sonata_list",
                    "--remote_Beethoven_variations_list",
-                   "--remote_Mozart_variations_list"
+                   "--remote_Mozart_variations_list",
+                   "--update_all_DCML_analyses_from_json"
                    )
 
     for x in arg_strings:
@@ -581,6 +587,8 @@ if __name__ == "__main__":
         copy_DT_analysis_files(in_path=args.DT_base_path)
     elif args.get_and_convert_analyses_with_json:
         get_and_convert_analyses_with_json()
+    elif args.update_all_DCML_analyses_from_json:
+        update_all_DCML_analyses_from_json()
     elif args.remote_Beethoven_sonata_list:
         remote_scores()  # default
     elif args.remote_Beethoven_variations_list:
