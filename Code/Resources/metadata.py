@@ -232,7 +232,7 @@ debussy_commit = "691842d8bc8e03fbf0453542d86f3d1eb7cf44eb"
 debussy_suite_bergamasque = dict(
     repo_name="debussy_suite_bergamasque",
     path_within_WiR=["Keyboard_Other", "Debussy,_Claude", "Suite_Bergamasque,_L.75"],
-    item_keys=("Lesure Number", "DCML file Name"),
+    item_keys=("Lesure Catalogue", "Name"),
     items=(
         (75, "Prelude"),
         (75, "Menuet"),
@@ -248,8 +248,21 @@ dvorak_commit = "13502ce2304525eec6b81c68decc6d7dd48dd1e5"
 dvorak_silhouettes = dict(
     repo_name="dvorak_silhouettes",
     path_within_WiR=["Keyboard_Other", "Dvořák,_Antonín", "Silhouettes,_Op.8"],
-    item_keys="Number",
-    items=12,
+    item_keys=("Opus", "Number"),
+    items=(
+        (8, 1),
+        (8, 2),
+        (8, 3),
+        (8, 4),
+        (8, 5),
+        (8, 6),
+        (8, 7),
+        (8, 8),
+        (8, 9),
+        (8, 10),
+        (8, 11),
+        (8, 12)
+    ),
     analysis_source=raw_git + f"DCMLab/dvorak_silhouettes/{dvorak_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/dvorak_silhouettes/{dvorak_commit}/MS3/",
 )
