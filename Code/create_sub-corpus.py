@@ -261,9 +261,107 @@ def beethoven(move_analyses: bool = True) -> None:
             write_json(md, mvt_dir / "remote.json")
 
 
+def debussy_suite_bergamasque(move_analyses: bool = True) -> None:
+    source = metadata.debussy_suite_bergamasque
+    parent_dir_path = make_parent_dirs(source)
+    count = 0
+    for item in source["items"]:
+        count += 1
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
+        md["composer"] = get_composer(source)
+        their_str = f"l{str(md['Lesure Catalogue']).zfill(3)}-{str(count).zfill(2)}" \
+                    f"_suite_{str(md['Name']).lower()}"
+        # l075-01_suite_prelude.tsv
+        our_string = f"{count}_{md['Name']}"
+        make_dir(parent_dir_path / our_string)
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        write_json(md, parent_dir_path / our_string / "remote.json")
+
+
+def dvorak_silhouettes(move_analyses: bool = True) -> None:
+    simple_case(metadata.dvorak_silhouettes)
+
+
+def liszt_pelerinage(move_analyses: bool = True) -> None:
+    source = metadata.liszt_pelerinage
+    parent_dir_path = make_parent_dirs(source)
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
+        md["composer"] = get_composer(source)
+        their_str = f"{str(md['Searle'])}.{str(md['Number']).zfill(2)}_{md['Name']}"
+        # 160.01_Chapelle_de_Guillaume_Tell.tsv
+        our_string = f"S{str(md['Searle'])}_{str(md['Number'])}_{md['Name']}"
+        make_dir(parent_dir_path / our_string)
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        write_json(md, parent_dir_path / our_string / "remote.json")
+
+
+def grieg_lyric_pieces(move_analyses: bool = True) -> None:
+    simple_case(metadata.grieg_lyric_pieces)
+
+
+def medtner_tales(move_analyses: bool = True) -> None:
+    simple_case(metadata.medtner_tales)
+
+
+def schumann_kinderszenen(move_analyses: bool = True) -> None:
+    source = metadata.schumann_kinderszenen
+    parent_dir_path = make_parent_dirs(source)
+    for item in range(1, source["items"] + 1):
+        md = dict()
+        md["Opus"] = 15
+        md["Number"] = item
+        md["composer"] = get_composer(source)
+        their_str = f"n{str(item).zfill(2)}"
+        make_dir(parent_dir_path / str(item))
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+
+        write_json(md, parent_dir_path / str(item) / "remote.json")
+
+
+def tchaikovsky_seasons(move_analyses: bool = True) -> None:
+    source = metadata.tchaikovsky_seasons
+    parent_dir_path = make_parent_dirs(source)
+    for item in range(1, source["items"] + 1):
+        md = dict()
+        md["Opus"] = "37a"
+        md["Number"] = item
+        md["composer"] = get_composer(source)
+        their_str = f"op37a{str(item).zfill(2)}"
+        make_dir(parent_dir_path / str(item))
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+
+        write_json(md, parent_dir_path / str(item) / "remote.json")
+
+
 # ------------------------------------------------------------------------------
 
 # Shared
+
+def simple_case(source: dict) -> None:
+    """
+    A simple case of expanding opus, number, composer etc.
+    Usually slight variants to encode.
+    Args:
+        source (dict): one of the metadata.<x> dict entries.
+
+    Returns: None
+    """
+    parent_dir_path = make_parent_dirs(source)
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
+        md["composer"] = get_composer(source)
+        their_str = f"op{str(md['Opus']).zfill(2)}n{str(md['Number']).zfill(2)}"
+        our_string = f"Op{str(md['Opus']).zfill(2)}_No{md['Number']}"
+        make_dir(parent_dir_path / our_string)
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        write_json(md, parent_dir_path / our_string / "remote.json")
+
 
 def get_composer(
         source: dict
@@ -332,31 +430,37 @@ def move_and_report(src, dest):
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
+
     import argparse
 
-    parser = argparse.ArgumentParser()
+    def run_args():
 
-    arg_strings = ("--chorales",
-                   "--madrigals",
-                   "--chopin",
-                   "--mozart",
-                   "--beethoven"
-                   )
+        parser = argparse.ArgumentParser()
 
-    for x in arg_strings:
-        parser.add_argument(x, action="store_true")
+        arg_strings = ("chorales",
+                       "madrigals",
+                       "chopin",
+                       "mozart",
+                       "beethoven",
+                       "debussy_suite_bergamasque",
+                       "dvorak_silhouettes",
+                       "grieg_lyric_pieces",
+                       "liszt_pelerinage",
+                       "medtner_tales",
+                       "schumann_kinderszenen",
+                       "tchaikovsky_seasons"
+                       )
 
-    args = parser.parse_args()
+        for x in arg_strings:
+            parser.add_argument("--" + x, action="store_true")
 
-    if args.chorales:
-        chorales()
-    elif args.madrigals:
-        madrigals()
-    elif args.chopin:
-        chopin()
-    elif args.mozart:
-        mozart()
-    elif args.beethoven:
-        beethoven()
-    else:
+        args = parser.parse_args()
+
+        for y in arg_strings:
+            if args.__getattribute__(y):
+                eval(y + "()")
+                return
+
         parser.print_help()
+
+    run_args()
