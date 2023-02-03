@@ -309,7 +309,7 @@ def check_all_parse(
 
     if count_files:
         print(f"{len(files)} files found ... ")
-        distinct_works = set([("-").join(x.split("/")[:-1]) for x in files])
+        distinct_works = set([x.parts[:-1] for x in files])
         print(f"... on {len(distinct_works)} distinct works ...")
 
     rns = 0
