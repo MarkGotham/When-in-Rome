@@ -276,25 +276,37 @@ def get_and_convert_analyses_with_json(
     for file_path in file_paths:
 
         this_dir = Path(file_path).parents[0]
+
         out_path = this_dir / "analysis.txt"
         if out_path.exists() and overwrite is False:
-            print(f"Analysis already present for {file_path} ... skipping.")
+            print(f"Overwrite set to false and analysis already present for {file_path}. Skipping.")
+            continue
+
+        if not (this_dir / "remote.json").exists():
+            print(f"No `remote.json` file at {this_dir} ... skipping.")
             continue
 
         with open(file_path) as json_file:
             data = json.load(json_file)
-            if data["analysis_source"]:
+            if data["analysis_source"] is not None:
                 url = data["analysis_source"]
-                if not url.endswith("tsv"):
-                    raise ValueError("Invalid format")
-                    # url.endswith("txt"):  # perhaps this shutil for rntxt files here?
-                file_name = url.split("/")[-1]
+            elif data["analysis_DCML_source"] is not None:
+                url = data["analysis_DCML_source"]
+                out_path = this_dir / "analysis_DCML.txt"  # replace analysis
+            else:
+                print(f"No `analysis_source` or `analysis_DCML_source` keys in {this_dir}")
+                continue
 
-                if local_not_online:
-                    path_to_source = from_base / "harmonies" / file_name
-                else:  # online
-                    # TODO check/dev m21 acceptance of url as path (scores fine; romantext?)
-                    path_to_source = url
+            if not url.endswith("tsv"):
+                raise ValueError("Invalid format")
+                # url.endswith("txt"):  # perhaps this shutil for rntxt files here?
+            file_name = url.split("/")[-1]
+
+            if local_not_online:
+                path_to_source = from_base / "harmonies" / file_name
+            else:  # online
+                # TODO check/dev m21 acceptance of url as path (scores fine; romantext?)
+                path_to_source = url
 
             print(f"Processing {out_path} ...", end="", flush=True)
             if not path_to_source.exists():
@@ -306,7 +318,7 @@ def get_and_convert_analyses_with_json(
             analysis.insert(0, metadata.Metadata())
             analysis.metadata.composer = data["composer"]
             analysis.metadata.analyst = "DCMLab (https://github.com/DCMLab/). Licence CC-BY-NC-SA."
-            analysis.metadata.title = data["analysis_source"].split("/")[-1][:-4]  # their file name
+            analysis.metadata.title = url.split("/")[-1][:-4]  # their file name
             analysis.metadata.proofreader = "See the source repository for details."
 
             converter.subConverters.ConverterRomanText().write(

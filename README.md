@@ -166,8 +166,9 @@ Converted from other formats:
     (complete first movements, 32 movements), from Tsung-Ping Chen and Li Su's
     ['BPS-FH' dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
 
-Originally in the 'RomanText' format (no conversion needed), analysed by 
-Dmitri Tymoczko and colleagues, and included in the supplementary to Tymoczko's forthcoming "TAOM":
+Analyses originally in the 'RomanText' format (no conversion needed), 
+analysed by Dmitri Tymoczko and colleagues, and forming part of the supplementary to Tymoczko's 
+forthcoming "TAOM", include:
 - [Monteverdi madrigals](/Corpus/Early_Choral/Monteverdi,_Claudio/): Complete scores and 
   analyses for books 3–5 of the Monteverdi madrigals (48 works) also to be seen in 
   [this part](https://github.com/cuthbertLab/music21/tree/master/music21/corpus/monteverdi)  
@@ -176,6 +177,18 @@ Dmitri Tymoczko and colleagues, and included in the supplementary to Tymoczko's 
   a subset of 20 was first released on music21.
 - Several further collections including a second set of analyses for most of the  
   [ChopinMazurkas](/Corpus/Keyboard_Other/Chopin,_Frédéric/Mazurkas)
+
+### Mixed sources
+
+Several corpora have full or partial coverage from more than one source.
+The most complex case is the 
+the [Beethoven Piano Sonata](/Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/) collection
+for which there are 3 external corpora, all of them incomplete:
+1. 64 movements from DCML's 
+   ['romantic_piano_corpus'](https://github.com/DCMLab/romantic_piano_corpus).
+2. 36 movements from Dmitri Tymoczko's TAOM collection
+3. 32 movements (complete first movements) as converted from the  
+  ['BPS-FH' dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
 
 
 ### New corpora by MG and colleagues

@@ -161,53 +161,54 @@ lvb_commit = "f131d6dac8605ae7be9f874637330f0b73d11e2f"
 
 sonatas_Beethoven = dict(
     path_within_WiR=["Piano_Sonatas", "Beethoven,_Ludwig_van"],
-    item_keys=("Opus", "Number", "Name", "Movements"),
+    item_keys=("Opus", "Number", "Name", "Movements", "DCML"),
     items=(
-        (2, 1, None, 4),
-        (2, 2, None, 4),
-        (2, 3, None, 4),
+        (2, 1, None, 4, True),
+        (2, 2, None, 4, True),
+        (2, 3, None, 4, True),
 
-        (7, None, None, 4),
+        (7, None, None, 4, False),
 
-        (10, 1, None, 3),
-        (10, 2, None, 3),
-        (10, 3, None, 4),
+        (10, 1, None, 3, True),
+        (10, 2, None, 3, True),
+        (10, 3, None, 4, True),
 
-        (13, None, "Pathetique", 3),
+        (13, None, "Pathetique", 3, True),
 
-        (14, 1, None, 3),
-        (14, 2, None, 4),
+        (14, 1, None, 3, True),
+        (14, 2, None, 4, True),  # 10
 
-        (22, None, None, 4),
+        (22, None, None, 4, False),
 
-        (26, None, None, 4),
+        (26, None, None, 4, False),
 
-        (27, 1, None, 4),
-        (27, 2, "Moonlight", 3),
+        (27, 1, None, 4, False),
+        (27, 2, "Moonlight", 3, False),
 
-        (28, None, "Pastorale", 4),
+        (28, None, "Pastorale", 4, False),  # 15
 
-        (31, 1, None, 3),
-        (31, 2, None, 3),
-        (31, 3, None, 4),
+        (31, 1, None, 3, True),
+        (31, 2, None, 3, True),
+        (31, 3, None, 4, True),
 
-        (49, 1, None, 2),
-        (49, 2, None, 2),
+        (49, 1, None, 2, True),
+        (49, 2, None, 2, True),  # 20
 
-        (53, None, None, 3),
-        (54, None, None, 2),
-        (57, None, "Appassionata", 3),
-        (78, None, None, 2),
-        (79, None, "Sonatina", 3),
-        ("81a", None, "Les Adieux", 3),
-        (90, None, None, 2),
-        (101, None, None, 4),
-        (106, None, "Hammerklavier", 4),
-        (109, None, None, 3),
-        (110, None, None, 3),
-        (111, None, None, 2)
+        (53, None, None, 3, True),
+        (54, None, None, 2, False),
+        (57, None, "Appassionata", 3, True),
+        (78, None, None, 2, True),
+        (79, None, "Sonatina", 3, False),  # 25
+        ("81a", None, "Les Adieux", 3, True),
+        (90, None, None, 2, False),
+        (101, None, None, 4, False),
+        (106, None, "Hammerklavier", 4, False),
+        (109, None, None, 3, True),  # 30
+        (110, None, None, 3, True),
+        (111, None, None, 2, True)
     ),
-    analysis_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
+    analysis_BPS_source=raw_git + f"Tsung-Ping/functional-harmony/master/BPS_FH_Dataset/",
+    analysis_DCML_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
     analysis_DT_source="Beethoven",  # NB no public listing, so relative path only
     remote_score_krn=raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/",

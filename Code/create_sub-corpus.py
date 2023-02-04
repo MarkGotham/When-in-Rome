@@ -223,7 +223,7 @@ def beethoven(move_analyses: bool = True) -> None:
 
     for item in source["items"]:
 
-        md = expand_catalogue(source["item_keys"], item)  # Opus, Number, Name, Movements
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number, Name, Movements, DCML
 
         count += 1
         md["sonata_number"] = count
@@ -241,7 +241,8 @@ def beethoven(move_analyses: bool = True) -> None:
 
         make_dir(parent_dir_path / wir_dir)
 
-        for movement in range(1, item[-1] + 1):  # last entry is number of movements
+        for movement in range(1, item[3] + 1):  # last entry is number of movements
+
             md["movement"] = movement
             mvt_dir = parent_dir_path / wir_dir / str(movement)
             make_dir(mvt_dir)
@@ -249,15 +250,33 @@ def beethoven(move_analyses: bool = True) -> None:
             sonata_string = str(md['sonata_number']).zfill(2) + "-" + str(movement)  # 01-1
             dt_mvt = f"{dt_file_name}-{str(movement)}.txt"  # op002no1-1.txt
 
-            md["analysis_source"] = source["analysis_source"] + f"{sonata_string}.tsv"
-            md["remote_score_mscx"] = source["remote_score_mscx"] + f"{sonata_string}.mscx"
+            md["analysis_source"] = None
 
+            # 3x incomplete corpora!
+            # BPS
+            if movement == 1:
+                md["analysis_BPS_source"] = f"{source['analysis_BPS_source']}{count}/chords.xlsx"
+            else:
+                md["analysis_BPS_source"] = None  # Reset for movements 2+
+                # Sic, first movements one, no zero-pad
+            # DCML
+            if item[4]:
+                md["analysis_DCML_source"] = source["analysis_DCML_source"] + f"{sonata_string}.tsv"
+                md["remote_score_mscx"] = source["remote_score_mscx"] + f"{sonata_string}.mscx"
+            else:
+                md["analysis_DCML_source"] = None
+                md["remote_score_mscx"] = None
+
+            # DT
             dt_file = dt / dt_mvt
             if dt_file.exists():
                 md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{dt_mvt}"
                 if move_analyses:
                     move_and_report(dt_file, mvt_dir / "analysis_DT.txt")
+            else:
+                md["analysis_DT_source"] = None
 
+            print(f"Writing json metadata for {mvt_dir}")
             write_json(md, mvt_dir / "remote.json")
 
 
