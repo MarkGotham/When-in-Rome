@@ -180,7 +180,7 @@ def copy_DT_analysis_files(
             with open(this_file, "r") as json_file:
                 data = json.load(json_file)
                 if data["analysis_DT_source"] is not None:
-                    src = in_path / data["analysis_DT_source"] 
+                    src = in_path / data["analysis_DT_source"]
                     dst = this_file.parent / "analysis_DT.txt"
                     shutil.copy(src, dst)
 
@@ -301,6 +301,12 @@ def get_and_convert_analyses_with_json(
             raise ValueError("The argument `from_base` is required for `local_not_online`.")
         assert from_base.exists()
 
+    credit_str_base = (
+        "DCML members and contributors. Licence CC-BY-NC-SA. "
+        "This file is automatically converted from ",  # details filled at write
+        "Please refer to that source repository for full details."
+    )
+
     for file_path in file_paths:
 
         this_dir = Path(file_path).parents[0]
@@ -336,23 +342,27 @@ def get_and_convert_analyses_with_json(
                 # TODO check/dev m21 acceptance of url as path (scores fine; romantext?)
                 path_to_source = url
 
-            print(f"Processing {out_path} ...", end="", flush=True)
+            print(f"Processing {this_dir} ...", end="", flush=True)
             if not path_to_source.exists():
-                print(" no such file. Stopping.")
+                print(f" no such source file {path_to_source}. Stopping.")
                 continue
-            analysis = romanText.tsvConverter.TsvHandler(path_to_source,
-                                                         dcml_version=2
-                                                         ).toM21Stream()
-            analysis.insert(0, metadata.Metadata())
-            analysis.metadata.composer = data["composer"]
-            analysis.metadata.analyst = "DCMLab (https://github.com/DCMLab/). Licence CC-BY-NC-SA."
-            analysis.metadata.title = url.split("/")[-1][:-4]  # their file name
-            analysis.metadata.proofreader = "See the source repository for details."
 
-            converter.subConverters.ConverterRomanText().write(
-                analysis, "romanText", fp=out_path
-            )
-            print(" done.")
+            try:
+                analysis = romanText.tsvConverter.TsvHandler(path_to_source,
+                                                             dcml_version=2
+                                                             ).toM21Stream()
+                analysis.insert(0, metadata.Metadata())
+                analysis.metadata.composer = data["composer"]
+                analysis.metadata.analyst = credit_str_base[0] + url
+                analysis.metadata.title = url.split("/")[-1][:-4]  # their file name
+                analysis.metadata.proofreader = credit_str_base[1]
+
+                converter.subConverters.ConverterRomanText().write(
+                    analysis, "romanText", fp=out_path
+                )
+                print(" done.")
+            except:
+                print(" error with conversion.")
 
 
 def convert_DCML_tsv_analyses(
