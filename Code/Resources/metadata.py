@@ -43,6 +43,11 @@ URLs are initialised here with the base and extended when created.
 
 from .. import raw_git
 
+
+# ------------------------------------------------------------------------------
+
+# Early_choral
+
 chorales = dict(
     path_within_WiR=["Early_Choral", "Bach,_Johann_Sebastian", "Chorales"],
     item_keys="Riemenschneider",
@@ -62,6 +67,11 @@ madrigals = dict(
     analysis_source="Monteverdi",
     remote_score_mxl=raw_git + "cuthbertLab/music21/master/music21/corpus/monteverdi/"
 )
+
+
+# ------------------------------------------------------------------------------
+
+# Keyboard_other
 
 tempered = dict(
     path_within_WiR=["Keyboard_Other", "Bach,_Johann_Sebastian", "The_Well-Tempered_Clavier_I"],
@@ -155,77 +165,6 @@ chopin = dict(
     remote_score_mscx=raw_git + f"DCMLab/chopin_mazurkas/{chopin_commit}/MS3/",
     analysis_DT_source="Chopin",  # NB no public listing, so relative path only
     remote_score_krn=raw_git + "craigsapp/chopin-mazurkas/master/kern/",
-)
-
-lvb_commit = "f131d6dac8605ae7be9f874637330f0b73d11e2f"
-
-sonatas_Beethoven = dict(
-    path_within_WiR=["Piano_Sonatas", "Beethoven,_Ludwig_van"],
-    item_keys=("Opus", "Number", "Name", "Movements", "DCML"),
-    items=(
-        (2, 1, None, 4, True),
-        (2, 2, None, 4, True),
-        (2, 3, None, 4, True),
-
-        (7, None, None, 4, False),
-
-        (10, 1, None, 3, True),
-        (10, 2, None, 3, True),
-        (10, 3, None, 4, True),
-
-        (13, None, "Pathetique", 3, True),
-
-        (14, 1, None, 3, True),
-        (14, 2, None, 4, True),  # 10
-
-        (22, None, None, 4, False),
-
-        (26, None, None, 4, False),
-
-        (27, 1, None, 4, False),
-        (27, 2, "Moonlight", 3, False),
-
-        (28, None, "Pastorale", 4, False),  # 15
-
-        (31, 1, None, 3, True),
-        (31, 2, None, 3, True),
-        (31, 3, None, 4, True),
-
-        (49, 1, None, 2, True),
-        (49, 2, None, 2, True),  # 20
-
-        (53, None, None, 3, True),
-        (54, None, None, 2, False),
-        (57, None, "Appassionata", 3, True),
-        (78, None, None, 2, True),
-        (79, None, "Sonatina", 3, False),  # 25
-        ("81a", None, "Les Adieux", 3, True),
-        (90, None, None, 2, False),
-        (101, None, None, 4, False),
-        (106, None, "Hammerklavier", 4, False),
-        (109, None, None, 3, True),  # 30
-        (110, None, None, 3, True),
-        (111, None, None, 2, True)
-    ),
-    analysis_BPS_source=raw_git + f"Tsung-Ping/functional-harmony/master/BPS_FH_Dataset/",
-    analysis_DCML_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
-    remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
-    analysis_DT_source="Beethoven",  # NB no public listing, so relative path only
-    remote_score_krn=raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/",
-    # No such split file issues here
-)
-
-sonatas_Mozart = dict(
-    path_within_WiR=["Piano_Sonatas", "Mozart,_Wolfgang_Amadeus"],
-    item_keys=("Köchel-Verzeichnis",),
-    items=(
-        (279, 280, 281, 282, 283, 284, 309, 310, 311, 330, 331, 332, 333, 457, 533, 545, 570, 576)
-    ),  # always 3 movements so no need to specify
-    analysis_source=raw_git + f"DCMLab/mozart_piano_sonatas/harmonies/",
-    remote_score_mscx=raw_git + f"DCMLab/mozart_piano_sonatas/MS3/",
-    analysis_DT_source="Mozart",  # NB no public listing, so relative path only
-    # remote_score_krn=raw_git + "craigsapp/mozart-piano-sonatas/master/kern/",
-    # Omit ^ Split files too complex (e.g., "sonata06-3m.krn").
 )
 
 debussy_commit = "691842d8bc8e03fbf0453542d86f3d1eb7cf44eb"
@@ -431,3 +370,138 @@ tchaikovsky_seasons = dict(
 )
 
 
+# ------------------------------------------------------------------------------
+
+# Piano sonatas
+
+lvb_commit = "f131d6dac8605ae7be9f874637330f0b73d11e2f"
+
+sonatas_Beethoven = dict(
+    path_within_WiR=["Piano_Sonatas", "Beethoven,_Ludwig_van"],
+    item_keys=("Opus", "Number", "Name", "Movements", "DCML"),
+    items=(
+        (2, 1, None, 4, True),
+        (2, 2, None, 4, True),
+        (2, 3, None, 4, True),
+
+        (7, None, None, 4, False),
+
+        (10, 1, None, 3, True),
+        (10, 2, None, 3, True),
+        (10, 3, None, 4, True),
+
+        (13, None, "Pathetique", 3, True),
+
+        (14, 1, None, 3, True),
+        (14, 2, None, 4, True),  # 10
+
+        (22, None, None, 4, False),
+
+        (26, None, None, 4, False),
+
+        (27, 1, None, 4, False),
+        (27, 2, "Moonlight", 3, False),
+
+        (28, None, "Pastorale", 4, False),  # 15
+
+        (31, 1, None, 3, True),
+        (31, 2, None, 3, True),
+        (31, 3, None, 4, True),
+
+        (49, 1, None, 2, True),
+        (49, 2, None, 2, True),  # 20
+
+        (53, None, None, 3, True),
+        (54, None, None, 2, False),
+        (57, None, "Appassionata", 3, True),
+        (78, None, None, 2, True),
+        (79, None, "Sonatina", 3, False),  # 25
+        ("81a", None, "Les Adieux", 3, True),
+        (90, None, None, 2, False),
+        (101, None, None, 4, False),
+        (106, None, "Hammerklavier", 4, False),
+        (109, None, None, 3, True),  # 30
+        (110, None, None, 3, True),
+        (111, None, None, 2, True)
+    ),
+    analysis_BPS_source=raw_git + f"Tsung-Ping/functional-harmony/master/BPS_FH_Dataset/",
+    analysis_DCML_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
+    analysis_DT_source="Beethoven",  # NB no public listing, so relative path only
+    remote_score_krn=raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/",
+    # No such split file issues here
+)
+
+sonatas_Mozart = dict(
+    path_within_WiR=["Piano_Sonatas", "Mozart,_Wolfgang_Amadeus"],
+    item_keys=("Köchel-Verzeichnis",),
+    items=(
+        (279, 280, 281, 282, 283, 284, 309, 310, 311, 330, 331, 332, 333, 457, 533, 545, 570, 576)
+    ),  # always 3 movements so no need to specify
+    analysis_source=raw_git + f"DCMLab/mozart_piano_sonatas/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/mozart_piano_sonatas/MS3/",
+    analysis_DT_source="Mozart",  # NB no public listing, so relative path only
+    # remote_score_krn=raw_git + "craigsapp/mozart-piano-sonatas/master/kern/",
+    # Omit ^ Split files too complex (e.g., "sonata06-3m.krn").
+)
+
+
+# ------------------------------------------------------------------------------
+
+# Quartets
+
+quartets_Beethoven = dict(
+    repo_name="ABC",
+    path_within_WiR=["Quartets", "Beethoven,_Ludwig_van"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (18, 1, 4),
+        (18, 2, 4),
+        (18, 3, 4),
+        (18, 4, 4),
+        (18, 5, 4),
+        (18, 6, 4),
+
+        (59, 1, 4),
+        (59, 2, 4),
+        (59, 3, 4),
+
+        (74, None, 4),
+        (95, None, 4),
+        (127, None, 4),
+        (130, None, 6),
+        (131, None, 7),
+        (132, None, 3),
+        (135, None, 4),
+    ),
+    analysis_source=raw_git + f"DCMLab/ABC/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/ABC/MS3/",
+)
+
+haydn_op20 = dict(
+    repo_name="haydn_op20",
+    path_within_WiR=["Quartets", "Haydn,_Franz_Joseph"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (20, 1, 4),
+        (20, 2, 4),
+        (20, 3, 4),
+        (20, 4, 4),
+        (20, 5, 4),
+        (20, 6, 4)
+    ),
+    analysis_source="napulen/haydn_op20_harm/master/op20/",
+    remote_score_krn="napulen/humdrum-haydn-quartets/master/kern/"
+)
+
+haydn_op74 = dict(
+    repo_name="haydn_op74",
+    path_within_WiR=["Quartets", "Haydn,_Franz_Joseph"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (74, 1, 4),
+        (74, 3, 4)
+    ),
+    analysis_source="Haydn",
+    remote_score_krn="napulen/humdrum-haydn-quartets/master/kern/"
+)
