@@ -476,6 +476,7 @@ quartets_Beethoven = dict(
     ),
     analysis_source=raw_git + f"DCMLab/ABC/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/ABC/MS3/",
+    # TODO consider adding "remote_score_krn"
 )
 
 haydn_op20 = dict(

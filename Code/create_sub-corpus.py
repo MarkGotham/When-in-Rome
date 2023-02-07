@@ -370,19 +370,27 @@ def sonatas_Mozart(move_analyses: bool = True) -> None:
 def quartets_Beethoven():
     source = metadata.quartets_Beethoven
     parent_dir_path = make_parent_dirs(source)
+    count = 0
     for item in source["items"]:
+        count += 1
         md = expand_catalogue(source["item_keys"], item)
         md["composer"] = get_composer(source)
-        our_string = f"Op{md['Opus']}_No{md['Number']}"
+
+        our_string = f"Op{str(md['Opus']).zfill(3)}"
+        their_opus_str = f"n{str(count).zfill(2)}op{md['Opus']}"  # n01op18-1_01.tsv
+
+        if md["Number"] is not None:
+            our_string += f"_No{md['Number']}"
+            their_opus_str += f"-{md['Number']}"
+
         make_dir(parent_dir_path / our_string)
+
         for m in range(1, item[2] + 1):
             md["movement"] = m
             make_dir(parent_dir_path / our_string / str(m))
-            their_str = f"op20n{md['Number']}-0{m}."
-            md["analysis_source"] = f"{source['analysis_source']}{md['Number']}/" \
-                                    f"{'i' * m}/{their_str}hrm"
-            md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}krn"
-
+            their_full_string = "_".join([their_opus_str, str(m).zfill(2)])
+            md["analysis_source"] = source['analysis_source'] + their_full_string + ".tsv"
+            md["remote_score_mscx"] = source['remote_score_mscx'] + their_full_string + ".tsv"
             write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
 
 
@@ -539,7 +547,7 @@ if __name__ == "__main__":
             "sonatas_Mozart",
             "sonatas_Beethoven",
 
-            "quartets_beethoven",
+            "quartets_Beethoven",
             "haydn_op20",
             "haydn_op74"
         )
