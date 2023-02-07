@@ -134,7 +134,10 @@ def copy_DT_analysis_files(
     TODO DRY
     """
 
-    valid_sub_corpora = ["Chorales", "Monteverdi", "Beethoven"]
+    valid_sub_corpora = ["Chorales",
+                         "Monteverdi",
+                         "Beethoven_sonatas",
+                         "Haydn"]
 
     if sub_corpora is None:
         sub_corpora = valid_sub_corpora
@@ -169,7 +172,19 @@ def copy_DT_analysis_files(
             analysis_dst = dst / "analysis.txt"
             shutil.copy(analysis_src, analysis_dst)
 
-    if "Beethoven" in sub_corpora:
+    if "Beethoven_sonatas" in sub_corpora:
+
+        base_WiR = CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van"
+
+        for this_file in get_corpus_files(sub_corpus_path=base_WiR, file_name="remote.json"):
+            with open(this_file, "r") as json_file:
+                data = json.load(json_file)
+                if data["analysis_DT_source"] is not None:
+                    src = in_path / data["analysis_DT_source"] 
+                    dst = this_file.parent / "analysis_DT.txt"
+                    shutil.copy(src, dst)
+
+    if "Beethoven_quartets" in sub_corpora:
 
         base_WiR = CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van"
 
@@ -179,7 +194,20 @@ def copy_DT_analysis_files(
                 if "analysis_DT_source" in data.keys():  # "Beethoven/op002no1-1.txt"
                     src = in_path / data["analysis_DT_source"]
                     dst = this_file.parent / "analysis_DT.txt"
-                    shutil.move(src, dst)
+                    shutil.copy(src, dst)
+
+    if "Haydn" in sub_corpora:
+
+        base_WiR = CORPUS_FOLDER / "Quartets" / "Haydn,_Franz_Joseph"
+
+        for this_file in get_corpus_files(sub_corpus_path=base_WiR, file_name="remote.json"):
+            with open(this_file, "r") as json_file:
+                data = json.load(json_file)
+                if "analysis_source" in data.keys():
+                    src = in_path / data["analysis_source"]
+                    if src.exists():  # Only part of the Haydn quartet collection
+                        dst = this_file.parent / "analysis.txt"
+                        shutil.copy(src, dst)
 
 
 def dcml_ABC_to_local(
