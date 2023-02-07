@@ -36,7 +36,7 @@ from .Resources import metadata
 
 # ------------------------------------------------------------------------------
 
-# Specific
+# Early Choral
 
 def chorales(move_analyses: bool = False) -> None:
     """
@@ -120,6 +120,10 @@ def madrigals(move_analyses: bool = True) -> None:
             write_json(md, num_dir / "remote.json")
 
 
+# ------------------------------------------------------------------------------
+
+# Keyboard_Other
+
 def chopin(move_analyses: bool = True) -> None:
     """
     A special case triangulating 3 different external repos.
@@ -176,45 +180,88 @@ def chopin(move_analyses: bool = True) -> None:
         write_json(md, parent_dir_path / brown_string / "remote.json")
 
 
-def mozart(move_analyses: bool = True) -> None:
-
-    source = metadata.sonatas_Mozart
+def debussy_suite_bergamasque() -> None:
+    source = metadata.debussy_suite_bergamasque
     parent_dir_path = make_parent_dirs(source)
-    dt = DT_BASE / "Mozart"
-
     count = 0
-
     for item in source["items"]:
-
-        md = dict()
         count += 1
-        md["sonata_number"] = count
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
         md["composer"] = get_composer(source)
-        md[source["item_keys"][0]] = item  # Köchel
-
-        koechel_string = f"K{item}"
-        k_dir = parent_dir_path / koechel_string
-        make_dir(k_dir)
-
-        for movement in range(1, 3 + 1):
-            mvt_dir = k_dir / str(movement)
-            make_dir(mvt_dir)
-
-            km_string = koechel_string + "-" + str(movement)
-
-            md["analysis_source"] = source["analysis_source"] + f"{km_string}.tsv"
-            md["remote_score_mscx"] = source["remote_score_mscx"] + f"{km_string}.mscx"
-            md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{km_string}.txt"
-
-            if move_analyses:
-                move_and_report(dt / f"{km_string}.txt", mvt_dir / "analysis_DT.txt")
-                # No K533
-
-            write_json(md, mvt_dir / "remote.json")
+        their_str = f"l{str(md['Lesure Catalogue']).zfill(3)}-{str(count).zfill(2)}" \
+                    f"_suite_{str(md['Name']).lower()}"
+        # l075-01_suite_prelude.tsv
+        our_string = f"{count}_{md['Name']}"
+        make_dir(parent_dir_path / our_string)
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        write_json(md, parent_dir_path / our_string / "remote.json")
 
 
-def beethoven(move_analyses: bool = True) -> None:
+def dvorak_silhouettes() -> None:
+    simple_case(metadata.dvorak_silhouettes)
 
+
+def liszt_pelerinage() -> None:
+    source = metadata.liszt_pelerinage
+    parent_dir_path = make_parent_dirs(source)
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
+        md["composer"] = get_composer(source)
+        their_str = f"{str(md['Searle'])}.{str(md['Number']).zfill(2)}_{md['Name']}"
+        # 160.01_Chapelle_de_Guillaume_Tell.tsv
+        our_string = f"S{str(md['Searle'])}_{str(md['Number'])}_{md['Name']}"
+        make_dir(parent_dir_path / our_string)
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        write_json(md, parent_dir_path / our_string / "remote.json")
+
+
+def grieg_lyric_pieces() -> None:
+    simple_case(metadata.grieg_lyric_pieces)
+
+
+def medtner_tales() -> None:
+    simple_case(metadata.medtner_tales)
+
+
+def schumann_kinderszenen() -> None:
+    source = metadata.schumann_kinderszenen
+    parent_dir_path = make_parent_dirs(source)
+    for item in range(1, source["items"] + 1):
+        md = dict()
+        md["Opus"] = 15
+        md["Number"] = item
+        md["composer"] = get_composer(source)
+        their_str = f"n{str(item).zfill(2)}"
+        make_dir(parent_dir_path / str(item))
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+
+        write_json(md, parent_dir_path / str(item) / "remote.json")
+
+
+def tchaikovsky_seasons() -> None:
+    source = metadata.tchaikovsky_seasons
+    parent_dir_path = make_parent_dirs(source)
+    for item in range(1, source["items"] + 1):
+        md = dict()
+        md["Opus"] = "37a"
+        md["Number"] = item
+        md["composer"] = get_composer(source)
+        their_str = f"op37a{str(item).zfill(2)}"
+        make_dir(parent_dir_path / str(item))
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+
+        write_json(md, parent_dir_path / str(item) / "remote.json")
+
+
+# ------------------------------------------------------------------------------
+
+# Piano_Sonatas
+
+def sonatas_Beethoven(move_analyses: bool = True) -> None:
     source = metadata.sonatas_Beethoven
     parent_dir_path = make_parent_dirs(source)
     dt = DT_BASE / "Beethoven"
@@ -280,81 +327,100 @@ def beethoven(move_analyses: bool = True) -> None:
             write_json(md, mvt_dir / "remote.json")
 
 
-def debussy_suite_bergamasque(move_analyses: bool = True) -> None:
-    source = metadata.debussy_suite_bergamasque
+def sonatas_Mozart(move_analyses: bool = True) -> None:
+    source = metadata.sonatas_Mozart
     parent_dir_path = make_parent_dirs(source)
+    dt = DT_BASE / "Mozart"
+
     count = 0
+
     for item in source["items"]:
+
+        md = dict()
         count += 1
-        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
+        md["sonata_number"] = count
         md["composer"] = get_composer(source)
-        their_str = f"l{str(md['Lesure Catalogue']).zfill(3)}-{str(count).zfill(2)}" \
-                    f"_suite_{str(md['Name']).lower()}"
-        # l075-01_suite_prelude.tsv
-        our_string = f"{count}_{md['Name']}"
-        make_dir(parent_dir_path / our_string)
-        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
-        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
-        write_json(md, parent_dir_path / our_string / "remote.json")
+        md[source["item_keys"][0]] = item  # Köchel
+
+        koechel_string = f"K{item}"
+        k_dir = parent_dir_path / koechel_string
+        make_dir(k_dir)
+
+        for movement in range(1, 3 + 1):
+            mvt_dir = k_dir / str(movement)
+            make_dir(mvt_dir)
+
+            km_string = koechel_string + "-" + str(movement)
+
+            md["analysis_source"] = source["analysis_source"] + f"{km_string}.tsv"
+            md["remote_score_mscx"] = source["remote_score_mscx"] + f"{km_string}.mscx"
+            md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{km_string}.txt"
+
+            if move_analyses:
+                move_and_report(dt / f"{km_string}.txt", mvt_dir / "analysis_DT.txt")
+                # No K533
+
+            write_json(md, mvt_dir / "remote.json")
 
 
-def dvorak_silhouettes(move_analyses: bool = True) -> None:
-    simple_case(metadata.dvorak_silhouettes)
+# ------------------------------------------------------------------------------
 
+# Quartets
 
-def liszt_pelerinage(move_analyses: bool = True) -> None:
-    source = metadata.liszt_pelerinage
+def quartets_Beethoven():
+    source = metadata.quartets_Beethoven
     parent_dir_path = make_parent_dirs(source)
     for item in source["items"]:
-        md = expand_catalogue(source["item_keys"], item)  # Opus, Number
+        md = expand_catalogue(source["item_keys"], item)
         md["composer"] = get_composer(source)
-        their_str = f"{str(md['Searle'])}.{str(md['Number']).zfill(2)}_{md['Name']}"
-        # 160.01_Chapelle_de_Guillaume_Tell.tsv
-        our_string = f"S{str(md['Searle'])}_{str(md['Number'])}_{md['Name']}"
+        our_string = f"Op{md['Opus']}_No{md['Number']}"
         make_dir(parent_dir_path / our_string)
-        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
-        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
-        write_json(md, parent_dir_path / our_string / "remote.json")
+        for m in range(1, item[2] + 1):
+            md["movement"] = m
+            make_dir(parent_dir_path / our_string / str(m))
+            their_str = f"op20n{md['Number']}-0{m}."
+            md["analysis_source"] = f"{source['analysis_source']}{md['Number']}/" \
+                                    f"{'i' * m}/{their_str}hrm"
+            md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}krn"
+
+            write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
 
 
-def grieg_lyric_pieces(move_analyses: bool = True) -> None:
-    simple_case(metadata.grieg_lyric_pieces)
-
-
-def medtner_tales(move_analyses: bool = True) -> None:
-    simple_case(metadata.medtner_tales)
-
-
-def schumann_kinderszenen(move_analyses: bool = True) -> None:
-    source = metadata.schumann_kinderszenen
+def haydn_op20():
+    source = metadata.haydn_op20
     parent_dir_path = make_parent_dirs(source)
-    for item in range(1, source["items"] + 1):
-        md = dict()
-        md["Opus"] = 15
-        md["Number"] = item
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)
         md["composer"] = get_composer(source)
-        their_str = f"n{str(item).zfill(2)}"
-        make_dir(parent_dir_path / str(item))
-        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
-        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        our_string = f"Op{md['Opus']}_No{md['Number']}"
+        make_dir(parent_dir_path / our_string)
+        for m in range(1, item[2] + 1):
+            md["movement"] = m
+            make_dir(parent_dir_path / our_string / str(m))
+            their_str = f"op20n{md['Number']}-0{m}."
+            md["analysis_source"] = f"{source['analysis_source']}{md['Number']}/" \
+                                    f"{'i' * m}/{their_str}hrm"
+            md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}krn"
 
-        write_json(md, parent_dir_path / str(item) / "remote.json")
+            write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
 
 
-def tchaikovsky_seasons(move_analyses: bool = True) -> None:
-    source = metadata.tchaikovsky_seasons
+def haydn_op74():
+    source = metadata.haydn_op74
     parent_dir_path = make_parent_dirs(source)
-    for item in range(1, source["items"] + 1):
-        md = dict()
-        md["Opus"] = "37a"
-        md["Number"] = item
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)
         md["composer"] = get_composer(source)
-        their_str = f"op37a{str(item).zfill(2)}"
-        make_dir(parent_dir_path / str(item))
-        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
-        md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+        our_string = f"Op{md['Opus']}_No{md['Number']}"
+        make_dir(parent_dir_path / our_string)
+        for m in range(1, item[2] + 1):
+            md["movement"] = m
+            make_dir(parent_dir_path / our_string / str(m))
+            their_str = f"op74n{md['Number']}-0{m}."  # "op74n3-04"
+            md["analysis_source"] = f"{source['analysis_source']}/{their_str}txt"
+            md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}krn"
 
-        write_json(md, parent_dir_path / str(item) / "remote.json")
+            write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
 
 
 # ------------------------------------------------------------------------------
@@ -452,23 +518,31 @@ if __name__ == "__main__":
 
     import argparse
 
+
     def run_args():
 
         parser = argparse.ArgumentParser()
 
-        arg_strings = ("chorales",
-                       "madrigals",
-                       "chopin",
-                       "mozart",
-                       "beethoven",
-                       "debussy_suite_bergamasque",
-                       "dvorak_silhouettes",
-                       "grieg_lyric_pieces",
-                       "liszt_pelerinage",
-                       "medtner_tales",
-                       "schumann_kinderszenen",
-                       "tchaikovsky_seasons"
-                       )
+        arg_strings = (
+            "chorales",
+            "madrigals",
+
+            "chopin",
+            "debussy_suite_bergamasque",
+            "dvorak_silhouettes",
+            "grieg_lyric_pieces",
+            "liszt_pelerinage",
+            "medtner_tales",
+            "schumann_kinderszenen",
+            "tchaikovsky_seasons",
+
+            "sonatas_Mozart",
+            "sonatas_Beethoven",
+
+            "quartets_beethoven",
+            "haydn_op20",
+            "haydn_op74"
+        )
 
         for x in arg_strings:
             parser.add_argument("--" + x, action="store_true")
@@ -481,5 +555,6 @@ if __name__ == "__main__":
                 return
 
         parser.print_help()
+
 
     run_args()
