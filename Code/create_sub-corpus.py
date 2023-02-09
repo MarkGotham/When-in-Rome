@@ -124,12 +124,32 @@ def madrigals(move_analyses: bool = True) -> None:
 
 # Keyboard_Other
 
-def chopin(move_analyses: bool = True) -> None:
+def chopin_etudes() -> None:
+    """
+    Partial set. New.
+    """
+
+    source = metadata.chopin_etudes
+    parent_dir_path = make_parent_dirs(source)
+
+    for item in source["items"]:
+        md = dict()
+        md["composer"] = get_composer(source)
+        md["Opus"] = 10
+        md["Number"] = item
+
+        new_dir = parent_dir_path / str(item)
+        make_dir(new_dir)
+
+        md["analysis_source"] = "New"
+        md["remote_score_mscx"] = source["remote_score_mscx"]
+
+        write_json(md, new_dir / "remote.json")
+
+
+def chopin_mazurkas(move_analyses: bool = True) -> None:
     """
     A special case triangulating 3 different external repos.
-    DT set
-    - incomplete: 31 of 55
-    - inconsistent naming (this Hits 26 of 31)
     """
 
     source = metadata.chopin
@@ -535,7 +555,8 @@ if __name__ == "__main__":
             "chorales",
             "madrigals",
 
-            "chopin",
+            "chopin_etudes",
+            "chopin_mazurkas",
             "debussy_suite_bergamasque",
             "dvorak_silhouettes",
             "grieg_lyric_pieces",
