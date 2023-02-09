@@ -51,12 +51,13 @@ from ..Resources.chord_usage_stats import lieder_both
 
 # Code
 
-def get_usage(base_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
+def get_usage(base_path: str = CORPUS_FOLDER / 'OpenScore-LiederCorpus',
               weight_by_length: bool = True,
               sort_dict: bool = True,
               percentages: bool = True,
               mode: str = 'major',
-              plateau: float = 0.01
+              plateau: float = 0.01,
+              simplify: bool = False
               ):
     """
     For a given corpus, iterate over all figures and return 
@@ -64,13 +65,13 @@ def get_usage(base_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
     
     Choose mode = 'major', 'minor', 'both'.
     It usually makes sense to separate by mode 
-    (e.g. usage of 'i' varies significantly between major and minor).
+    (e.g., usage of 'i' varies significantly between major and minor).
     
     Optionally set a plateau for minimum usage, ignoring one-offs.
-    By default this value is 0.0 (i.e. there is no such plateau). 
+    By default, this value is 0.01 (i.e., very low).
     Set at a higher value to cut off at that level. 
     This applies to both percentage and otherwise.
-    E.g. 0.01 for low percentages or 
+    E.g., 0.01 for low percentages or
     1 for single quarterLength usage (or equivalent).
     """
 
@@ -121,6 +122,9 @@ def get_usage(base_path: str = str(CORPUS_FOLDER / 'OpenScore-LiederCorpus'),
         for key in pop_keys:  # iterate all as it might not be sorted
             working_dict.pop(key)
 
+    if simplify:
+        working_dict = simplify_usage_dict(working_dict)
+
     return working_dict
 
 
@@ -170,3 +174,25 @@ def dict_in_percentages(working_dict):
         working_dict[x] = round(working_dict[x], 3)
 
     return working_dict
+
+
+# ------------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--get_usage", action="store_true")
+    parser.add_argument("--simplify", type=bool, required=False, default=False)
+    parser.add_argument("--corpus", type=str,
+                        required=False,
+                        default=CORPUS_FOLDER / 'OpenScore-LiederCorpus',
+                        help="Local base_path within the WiR corpus.")
+
+    args = parser.parse_args()
+
+    if args.get_usage:
+        get_usage(base_path=args.corpus)
+    else:
+        parser.print_help()
