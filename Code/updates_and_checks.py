@@ -452,10 +452,10 @@ if __name__ == "__main__":
     parser.add_argument("--process_corpus", action="store_true", )
     parser.add_argument("--check_all_parse", action="store_true", )
 
-    parser.add_argument("path_to_score", type=str,
+    parser.add_argument("--path_to_score", type=str,
                         required=False,
                         help="Process this one within-corpus path for a score-analysis pair.")
-    parser.add_argument("corpus", type=str,
+    parser.add_argument("--corpus", type=str,
                         required=False,
                         default=CORPUS_FOLDER / "OpenScore-LiederCorpus",
                         help="Process all cases within this corpus path.")
