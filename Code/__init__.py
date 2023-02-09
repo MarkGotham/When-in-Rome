@@ -12,7 +12,7 @@ raw_git = "https://raw.githubusercontent.com/"
 
 def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
                      file_name: str = "score.mxl",
-                     ) -> list:
+                     ) -> list[Path]:
     """
     Get and return paths to files matching conditions for the given file_name.
 
