@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-===============================
-ANTHOLOGY (anthology.py)
-===============================
 
-Mark Gotham, 2020
+NAME:
+===============================
+Anthology (anthology.py)
+
+BY:
+===============================
+Mark Gotham
 
 
 LICENCE:
@@ -32,7 +35,7 @@ from typing import List, Union
 
 import csv
 import fnmatch
-import os
+from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files
 
 
 # ------------------------------------------------------------------------------
@@ -243,9 +246,11 @@ class RnFinder(object):
 
 # ------------------------------------------------------------------------------
 
-# Static
+# Other Static
 
-def dataFromRn(rn: roman.RomanNumeral):
+def dataFromRn(
+        rn: roman.RomanNumeral
+) -> dict:
     return {'MEASURE': rn.getContextByClass('Measure').measureNumber,
             'FIGURE': rn.figure,
             'KEY': rn.key.name.replace('-', 'b'),
@@ -449,72 +454,71 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
     lied = False
     if corpus == 'OpenScore-LiederCorpus':
         lied = True
-        url = ''
 
     totalList = []
     totalRns = 0
     totalLength = 0
 
-    corpusPath = os.path.join('..', 'Corpus', corpus)
-    outPath = os.path.join('..', 'Anthology', corpus)
+    corpusPath = CORPUS_FOLDER / corpus
+    outPath = REPO_FOLDER / 'Anthology' / corpus
 
     print(f'Searching for {what} within the {corpus} collection:')
 
-    for dpath, dname, fname in os.walk(corpusPath):
-        for name in fname:
-            if name == "analysis.txt":
+    files = get_corpus_files(corpusPath,
+                             file_name="analysis.txt"
+                             )
 
-                fullPath = str(os.path.join(dpath, name))
-                pathtoFolder = fullPath[:-len(name)]
-                print(pathtoFolder)
+    for file_path in files:
+        print(file_path)
+        pathtoFolder = file_path.parent
+        idsDraft = pathtoFolder.parts[-4:-1]
+        ids = [x.replace('_', ' ') for x in idsDraft]
 
-                idsDraft = pathtoFolder.split('/')[-4:-1]
-                ids = [x.replace('_', ' ') for x in idsDraft]
+        # URL for lieder
+        if lied:
+            matches = get_corpus_files(pathtoFolder, 'lc*.mscx')
+            url = None
+            if matches:
+                lc_num = str(matches[0])[2:-5]
+                url = f'<a href="https://musescore.com/score/{lc_num}">{lc_num}</a>'
+                break
+            if url is None:
+                print(f'No <lc*.mscx> file found in {pathtoFolder}')
 
-                # URL for lieder
-                if lied:
-                    for fileName in os.listdir(pathtoFolder):
-                        if fnmatch.fnmatch(fileName, 'lc*.mscx'):
-                            lc = fileName[2:-5]
-                            url = f'<a href="https://musescore.com/score/{lc}">{lc}</a>'
-                            break
-                    if not url:
-                        print(f'No <lc*.mscx> file found in {pathtoFolder}')
+        rnf = RnFinder(file_path)
+        totalRns += len(rnf.rns)
+        totalLength += rnf.analysis.quarterLength
 
-                rnf = RnFinder(fullPath)
-                totalRns += len(rnf.rns)
-                totalLength += rnf.analysis.quarterLength
+        if what == 'Modal Mixture':
+            rnf.findMixtures()
+            tempList = rnf.mixtures
+        elif what == 'Augmented Chords':
+            rnf.findAugmentedChords()
+            tempList = rnf.augmentedChords
+        elif what == 'Augmented Sixths':
+            rnf.findAugmentedSixths()
+            tempList = rnf.augmentedSixths
+        elif what == 'Neapolitan Sixths':
+            rnf.findNeapolitanSixths()
+            tempList = rnf.neapolitanSixths
+        elif what == 'Applied Chords':
+            rnf.findAppliedChords()
+            tempList = rnf.appliedChords
+        elif what == 'Common Tone Diminished Sevenths':
+            rnf.findPotentialCommonToneDiminishedSeventh()
+            tempList = rnf.userRnProgressionList
+        elif what == 'Progressions':
+            rnf.findProgressionByRns(rns_list=progression)
+            tempList = rnf.userRnProgressionList
 
-                if what == 'Modal Mixture':
-                    rnf.findMixtures()
-                    tempList = rnf.mixtures
-                elif what == 'Augmented Chords':
-                    rnf.findAugmentedChords()
-                    tempList = rnf.augmentedChords
-                elif what == 'Augmented Sixths':
-                    rnf.findAugmentedSixths()
-                    tempList = rnf.augmentedSixths
-                elif what == 'Neapolitan Sixths':
-                    rnf.findNeapolitanSixths()
-                    tempList = rnf.neapolitanSixths
-                elif what == 'Applied Chords':
-                    rnf.findAppliedChords()
-                    tempList = rnf.appliedChords
-                elif what == 'Common Tone Diminished Sevenths':
-                    rnf.findPotentialCommonToneDiminishedSeventh()
-                    tempList = rnf.userRnProgressionList
-                elif what == 'Progressions':
-                    rnf.findProgressionByRns(rns_list=progression)
-                    tempList = rnf.userRnProgressionList
+        for x in tempList:
+            x['COMPOSER'] = ids[0]
+            x['COLLECTION'] = ids[1]
+            x['MOVEMENT'] = ids[2]
+            if lied:
+                x['URL'] = url
 
-                for x in tempList:
-                    x['COMPOSER'] = ids[0]
-                    x['COLLECTION'] = ids[1]
-                    x['MOVEMENT'] = ids[2]
-                    if lied:
-                        x['URL'] = url
-
-                totalList += tempList
+        totalList += tempList
 
     sortedList = sorted(totalList, key=lambda x: (x['COMPOSER'],
                                                   x['COLLECTION'],
@@ -527,7 +531,7 @@ def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
     if not write:
         return sortedList
 
-    with open(os.path.join(outPath, what + '.csv'), "w") as svfile:
+    with open(outPath / (what + '.csv'), "w") as svfile:
         svOut = csv.writer(svfile, delimiter=',',
                            quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
