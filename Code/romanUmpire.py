@@ -370,10 +370,14 @@ class ScoreAndAnalysis:
             if self.analysisLocation == 'On score':
                 self._getOnScoreAnalysis()
             else:  # analysisLocation must be a path to a Roman text file
-                if os.path.splitext(self.analysisLocation)[1] not in ['.txt', '.rntxt']:
-                    msg = "When the `analysisLocation` argument points to a file path, " \
-                          "that file must have the extension `.txt` or `.rntxt`."
-                    raise ValueError(msg)
+                if os.path.isdir(self.analysisLocation):
+                    self.analysisLocation /= 'analysis.txt'
+                elif os.path.isfile(self.analysisLocation):
+                    if not self.analysisLocation.endswith('txt'):
+                        print(self.analysisLocation)
+                        msg = "When the `analysisLocation` argument points to a file path, " \
+                              "that file must have the extension `.txt` or `.rntxt`."
+                        raise ValueError(msg)
                 self.analysis = converter.parse(self.analysisLocation, format='Romantext').parts[0]
                 self._getSeparateAnalysis()
         else:
