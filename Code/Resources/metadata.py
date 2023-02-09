@@ -81,7 +81,18 @@ tempered = dict(
 
 chopin_commit = "ad38f0a82e5c50740b1d70a41c84924562bdf9f2"
 
-chopin = dict(
+
+chopin_etudes = dict(
+    repo_name="chopin_etudes",
+    path_within_WiR=["Keyboard_Other", "Chopin,_Frédéric", "Études_Op.10"],
+    item_keys="Number",
+    items=(1, 12),
+    analysis_source="New",
+    remote_score_mscx="https://musescore.com/user/33306646/sets/5102068"
+)
+
+
+chopin_mazurkas = dict(
     repo_name="chopin_mazurkas",
     path_within_WiR=["Keyboard_Other", "Chopin,_Frédéric", "Mazurkas"],
     item_keys=("Brown Catalogue", "Opus"),  # No sub-movements
@@ -166,6 +177,17 @@ chopin = dict(
     analysis_DT_source="Chopin",  # NB no public listing, so relative path only
     remote_score_krn=raw_git + "craigsapp/chopin-mazurkas/master/kern/",
 )
+
+
+# All new, no remote content
+# chopin_preludes = dict(
+#     repo_name="chopin_preludes",
+#     path_within_WiR=["Keyboard_Other", "Chopin,_Frédéric", "Preludes,_Op.28"],
+#     item_keys="Number",
+#     items=(20,),
+#     analysis_source="New",
+# )
+
 
 debussy_commit = "691842d8bc8e03fbf0453542d86f3d1eb7cf44eb"
 
