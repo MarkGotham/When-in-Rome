@@ -23,19 +23,15 @@ ABOUT:
 Methods for retrieving specific Roman numerals and/or progressions from analyses.
 
 NOTE: musical logic previously here (isNeapolitan and isMixture) now moved to the main
-music21 repo's [roman.py](https://github.com/cuthbertLab/music21/blob/master/music21/roman.py)
+music21 repo [roman.py](https://github.com/cuthbertLab/music21/blob/master/music21/roman.py)
 
 """
 
-from music21 import converter
-from music21 import interval
-from music21 import roman
-
-from typing import List, Union
+from music21 import converter, interval, layout, metadata, roman, stream, tempo
+from pathlib import Path
 
 import csv
-import fnmatch
-from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files
+from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files, harmonicFunction
 
 
 # ------------------------------------------------------------------------------
@@ -43,51 +39,65 @@ from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files
 class RnFinder(object):
     """
     For retrieving specific Roman numerals and/or progressions from analyses.
+    Separate methods on this class per search term (e.g., `find_mixtures`).
+    Results stored in attributes (e.g., `mixtures`)
+    that are lists of dicts returns by dataFromRn.
     """
 
     def __init__(self,
-                 pathToFile: str):
+                 pathToFile: str | Path):
 
-        self.userRnProgressionList = []
-        self.augmentedChords = []
-        self.augmentedSixths = []
-        self.neapolitanSixths = []
-        self.appliedChords = []
+        self.user_progression = []
+        self.augmented_chords = []
+        self.augmented_sixths = []
+        self.neapolitan_sixths = []
+        self.applied_chords = []
         self.mixtures = []
 
-        self.analysis = converter.parse(pathToFile, format='romanText')
-        self.rns = [x for x in self.analysis.recurse().getElementsByClass('RomanNumeral')]
+        self.analysis = converter.parse(pathToFile, format="romanText")
+        self.rns = [x for x in self.analysis.recurse().getElementsByClass("RomanNumeral")]
 
-    def findMixtures(self):
+    def find_mixtures(self):
+        """
+        NOTE: musical logic previously here now moved to the main music21 repo.
+        """
 
         for rn in self.rns:
-            # NOTE: musical logic previously here now moved to the main music21 repo
             if not rn.secondaryRomanNumeral:
                 if rn.isMixture():
-                    self.mixtures.append(dataFromRn(rn))
+                    self.mixtures.append(data_from_Rn(rn))
 
-    def findAppliedChords(self):
+    def find_applied_chords(self,
+                            require_dominant_function: bool = True):
+        for rn in self.rns:
+            if is_applied_chord(rn, require_dominant_function=require_dominant_function):
+                self.applied_chords.append(data_from_Rn(rn))
+
+    def find_Neapolitan_sixths(self):
+        """
+        NOTE: musical logic previously here now moved to the main music21 repo
+        """
 
         for rn in self.rns:
-            if rn.secondaryRomanNumeral:
-                self.appliedChords.append(dataFromRn(rn))
 
-    def findNeapolitanSixths(self):
-
-        for rn in self.rns:
-            # NOTE: musical logic previously here now moved to the main music21 repo
             if rn.isNeapolitan(require1stInversion=False):
-                self.neapolitanSixths.append(dataFromRn(rn))
+                self.neapolitan_sixths.append(data_from_Rn(rn))
 
-    def findAugmentedSixths(self):
+    def find_augmented_sixths(self):
+        """
+        NOTE:
+            includes those literally called `Ger65` etc.,
+            but also de facto cases like `V43[b5]`.
+        """
 
         for rn in self.rns:
+            #
             if rn.isAugmentedSixth():
-                self.augmentedSixths.append(dataFromRn(rn))
+                self.augmented_sixths.append(data_from_Rn(rn))
 
-    def findAugmentedChords(self,
-                            acceptSevenths: bool = True,
-                            requireAugAsTriad: bool = True):
+    def find_augmented_chords(self,
+                              acceptSevenths: bool = True,
+                              requireAugAsTriad: bool = True):
 
         """
         Finds cases of augmented triads (e.g. III+) in any inversion.
@@ -103,20 +113,20 @@ class RnFinder(object):
 
         for rn in self.rns:
             if rn.isAugmentedTriad():
-                self.augmentedChords.append(dataFromRn(rn))
+                self.augmented_chords.append(data_from_Rn(rn))
             elif acceptSevenths:
                 if rn.isSeventh:
                     if rn.isSeventhOfType([0, 4, 8, 11]) or rn.isSeventhOfType([0, 4, 8, 10]):
-                        self.augmentedChords.append(dataFromRn(rn))
+                        self.augmented_chords.append(data_from_Rn(rn))
                     elif not requireAugAsTriad:
                         if rn.isSeventhOfType([0, 3, 7, 11]):
-                            self.augmentedChords.append(dataFromRn(rn))
+                            self.augmented_chords.append(data_from_Rn(rn))
 
-    def findProgressionByRns(self,
-                             rns_list: List[str]):
+    def find_rn_progression(self,
+                            rns_list: list[str]):
         """
         Find a specific progression of Roman numerals in a given key input by the user as
-        a list of Roman numeral figures like ['I', 'V65', 'I']
+        a list of Roman numeral figures like ["I", "V65", "I"]
         """
 
         lnrns = len(rns_list)
@@ -131,36 +141,36 @@ class RnFinder(object):
 
             figures = [x.figure for x in thisRange]
             if figures == rns_list:
-
                 # Variant on dataFromRn
-                info = [thisRange[0].getContextByClass('Measure').measureNumber,
+                info = [thisRange[0].getContextByClass("Measure").measureNumber,
                         figures,
                         thisRange[0].key]
 
-                self.userRnProgressionList.append(info)
+                self.user_progression.append(info)
 
-    def findProgressionByTypeAndIntv(self,
-                                     qualitiesList: List,
-                                     intervalList: List[Union[str, interval.Interval]] = None,
-                                     bassOrRoot: str = 'bass',
-                                     ):
+    def find_prog_by_qual_and_intv(
+            self,
+            qualitiesList: list,
+            intervalList: list[str | interval.Interval] = None,
+            bassOrRoot: str = "bass",
+    ):
         """
         Find a specific progression of Roman numerals
         searching by chord type quality and (optionally) bass or root motion.
 
         For instance, to find everything that might constitute a ii-V-I progression
-        (whether or not those are the Roman numerals used), search for
-        qualitiesList=['Minor', 'Major', 'Major'], intervalList=['P4', 'P-5']. bassOrRoot='root')
+        (regardless of whether those are the exact Roman numerals used), search for
+        qualitiesList=["Minor", "Major", "Major"], intervalList=["P4", "P-5"]. bassOrRoot="root")
 
         This method accepts many input types.
         For the range accepted by qualitiesList,
-        see documentation at isOfType().
+        see documentation at is_of_type().
 
         Blank entries are also fine.
         For instance, to find out how augmented chords resolve, search for
-        qualitiesList=['Augmented triad', ''].
+        qualitiesList=["Augmented triad", ""].
         To add the preceding chord as well, expand to:
-        qualitiesList=['', 'Augmented triad', ''].
+        qualitiesList=["", "Augmented triad", ""].
         Note that intervalList is left unspecified (we are interested in any interval succession.
         Anytime the intervalList is left blank, the search runs on quality only.
         """
@@ -169,100 +179,141 @@ class RnFinder(object):
 
         if intervalList:
             if lnQs != len(intervalList) + 1:
-                raise ValueError('There must be exactly one more chord than interval.')
+                raise ValueError("There must be exactly one more chord than interval.")
 
         # 1. Search quality match first: quality is required
         for index in range(len(self.rns) - lnQs):
             theseRns = self.rns[index: index + lnQs]
             for i in range(lnQs):
-                if not isOfType(theseRns[i], qualitiesList[i]):
+                if not is_of_type(theseRns[i], qualitiesList[i]):
                     continue  # TODO check
             # 2. Only search for interval match if required and if the qualities already match.
             if intervalList:
-                if intervalMatch(theseRns, intervalList, bassOrRoot):
-                    info = dataFromRn(self.rns[index])
-                    info['FIGURE'] = [x.figure for x in theseRns]
-                    self.userRnProgressionList.append(info)
+                if interval_match(theseRns, intervalList, bassOrRoot):
+                    info = data_from_Rn(self.rns[index])
+                    info["FIGURE"] = [x.figure for x in theseRns]
+                    self.user_progression.append(info)
 
-    def findPotentialCommonToneDiminishedSeventh(self,
-                                                 requireProlongation: bool = True):
+    def find_Cto_dim7(
+            self,
+            require_prolongation: bool = True
+    ):
         """
         Find a potential instance of the common tone diminished seventh in any form by seeking:
         a diminished seventh,
         which shares at least one pitch with
         the chord before, the one after, or both.
 
-        If requireProlongation is True, the results are limited to cases where the
+        If require_prolongation is True, the results are limited to cases where the
         diminished seventh is preceded and followed by the same chord.
         """
 
         for index in range(1, len(self.rns) - 1):
 
-            info = []
+            this_chord = self.rns[index]
 
-            thisChord = self.rns[index]
+            if this_chord.isDiminishedSeventh():
 
-            if thisChord.isDiminishedSeventh():
+                if is_potential_Cto_Dim_7(
+                        self.rns[index - 1],
+                        this_chord,
+                        self.rns[index + 1],
+                        require_prolongation=require_prolongation
+                ):
+                    self.user_progression.append(data_from_Rn(this_chord))
 
-                previousChord = self.rns[index - 1]
-                nextChord = self.rns[index + 1]
-                if requireProlongation:
-                    if previousChord != nextChord:
-                        break
 
-                pitchesNow = set([p.name for p in thisChord.pitches])
+# ------------------------------------------------------------------------------
 
-                if previousChord.key == thisChord.key:  # currently required, may change
-                    if previousChord.figure != thisChord.figure:  # TODO handling of repeating RNs
-                        pitchesBefore = set([p.name for p in previousChord.pitches])
-                        if pitchesNow & pitchesBefore:  # any shared pitch(class)
-                            info = [previousChord.getContextByClass('Measure').measureNumber,
-                                    [previousChord.figure, thisChord.figure],
-                                    previousChord.key.name,
-                                    ]
-                        else:
-                            if requireProlongation:
-                                continue  # can't be without the previous chord
+# Static functions for progressions
 
-                nextChord = self.rns[index + 1]
-                if nextChord.key == thisChord.key:
-                    if nextChord.figure != thisChord.figure:
-                        if requireProlongation and (nextChord.figure != previousChord.figure):
-                            # info = []
-                            continue
-                        pitchesAfter = set([p.name for p in previousChord.pitches])
-                        if pitchesNow & pitchesAfter:
-                            if info:  # before and after, add to existing (combine all three)
-                                info[1].append(nextChord.figure)
-                            else:
-                                info = [thisChord.getContextByClass('Measure').measureNumber,
-                                        [thisChord.figure, nextChord.figure],
-                                        thisChord.key.name,
-                                        ]
+def is_applied_chord(
+        rn: roman.RomanNumeral,
+        require_dominant_function: bool = True
+):
+    """
+    Applied chords suggest a local tonic chord other than the home tonic.
+    (see https://viva.pressbooks.pub/openmusictheory/chapter/tonicization/)
 
-                if info:
-                    self.userRnProgressionList.append(info)
+    Typically, these take the form of a
+    secondary dominant - i.e., `V(7)/x` - or
+    secondary leading-tone - `viio(7)/x` chord,
+    where x is the secondary tonality.
+
+    Args:
+        rn (roman.RomanNumeral): The roman.RomanNumeral object to consider.
+        require_dominant_function (bool): Require that the applied chord has dominant function.
+    """
+    if not rn.secondaryRomanNumeral:
+        return False
+    if require_dominant_function:
+        f = harmonicFunction.figureToFunction(rn.romanNumeral)  # NB not figure
+        return f == "D"
+
+    # TODO: consider options for requiring:
+    #     Resolution: rn.next() == rn.secondaryRomanNumeral.figure is diatonic.
+    #     Diatonic: rn.secondaryRomanNumeral.figure is diatonic.
+
+
+def is_potential_Cto_Dim_7(
+        chord_before: roman.RomanNumeral,
+        diminished_seventh: roman.RomanNumeral,
+        chord_after: roman.RomanNumeral,
+        require_prolongation: bool = True):
+    """
+    Find a potential instance of the common tone diminished seventh in any form by seeking:
+    a diminished seventh,
+    which shares at least one pitch with
+    the chord before, the one after, or both.
+
+    This function works entirely by pitch class content and so
+    chord spelling is not considered, nor the relation to keys.
+    E.g., V in C and I in G are equivalent.
+
+    Args:
+        require_prolongation (bool): diminished seventh is preceded and followed by the same chord
+            (as defined by the pitch content, again not inversion or spelling).
+    """
+    if chord_before.isDiminishedSeventh():
+        return False
+    if not diminished_seventh.isDiminishedSeventh():
+        return False
+    if chord_after.isDiminishedSeventh():
+        return False
+
+    pcs_before = set([p.pitchClass for p in chord_before.pitches])
+    pcs_now = set([p.pitchClass for p in diminished_seventh.pitches])
+    pcs_after = set([p.pitchClass for p in chord_after.pitches])
+
+    if require_prolongation:
+        if pcs_before != pcs_after:
+            return False
+
+    if pcs_now & pcs_before:  # any shared pitch(class)
+        return True
+
+    if pcs_now & pcs_after:  # any shared pitch(class)
+        return True
 
 
 # ------------------------------------------------------------------------------
 
 # Other Static
 
-def dataFromRn(
+def data_from_Rn(
         rn: roman.RomanNumeral
 ) -> dict:
-    return {'MEASURE': rn.getContextByClass('Measure').measureNumber,
-            'FIGURE': rn.figure,
-            'KEY': rn.key.name.replace('-', 'b'),
-            'BEAT': rn.beat,
-            'BEAT STRENGTH': rn.beatStrength,
-            'LENGTH': rn.quarterLength}
+    return {"MEASURE": rn.getContextByClass("Measure").measureNumber,
+            "FIGURE": rn.figure,
+            "KEY": rn.key.name.replace("-", "b"),
+            "BEAT": rn.beat,
+            "BEAT STRENGTH": rn.beatStrength,
+            "LENGTH": rn.quarterLength}
 
 
-# TODO possible candidate for a new music21.chord.isOfType() function
-def isOfType(thisChord, queryType):
+def is_of_type(this_chord, query_type):
     """
-    Tests whether a chord (thisChord) is of a particular type (queryType).
+    Tests whether a chord (this_chord) is of a particular type (query_type).
 
     There are only two match criteria.
     First chords must have the same normal order.
@@ -271,14 +322,14 @@ def isOfType(thisChord, queryType):
     Second, relevant pitch spelling must also match, so
     dominant sevenths do not match German sixth chords.
 
-    thisChord can be a chord.Chord object
+    this_chord can be a chord.Chord object
     or a roman.RomanNumeral (which inherits from chord.Chord).
     Raises an error otherwise.
 
-    The queryType can be in almost any format.
-    First, it can also be a chord.Chord object, including the same object as thisChord:
-    >>> majorTriad = chord.Chord('C E G')
-    >>> isOfType(majorTriad, majorTriad)
+    The query_type can be in almost any format.
+    First, it can also be a chord.Chord object, including the same object as this_chord:
+    >>> majorTriad = chord.Chord("C E G")
+    >>> is_of_type(majorTriad, majorTriad)
     True
 
     Second, is anything you can use to create a chord.Chord object, i.e.
@@ -288,78 +339,78 @@ def isOfType(thisChord, queryType):
     MIDI numbers, or
     pitch class numbers.
     It bear repeating here that transpositon equivalence is fine:
-    >>> isOfType(majorTriad, [2, 6, 9])
+    >>> is_of_type(majorTriad, [2, 6, 9])
     True
 
     # TODO: implement chord.fromCommonName then add this:
-    # Third, it can be any string returned by music21's chord.commonName.
+    # Third, it can be any string returned by music21.chord.commonName.
     # These include fixed strings for
-    # single pitch chords (including 'note', 'unison', 'Perfect Octave', ...),
-    # dyads (e.g. 'Major Third'),
-    # triads ('minor triad'),
-    # sevenths ('dominant seventh chord'), and
-    # other special cases ('all-interval tetrachord'),
-    # The full list (based on Solomon's) can be seen at music.chord.tables.SCREF.
-    # TODO >>> isOfType(majorTriad, 'whole tone scale')
+    # single pitch chords (including "note", "unison", "Perfect Octave", ...),
+    # dyads (e.g. "Major Third"),
+    # triads ("minor triad"),
+    # sevenths ("dominant seventh chord"), and
+    # other special cases ("all-interval tetrachord"),
+    # The full list (based on one by Solomon) can be seen at music.chord.tables.SCREF.
+    # TODO >>> is_of_type(majorTriad, "whole tone scale")
     # TODO False
     #
     >>> wholeToneChord = chord.Chord([0, 2, 4, 6, 8, 10])
     #
-    # TODO >>> isOfType(wholeToneChord, 'whole tone scale')
+    # TODO >>> is_of_type(wholeToneChord, "whole tone scale")
     # TODO True
     #
     # Additionally, chord.commonName supports categories of strings like (fill in the <>)
-    # 'enharmonic equivalent to <>',
-    # '<> with octave doublings',
-    # 'forte class <>', and
-    # '<> augmented sixth chord' (and where relevant) 'in <> position'.
-    # TODO >>> isOfType(wholeToneChord, 'forte class <>' )
+    # "enharmonic equivalent to <>",
+    # "<> with octave doublings",
+    # "forte class <>", and
+    # "<> augmented sixth chord" (and where relevant) "in <> position".
+    # TODO >>> is_of_type(wholeToneChord, "forte class <>" )
     # True
     #
     # As with chord.commonName, chords with no common name return the Forte Class
     # so that too is a valid entry (but only in those cases).
-    # Any well-formed Forte Class string is acceptable, as is the format 'forte class 6-36B',
+    # Any well-formed Forte Class string is acceptable, as is the format "forte class 6-36B",
     # (which chord.commonName returns for cases with no common name):
-    # TODO >>> isOfType(wholeToneChord, '6-35')
+    # TODO >>> is_of_type(wholeToneChord, "6-35")
     # True
 
-    Raises an error if the queryType is (still!) not valid.
+    Raises an error if the query_type is (still!) not valid.
     """
     from music21 import chord
 
-    if not 'Chord' in thisChord.classes:
-        raise ValueError('Invalid thisChord: must be a chord.Chord object')
+    if "Chord" not in this_chord.classes:
+        raise ValueError("Invalid this_chord: must be a chord.Chord object")
 
-    # Make reference (another chord.Chord object) from queryType
+    # Make reference (another chord.Chord object) from query_type
     reference = None
     try:
-        reference = chord.Chord(queryType)
+        reference = chord.Chord(query_type)
         # accepts string of pitches;
         # list of ints (normal order), pitches, notes, or strings;
         # even an existing chord.Chord object.
-    except:  # can't make a chord directly. Assume string.
-        if isinstance(queryType, str):
-            if '-' in queryType:  # take it to be a Forte class.
-                f = 'forte class '
-                if queryType.startswith(f):
-                    queryType = queryType.replace(f, '')
-                reference = chord.fromForteClass(queryType)
+    except:  # can"t make a chord directly. Assume string.
+        if isinstance(query_type, str):
+            if "-" in query_type:  # take it to be a Forte class.
+                f = "forte class "
+                if query_type.startswith(f):
+                    query_type = query_type.replace(f, "")
+                reference = chord.fromForteClass(query_type)
             else:  # a string, not a Forte class, take it to be a common name.
                 # TODO
-                # reference = chord.fromCommonName(queryType)
+                # reference = chord.fromCommonName(query_type)
                 pass
         # else:
-        #     raise ValueError(f'Invalid queryType. Cannot make a chord.Chord from {queryType}')
+        #     raise ValueError(f"Invalid query_type. Cannot make a chord.Chord from {query_type}")
     if not reference:
-        raise ValueError(f'Invalid queryType. Cannot make a chord.Chord from {queryType}')
+        raise ValueError(f"Invalid query_type. Cannot make a chord.Chord from {query_type}")
 
-    t = thisChord.commonName == reference.commonName
+    t = this_chord.commonName == reference.commonName
     return t
 
 
-def intervalMatch(rnsList: list,
-                  intervalList: list,
-                  bassOrRoot: str = 'bass'):
+def interval_match(rnsList: list,
+                   intervalList: list,
+                   bassOrRoot: str = "bass"):
     """
     Check whether the intervals (bass or root) between a succession of Roman numerals match a query.
     Requires the creation of interval.Interval objects.
@@ -370,205 +421,287 @@ def intervalMatch(rnsList: list,
     :param bassOrRoot: intervals between the bass notes or the roots?
     :return: bool.
     """
-    if bassOrRoot == 'bass':
+    if bassOrRoot == "bass":
         pitches = [x.bass() for x in rnsList]
-    elif bassOrRoot == 'root':
+    elif bassOrRoot == "root":
         pitches = [x.root() for x in rnsList]
     else:
-        raise ValueError('The bassOrRoot variable must be either bass or root.')
+        raise ValueError("The bassOrRoot variable must be either bass or root.")
 
     if len(pitches) != len(intervalList) + 1:
-        raise ValueError('There must be exactly one more RN than interval.')
+        raise ValueError("There must be exactly one more RN than interval.")
 
     for i in range(len(intervalList)):
         sourceInterval = interval.Interval(pitches[i], pitches[i + 1]).intervalClass
         comparisonInterval = interval.Interval(intervalList[i]).intervalClass
-        # NOTE: ^ Make sure to go through interval.Interval object
+        # NOTE: ^ must go through interval.Interval object
         if sourceInterval != comparisonInterval:
-            return False  # false as soon as one doesn't match
+            return False  # false as soon as one does not match
 
     return True
 
 
 # ------------------------------------------------------------------------------
 
-corpora = ['Early_Choral',
-           'Etudes_and_Preludes',
-           'OpenScore-LiederCorpus',
-           'Orchestral',
-           'Piano_Sonatas',
-           'Quartets',
-           'Variations_and_Grounds']
+corpora = ["Early_Choral",
+           "Keyboard_Other",
+           "OpenScore-LiederCorpus",
+           "Orchestral",
+           "Piano_Sonatas",
+           "Quartets",
+           "Variations_and_Grounds"]
 
-validSearches = ['Modal Mixture',
-                 'Augmented Chords',
-                 'Augmented Sixths',
-                 'Neapolitan Sixths',
-                 'Applied Chords',
-                 'Common Tone Diminished Sevenths',
-                 'Progressions']
+valid_searches = ["Modal Mixture",
+                  "Augmented Chords",
+                  "Augmented Sixths",
+                  "Neapolitan Sixths",
+                  "Applied Chords",
+                  "Common Tone Diminished Sevenths",
+                  "Progressions"]
 
 
-def oneSearchOneCorpus(corpus: str = 'OpenScore-LiederCorpus',
-                       what: str = 'Modal Mixture',
-                       progression: list = None,
-                       write: bool = True,
-                       heads: list = None
-                       ):
+def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
+                          what: str = "Modal Mixture",
+                          progression: list = None,
+                          write_summary: bool = True,
+                          heads: list = None,
+                          write_examples: bool = False,
+                          ):
     """
-    Runs the search methods on a specific pair of corpus and serach term.
+    Runs the search methods on a specific pair of corpus and search term.
     Settable to find any of
-        'Modal Mixture',
-        'Augmented Chords',
-        'Augmented Sixths',
-        'Neapolitan Sixths',
-        'Applied Chords',
-        'Common Tone Diminished Sevenths'
+        "Modal Mixture",
+        "Augmented Chords",
+        "Augmented Sixths",
+        "Neapolitan Sixths",
+        "Applied Chords",
+        "Common Tone Diminished Sevenths"
         and
-        'Progressions'.
-    Defaults to the 'OpenScore-LiederCorpus' and 'Modal mixture'.
+        "Progressions".
+    Defaults to the "OpenScore-LiederCorpus" and "Modal mixture".
     If searching for a progression, set the progression variable to a list of
-    Roman numerals figure strings like ['I', 'V65', 'I']
+    Roman numerals figure strings like ["I", "V65", "I"]
     """
 
     if heads is None:
-        heads = ['COMPOSER',
-                 'COLLECTION',
-                 'MOVEMENT',
-                 'MEASURE',
-                 'FIGURE',
-                 'KEY']
+        heads = ["COMPOSER",
+                 "COLLECTION",
+                 "MOVEMENT",
+                 "MEASURE",
+                 "FIGURE",
+                 "KEY"]
 
-    if what not in validSearches:
-        raise ValueError(f'For what, please select from among {validSearches}.')
+    if what not in valid_searches:
+        raise ValueError(f"For what, please select from among {valid_searches}.")
 
-    if what == 'Progression':
+    if what == "Progression":
         if not progression:
-            raise ValueError("If searching for a progression with the 'what' parameter, "
-                             "set the 'progression' parameter to a list of Roman numeral figures "
-                             "like ['I', 'V65', 'I'].")
+            raise ValueError("If searching for a progression with the `what` parameter, "
+                             "set the 'progression' parameter to a list of Roman numeral figures.")
 
     if corpus not in corpora:
-        raise ValueError(f'Please select a corpus from among {corpora}.')
+        raise ValueError(f"Please select a corpus from among {corpora}.")
 
     lied = False
-    if corpus == 'OpenScore-LiederCorpus':
+    if corpus == "OpenScore-LiederCorpus":
         lied = True
 
-    totalList = []
+    out_data = []
     totalRns = 0
     totalLength = 0
 
-    corpusPath = CORPUS_FOLDER / corpus
-    outPath = REPO_FOLDER / 'Anthology' / corpus
+    corpus_path = CORPUS_FOLDER / corpus
+    out_path = REPO_FOLDER / "Anthology" / corpus
 
-    print(f'Searching for {what} within the {corpus} collection:')
+    print(f"Searching for {what} within the {corpus} collection:")
 
-    files = get_corpus_files(corpusPath,
+    files = get_corpus_files(corpus_path,
                              file_name="analysis.txt"
                              )
 
+    score_url_base = '<a href="https://musescore.com/score/'
+    eg_url_base = '<a href="https://github.com/MarkGotham/When-in-Rome/blob/master/Anthology/' \
+                  f"OpenScore-LiederCorpus/{what.replace(' ', '_')}/"
+
     for file_path in files:
-        print(file_path)
-        pathtoFolder = file_path.parent
-        idsDraft = pathtoFolder.parts[-4:-1]
-        ids = [x.replace('_', ' ') for x in idsDraft]
+        try:
+            rnf = RnFinder(file_path)
+            totalRns += len(rnf.rns)
+            totalLength += rnf.analysis.quarterLength
+            print(".")
+        except:
+            print(f"Error with {file_path}")
+            continue
+
+        path_to_dir = file_path.parent
+        path_parts = path_to_dir.parts[-3:]
+        composer, collection, movement = [x.replace("_", " ") for x in path_parts]
 
         # URL for lieder
         if lied:
-            matches = get_corpus_files(pathtoFolder, 'lc*.mscx')
-            url = None
+            matches = get_corpus_files(path_to_dir, "lc*.mscx")
             if matches:
-                lc_num = str(matches[0])[2:-5]
-                url = f'<a href="https://musescore.com/score/{lc_num}">{lc_num}</a>'
-                break
-            if url is None:
-                print(f'No <lc*.mscx> file found in {pathtoFolder}')
+                lc_num = matches[0].stem[2:]  # NB stem is a string filename w/out extension
+                score_url = score_url_base + f'{lc_num}">{lc_num}</a>'
+            else:
+                lc_num = "x_lc_missing"
+                score_url = "x_url_missing"
+                print(f"No <lc*.mscx> file found in {path_to_dir}")
 
-        rnf = RnFinder(file_path)
-        totalRns += len(rnf.rns)
-        totalLength += rnf.analysis.quarterLength
+        if what == "Modal Mixture":
+            rnf.find_mixtures()
+            this_work_list = rnf.mixtures
+        elif what == "Augmented Chords":
+            rnf.find_augmented_chords()
+            this_work_list = rnf.augmented_chords
+        elif what == "Augmented Sixths":
+            rnf.find_augmented_sixths()
+            this_work_list = rnf.augmented_sixths
+        elif what == "Neapolitan Sixths":
+            rnf.find_Neapolitan_sixths()
+            this_work_list = rnf.neapolitan_sixths
+        elif what == "Applied Chords":
+            rnf.find_applied_chords()
+            this_work_list = rnf.applied_chords
+        elif what == "Common Tone Diminished Sevenths":
+            rnf.find_Cto_dim7()
+            this_work_list = rnf.user_progression
+        elif what == "Progressions":
+            rnf.find_rn_progression(rns_list=progression)
+            this_work_list = rnf.user_progression
 
-        if what == 'Modal Mixture':
-            rnf.findMixtures()
-            tempList = rnf.mixtures
-        elif what == 'Augmented Chords':
-            rnf.findAugmentedChords()
-            tempList = rnf.augmentedChords
-        elif what == 'Augmented Sixths':
-            rnf.findAugmentedSixths()
-            tempList = rnf.augmentedSixths
-        elif what == 'Neapolitan Sixths':
-            rnf.findNeapolitanSixths()
-            tempList = rnf.neapolitanSixths
-        elif what == 'Applied Chords':
-            rnf.findAppliedChords()
-            tempList = rnf.appliedChords
-        elif what == 'Common Tone Diminished Sevenths':
-            rnf.findPotentialCommonToneDiminishedSeventh()
-            tempList = rnf.userRnProgressionList
-        elif what == 'Progressions':
-            rnf.findProgressionByRns(rns_list=progression)
-            tempList = rnf.userRnProgressionList
+        for x in this_work_list:
 
-        for x in tempList:
-            x['COMPOSER'] = ids[0]
-            x['COLLECTION'] = ids[1]
-            x['MOVEMENT'] = ids[2]
+            x["COMPOSER"] = composer
+            x["COLLECTION"] = collection
+            x["MOVEMENT"] = movement
+
             if lied:
-                x['URL'] = url
+                # For pdf write only (not sv)
+                x["source_path"] = path_to_dir
+                x["eg_file"] = f'{lc_num}_{x["MEASURE"]}.png'
+                # For sv
+                x["SCORE"] = score_url
+                x["EXAMPLE"] = eg_url_base + f'{x["eg_file"]}">{x["eg_file"]}</a>'
 
-        totalList += tempList
+        out_data += this_work_list
 
-    sortedList = sorted(totalList, key=lambda x: (x['COMPOSER'],
-                                                  x['COLLECTION'],
-                                                  x['MOVEMENT']))
+    sortedList = sorted(out_data, key=lambda x: (x["COMPOSER"],
+                                                 x["COLLECTION"],
+                                                 x["MOVEMENT"]
+                                                 )
+                        )
 
-    totalRnLength = sum([x['LENGTH'] for x in sortedList])
-    print(f'{len(sortedList)} cases from {totalRns} RNs searched overall with a '
-          f'combined length of {totalRnLength} from {totalLength}.')
+    totalRnLength = sum([x["LENGTH"] for x in sortedList])
+    print("Summary:\n"
+          f"Number of files: {len(files)}.\n"
+          f"Cases (count): {len(sortedList)} from {totalRns} RNs overall.\n"
+          f"Length: {totalRnLength} from {totalLength} total.")
 
-    if not write:
+    if not write_summary and not write_examples:
         return sortedList
 
-    with open(outPath / (what + '.csv'), "w") as svfile:
-        svOut = csv.writer(svfile, delimiter=',',
-                           quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    if write_summary:
+        with open(out_path / (what + ".csv"), "w") as svfile:
+            svOut = csv.writer(svfile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 
-        if lied:
-            heads.append('URL')
+            if lied:
+                heads += ["SCORE", "EXAMPLE"]
 
-        svOut.writerow(heads)
+            svOut.writerow(heads)
 
-        for entry in sortedList:
-            row = [entry[head] for head in heads]
-            svOut.writerow(row)
+            for entry in sortedList:
+                row = [entry[head] for head in heads]
+                svOut.writerow(row)
+
+    if write_examples and corpus == "OpenScore-LiederCorpus" and lc_num:
+        what = what.replace(" ", "_")  # TODO higher up?
+        for item in sortedList:
+            in_path = item["source_path"] / "analysis_on_score.mxl"
+            example_path = out_path / what / item["eg_file"]
+            score = converter.parse(in_path)
+
+            start = item["MEASURE"] - 2
+            end = item["MEASURE"] + 2
+
+            example = clean_up(score.measures(start, end))
+
+            example.insert(0, metadata.Metadata())
+            example.metadata.composer = item["COMPOSER"]
+            example.metadata.title = item["COLLECTION"]
+            example.metadata.subtitle = f'{item["MOVEMENT"]} from {start} to {end}'
+            example.coreElementsChanged()
+
+            example.write(
+                "musicxml.png",  # sic, this as the format
+                fp=example_path
+            )
+
+            # music21 insists on also writing the xml. Remove:
+            inadvertent_score = out_path / what / item["eg_file"].replace(".png", ".musicxml")
+            inadvertent_score.unlink()
 
 
-def allSearchesOneCorpus(corpus: str = 'OpenScore-LiederCorpus'):
+def clean_up(this_stream: stream) -> stream:
     """
-    Runs the oneSearchOneCorpus function for
+    Temporary function for cleaning example score outputs.
+    Adapted from my `stream/tools` module for m21.
+
+    Args:
+        this_stream: the stream to work on. Note: In place is hard coded in.
+
+    Returns: that same stream, modified.
+
+    # TODO promote higher up the workflow, for creation of analysis_on_score
+    # TODO possibly also remove `bar.Barline type=double` when not last measure
+    """
+    for p in this_stream.parts:
+        p.partAbbreviation = None
+
+    remove_dict = {}
+
+    for this_class in [
+        layout.PageLayout,
+        layout.SystemLayout,
+        tempo.MetronomeMark,
+        # NB: keep layout.StaffGroup
+    ]:
+        for this_state in this_stream.recurse().getElementsByClass(this_class):
+            if this_state.activeSite in remove_dict:  # There may be several in same (e.g., measure)
+                remove_dict[this_state.activeSite].append(this_state)
+            else:
+                remove_dict[this_state.activeSite] = [this_state]
+
+    for activeSiteKey, valuesToRemove in remove_dict.items():
+        activeSiteKey.remove(valuesToRemove, recurse=True)
+
+    return this_stream
+
+
+def all_searches_one_corpus(corpus: str = "OpenScore-LiederCorpus"):
+    """
+    Runs the one_search_one_corpus function for
     one corpus and
-    all search terms except 'Progressions'.
+    all search terms except "Progressions".
     """
 
-    for w in validSearches[:-1]:  # omit progressions
-        oneSearchOneCorpus(corpus=corpus, what=w)
+    for w in valid_searches[:-1]:  # omit progressions
+        one_search_one_corpus(corpus=corpus, what=w)
 
 
-def processAll():
+def all_searches_all_corpora():
     """
-    Runs the oneSearchOneCorpus function for all pairs of
-    corpus and search terms except 'Progressions'.
+    Runs the one_search_one_corpus function for all pairs of
+    corpus and search terms except "Progressions".
     """
 
     for c in corpora:
-        for w in validSearches[:-1]:  # omit progressions
-            oneSearchOneCorpus(corpus=c, what=w)
+        for w in valid_searches[:-1]:  # omit progressions
+            one_search_one_corpus(corpus=c, what=w)
 
 
 # ------------------------------------------------------------------------------
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
     doctest.testmod()
