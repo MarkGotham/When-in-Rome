@@ -28,9 +28,8 @@ Static functions common to several modules here.
 """
 
 from typing import List
-
+from pathlib import Path
 import numpy as np
-import math
 
 from . import key_profiles
 from ..Resources.key_profiles_literature import AlbrechtShanahan, QuinnWhite
@@ -160,20 +159,22 @@ def pc_list_to_distribution(pc_list: List[int]):
 
 # Files, Imports, Tabular
 
-def importSV(pathToFile: str,
-             splitMarker: str = ''):
+def importSV(path_to_file: Path,
+             split_marker: str | None = None):
     """
     Imports TSV file data for further processing.
     """
 
-    if not splitMarker:
-        ext = pathToFile.split('.')[-1]
-        if ext == 'tsv':
+    if split_marker is None:
+        ext = path_to_file.suffix
+        if ext == '.tsv':
             splitMarker = '\t'
         elif ext == 'csv':
             splitMarker = ','
+        else:
+            raise ValueError(f"Format {ext} invalid: must be .tsv or .csv.")
 
-    with open(pathToFile, 'r', encoding='utf8') as f:
+    with open(path_to_file, 'r', encoding='utf8') as f:
         data = []
         for row_num, line in enumerate(f):
             values = line.strip().split(splitMarker)
