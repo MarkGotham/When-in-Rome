@@ -17,9 +17,7 @@ class Test(unittest.TestCase):
         we use the shared `TEST_RESOURCES_FOLDER` example (from Clara Schumann).
         """
 
-        full_path = str(TEST_RESOURCES_FOLDER / "Example" / "analysis_on_score.mxl")
-
-        score = converter.parse(full_path)
+        score = converter.parse(TEST_RESOURCES_FOLDER / "Example" / "analysis_on_score.mxl")
         rna = RnAnalysis(score)
         rna.prepList(template=False)  # ***
 
@@ -34,8 +32,7 @@ class Test(unittest.TestCase):
         See the dedicated partial analysis in the `TEST_RESOURCES_FOLDER` example.
         """
 
-        combinedPath = str(TEST_RESOURCES_FOLDER / "testPartialAnalysis.mxl")
-        score = converter.parse(combinedPath)
+        score = converter.parse(TEST_RESOURCES_FOLDER / "testPartialAnalysis.mxl")
 
         preludeAnalysis = RnAnalysis(score,
                                      composer="J.S. Bach",
@@ -59,13 +56,12 @@ class Test(unittest.TestCase):
 
         from music21 import converter
 
-        basePath = CORPUS_FOLDER / "OpenScore-LiederCorpus"
+        corpus = CORPUS_FOLDER / "OpenScore-LiederCorpus"
         composer = "Hensel,_Fanny_(Mendelssohn)"
         collection = "5_Lieder,_Op.10"
         song = "1_Nach_Süden"
-        combinedPath = str(basePath / composer / collection / song / "score.mxl")
 
-        score = converter.parse(combinedPath)
+        score = converter.parse(corpus / composer / collection / song / "score.mxl")
         rna = RnAnalysis(score)
         rna.prepList(template=True)  # ***
 
