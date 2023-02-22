@@ -451,11 +451,12 @@ if __name__ == "__main__":
     parser.add_argument("--process_one_score", action="store_true", )
     parser.add_argument("--process_corpus", action="store_true", )
     parser.add_argument("--check_all_parse", action="store_true", )
+    parser.add_argument("--anthology", action="store_true", )
 
-    parser.add_argument("--path_to_score", type=str,
+    parser.add_argument("path_to_score", type=str,
                         required=False,
                         help="Process this one within-corpus path for a score-analysis pair.")
-    parser.add_argument("--corpus", type=str,
+    parser.add_argument("corpus", type=str,
                         required=False,
                         default=CORPUS_FOLDER / "OpenScore-LiederCorpus",
                         help="Process all cases within this corpus path.")
@@ -467,5 +468,8 @@ if __name__ == "__main__":
         process_corpus(corpus=args.corpus)
     elif args.check_all_parse:
         check_all_parse(corpus=args.corpus)
+    elif args.anthology:
+        from . import anthology
+        anthology.all_searches_one_corpus(corpus=args.corpus)
     else:
         parser.print_help()
