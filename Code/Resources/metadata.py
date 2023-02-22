@@ -528,3 +528,14 @@ haydn_op74 = dict(
     analysis_source="Haydn",
     remote_score_krn="napulen/humdrum-haydn-quartets/master/kern/"
 )
+
+brahms_op51 = dict(
+    repo_name="brahms_op51",
+    path_within_WiR=["Quartets", "Brahms,_Johannes"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (51, 1, 4),
+    ),
+    analysis_source="Brahms",
+    score_source=raw_git + "OpenScore/StringQuartets/main/scores/Brahms,_Johannes/Op51_No1/"
+)

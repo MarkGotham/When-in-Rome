@@ -88,7 +88,7 @@ def madrigals(move_analyses: bool = True) -> None:
 
     source = metadata.madrigals
     parent_dir_path = make_parent_dirs(source)
-    madrigals_DT = DT_BASE / source["analysis_source"]  # "Bach Chorales"
+    madrigals_DT = DT_BASE / source["analysis_source"]  # "Monteverdi"
 
     for item in source["items"]:
 
@@ -451,6 +451,32 @@ def haydn_op74():
             write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
 
 
+def brahms_op51(move_analyses: bool = True) -> None:
+    source = metadata.brahms_op51
+    parent_dir_path = make_parent_dirs(source)
+    letters = [None, "a", "b", "c", "d"]
+    source_DT = DT_BASE / source["analysis_source"]  # "Brahms"
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)
+        md["composer"] = get_composer(source)
+        our_string = f"Op{md['Opus']}_No{md['Number']}"
+        make_dir(parent_dir_path / our_string)
+        for m in range(1, item[2] + 1):
+            md["movement"] = m
+            mvt_dir = parent_dir_path / our_string / str(m)
+            make_dir(mvt_dir)
+            their_str = f"quartet{md['Number']}{letters[m]}.txt"  # "quartet1a.txt"
+            md["analysis_source"] = f"{source['analysis_source']}/{their_str}"
+            md["score_source"] = source["score_source"] + str(m)
+
+            if move_analyses:
+                src = source_DT / their_str
+                dst = mvt_dir / "analysis.txt"
+                shutil.copy(src, dst)
+
+            write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
+
+
 # ------------------------------------------------------------------------------
 
 # Shared
@@ -570,7 +596,8 @@ if __name__ == "__main__":
 
             "quartets_Beethoven",
             "haydn_op20",
-            "haydn_op74"
+            "haydn_op74",
+            "brahms_op51"
         )
 
         for x in arg_strings:
