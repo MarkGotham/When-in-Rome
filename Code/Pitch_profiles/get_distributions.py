@@ -46,14 +46,13 @@ and timing information as appropriate to the data source with start, end and len
 
 # ------------------------------------------------------------------------------
 
-import os
 import csv
 from functools import cached_property
 
 from . import normalisation_comparison
 from . import chord_features
 
-from typing import Optional
+from pathlib import Path
 import numpy as np
 
 # ------------------------------------------------------------------------------
@@ -85,7 +84,7 @@ class DistributionsFromTabular:
     """
 
     def __init__(self,
-                 path_to_tab: str,
+                 path_to_tab: Path,
 
                  columns_from_source: bool = False,
 
@@ -94,7 +93,7 @@ class DistributionsFromTabular:
                  round_places: int = 3,
 
                  include_features: bool = True,
-                 features_to_use: Optional[list] = None
+                 features_to_use: list | None = None
                  ):
 
         self.include_features = include_features
@@ -106,7 +105,7 @@ class DistributionsFromTabular:
         else:
             self.features_to_use = features_list
 
-        self.path_to_dir = os.path.dirname(path_to_tab)
+        self.path_to_dir = path_to_tab.parent
         self.data = normalisation_comparison.importSV(path_to_tab)
 
         if columns_from_source:
@@ -378,8 +377,8 @@ class DistributionsFromTabular:
 
     def write_distributions(self,
                             by_what: str = 'measure',
-                            out_path: Optional[str] = None,
-                            out_file: Optional[str] = None,
+                            out_path: str | None = None,
+                            out_file: str | None = None,
                             write_features: bool = False,
                             out_format: str = '.tsv'
                             ):
