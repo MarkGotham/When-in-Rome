@@ -26,11 +26,10 @@ with initial information in the "remote.json" file.
 
 # ------------------------------------------------------------------------------
 
-import json
 import shutil
 from pathlib import Path
 
-from . import CORPUS_FOLDER, DT_BASE
+from . import CORPUS_FOLDER, DT_BASE, write_json
 from .Resources import metadata
 
 
@@ -152,7 +151,7 @@ def chopin_mazurkas(move_analyses: bool = True) -> None:
     A special case triangulating 3 different external repos.
     """
 
-    source = metadata.chopin
+    source = metadata.chopin_mazurkas
     parent_dir_path = make_parent_dirs(source)
     dt = DT_BASE / "Chopin"
 
@@ -512,17 +511,6 @@ def get_composer(
     Returns: the composer as a string in the format `<last name>, <first name/s>`
     """
     return source["path_within_WiR"][1].replace("_", " ")
-
-
-def write_json(
-        this_metadata: dict,
-        json_path: Path
-) -> None:
-    """
-    Write the metadata in json format to the specified path
-    """
-    with open(json_path, "w") as json_file:
-        json.dump(this_metadata, json_file, indent=4)
 
 
 def make_dir(this_path: Path):

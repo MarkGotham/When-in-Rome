@@ -1,4 +1,7 @@
 from pathlib import Path
+import json
+
+# ------------------------------------------------------------------------------
 
 CODE_FOLDER = Path(__file__).parent
 REPO_FOLDER = CODE_FOLDER.parent
@@ -33,3 +36,17 @@ def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
     assert sub_corpus_path.is_relative_to(CORPUS_FOLDER)
     assert sub_corpus_path.exists()
     return [x for x in sub_corpus_path.rglob(file_name)]
+
+
+def write_json(
+        this_data: dict,
+        json_path: Path
+) -> None:
+    """
+    Write the metadata in json format to the specified path
+    """
+    with open(json_path, "w") as json_file:
+        json.dump(this_data, json_file, indent=4)
+
+
+# ------------------------------------------------------------------------------
