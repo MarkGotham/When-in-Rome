@@ -1,27 +1,27 @@
 """
+NAME:
 ===============================
 Chord Usage (chord_usage.py)
-===============================
 
-Mark Gotham, 2022
+
+BY:
+===============================
+Mark Gotham
 
 
 LICENCE:
 ===============================
-
 Creative Commons Attribution-ShareAlike 4.0 International License
 https://creativecommons.org/licenses/by-sa/4.0/
 
 
-Citation:
+CITATION:
 ===============================
-
 Watch this space!
 
 
 ABOUT:
 ===============================
-
 Retrieve usage stats for all chord types in a corpus.
 
 Also includes functionality for simplifying harmonies and
@@ -40,22 +40,22 @@ Currently limited to single chord. Expand to progressions
 
 """
 
-from . import chord_comparisons
+import json
 from . import get_distributions
 from .chord_features import simplify_chord
-from .. import CORPUS_FOLDER
-from ..Resources.chord_usage_stats import lieder_both
+
+from .. import get_corpus_files, CORPUS_FOLDER, CODE_FOLDER, write_json
 
 
 # ------------------------------------------------------------------------------
 
 # Code
 
-def get_usage(base_path: str = CORPUS_FOLDER / 'OpenScore-LiederCorpus',
+def get_usage(base_path: str = CORPUS_FOLDER / "OpenScore-LiederCorpus",
               weight_by_length: bool = True,
               sort_dict: bool = True,
               percentages: bool = True,
-              mode: str = 'major',
+              this_mode: str = "major",
               plateau: float = 0.01,
               simplify: bool = False
               ):
@@ -63,9 +63,9 @@ def get_usage(base_path: str = CORPUS_FOLDER / 'OpenScore-LiederCorpus',
     For a given corpus, iterate over all figures and return 
     a dict for each chord and its usage.
     
-    Choose mode = 'major', 'minor', 'both'.
+    Choose a mode (this_mode = "major", "minor", "both").
     It usually makes sense to separate by mode 
-    (e.g., usage of 'i' varies significantly between major and minor).
+    (e.g., usage of "i" varies significantly between major and minor).
     
     Optionally set a plateau for minimum usage, ignoring one-offs.
     By default, this value is 0.01 (i.e., very low).
@@ -75,36 +75,37 @@ def get_usage(base_path: str = CORPUS_FOLDER / 'OpenScore-LiederCorpus',
     1 for single quarterLength usage (or equivalent).
     """
 
-    if mode not in ['major', 'minor', 'both']:
-        raise ValueError("Invalid mode: chose one of 'major', 'minor', 'both'.")
+    if this_mode not in ["major", "minor", "both"]:
+        raise ValueError('Invalid mode: chose one of "major", "minor", "both".')
 
-    files = chord_comparisons.get_files(base_path)  # file_name = 'slices_with_analysis.tsv')
+    files = get_corpus_files(base_path, file_name="slices_with_analysis.tsv")
 
     working_dict = {}
 
     for path_to_file in files:
         try:
-            data = get_distributions.DistributionsFromTabular(path_to_file)
-        except ValueError:
-            raise ValueError(f"Cannot load {path_to_file}")  # .split('/')[-4:-1]}")
-            # print(f"failing to load {path_to_file.split('/')[-4:-1]}")
+            data = get_distributions.DistributionsFromTabular(path_to_file).profiles_by_chord
+            print(".")
+        except:
+            print(f"Cannot load {path_to_file}")
+            continue
 
-        for d in data.profiles_by_chord:
+        for d in data:
             # Mode
-            if mode == 'major' and not d['key'][0].isupper():  # Major e.g. 'C', 'Ab'.
+            if this_mode == "major" and not d["key"][0].isupper():  # Major e.g. "C", "Ab".
                 continue
-            elif mode == 'minor' and d['key'][0].isupper():  # Should be lower e.g. ab'.
+            elif this_mode == "minor" and d["key"][0].isupper():  # Should be lower e.g. ab".
                 continue
 
             # Init new entries
-            if d['chord'] not in working_dict:
-                working_dict[d['chord']] = 0
+            if d["chord"] not in working_dict:
+                working_dict[d["chord"]] = 0
 
                 # Length or count:
             if weight_by_length:
-                working_dict[d['chord']] += d['quarter length']
+                working_dict[d["chord"]] += d["quarter length"]
             else:
-                working_dict[d['chord']] += 1
+                working_dict[d["chord"]] += 1
 
     if sort_dict:
         working_dict = sort_this_dict(working_dict)
@@ -128,8 +129,7 @@ def get_usage(base_path: str = CORPUS_FOLDER / 'OpenScore-LiederCorpus',
     return working_dict
 
 
-def simplify_usage_dict(this_usage_dict: dict = lieder_both,
-                        # TODO simplification options here.
+def simplify_usage_dict(this_usage_dict,
                         sort_dict: bool = True,
                         percentages: bool = True):
     """
@@ -176,6 +176,21 @@ def dict_in_percentages(working_dict):
     return working_dict
 
 
+def all_formats_one_corpus(corpus: str = "OpenScore-LiederCorpus",
+                           write: bool = True):
+
+    for this_mode in ["major", "minor"]:
+
+        data = get_usage(CORPUS_FOLDER / corpus,
+                         this_mode=this_mode,
+                         # plateau=0.01,
+                         simplify=False)
+        json_path = CODE_FOLDER / "Resources" / f"{this_mode}_{corpus}.json"
+
+        if write:
+            write_json(data, json_path)
+
+
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -187,12 +202,12 @@ if __name__ == "__main__":
     parser.add_argument("--simplify", type=bool, required=False, default=False)
     parser.add_argument("--corpus", type=str,
                         required=False,
-                        default=CORPUS_FOLDER / 'OpenScore-LiederCorpus',
+                        default="OpenScore-LiederCorpus",
                         help="Local base_path within the WiR corpus.")
 
     args = parser.parse_args()
 
     if args.get_usage:
-        get_usage(base_path=args.corpus)
+        all_formats_one_corpus(corpus=args.corpus)
     else:
         parser.print_help()
