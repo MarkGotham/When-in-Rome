@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
     def test_metadata(self):
         for md in (
                 # metadata.chorales,  # special case items = 371
-                metadata.chopin,
+                metadata.chopin_mazurkas,
                 metadata.madrigals,
                 metadata.sonatas_Mozart,
                 metadata.sonatas_Beethoven,
@@ -93,4 +93,4 @@ if __name__ == "__main__":
     test_DCML_Mozart_analyses()
 
     # Chopin
-    assert(get_DCML_Chopin_analyses() == metadata.chopin["items"])
+    assert(get_DCML_Chopin_analyses() == metadata.chopin_mazurkas["items"])
