@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
         rna.prepList(template=False)  # ***
 
         self.assertEqual(rna.combinedList[0], "\nTime Signature: 4/4")
-        self.assertEqual(rna.combinedList[15], "m13 b1 I b3 i6")
+        self.assertEqual(rna.combinedList[15], "m13 I b3 i6")
 
     # ------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
 
     def testRnString(self):
         test = rnString([1, 1, "G: I"])
-        self.assertEqual(test, "m1 b1 G: I")
+        self.assertEqual(test, "m1 G: I")
 
     # ------------------------------------------------------------------------------
 
