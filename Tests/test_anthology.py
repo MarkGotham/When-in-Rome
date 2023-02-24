@@ -2,7 +2,7 @@ import unittest
 
 from music21 import roman, chord
 
-from Code.anthology import isOfType, intervalMatch
+from Code.anthology import is_of_type, interval_match
 
 
 class Test(unittest.TestCase):
@@ -21,18 +21,18 @@ class Test(unittest.TestCase):
             # True, minor key:
             self.assertTrue(roman.RomanNumeral(fig, 'a').isMixture())
 
-    def testIsOfType(self):
-        self.assertTrue(isOfType(roman.RomanNumeral('I'), [6, 10, 1]))
-        self.assertTrue(isOfType(chord.Chord('G- B-- D-'), '3-11A'))
+    def test_is_of_type(self):
+        self.assertTrue(is_of_type(roman.RomanNumeral('I'), [6, 10, 1]))
+        self.assertTrue(is_of_type(chord.Chord('G- B-- D-'), '3-11A'))
 
-    def testIntervalMatch(self):
+    def test_interval_match(self):
 
         rns = [roman.RomanNumeral(x) for x in ['i', 'iiø65', 'V7']]
 
         intervalsType1 = ['M2', 'P4']
-        self.assertTrue(intervalMatch(rns, intervalsType1, bassOrRoot='root'))
-        self.assertFalse(intervalMatch(rns, intervalsType1, bassOrRoot='bass'))
+        self.assertTrue(interval_match(rns, intervalsType1, bassOrRoot='root'))
+        self.assertFalse(interval_match(rns, intervalsType1, bassOrRoot='bass'))
 
         intervalsType2 = ['P4', 'M2']
-        self.assertTrue(intervalMatch(rns, intervalsType2, bassOrRoot='bass'))
-        self.assertFalse(intervalMatch(rns, intervalsType2, bassOrRoot='root'))
+        self.assertTrue(interval_match(rns, intervalsType2, bassOrRoot='bass'))
+        self.assertFalse(interval_match(rns, intervalsType2, bassOrRoot='root'))
