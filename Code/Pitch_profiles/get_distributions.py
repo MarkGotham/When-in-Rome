@@ -447,7 +447,7 @@ class DistributionsFromTabular:
             if write_features:
                 out_file += '_and_features'
             out_file += f'_by_{by_what}'
-        full_path = str(os.path.join(out_path, out_file)) + out_format
+        full_path = str(out_path / out_file) + out_format
 
         if out_format == '.json':
             import json
