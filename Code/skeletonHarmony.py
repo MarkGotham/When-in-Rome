@@ -227,9 +227,12 @@ class RnAnalysis:
 
     # For partial analysis (deductions)
 
-    def chfyChordAndLabel(self,
-                          ignoreParts: int = 2,
-                          tonicizationsRemainInEffect: bool = False):
+    def chfyChordAndLabel(
+            self,
+            ignoreParts: int = 2,
+            tonicizationsRemainInEffect: bool = False,
+            prefer_secondary: bool = False
+    ):
         """
         To use in the case of a partial analysis with chords and key information.
 
@@ -297,7 +300,7 @@ class RnAnalysis:
             if not currentTonicization:
                 rn = roman.romanNumeralFromChord(ch,
                                                  key.Key(currentKey),
-                                                 preferSecondaryDominants=True)
+                                                 preferSecondaryDominants=prefer_secondary)
             else:  # currentTonicization
                 localKey = getLocalKey(currentTonicization, currentKey)
                 rn = roman.romanNumeralFromChord(ch,
@@ -370,7 +373,7 @@ class RnAnalysis:
 
         Optionally: reduce the parts to consider in the comparison by specifying "partsToRemove".
         This removes parts from the bottom of the score (in the expectation of parts
-        corresponding to the "analysis" parts of the Roman Umpire"s ScoreAndAnalysis).
+        corresponding to the "analysis" parts of the romanUmpire.ScoreAndAnalysis).
 
         Notes for using the RepeatFinder:
         1.
@@ -459,7 +462,7 @@ class RnAnalysis:
 
         for x in range(self.firstMeasureNumber, self.lastMeasureNumber + 1):
 
-            # Time signatures (whether it"s a template or not)
+            # Time signatures (whether a template or not)
             if x in tsMeasures:  # First, before corresponding measure analysis
                 ts = self.timeSigMeasureDict[x]
                 self.combinedList.append(f"\nTime Signature: {ts}")
@@ -510,7 +513,7 @@ class RnAnalysis:
         """
         Writes a score.
         Intended for the score with Roman numeral analysis added.
-        Note: chfyChordAndLabel() will run if it hasn"t run already.
+        Note: chfyChordAndLabel() will run if it has not run already.
         """
 
         if not self.chfyScore:
