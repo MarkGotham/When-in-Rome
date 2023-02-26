@@ -43,22 +43,24 @@ Currently limited to single chord. Expand to progressions
 import json
 from . import get_distributions
 from .chord_features import simplify_chord
-
 from .. import get_corpus_files, CORPUS_FOLDER, CODE_FOLDER, write_json
+
+RESOURCES_FOLDER = CODE_FOLDER / "Resources"
 
 
 # ------------------------------------------------------------------------------
 
 # Code
 
-def get_usage(base_path: str = CORPUS_FOLDER / "OpenScore-LiederCorpus",
-              weight_by_length: bool = True,
-              sort_dict: bool = True,
-              percentages: bool = True,
-              this_mode: str = "major",
-              plateau: float = 0.01,
-              simplify: bool = False
-              ):
+def get_usage(
+        base_path: str = CORPUS_FOLDER / "OpenScore-LiederCorpus",
+        weight_by_length: bool = True,
+        sort_dict: bool = True,
+        percentages: bool = True,
+        this_mode: str = "major",
+        plateau: float = 0.01,
+        simplify: bool = False
+) -> dict:
     """
     For a given corpus, iterate over all figures and return 
     a dict for each chord and its usage.
@@ -124,27 +126,44 @@ def get_usage(base_path: str = CORPUS_FOLDER / "OpenScore-LiederCorpus",
             working_dict.pop(key)
 
     if simplify:
-        working_dict = simplify_usage_dict(working_dict)
+        working_dict = simplify_or_consolidate_usage_dict(working_dict)
 
     return working_dict
 
 
-def simplify_usage_dict(this_usage_dict,
-                        sort_dict: bool = True,
-                        percentages: bool = True):
+def simplify_or_consolidate_usage_dict(
+        file_name: str,
+        simplify_not_consolidate: bool = True,
+        major_not_minor: bool = True,
+        sort_dict: bool = True,
+        percentages: bool = True,
+        write: bool = True
+) -> dict:
     """
     For a full usage dict (with separate entries for each exact figure),
-    return a simplified form, joining items together figures according to 
-    the types of simplification set out in simplify_chord.
-    
-    a dict for each chord and its usage.
+    return a dict which either
+    1) simplifies the total syntax range, joining items together figures according to
+    the types of simplification set out in `simplify_chord` (reduction _to_ c.10% of total), or
+    2) consolidates duplicate entries like V42 ad V2 as defined at `careful_consolidate`
+    (reduction _by_ c.10% of total),
     """
+    assert (file_name.endswith("_raw.json"))
+    raw_path = RESOURCES_FOLDER / "chord_usage" / file_name
+    f = open(raw_path)
+    this_usage_dict = json.load(f)
+
     working_dict = {}
+
     for k, v in this_usage_dict.items():
-        simpler_key = simplify_chord(k)  # TODO simplification options here.
-        if simpler_key not in working_dict:
-            working_dict[simpler_key] = 0  # init
-        working_dict[simpler_key] += v  # in any case
+
+        if simplify_not_consolidate:
+            new_key = simplify_chord(k)  # TODO simplification options here.
+        else:
+            new_key = careful_consolidate(k, major_not_minor=major_not_minor)
+
+        if new_key not in working_dict:
+            working_dict[new_key] = 0  # init
+        working_dict[new_key] += v  # in any case
 
     if sort_dict:
         working_dict = sort_this_dict(working_dict)
@@ -152,10 +171,19 @@ def simplify_usage_dict(this_usage_dict,
     if percentages:
         working_dict = dict_in_percentages(working_dict)
 
+    if write:
+        if simplify_not_consolidate:
+            out_file_name = file_name.replace("_raw.json", "_simple.json")
+        else:
+            out_file_name = file_name.replace("_raw.json", ".json")  # as the VoR
+        write_json(working_dict, RESOURCES_FOLDER / "chord_usage" / out_file_name)
+
     return working_dict
 
 
-def sort_this_dict(working_dict):
+def sort_this_dict(
+        working_dict
+) -> dict:
     """
     Sorts a dict by the values, high to low.
     """
@@ -164,7 +192,9 @@ def sort_this_dict(working_dict):
                                     reverse=True)}
 
 
-def dict_in_percentages(working_dict):
+def dict_in_percentages(
+        working_dict
+) -> dict:
     """
     Convert a dict into expression the values as percentages of the total.
     """
@@ -176,8 +206,20 @@ def dict_in_percentages(working_dict):
     return working_dict
 
 
-def all_formats_one_corpus(corpus: str = "OpenScore-LiederCorpus",
-                           write: bool = True):
+def raw_usage_maj_min_one_corpus(
+        corpus: str = "OpenScore-LiederCorpus",
+        write: bool = True
+) -> None:
+    """
+    Retrieve the major and minor usage of one corpus and
+
+    Args:
+        corpus: which corpus (must be a child directory of "Corpus")
+        write (bool): optionally write the data (x2) to the "Resources" folder.
+
+    Returns: None
+
+    """
 
     for this_mode in ["major", "minor"]:
 
@@ -185,10 +227,76 @@ def all_formats_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                          this_mode=this_mode,
                          # plateau=0.01,
                          simplify=False)
-        json_path = CODE_FOLDER / "Resources" / f"{this_mode}_{corpus}.json"
+        json_path = RESOURCES_FOLDER / "chord_usage" / f"{this_mode}_{corpus}_raw.json"
 
         if write:
             write_json(data, json_path)
+
+
+def careful_consolidate(
+        original_string: str,
+        check_pitches: bool = True,
+        major_not_minor: bool = True,
+) -> str:
+    """
+    There are multiple legal ways of expressing the same chord.
+    Notably, this includes:
+    - compressed versus verbose figures: e.g., V642, V42, V2 are equivalent.
+    - "cautionary" accidentals: e.g., #viio (typical in DCML) and viio (used elsewhere).
+    This function seeks to rationalise and consolidate as many of those cases as possible
+    by compressing these cases,
+    TODO: promote this higher up. Remove all "42" from the corpus.
+
+    Returns: that same str rationalised.
+
+    Args:
+        original_string (str): The string you start with (and also return in the case of no swap)
+        check_pitches (bool): check that the implied pitches are the same before and after.
+        major_not_minor (bool): Either / or. Required for re-creating the Roman Numeral.
+    """
+
+    if major_not_minor:
+        tonality = "C"
+    else:
+        tonality = "a"
+
+    replace_pairs = {
+        "642": "2",
+        "42": "2",
+        "653": "65",
+        "753": "7",
+        # TODO full list. e.g., DT uses "V6/5"
+    }
+
+    new_string = None
+
+    for key, value in replace_pairs.items():
+        if key in original_string:
+            new_string = original_string.replace(key, value)
+
+    replace_pairs_minor = {
+        "#vii": "vii",
+        "bVI": "VI"
+    }
+
+    if new_string is None:
+        new_string = original_string
+
+    if not major_not_minor:  # TODO handles all relevant cases of multiple replacements?
+        for key, value in replace_pairs_minor.items():
+            if key in original_string:
+                new_string = new_string.replace(key, value)
+
+    if check_pitches:
+        from music21 import roman
+        before_pitches = roman.RomanNumeral(original_string, tonality).pitches
+        after_pitches = roman.RomanNumeral(new_string, tonality).pitches
+        if before_pitches == after_pitches:
+            return new_string
+        else:
+            print(f"Swap from {original_string} to {new_string} failed. Returning original.")
+    else:
+        return new_string
 
 
 # ------------------------------------------------------------------------------
@@ -199,7 +307,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--get_usage", action="store_true")
-    parser.add_argument("--simplify", type=bool, required=False, default=False)
+    parser.add_argument("--simplify", action="store_true")
+    parser.add_argument("--consolidate", action="store_true")
     parser.add_argument("--corpus", type=str,
                         required=False,
                         default="OpenScore-LiederCorpus",
@@ -208,6 +317,19 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.get_usage:
-        all_formats_one_corpus(corpus=args.corpus)
+        raw_usage_maj_min_one_corpus(corpus=args.corpus)
+
+    elif args.simplify:
+        for this_mode in ["major", "minor"]:
+            out_data = simplify_or_consolidate_usage_dict(f"{this_mode}_{args.corpus}_raw.json",
+                                                          simplify_not_consolidate=True,
+                                                          major_not_minor=(this_mode == "major"))
+
+    elif args.consolidate:
+        for this_mode in ["major", "minor"]:
+            out_data = simplify_or_consolidate_usage_dict(f"{this_mode}_{args.corpus}.json",
+                                                          simplify_not_consolidate=False,
+                                                          major_not_minor=(this_mode == "major"))
+
     else:
         parser.print_help()
