@@ -462,9 +462,9 @@ valid_searches = ["Modal Mixture",
 
 def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                           what: str = "Modal Mixture",
-                          progression: list = None,
+                          progression: list | None = None,
                           write_summary: bool = True,
-                          heads: list = None,
+                          heads: list | None = None,
                           write_examples: bool = False,
                           ):
     """
@@ -593,10 +593,10 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                         )
 
     totalRnLength = sum([x["LENGTH"] for x in sortedList])
-    print("Summary:\n"
+    print(f" *** Summary of {what} found in the {corpus} collection:\n"
           f"Number of files: {len(files)}.\n"
           f"Cases (count): {len(sortedList)} from {totalRns} RNs overall.\n"
-          f"Length: {totalRnLength} from {totalLength} total.")
+          f"Length: {totalRnLength} from {totalLength} total.\n")
 
     if not write_summary and not write_examples:
         return sortedList
