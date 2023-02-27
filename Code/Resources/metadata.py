@@ -48,13 +48,25 @@ from .. import raw_git
 
 # Early_choral
 
-chorales = dict(
+bach_chorales = dict(
     path_within_WiR=["Early_Choral", "Bach,_Johann_Sebastian", "Chorales"],
     item_keys="Riemenschneider",
     items=371,
     analysis_source="Bach Chorales",  # NB no public listing, so relative path only
     remote_score_mxl=raw_git + "MarkGotham/Chorale-Corpus/Bach,_Johann_Sebastian/Chorales/"
 )
+
+
+goudimel_chorales = dict(
+    path_within_WiR=["Early_Choral", "Goudimel,_Claude", "Psalmes"],
+    item_keys="Psalm Number",
+    items=[1, 3, 21, 25, 29, 32, 35, 36, 42, 43, 47, 49,
+           52, 54, 56, 60, 66, 68, 73, 75, 79, 81, 84, 89, 97, 98, 99,
+           101, 105, 108, 118, 119, 122, 123, 124, 127, 133, 135, 138, 140, 150],
+    analysis_source="Goudimel",
+    remote_score_mxl=raw_git + "MarkGotham/Chorale-Corpus/Goudimel,_Claude/Psalmes/"
+)
+
 
 madrigals = dict(
     path_within_WiR=["Early_Choral", "Monteverdi,_Claudio"],
@@ -79,8 +91,8 @@ tempered = dict(
     analysis_source="New"
 )
 
-chopin_commit = "ad38f0a82e5c50740b1d70a41c84924562bdf9f2"
 
+chopin_commit = "ad38f0a82e5c50740b1d70a41c84924562bdf9f2"
 
 chopin_etudes = dict(
     repo_name="chopin_etudes",

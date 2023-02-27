@@ -37,7 +37,7 @@ from .Resources import metadata
 
 # Early Choral
 
-def chorales(move_analyses: bool = False) -> None:
+def bach_chorales(move_analyses: bool = False) -> None:
     """
     Build the chorales sub-corpus.
     Scores = MG external repo
@@ -48,9 +48,9 @@ def chorales(move_analyses: bool = False) -> None:
     Returns: None
     """
 
-    source = metadata.chorales
+    source = metadata.bach_chorales
     parent_dir_path = make_parent_dirs(source)
-    chorales_DT = DT_BASE / source["analysis_source"]  # "Bach Chorales"
+    dt_source = DT_BASE / source["analysis_source"]  # "Bach Chorales"
 
     for riemenschneider_number in range(1, source["items"] + 1):  # range(371)
 
@@ -69,7 +69,44 @@ def chorales(move_analyses: bool = False) -> None:
         write_json(md, new_dir / "remote.json")
 
         if move_analyses:
-            src = chorales_DT / r_string
+            src = dt_source / r_string
+            dst = new_dir / "analysis.txt"
+            shutil.copy(src, dst)
+
+
+def goudimel(move_analyses: bool = True) -> None:
+    """
+    Build the Goudimel chorale sub-corpus.
+    Scores = MG external repo
+    Analyses = DT.
+
+    Args:
+        move_analyses: If True, move DT analyses from local copy to WiR.
+    Returns: None
+    """
+
+    source = metadata.goudimel_chorales
+    parent_dir_path = make_parent_dirs(source)
+    dt_source = DT_BASE / source["analysis_source"]
+
+    for psalm_number in source["items"]:
+
+        md = dict()
+
+        z_num = str(psalm_number).zfill(3)
+
+        new_dir = parent_dir_path / z_num
+        make_dir(new_dir)
+
+        md[source["item_keys"]] = psalm_number,
+        md["remote_score_mxl"] = source["remote_score_mxl"] + z_num + "/short_score.mxl"
+        md["composer"] = get_composer(source)
+        their_string = f"GenPs{z_num}_Goudimel_homoph.txt"
+        md["analysis_source"] = f"{source['analysis_source']}/{their_string}"
+        write_json(md, new_dir / "remote.json")
+
+        if move_analyses:
+            src = dt_source / their_string
             dst = new_dir / "analysis.txt"
             shutil.copy(src, dst)
 
@@ -566,7 +603,8 @@ if __name__ == "__main__":
         parser = argparse.ArgumentParser()
 
         arg_strings = (
-            "chorales",
+            "bach_chorales",
+            "goudimel",
             "madrigals",
 
             "chopin_etudes",
