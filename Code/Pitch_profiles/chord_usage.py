@@ -240,19 +240,31 @@ def careful_consolidate(
 ) -> str:
     """
     There are multiple legal ways of expressing the same chord.
-    Notably, this includes:
-    - compressed versus verbose figures: e.g., V642, V42, V2 are equivalent.
-    - "cautionary" accidentals: e.g., #viio (typical in DCML) and viio (used elsewhere).
-    This function seeks to rationalise and consolidate as many of those cases as possible
-    by compressing these cases,
-    TODO: promote this higher up. Remove all "42" from the corpus.
+    Notably, this includes the equivalences between:
+    1. compressed versus verbose figures (e.g., V642, V42, V2);
+    2. "cautionary" accidentals (e.g., `#viio` typical in DCML and `viio` used elsewhere).
+    Case 2 applies because the default music21 reading of Romantext
+    (used throughout this meta-corpus) handles 6th and 7th degrees in minor
+    with the CAUTIONARY setting
+    (see `Minor67Default` there and the `When-in-Rome/syntax.md` page here).
+    In that context both #vii and vii account for the same collection of pitches in minor:
+    the leading sharp (#) is redundant.
+    The same goes for the bVI and VI:
+    leading flat (b) is redundant.
+    The difference makes no difference for most tasks,
+    but is not suitable for counting the usage of (actually) different figures.
 
-    Returns: that same str rationalised.
+    This function seeks to rationalise and consolidate as many of those cases as possible
+    by compressing these cases.
+
+    TODO: could perhaps be applied to the source files: e.g, remove all "42" from the corpus.
 
     Args:
         original_string (str): The string you start with (and also return in the case of no swap)
         check_pitches (bool): check that the implied pitches are the same before and after.
         major_not_minor (bool): Either / or. Required for re-creating the Roman Numeral.
+
+    Returns: that same str, modified where appropriate.
     """
 
     if major_not_minor:
