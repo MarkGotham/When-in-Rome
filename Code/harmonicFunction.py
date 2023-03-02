@@ -45,7 +45,7 @@ def functionToFigure(harmonicFunctionLabel: str):
     return str(hf.functionToRoman(harmonicFunctionLabel).figure)
 
 
-def figureToFunction(romanNumeralFigure: roman.RomanNumeral,
+def figureToFunction(rn: roman.RomanNumeral | str,
                      simplified: bool = False):
     """
     See notes at music21.analysis.harmonicFunction.romanToFunction
@@ -54,21 +54,21 @@ def figureToFunction(romanNumeralFigure: roman.RomanNumeral,
     """
 
     # Adapt to m21 types - always RomanNumeral
-    if not isinstance(romanNumeralFigure, roman.RomanNumeral):
-        romanNumeralFigure = roman.RomanNumeral(romanNumeralFigure)
+    if isinstance(rn, str):
+        rn = roman.RomanNumeral(rn)
 
     # Special cases: hard code here for now. TODO
     # NB: analyst specified `.figure` for "Cad64", `.romanNumeralAlone` otherwise
-    if romanNumeralFigure.figure == "Cad64":
+    if rn.figure == "Cad64":
         returnString = "D"
-    elif romanNumeralFigure.romanNumeralAlone == "vii":  # includes all "ø", "o", etc.
+    elif rn.romanNumeralAlone == "vii":  # includes all "ø", "o", etc.
         returnString = "D"
 
     else:
-        returnString = str(hf.romanToFunction(romanNumeralFigure,
+        returnString = str(hf.romanToFunction(rn,
                                               onlyHauptHarmonicFunction=simplified))
 
-    if romanNumeralFigure.secondaryRomanNumeral:
+    if rn.secondaryRomanNumeral:
         returnString = f"({returnString})"
 
     return returnString  # NB "None" in the case of no match
