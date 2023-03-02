@@ -1,17 +1,25 @@
 import unittest
 
 from music21 import roman
+import json
 
-from Code.Pitch_profiles.chord_features import SingleChordFeatures
+from . import TEST_FOLDER
+from Code.Pitch_profiles import chord_features, chord_usage
 
 
 class Test(unittest.TestCase):
 
     def testSingleChordFeatures(self):
+        """
+        Artificial test of
+        theoretically chosen major triad against
+        practice suggesting diminished
+        Returns: None
+        """
         rn = roman.RomanNumeral('I')  # Tonic major
         profile = [309.17, 37.31, 10.09, 376.62, 10.75, 21.43,
                    316.04, 1.02, 19.79, 33.68, 24.33, 22.97]  # c diminished
-        testFeaturesSet = SingleChordFeatures(rn, profile)
+        testFeaturesSet = chord_features.SingleChordFeatures(rn, profile)
 
         for pair in (
                 ('chordQualityVector',
@@ -50,3 +58,39 @@ class Test(unittest.TestCase):
         ):
             vector = getattr(testFeaturesSet, pair[0])
             self.assertEqual(vector, pair[1])
+
+    def test_Aug6(self):
+
+        corpus = "OpenScore-LiederCorpus"
+
+        for this_mode in ["major", "minor"]:
+            no_inv = chord_usage.simplify_or_consolidate_usage_dict(
+                f"{this_mode}_{corpus}.json",
+                simplify_not_consolidate=True,
+                no_inv=True,
+                no_other_alt=True,
+                no_secondary=True,
+                major_not_minor=(this_mode == "major"),
+                write=False)
+
+            pop_list = []
+
+            for fig in no_inv:
+                if not roman.RomanNumeral(fig).isAugmentedSixth():
+                    pop_list.append(fig)
+
+            for p in pop_list:
+                no_inv.pop(p)
+
+            if this_mode == "major":
+                self.assertEqual(no_inv, {
+                    "Ger": 0.709,
+                    "Fr": 0.178,
+                    "It": 0.049,
+                })
+            else:  # minor
+                self.assertEqual(no_inv, {
+                    "Ger": 1.531,
+                    "It": 0.404,
+                    "Fr": 0.371,
+                })
