@@ -133,10 +133,14 @@ def process_one_score(
         print("No action requested: set at least one of combine, slices, or feedback to true.")
         return
 
-    path_to_score = Path(path_to_score)
-
-    if not path_to_score.is_relative_to(CORPUS_FOLDER):
-        raise ValueError("The `path_to_score` argument must be within the corpus")
+    if Path(path_to_score).exists():
+        path_to_score = Path(path_to_score)
+        if not path_to_score.is_relative_to(CORPUS_FOLDER):
+            raise ValueError("The `path_to_score` argument must be within the corpus")
+    elif (CORPUS_FOLDER / path_to_score).exists():
+        path_to_score = CORPUS_FOLDER / path_to_score
+    else:
+        raise ValueError("The `path_to_score` argument is invalid.")
 
     if path_to_analysis is None:
         path_to_analysis = path_to_score
@@ -455,7 +459,8 @@ if __name__ == "__main__":
 
     parser.add_argument("--path_to_score", type=str,
                         required=False,
-                        help="Process this one within-corpus path for a score-analysis pair.")
+                        help="Path to score-analysis pair directory. "
+                             "This can be specified entirely to the CORPUS_FOLDER.")
     parser.add_argument("--corpus", type=str,
                         required=False,
                         default=CORPUS_FOLDER / "OpenScore-LiederCorpus",
@@ -463,7 +468,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.process_one_score:
-        process_one_score(path_to_score=CORPUS_FOLDER / args.path_to_score)
+        process_one_score(path_to_score=args.path_to_score)
     elif args.process_corpus:
         process_corpus(corpus=args.corpus)
     elif args.check_all_parse:
