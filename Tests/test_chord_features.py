@@ -49,9 +49,9 @@ class Test(unittest.TestCase):
                  [0.7285]),
 
                 ('fullChordCommonnessVector',
-                 [1]),  # Most common = 1
+                 [1]),  # Most common ...
                 ('simplifiedChordCommonnessVector',
-                 [0.908])  # Still very common
+                 [1])  # ... in both cases
         ):
             vector = getattr(testFeaturesSet, pair[0])
             self.assertEqual(vector, pair[1])
