@@ -1,9 +1,6 @@
 import unittest
 
 from music21 import roman
-import json
-
-from . import TEST_FOLDER
 from Code.Pitch_profiles import chord_features, chord_usage
 
 
