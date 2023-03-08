@@ -25,7 +25,7 @@ This implementation of the multiple option approach is new.
 
 # ------------------------------------------------------------------------------
 
-from music21 import chord, interval, pitch, roman
+from music21 import chord, expressions, interval, meter, pitch, roman, stream
 
 from Code.Pitch_profiles import chord_usage
 
@@ -489,7 +489,7 @@ def add_mixture_info(
 def in_practice(
         corpus: str = "OpenScore-LiederCorpus",
         major_mode: bool = True,
-        write: bool = False
+        write: bool = True
 ) -> dict:
     """
     Take all the chords used as recorded in one of the chord_usage_dicts,
@@ -514,11 +514,26 @@ def in_practice(
         write=False)
 
     out_info = {}
+    if write:
+        p = stream.Part()
+        p.insert(meter.TimeSignature("1/4"))
 
     for fig in simple_dict:
         rn = add_mixture_info(roman.RomanNumeral(fig, key))
         if rn.mixture_metric > 0:
             out_info[fig] = rn_to_mixture_list(rn) + [simple_dict[fig]]
+            if write:
+                rn.addLyric(fig)
+                rn.addLyric(simple_dict[fig])
+                p.append(rn)
+
+    if write:
+        te = expressions.TextExpression("Modal mixture. Most common cases into the "
+                                        f"{this_mode} mode in the {corpus}")
+        te.placement = "above"
+        p.insert(0, te)
+        p.makeMeasures()
+        p.show()
 
     return out_info
 
