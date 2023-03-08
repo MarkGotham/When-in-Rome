@@ -489,7 +489,7 @@ def add_mixture_info(
 def in_practice(
         corpus: str = "OpenScore-LiederCorpus",
         major_mode: bool = True,
-        write: bool = True
+        write: bool = False
 ) -> dict:
     """
     Take all the chords used as recorded in one of the chord_usage_dicts,
