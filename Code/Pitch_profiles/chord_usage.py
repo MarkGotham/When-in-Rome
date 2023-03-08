@@ -128,6 +128,10 @@ def get_usage(
     if simplify:
         working_dict = simplify_or_consolidate_usage_dict(working_dict)
 
+    # Always round
+    for x in working_dict:
+        working_dict[x] = round(working_dict[x], 3)
+
     return working_dict
 
 
@@ -245,8 +249,9 @@ def raw_usage_maj_min_one_corpus(
     for this_mode in ["major", "minor"]:
 
         data = get_usage(CORPUS_FOLDER / corpus,
+                         percentages=False,
                          this_mode=this_mode,
-                         # plateau=0.01,
+                         plateau=2.0,
                          simplify=False)
         json_path = RESOURCES_FOLDER / "chord_usage" / f"{this_mode}_{corpus}_raw.json"
 
