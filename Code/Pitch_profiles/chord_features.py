@@ -401,29 +401,29 @@ def simplify_chord(
     and its partial derivative at `music21.analysis.harmonicFunction`.
     E.g., the major tonic chord `I` has a Hauptfunction of `T`.
 
-    >>> simplify_chord("I", haupt_function = True)
-    "T"
+    >>> simplify_chord('I', haupt_function = True)
+    'T'
 
     `full_function` is like `haupt_function`,
     but it supports Nebenfunktionen like `Tp` where relevant.
 
     E.g., `haupt_function` will return `T` for `I`, but also `vi`:
-    >>> simplify_chord("I", haupt_function = True)
-    "T"
+    >>> simplify_chord('I', haupt_function = True)
+    'T'
 
-    >>> simplify_chord("vi", haupt_function = True)
-    "T"
+    >>> simplify_chord('vi', haupt_function = True)
+    'T'
 
     The `full_function` option still returns `T` for `I`, but `Tp` for `vi`.
-    >>> simplify_chord("I", full_function = True)
-    "T"
+    >>> simplify_chord('I', full_function = True)
+    'T'
 
-    >>> simplify_chord("vi", full_function = True)
-    "Tp"
+    >>> simplify_chord('vi', full_function = True)
+    'Tp'
 
     We now move on to the simplification of special parts of the Roman numeral,
     using the particularly comlpex (and rather unlikely) example of `#ivo65[add#6]/V`.
-    >>> rn_string = "#ivo65[add#6]/V"
+    >>> rn_string = '#ivo65[add#6]/V'
 
     The full list of these `no` options is (in order of presentation):
     `no_root_alt`,
@@ -438,17 +438,23 @@ def simplify_chord(
     (e.g., for significant dimension reduction in feature extraction)
     and almost certainly in combination with other removals set out below.
     >>> simplify_chord(rn_string, no_root_alt = True)
-    "ivo65[add#6]/V"
+    'ivo65[add#6]/V'
 
     `no_quality_alt` removes any quality modifiers:
     the upper/lower case distinction for minor versus major remains,
     but augmented and diminished symbols are lost (including for 7th chords).
     >>> simplify_chord(rn_string, no_quality_alt = True)
-    "#iv65[add#6]/V"
+    '#iv65[add#6]/V'
 
     `no_inv` removes the inversion:
     >>> simplify_chord(rn_string, no_inv = True)
-    "#ivo[add#6]/V"
+    '#ivo7[add#6]/V'
+
+    Note how this removes the `65` (first inversion) but retains the fact of being a seventh.
+    `no_inv` also incidentally maps 9ths to 7ths in the same breath.
+    This behaiour may change.
+    >>> simplify_chord('V9[add#6]/V', no_inv = True)
+    'V7[add#6]/V'
 
     `no_other_alt` removes any added, removed, and chromatically altered tones
     (excepting the root modifier discussed above).
@@ -456,11 +462,11 @@ def simplify_chord(
     only some analysts specify at this level of detail,
     so removing it can close the gap between analystical styles, for instance.
     >>> simplify_chord(rn_string, no_other_alt = True)
-    "#ivo65/V"
+    '#ivo65/V'
 
     `no_secondary` removes secondary Roman numerals:
     >>> simplify_chord(rn_string, no_secondary = True)
-    "#ivo65[add#6]"
+    '#ivo65[add#6]'
 
     Note the following.
 
@@ -471,11 +477,11 @@ def simplify_chord(
     2. the `no` options are, of course, eminently combinable.
     Here, for example, is `no_inv` combined with `no_other_alt`:
     >>> simplify_chord(rn_string, no_inv = True, no_other_alt = True)
-    "#ivo/V"
+    '#ivo7/V'
 
-    3. all options are set to False by default, forcing the user to chose which they wish to use.
+    3. all options are set to False by default, forcing the user to choose which to use.
     >>> simplify_chord(rn_string)
-    "#ivo65[add#6]/V"
+    '#ivo65[add#6]/V'
 
     Now, some notes of semi-corresponding attributes in music21.
     Here, we work party on the string, to ensure no unexpected sideeffects.
@@ -487,19 +493,19 @@ def simplify_chord(
 
     >>> rn = roman.RomanNumeral(rn_string)
     >>> rn.romanNumeral
-    "#iv"
+    '#iv'
 
     `music21 roman.RomanNumeral.romanNumeralAlone` is similar, but it also removes
     that root modifier.
 
     >>> rn = roman.RomanNumeral(rn_string)
     >>> rn.romanNumeralAlone
-    "iv"
+    'iv'
 
     `music21 roman.RomanNumeral.primaryFigure` removes the secondary Roman numeral,
     and so is similar to `no_secondary`.
     >>> rn.primaryFigure
-    "#ivo65[add#6]"
+    '#ivo65[add#6]'
 
     Clearly this function supports corpus-level analysis.
     For a quick example, see `test_chord_function` in the unittests.
@@ -532,12 +538,17 @@ def simplify_chord(
 
     if no_inv:
         if rn.figuresWritten:
+            replace = ""
+            if rn.isSeventh() or rn.containsSeventh():
+                replace = "7"  # quality handled elsewhere
             if rn.figuresWritten in working_string:
-                working_string = working_string.replace(rn.figuresWritten, "")
+                working_string = working_string.replace(rn.figuresWritten, replace)
             else:  # some complex exceptions. Seemingly only Aug6ths.
-                print(f"Warning: {rn.figuresWritten} not in {rn.primaryFigure}")
-                if rn.isAugmentedSixth():  # hacky work around but e.g., "Fr6" figuresWritten is 43
-                    working_string = rn.romanNumeralAlone
+                print(f"Warning: {rn.figuresWritten} not in {rn.primaryFigure}. "
+                      f"Returning RN alone: {rn.romanNumeralAlone}")
+                working_string = rn.romanNumeralAlone
+                # Known issue for some .isAugmentedSixth() cases.
+                # E.g., "Fr6" figuresWritten is 43
 
     if other_alt and not no_other_alt:  # alternatively use `.addedSteps` etc.
         for x in other_alt:
