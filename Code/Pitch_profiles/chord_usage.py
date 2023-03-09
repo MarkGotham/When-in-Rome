@@ -45,6 +45,8 @@ from . import get_distributions
 from .chord_features import simplify_chord
 from .. import get_corpus_files, CORPUS_FOLDER, CODE_FOLDER, write_json
 
+from music21 import roman
+
 RESOURCES_FOLDER = CODE_FOLDER / "Resources"
 
 
@@ -263,6 +265,7 @@ def careful_consolidate(
         original_string: str,
         check_pitches: bool = True,
         major_not_minor: bool = True,
+        rn: roman.RomanNumeral | None = None
 ) -> str:
     """
     There are multiple legal ways of expressing the same chord.
@@ -296,6 +299,7 @@ def careful_consolidate(
         original_string (str): The string you start with (and also return in the case of no swap)
         check_pitches (bool): check that the implied pitches are the same before and after.
         major_not_minor (bool): Either / or. Required for re-creating the Roman Numeral.
+        rn (roman.RomanNumeral): Pass the actual Roman Numeral where availalbe (saves re-creating).
 
     Returns: that same str, modified where appropriate.
     """
@@ -323,7 +327,11 @@ def careful_consolidate(
 
         "753": "7",
 
-        # NB: Neapolitan ("bII6" <> "N6") not applicable as the initial retrieval returns bII
+        "N63": "bII6",
+        "N6": "bII6",
+        "N": "bII6",
+        "N53": "bII",
+        "N5": "bII",
     }
 
     working_string = original_string
@@ -348,13 +356,19 @@ def careful_consolidate(
 
     if check_pitches:
         print(f"... swapping to {working_string} ...")
-        from music21 import roman
-        before_pitches = roman.RomanNumeral(original_string,
-                                            tonality,
-                                            sixthMinor=roman.Minor67Default.CAUTIONARY,
-                                            seventhMinor=roman.Minor67Default.CAUTIONARY
-                                            ).pitches
-        after_pitches = roman.RomanNumeral(working_string, tonality).pitches
+
+        if rn:
+            before_pitches = [p.name for p in rn.pitches]
+            tonality = rn.key
+        else:
+            before_pitches = roman.RomanNumeral(original_string,
+                                                tonality,
+                                                sixthMinor=roman.Minor67Default.CAUTIONARY,
+                                                seventhMinor=roman.Minor67Default.CAUTIONARY
+                                                ).pitches
+            before_pitches = [p.name for p in before_pitches]
+
+        after_pitches = [p.name for p in roman.RomanNumeral(working_string, tonality).pitches]
         if before_pitches == after_pitches:
             print("... works.")
             return working_string
