@@ -27,11 +27,12 @@ music21 repo [roman.py](https://github.com/cuthbertLab/music21/blob/master/music
 
 """
 
-from music21 import converter, interval, layout, metadata, roman, stream, tempo
+from music21 import bar, converter, instrument, interval, layout, metadata, roman, stream, tempo
 from pathlib import Path
 
 import csv
 from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files, harmonicFunction
+from .Pitch_profiles.chord_usage import careful_consolidate
 
 
 # ------------------------------------------------------------------------------
@@ -271,6 +272,9 @@ def is_potential_Cto_Dim_7(
     E.g., V in C and I in G are equivalent.
 
     Args:
+        chord_before: the roman.RomanNumeral object immediately preceding.
+        diminished_seventh: the roman.RomanNumeral object that is a possible Cto7.
+        chord_after: the roman.RomanNumeral object immediately following.
         require_prolongation (bool): diminished seventh is preceded and followed by the same chord
             (as defined by the pitch content, again not inversion or spelling).
     """
@@ -301,10 +305,20 @@ def is_potential_Cto_Dim_7(
 # Other Static
 
 def data_from_Rn(
-        rn: roman.RomanNumeral
+        rn: roman.RomanNumeral,
+        consolidate: bool = True
 ) -> dict:
+
+    if consolidate:
+        fig = careful_consolidate(rn.figure,
+                                  major_not_minor=(rn.key.mode == "major"),
+                                  rn=rn
+                                  )
+    else:
+        fig = rn.figure
+
     return {"MEASURE": rn.getContextByClass("Measure").measureNumber,
-            "FIGURE": rn.figure,
+            "FIGURE": fig,
             "KEY": rn.key.name.replace("-", "b"),
             "BEAT": rn.beat,
             "BEAT STRENGTH": rn.beatStrength,
@@ -465,7 +479,7 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                           progression: list | None = None,
                           write_summary: bool = True,
                           heads: list | None = None,
-                          write_examples: bool = False,
+                          write_examples: bool = True,
                           ):
     """
     Runs the search methods on a specific pair of corpus and search term.
@@ -488,8 +502,9 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                  "COLLECTION",
                  "MOVEMENT",
                  "MEASURE",
-                 "FIGURE",
-                 "KEY"]
+                 ]
+        if what != "Common Tone Diminished Sevenths":
+            heads += ["FIGURE", "KEY"]  # single figure and key unhelpful in Cto7 case
 
     if what not in valid_searches:
         raise ValueError(f"For what, please select from among {valid_searches}.")
@@ -511,7 +526,8 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
     totalLength = 0
 
     corpus_path = CORPUS_FOLDER / corpus
-    out_path = REPO_FOLDER / "Anthology" / corpus
+    sv_out_path = REPO_FOLDER / "Anthology" / corpus
+    eg_out_path = REPO_FOLDER.parent / "Anthology" / corpus  # Now an external repo
 
     print(f"Searching for {what} within the {corpus} collection:")
 
@@ -519,9 +535,12 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                              file_name="analysis.txt"
                              )
 
-    score_url_base = '<a href="https://musescore.com/score/'
-    eg_url_base = '<a href="https://github.com/MarkGotham/When-in-Rome/blob/master/Anthology/' \
-                  f"OpenScore-LiederCorpus/{what.replace(' ', '_')}/"
+    # URLs
+    base_url = f'<a href="https://github.com/MarkGotham/'
+    wir = base_url + f"When-in-Rome/blob/master/Corpus/{corpus}/"
+    ant_online = base_url + f"Anthology/blob/main/{corpus}/"
+    eg_url_base = ant_online + what.replace(' ', '_') + "/"
+    score_online = '<a href="https://musescore.com/score/'
 
     for file_path in files:
         try:
@@ -539,14 +558,19 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
 
         # URL for lieder
         if lied:
-            matches = get_corpus_files(path_to_dir, "lc*.mscx")
+            matches = get_corpus_files(path_to_dir, "lc*.mscz")
             if matches:
                 lc_num = matches[0].stem[2:]  # NB stem is a string filename w/out extension
-                score_url = score_url_base + f'{lc_num}">{lc_num}</a>'
+                score_url = score_online + f'{lc_num}">{lc_num}</a>'
+                download = wir + "/".join(path_parts).replace(",", "%2C")
+                mscz_download = download + f'/lc{lc_num}.mscz">.mscz</a>'
+                mxl_download = download + '/score.mxl">.mxl</a>'
             else:
+                print(f"No <lc*.mscz> file found in {path_to_dir}")
                 lc_num = "x_lc_missing"
                 score_url = "x_url_missing"
-                print(f"No <lc*.mscx> file found in {path_to_dir}")
+                mscz_download = "mscz_missing"
+                mxl_download = "mxl_missing"
 
         if what == "Modal Mixture":
             rnf.find_mixtures()
@@ -579,10 +603,15 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
             if lied:
                 # For pdf write only (not sv)
                 x["source_path"] = path_to_dir
-                x["eg_file"] = f'{lc_num}_{x["MEASURE"]}.png'
+                x["eg_file"] = f'{lc_num}_{x["MEASURE"]}'  # TODO -1 getting added. Review.
                 # For sv
                 x["SCORE"] = score_url
-                x["EXAMPLE"] = eg_url_base + f'{x["eg_file"]}">{x["eg_file"]}</a>'
+                if score_url == "x_url_missing":
+                    x["DOWNLOAD"] = "x_missing"
+                    x["EXAMPLE"] = "x_missing"
+                else:
+                    x["DOWNLOAD"] = f"{mscz_download} {mxl_download}"
+                    x["EXAMPLE"] = eg_url_base + f'{x["eg_file"]}-1.png">{x["eg_file"]}</a>'
 
         out_data += this_work_list
 
@@ -602,11 +631,11 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
         return sortedList
 
     if write_summary:
-        with open(out_path / (what + ".csv"), "w") as svfile:
+        with open(sv_out_path / (what + ".csv"), "w") as svfile:
             svOut = csv.writer(svfile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 
             if lied:
-                heads += ["SCORE", "EXAMPLE"]
+                heads += ["SCORE", "DOWNLOAD", "EXAMPLE"]
 
             svOut.writerow(heads)
 
@@ -616,47 +645,77 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
 
     if write_examples and corpus == "OpenScore-LiederCorpus" and lc_num:
         what = what.replace(" ", "_")  # TODO higher up?
+        v = instrument.Instrument("Voice")  # TODO higher up?
         for item in sortedList:
-            in_path = item["source_path"] / "analysis_on_score.mxl"
-            example_path = out_path / what / item["eg_file"]
+            in_path = item["source_path"] / "score.mxl"  # TODO consider "analysis_on_score.mxl"
+            if not in_path.exists:
+                print(f"Warning: {in_path} file does not exist. Skipping.")
+                continue
+
+            example_path = eg_out_path / what
             score = converter.parse(in_path)
 
-            start = item["MEASURE"] - 2
-            end = item["MEASURE"] + 2
-
+            # Range to use
+            start = item["MEASURE"] - 1
+            end = item["MEASURE"] + 1
             example = clean_up(score.measures(start, end))
 
             example.insert(0, metadata.Metadata())
             example.metadata.composer = item["COMPOSER"]
-            example.metadata.title = item["COLLECTION"]
-            example.metadata.subtitle = f'{item["MOVEMENT"]} from {start} to {end}'
+            example.metadata.title = f'{item["COLLECTION"]}. {item["MOVEMENT"]}. m{item["MEASURE"]}'
+
+            # Currently always the middle of 3 measures. If not, consider:
+            # te = expressions.TextExpression(f'{item["KEY"]}: {item["FIGURE"]}')
+            # example.parts[0].measure(1).insert( ...
+
             example.coreElementsChanged()
 
-            example.write(
-                "musicxml.png",  # sic, this as the format
-                fp=example_path
-            )
+            try:
+                example.write(
+                    "musicxml.png",  # sic, this as the format
+                    fp=example_path / (item["eg_file"] + ".png")
+                )
+            except:
+                print(f"Warning: unable to write {eg_out_path}")
 
             # music21 insists on also writing the xml. Remove:
-            inadvertent_score = out_path / what / item["eg_file"].replace(".png", ".musicxml")
-            inadvertent_score.unlink()
+            inadvertent_score_path = example_path / (item["eg_file"] + ".musicxml")
+            if inadvertent_score_path.exists():
+                inadvertent_score_path.unlink()
+            else:
+                print(f"Warning: No file found at {inadvertent_score_path}")
 
 
-def clean_up(this_stream: stream) -> stream:
+def clean_up(
+        this_stream: stream,
+        lied: bool = True
+) -> stream:
     """
     Temporary function for cleaning example score outputs.
     Adapted from my `stream/tools` module for m21.
 
     Args:
         this_stream: the stream to work on. Note: In place is hard coded in.
+        lied (bool): Lied-specific special cases.
 
     Returns: that same stream, modified.
 
-    # TODO promote higher up the workflow, for creation of analysis_on_score
+    # TODO promote higher up the workflow, e.g., for creation of analysis_on_score
     # TODO possibly also remove `bar.Barline type=double` when not last measure
     """
-    for p in this_stream.parts:
-        p.partAbbreviation = None
+
+    # for p in this_stream.parts:
+    #     p.partAbbreviation = None
+    #     # TODO ^ not effective. Resolved elsewhere.
+    #
+    #     last_measure = p.getElementsByClass(stream.Measure).last()
+    #     last_measure.append(bar.Barline(type='final', location='right'))
+    #     # TODO ^ not effective. (Partial) terminal double bar added by notation apps.
+
+    if lied:
+        i = this_stream.parts[0].getInstrument()
+        this_stream.parts[0].replace(i, instrument.Instrument("Voice"))
+        # TODO ^ this issue with voice part name is common. Resolve at source. Patch for now.
 
     remove_dict = {}
 
@@ -665,6 +724,7 @@ def clean_up(this_stream: stream) -> stream:
         layout.SystemLayout,
         tempo.MetronomeMark,
         # NB: keep layout.StaffGroup
+        bar.Barline,  # TODO Also not effective. See above
     ]:
         for this_state in this_stream.recurse().getElementsByClass(this_class):
             if this_state.activeSite in remove_dict:  # There may be several in same (e.g., measure)
