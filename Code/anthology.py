@@ -537,8 +537,9 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
 
     # URLs
     base_url = f'<a href="https://github.com/MarkGotham/'
+    raw_url = f'<a href="https://raw.githubusercontent.com/MarkGotham/'
     wir = base_url + f"When-in-Rome/blob/master/Corpus/{corpus}/"
-    ant_online = base_url + f"Anthology/blob/main/{corpus}/"
+    ant_online = raw_url + f"Anthology/main/{corpus}/"
     eg_url_base = ant_online + what.replace(' ', '_') + "/"
     score_online = '<a href="https://musescore.com/score/'
 
