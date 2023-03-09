@@ -83,3 +83,31 @@ class Test(unittest.TestCase):
                 self.assertAlmostEqual(no_inv["It"], 0.051)
             else:  # minor
                 self.assertAlmostEqual(no_inv["It"], 0.37)
+
+    def test_N6(self):
+
+        corpus = "OpenScore-LiederCorpus"
+
+        for this_mode in ["major", "minor"]:
+            simple = chord_usage.simplify_or_consolidate_usage_dict(
+                f"{this_mode}_{corpus}.json",
+                simplify_not_consolidate=True,
+                no_inv=False,
+                no_other_alt=True,
+                no_secondary=True,
+                major_not_minor=(this_mode == "major"),
+                write=False)
+
+            pop_list = []
+
+            for fig in simple:
+                if not roman.RomanNumeral(fig).isNeapolitan(require1stInversion=False):
+                    pop_list.append(fig)
+
+            for p in pop_list:
+                simple.pop(p)
+
+            if this_mode == "major":
+                self.assertAlmostEqual(simple["bII"], 0.126)
+            else:  # minor
+                self.assertAlmostEqual(simple["bII6"], 0.284)
