@@ -132,12 +132,10 @@ class RnFinder(object):
 
         lnrns = len(rns_list)
 
-        for overallIndex in range(len(self.rns) - lnrns):
-            thisRange = self.rns[overallIndex: overallIndex + lnrns]
+        for index in range(len(self.rns) - lnrns):
+            thisRange = self.rns[index: index + lnrns]
 
-            keysInThisRange = [x.key for x in thisRange]
-            distinctKeys = set(keysInThisRange)
-            if len(distinctKeys) > 1:  # modulates
+            if changes_key(thisRange):
                 break
 
             figures = [x.figure for x in thisRange]
@@ -151,8 +149,10 @@ class RnFinder(object):
 
     def find_prog_by_qual_and_intv(
             self,
-            qualitiesList: list,
+            qualitiesList: list | None = None,
             intervalList: list[str | interval.Interval] = None,
+            # TODO qualities, intervals or both. Neither = error.
+            # TODO accept generic intervals too
             bassOrRoot: str = "bass",
     ):
         """
@@ -222,6 +222,41 @@ class RnFinder(object):
                         require_prolongation=require_prolongation
                 ):
                     self.user_progression.append(data_from_Rn(this_chord))
+
+    def find_quiescenzas(self):
+        """
+        Find specific cases of the "Quiescenza".
+        Basically this is of the kind V/IV to IV,
+        with or without 7th on the V and heading to either IV (typical in major) or iv (minor).
+        Partimenti tradition considers this suitable for the end.
+        There are examples of that in the corpus (Bach Prelude no1 in C).
+        ... but it also often appears at the start.
+        That being the case, this method differs from others on the class by returning
+        not only the specific progression, but also the location
+
+        See is_quiescenza for more info.
+        """
+
+        last_measure = self.rns[-1].getContextByClass("Measure").measureNumber
+
+        for index in range(len(self.rns) - 4):
+            this_range = self.rns[index: index + 4]
+
+            if changes_key(this_range):
+                continue
+
+            if is_quiescenza(this_range):
+
+                figures = "-".join([x.figure for x in this_range])
+                measure_start = this_range[0].getContextByClass("Measure").measureNumber
+
+                info = data_from_Rn(this_range[0])
+                # TODO think through shared steps. For now override
+                info["MEASURE"] = f"{measure_start}/{last_measure}"
+                info["FIGURE"] = figures
+                # key is fine
+
+                self.user_progression.append(info)
 
 
 # ------------------------------------------------------------------------------
@@ -298,6 +333,108 @@ def is_potential_Cto_Dim_7(
 
     if pcs_now & pcs_after:  # any shared pitch(class)
         return True
+
+
+def is_quiescenza(
+        rns_list: list[roman.RomanNumeral],
+        require_full_cadence: bool = True
+) -> bool:
+    """
+    The "Quiescenza" tonicises scale degree 4 with V/IV to IV or similar:
+    with or without 7th on the V and heading to either IV (typical in major) or iv (minor).
+
+    Partimenti tradition considers this suitable for the end.
+    There are examples of that in the corpus (Bach Prelude no1 in C).
+    ... but it also often appears at the start (Brahms Requiem, Schubert Ave Maria)
+    ... and elsewhere.
+
+    This function returns True iff:
+    - there are 4 chords (otherwise error),
+    - with no change of key (otherwise error)
+    - the 1st: has a secondary tonality of scale degree 4 and a dominant function primary figure.
+    - the 2nd: has a sub-dominant function figure and no secondary tonality.
+
+    Additionally, if `require_full_cadence` is True:
+    - the 3rd has a dominant function (no secondary tonality).
+    - the 4th has a tonic function (no secondary tonality).
+
+    Some true examples:
+
+    >>> figs = ["V7/IV", "IV", "viio", "I"]
+    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> is_quiescenza(rns)
+    True
+
+    >>> figs = ["V2/IV", "IV6", "V9", "I"]
+    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> is_quiescenza(rns)
+    True
+
+    >>> figs = ["viio/iv", "iv", "V[no3]", "I"]
+    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> is_quiescenza(rns)
+    True
+
+    And some false ones:
+
+    >>> figs = ["V", "V6", "viio", "i"]
+    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> is_quiescenza(rns)
+    False
+
+    >>> figs = ["V7/ii", "ii", "V", "vi"]
+    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> is_quiescenza(rns)
+    False
+
+    """
+    # 4 chords (otherwise error),
+    if len(rns_list) != 4:
+        raise ValueError("Please enter a list of four RNs.")
+
+    # no change of key (otherwise error)
+    if changes_key(rns_list):
+        raise ValueError("Please enter a list of four RNs within one primary key.")
+
+    # the first has a secondary tonality ...
+    if not rns_list[0].secondaryRomanNumeral:
+        return False
+
+    # ... with scale degree 4
+    if rns_list[0].secondaryRomanNumeral.scaleDegree != 4:
+        return False
+
+    # ... and a primary figure of a dominant function.
+    if harmonicFunction.figureToFunction(rns_list[0].primaryFigure) != "D":
+        return False
+
+    # the second has no secondary tonality ...
+    if rns_list[1].secondaryRomanNumeral:
+        return False
+
+    # ... and a primary (only) figure of a sub-dominant function.
+    if harmonicFunction.figureToFunction(rns_list[1].primaryFigure) not in ["S", "s"]:
+        return False
+
+    if require_full_cadence:
+
+        # the third has no secondary tonality ...
+        if rns_list[2].secondaryRomanNumeral:
+            return False
+
+        # ... and a primary (only) figure of a dominant function.
+        if harmonicFunction.figureToFunction(rns_list[2].primaryFigure) != "D":
+            return False
+
+        # the last has no secondary tonality ...
+        if rns_list[3].secondaryRomanNumeral:
+            return False
+
+        # ... and a primary (only) figure of a tonic function.
+        if harmonicFunction.figureToFunction(rns_list[3].primaryFigure) not in ["T", "t"]:
+            return False
+
+    return True
 
 
 # ------------------------------------------------------------------------------
@@ -402,7 +539,7 @@ def is_of_type(this_chord, query_type):
         # accepts string of pitches;
         # list of ints (normal order), pitches, notes, or strings;
         # even an existing chord.Chord object.
-    except:  # can"t make a chord directly. Assume string.
+    except:  # cannot make a chord directly. Assume string.
         if isinstance(query_type, str):
             if "-" in query_type:  # take it to be a Forte class.
                 f = "forte class "
@@ -455,6 +592,25 @@ def interval_match(rnsList: list,
     return True
 
 
+def changes_key(
+        rns_list: list[roman.RomanNumeral]
+) -> bool:
+    """
+    Convenience function for checking whether a succession of Roman numerals involves a key change.
+    This is useful (at least in some current operationalisations) for excluding from consideration.
+
+    Args:
+        rns_list: a list of roman.RomanNumeral
+
+    Returns: bool
+    """
+
+    distinct_keys = set([x.key.name for x in rns_list])
+    if len(distinct_keys) > 1:
+        return True
+    return False
+
+
 # ------------------------------------------------------------------------------
 
 corpora = ["Early_Choral",
@@ -471,7 +627,9 @@ valid_searches = ["Modal Mixture",
                   "Neapolitan Sixths",
                   "Applied Chords",
                   "Common Tone Diminished Sevenths",
-                  "Progressions"]
+                  "Quiescenzas",
+                  "Progressions",
+                  ]
 
 
 def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
@@ -483,15 +641,7 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                           ):
     """
     Runs the search methods on a specific pair of corpus and search term.
-    Settable to find any of
-        "Modal Mixture",
-        "Augmented Chords",
-        "Augmented Sixths",
-        "Neapolitan Sixths",
-        "Applied Chords",
-        "Common Tone Diminished Sevenths"
-        and
-        "Progressions".
+    Settable to find any of the `valid_searches` ("Modal Mixture", ...).
     Defaults to the "OpenScore-LiederCorpus" and "Modal mixture".
     If searching for a progression, set the progression variable to a list of
     Roman numerals figure strings like ["I", "V65", "I"]
@@ -591,6 +741,9 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
         elif what == "Common Tone Diminished Sevenths":
             rnf.find_Cto_dim7()
             this_work_list = rnf.user_progression
+        elif what == "Quiescenzas":
+            rnf.find_quiescenzas()
+            this_work_list = rnf.user_progression
         elif what == "Progressions":
             rnf.find_rn_progression(rns_list=progression)
             this_work_list = rnf.user_progression
@@ -657,8 +810,13 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
             score = converter.parse(in_path)
 
             # Range to use
-            start = item["MEASURE"] - 1
-            end = item["MEASURE"] + 1
+            if what == "Quiescenzas":  # special case in format and range
+                start = int(item["MEASURE"].split("/")[0])
+                end = start + 2
+            else:
+                start = item["MEASURE"] - 1
+                end = item["MEASURE"] + 1
+
             example = clean_up(score.measures(start, end))
 
             example.insert(0, metadata.Metadata())
