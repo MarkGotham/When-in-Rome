@@ -85,12 +85,18 @@ madrigals = dict(
 
 # Keyboard_other
 
-tempered = dict(
+tempered_I = dict(
     path_within_WiR=["Keyboard_Other", "Bach,_Johann_Sebastian", "The_Well-Tempered_Clavier_I"],
     items=24,
     analysis_source="New"
 )
 
+tempered_II = dict(
+    path_within_WiR=["Keyboard_Other", "Bach,_Johann_Sebastian", "The_Well-Tempered_Clavier_II"],
+    items=(7, 11, 16, 23, 24),
+    analysis_source="wtc_fugues",
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/bach/keyboard/wtc-2&file="
+)
 
 chopin_commit = "ad38f0a82e5c50740b1d70a41c84924562bdf9f2"
 

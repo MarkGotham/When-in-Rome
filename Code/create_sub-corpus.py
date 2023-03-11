@@ -160,6 +160,44 @@ def madrigals(move_analyses: bool = True) -> None:
 
 # Keyboard_Other
 
+def tempered_II(move_analyses: bool = True) -> None:
+    """
+    Build the Goudimel chorale sub-corpus.
+    Scores = Krn remote
+    Analyses = DT.
+
+    Args:
+        move_analyses: If True, move DT analyses from local copy to WiR.
+    Returns: None
+    """
+
+    source = metadata.tempered_II
+    parent_dir_path = make_parent_dirs(source)
+    dt_source = DT_BASE / source["analysis_source"]
+
+    for item in source["items"]:
+
+        md = dict()
+
+        z_num = str(item).zfill(2)
+
+        new_dir = parent_dir_path / (z_num + "_fugue")
+        make_dir(new_dir)
+
+        their_string = f"wtc2f{z_num}"
+
+        md["remote_score_krn"] = source["remote_score_krn"] + their_string + ".krn&f=kern"
+        md["composer"] = get_composer(source)
+
+        md["analysis_source"] = f"{source['analysis_source']}/{their_string}.txt"
+        write_json(md, new_dir / "remote.json")
+
+        if move_analyses:
+            src = dt_source / f"{their_string}.txt"
+            dst = new_dir / "analysis.txt"
+            shutil.copy(src, dst)
+
+
 def chopin_etudes() -> None:
     """
     Partial set. New.
@@ -606,6 +644,9 @@ if __name__ == "__main__":
             "bach_chorales",
             "goudimel",
             "madrigals",
+
+            "tempered_I",
+            "tempered_II",
 
             "chopin_etudes",
             "chopin_mazurkas",
