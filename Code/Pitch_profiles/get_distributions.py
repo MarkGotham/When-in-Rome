@@ -51,6 +51,7 @@ from functools import cached_property
 
 from . import normalisation_comparison
 from . import chord_features
+from Code import import_SV
 
 from pathlib import Path
 import numpy as np
@@ -106,7 +107,7 @@ class DistributionsFromTabular:
             self.features_to_use = features_list
 
         self.path_to_dir = path_to_tab.parent
-        self.data = normalisation_comparison.importSV(path_to_tab)
+        self.data = import_SV(path_to_tab)
 
         if columns_from_source:
             self._get_headers()
