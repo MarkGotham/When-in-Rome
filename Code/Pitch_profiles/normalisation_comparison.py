@@ -1,34 +1,33 @@
 """
+NAME
 ===============================
 Normalisation Comparison (normalisation_comparison.py)
-===============================
 
-Mark Gotham, 2021
+
+BY
+===============================
+Mark Gotham
 
 
 LICENCE:
 ===============================
-
 Creative Commons Attribution-ShareAlike 4.0 International License
 https://creativecommons.org/licenses/by-sa/4.0/
 
 
 Citation:
 ===============================
-
 Gotham et al. "What if the 'When' Implies the 'What'?". ISMIR, 2021
 (see README.md)
 
 
 ABOUT:
 ===============================
-
 Static functions common to several modules here.
 
 """
 
 from typing import List
-from pathlib import Path
 import numpy as np
 
 from . import key_profiles
@@ -153,54 +152,6 @@ def pc_list_to_distribution(pc_list: List[int]):
     for pc in pc_list:
         distribution[pc] += 1
     return distribution
-
-
-# ------------------------------------------------------------------------------
-
-# Files, Imports, Tabular
-
-def importSV(path_to_file: Path,
-             split_marker: str | None = None):
-    """
-    Imports TSV file data for further processing.
-    """
-
-    if split_marker is None:
-        ext = path_to_file.suffix
-        if ext == '.tsv':
-            splitMarker = '\t'
-        elif ext == 'csv':
-            splitMarker = ','
-        else:
-            raise ValueError(f"Format {ext} invalid: must be .tsv or .csv.")
-
-    with open(path_to_file, 'r', encoding='utf8') as f:
-        data = []
-        for row_num, line in enumerate(f):
-            values = line.strip().split(splitMarker)
-            data.append([v.strip('\"') for v in values])
-
-    return data
-
-
-def data_by_heading(file_path: str,
-                    headings_row: int = 0):
-    """
-    Imports an SV file from the provided `file_path`
-    and converts the data to a directly to list of dicts
-    with headers given by the data in the `headings_row`.
-    """
-
-    table = importSV(file_path)
-
-    headings = table[headings_row]
-    out_list = []
-    for entry in table[headings_row + 1:]:
-        data = {}
-        for idx, col in enumerate(entry):
-            data[headings[idx]] = col
-        out_list.append(data)
-    return out_list
 
 
 # ------------------------------------------------------------------------------

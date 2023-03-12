@@ -1,5 +1,7 @@
 from pathlib import Path
 import json
+import csv
+
 
 # ------------------------------------------------------------------------------
 
@@ -47,6 +49,55 @@ def write_json(
     """
     with open(json_path, "w") as json_file:
         json.dump(this_data, json_file, indent=4)
+
+
+# ------------------------------------------------------------------------------
+
+# Tabular
+
+def import_SV(
+        path_to_file: Path,
+        split_marker: str | None = None
+) -> list:
+    """
+    Import SV file data for further processing.
+    """
+
+    if split_marker is None:
+        ext = path_to_file.suffix
+        if ext == ".tsv":
+            split_marker = "\t"
+        elif ext == ".csv":
+            split_marker = ","
+        else:
+            raise ValueError(f"Format {ext} invalid: must be `.tsv` or `.csv`.")
+
+    if split_marker not in ["\t", ","]:
+        raise ValueError(f"split_marker {split_marker} invalid: must be `\t` or `,`.")
+
+    with open(path_to_file, "r") as f:
+        return [x for x in csv.reader(f, delimiter=split_marker)]
+
+
+def data_by_heading(
+        file_path: Path,
+        headings_row: int = 0
+) -> list[dict]:
+    """
+    Imports an SV file from the provided `file_path`
+    and converts the data to a directly to list of dicts
+    with headers given by the data in the `headings_row`.
+    """
+
+    table = import_SV(file_path)
+    headings = table[headings_row]
+    out_list = []
+    for entry in table[headings_row + 1:]:
+        data = {}
+        for i, col in enumerate(entry):
+            data[headings[i]] = col
+        out_list.append(data)
+    return out_list
 
 
 # ------------------------------------------------------------------------------

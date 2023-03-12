@@ -63,7 +63,7 @@ from typing import Union, Optional
 
 from . import alignStreams
 from . import harmonicFunction
-
+from . import import_SV
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -325,10 +325,10 @@ class ScoreAndAnalysis:
                 if self.analysisLocation == 'On score':
                     raise ValueError('Cannot use tabular input (no score) with analysis on score.')
                 if extension == '.tsv':
-                    splitMarker = '\t'
+                    split_marker = '\t'
                 else:  # extension == '.csv':
-                    splitMarker = ','
-                self.score = _importSV(self.scoreOrData, splitMarker=splitMarker)
+                    split_marker = ','
+                self.score = import_SV(self.scoreOrData, split_marker=split_marker)
                 if self.score[0][0] != '0.0':  # First offset always 0. If not, header row
                     self.score = self.score[1:]  # Ignore header row
                 self._retrieveSlicesFromList()  # NOTE: sets totalLength and scoreMeasures
@@ -1239,22 +1239,6 @@ def _intBeat(beat):
         return int(beat)
     else:
         return round(float(beat), 2)
-
-
-def _importSV(pathToFile: str,
-              splitMarker: str = '\t'):
-    """
-    Imports TSV file data for further processing.
-    """
-
-    with open(pathToFile, 'r') as f:
-        data = []
-        for row_num, line in enumerate(f):
-            values = line.strip().split(splitMarker)
-            data.append([v.strip('\"') for v in values])
-    f.close()
-
-    return data
 
 
 def rareRn(rn: roman.RomanNumeral):
