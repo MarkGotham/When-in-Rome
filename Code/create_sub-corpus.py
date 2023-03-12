@@ -35,6 +35,43 @@ from .Resources import metadata
 
 # ------------------------------------------------------------------------------
 
+# Chamber_other
+
+def corelli_op1(move_analyses: bool = True) -> None:
+    source = metadata.corelli_op1
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
+
+    for item in source["items"]:
+        md = expand_catalogue(source["item_keys"], item)  # Opus, Number, Movements
+        md["composer"] = get_composer(source)
+
+        wir_dir = parent_dir_path / f"Op1No{str(md['Number']).zfill(2)}"
+        make_dir(wir_dir)
+
+        for m in range(1, item[-1] + 1):  # last entry is number of movements
+
+            md["movement"] = m
+            mvt_dir = parent_dir_path / wir_dir / str(m)
+            make_dir(mvt_dir)
+
+            their_str = f"op{str(md['Opus']).zfill(2)}n{str(md['Number']).zfill(2)}{letters[m]}"
+
+            md["analysis_source"] = source['analysis_source'] + f"{their_str}.tsv"
+            md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+            md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}.krn&f=kern"
+
+            # DT
+            md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{their_str}.txt"
+            if move_analyses:
+                move_and_report(DT_BASE / md["analysis_DT_source"],
+                                mvt_dir / "analysis_DT.txt"
+                                )
+
+            write_json(md, mvt_dir / "remote.json")
+
+
+# ------------------------------------------------------------------------------
+
 # Early Choral
 
 def bach_chorales(move_analyses: bool = False) -> None:
@@ -49,7 +86,7 @@ def bach_chorales(move_analyses: bool = False) -> None:
     """
 
     source = metadata.bach_chorales
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt_source = DT_BASE / source["analysis_source"]  # "Bach Chorales"
 
     for riemenschneider_number in range(1, source["items"] + 1):  # range(371)
@@ -86,7 +123,7 @@ def goudimel(move_analyses: bool = True) -> None:
     """
 
     source = metadata.goudimel_chorales
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt_source = DT_BASE / source["analysis_source"]
 
     for psalm_number in source["items"]:
@@ -123,7 +160,7 @@ def madrigals(move_analyses: bool = True) -> None:
     """
 
     source = metadata.madrigals
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     madrigals_DT = DT_BASE / source["analysis_source"]  # "Monteverdi"
 
     for item in source["items"]:
@@ -172,7 +209,7 @@ def tempered_II(move_analyses: bool = True) -> None:
     """
 
     source = metadata.tempered_II
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt_source = DT_BASE / source["analysis_source"]
 
     for item in source["items"]:
@@ -204,7 +241,7 @@ def chopin_etudes() -> None:
     """
 
     source = metadata.chopin_etudes
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
 
     for item in source["items"]:
         md = dict()
@@ -227,7 +264,7 @@ def chopin_mazurkas(move_analyses: bool = True) -> None:
     """
 
     source = metadata.chopin_mazurkas
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt = DT_BASE / "Chopin"
 
     for item in source["items"]:
@@ -276,7 +313,7 @@ def chopin_mazurkas(move_analyses: bool = True) -> None:
 
 def debussy_suite_bergamasque() -> None:
     source = metadata.debussy_suite_bergamasque
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     count = 0
     for item in source["items"]:
         count += 1
@@ -298,7 +335,7 @@ def dvorak_silhouettes() -> None:
 
 def liszt_pelerinage() -> None:
     source = metadata.liszt_pelerinage
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     for item in source["items"]:
         md = expand_catalogue(source["item_keys"], item)  # Opus, Number
         md["composer"] = get_composer(source)
@@ -321,7 +358,7 @@ def medtner_tales() -> None:
 
 def schumann_kinderszenen() -> None:
     source = metadata.schumann_kinderszenen
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     for item in range(1, source["items"] + 1):
         md = dict()
         md["Opus"] = 15
@@ -337,7 +374,7 @@ def schumann_kinderszenen() -> None:
 
 def tchaikovsky_seasons() -> None:
     source = metadata.tchaikovsky_seasons
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     for item in range(1, source["items"] + 1):
         md = dict()
         md["Opus"] = "37a"
@@ -357,7 +394,7 @@ def tchaikovsky_seasons() -> None:
 
 def sonatas_Beethoven(move_analyses: bool = True) -> None:
     source = metadata.sonatas_Beethoven
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt = DT_BASE / "Beethoven"
 
     count = 0
@@ -423,7 +460,7 @@ def sonatas_Beethoven(move_analyses: bool = True) -> None:
 
 def sonatas_Mozart(move_analyses: bool = True) -> None:
     source = metadata.sonatas_Mozart
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt = DT_BASE / "Mozart"
 
     count = 0
@@ -463,7 +500,7 @@ def sonatas_Mozart(move_analyses: bool = True) -> None:
 
 def quartets_Beethoven():
     source = metadata.quartets_Beethoven
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     count = 0
     for item in source["items"]:
         count += 1
@@ -490,7 +527,7 @@ def quartets_Beethoven():
 
 def haydn_op20():
     source = metadata.haydn_op20
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     for item in source["items"]:
         md = expand_catalogue(source["item_keys"], item)
         md["composer"] = get_composer(source)
@@ -509,7 +546,7 @@ def haydn_op20():
 
 def haydn_op74():
     source = metadata.haydn_op74
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     for item in source["items"]:
         md = expand_catalogue(source["item_keys"], item)
         md["composer"] = get_composer(source)
@@ -527,8 +564,7 @@ def haydn_op74():
 
 def brahms_op51(move_analyses: bool = True) -> None:
     source = metadata.brahms_op51
-    parent_dir_path = make_parent_dirs(source)
-    letters = [None, "a", "b", "c", "d"]
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     source_DT = DT_BASE / source["analysis_source"]  # "Brahms"
     for item in source["items"]:
         md = expand_catalogue(source["item_keys"], item)
@@ -555,6 +591,9 @@ def brahms_op51(move_analyses: bool = True) -> None:
 
 # Shared
 
+letters = [None, "a", "b", "c", "d", "e"]  # for mapping movement number <> letter
+
+
 def simple_case(source: dict) -> None:
     """
     A simple case of expanding opus, number, composer etc.
@@ -564,7 +603,7 @@ def simple_case(source: dict) -> None:
 
     Returns: None
     """
-    parent_dir_path = make_parent_dirs(source)
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     for item in source["items"]:
         md = expand_catalogue(source["item_keys"], item)  # Opus, Number
         md["composer"] = get_composer(source)
@@ -607,14 +646,14 @@ def expand_catalogue(
 
 
 def make_parent_dirs(
-        source: dict
+        list_of_dir_names: list[str]
 ) -> Path:
     """
     Making the parent directories
     and return the immediate parent for the corpus at hand.
     """
     parent_dir_path = CORPUS_FOLDER
-    for x in source["path_within_WiR"]:
+    for x in list_of_dir_names:
         parent_dir_path = parent_dir_path / x
         make_dir(parent_dir_path)
     return parent_dir_path
@@ -641,6 +680,8 @@ if __name__ == "__main__":
         parser = argparse.ArgumentParser()
 
         arg_strings = (
+            "corelli_op1",
+
             "bach_chorales",
             "goudimel",
             "madrigals",

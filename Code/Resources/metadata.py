@@ -46,6 +46,34 @@ from .. import raw_git
 
 # ------------------------------------------------------------------------------
 
+corelli_commit = "e385811"
+
+corelli_op1 = dict(
+    path_within_WiR=["Chamber_Other", "Corelli,_Arcangelo"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (1, 1, 4),
+        (1, 2, 4),
+        (1, 3, 4),
+        (1, 4, 4),
+        (1, 5, 4),
+        (1, 6, 4),
+        (1, 7, 3),  # NB
+        (1, 8, 4),
+        (1, 9, 4),
+        (1, 10, 5),  # NB
+        (1, 11, 4),
+        (1, 12, 4),
+    ),
+    analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
+    analysis_DT_source="Corelli",  # NB no public listing, so relative path only
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op1&file="
+)
+
+
+# ------------------------------------------------------------------------------
+
 # Early_choral
 
 bach_chorales = dict(
