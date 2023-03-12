@@ -463,7 +463,7 @@ if __name__ == "__main__":
                              "This can be specified entirely to the CORPUS_FOLDER.")
     parser.add_argument("--corpus", type=str,
                         required=False,
-                        default=CORPUS_FOLDER / "OpenScore-LiederCorpus",
+                        default="OpenScore-LiederCorpus",
                         help="Process all cases within this corpus path.")
 
     args = parser.parse_args()
