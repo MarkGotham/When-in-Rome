@@ -246,7 +246,6 @@ class RnFinder(object):
                 continue
 
             if is_quiescenza(this_range):
-
                 figures = "-".join([x.figure for x in this_range])
                 measure_start = this_range[0].getContextByClass("Measure").measureNumber
 
@@ -445,7 +444,6 @@ def data_from_Rn(
         rn: roman.RomanNumeral,
         consolidate: bool = True
 ) -> dict:
-
     if consolidate:
         fig = careful_consolidate(rn.figure,
                                   major_not_minor=(rn.key.mode == "major"),
@@ -613,23 +611,27 @@ def changes_key(
 
 # ------------------------------------------------------------------------------
 
-corpora = ["Early_Choral",
-           "Keyboard_Other",
-           "OpenScore-LiederCorpus",
-           "Orchestral",
-           "Piano_Sonatas",
-           "Quartets",
-           "Variations_and_Grounds"]
+corpora = [
+    "Chamber_Other",
+    "Early_Choral",
+    "Keyboard_Other",
+    "OpenScore-LiederCorpus",
+    "Orchestral",
+    "Piano_Sonatas",
+    "Quartets",
+    "Variations_and_Grounds"
+]
 
-valid_searches = ["Modal Mixture",
-                  "Augmented Chords",
-                  "Augmented Sixths",
-                  "Neapolitan Sixths",
-                  "Applied Chords",
-                  "Common Tone Diminished Sevenths",
-                  "Quiescenzas",
-                  "Progressions",
-                  ]
+valid_searches = [
+    "Modal Mixture",
+    "Augmented Chords",
+    "Augmented Sixths",
+    "Neapolitan Sixths",
+    "Applied Chords",
+    "Common Tone Diminished Sevenths",
+    "Quiescenzas",
+    "Progressions",
+]
 
 
 def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
@@ -776,10 +778,10 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                         )
 
     totalRnLength = sum([x["LENGTH"] for x in sortedList])
-    print(f" *** Summary of {what} found in the {corpus} collection:\n"
-          f"Number of files: {len(files)}.\n"
-          f"Cases (count): {len(sortedList)} from {totalRns} RNs overall.\n"
-          f"Length: {totalRnLength} from {totalLength} total.\n")
+    print(f"*** Summary of {what} found in the {corpus} collection:\n"
+          f"\tFiles: {len(files)}.\n"
+          f"\tCases (count): {len(sortedList)} from {totalRns} RNs overall.\n"
+          f"\tLength: {totalRnLength} from {totalLength} total.\n")
 
     if not write_summary and not write_examples:
         return sortedList
@@ -799,7 +801,6 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
 
     if write_examples and corpus == "OpenScore-LiederCorpus" and lc_num:
         what = what.replace(" ", "_")  # TODO higher up?
-        v = instrument.Instrument("Voice")  # TODO higher up?
         for item in sortedList:
             in_path = item["source_path"] / "score.mxl"  # TODO consider "analysis_on_score.mxl"
             if not in_path.exists:
@@ -813,6 +814,7 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
             if what == "Quiescenzas":  # special case in format and range
                 start = int(item["MEASURE"].split("/")[0])
                 end = start + 2
+                item["eg_file"] = item["eg_file"].split("/")
             else:
                 start = item["MEASURE"] - 1
                 end = item["MEASURE"] + 1
