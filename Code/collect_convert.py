@@ -239,6 +239,8 @@ def dcml_ABC_to_local(
 
 
 ours_theirs_pairs = (
+    (CORPUS_FOLDER / "Chamber_Other" / "Corelli,_Arcangelo",
+     REPO_FOLDER.parent / "corelli"),
     (CORPUS_FOLDER / "Quartets" / "Beethoven,_Ludwig_van",
      REPO_FOLDER.parent / "ABC"),
     (CORPUS_FOLDER / "Piano_Sonatas" / "Mozart,_Wolfgang_Amadeus",
