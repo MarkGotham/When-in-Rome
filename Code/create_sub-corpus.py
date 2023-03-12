@@ -70,6 +70,32 @@ def corelli_op1(move_analyses: bool = True) -> None:
             write_json(md, mvt_dir / "remote.json")
 
 
+def corelli_op3n4() -> None:
+    for source in [metadata.corelli_op3, metadata.corelli_op4]:
+        parent_dir_path = make_parent_dirs(source["path_within_WiR"])
+
+        for item in source["items"]:
+            md = expand_catalogue(source["item_keys"], item)  # Opus, Number, Movements
+            md["composer"] = get_composer(source)
+
+            wir_dir = parent_dir_path / f"Op{str(md['Opus'])}No{str(md['Number']).zfill(2)}"
+            make_dir(wir_dir)
+
+            for m in range(1, item[-1] + 1):  # last entry is number of movements
+
+                md["movement"] = m
+                mvt_dir = parent_dir_path / wir_dir / str(m)
+                make_dir(mvt_dir)
+
+                their_str = f"op{str(md['Opus']).zfill(2)}n{str(md['Number']).zfill(2)}{letters[m]}"
+
+                md["analysis_source"] = source['analysis_source'] + f"{their_str}.tsv"
+                md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+                md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}.krn&f=kern"
+
+                write_json(md, mvt_dir / "remote.json")
+
+
 # ------------------------------------------------------------------------------
 
 # Early Choral
@@ -591,7 +617,7 @@ def brahms_op51(move_analyses: bool = True) -> None:
 
 # Shared
 
-letters = [None, "a", "b", "c", "d", "e"]  # for mapping movement number <> letter
+letters = [None, "a", "b", "c", "d", "e", "f", "g"]  # for mapping movement number <> letter
 
 
 def simple_case(source: dict) -> None:
@@ -681,6 +707,7 @@ if __name__ == "__main__":
 
         arg_strings = (
             "corelli_op1",
+            "corelli_op3n4",
 
             "bach_chorales",
             "goudimel",

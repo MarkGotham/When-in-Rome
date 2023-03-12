@@ -72,6 +72,52 @@ corelli_op1 = dict(
 )
 
 
+corelli_op3 = dict(
+    path_within_WiR=["Chamber_Other", "Corelli,_Arcangelo"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (3, 1, 4),
+        (3, 2, 4),
+        (3, 3, 4),
+        (3, 4, 4),
+        (3, 5, 4),
+        (3, 6, 4),
+        (3, 7, 4),
+        (3, 8, 4),
+        (3, 9, 4),
+        (3, 10, 4),
+        (3, 11, 4),
+        (3, 12, 7),  # NB
+    ),
+    analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file="
+)
+
+
+corelli_op4 = dict(
+    path_within_WiR=["Chamber_Other", "Corelli,_Arcangelo"],
+    item_keys=("Opus", "Number", "Movements"),
+    items=(
+        (4, 1, 4),
+        (4, 2, 4),
+        (4, 3, 4),
+        (4, 4, 4),
+        (4, 5, 4),
+        (4, 6, 7),  # NB
+        (4, 7, 5),  # NB
+        (4, 8, 3),  # NB
+        (4, 9, 4),
+        (4, 10, 5),  # NB
+        (4, 11, 3),  # NB
+        (4, 12, 3),  # NB
+    ),
+    analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
+    remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file="
+)
+
+
 # ------------------------------------------------------------------------------
 
 # Early_choral
