@@ -343,7 +343,6 @@ def exp_with_fit(
         ys: np.array,
         title: str = "Test"
 ) -> plt:
-
     plt.plot(xs, ys, ".")
     plt.title(title)
 
@@ -370,14 +369,14 @@ def exp_with_fit(
 
 # ------------------------------------------------------------------------------
 
-def plot_quiescenza_positions(
+def plot_prog_by_positions(
         corpus_name: str = "OpenScore-LiederCorpus",
+        what: str = "Quiescenzas"
 ) -> plt:
-
     base_path = CODE_FOLDER.parent / "Anthology"
 
-    quiescenzas = data_by_heading(base_path / corpus_name / "Quiescenzas.csv")
-    position_strings = [x["MEASURE"] for x in quiescenzas]
+    data = data_by_heading(base_path / corpus_name / (what + ".csv"))
+    position_strings = [x["MEASURE"] for x in data]
     positions = []
     for i in range(len(position_strings)):
         x, y = position_strings[i].split("/")
@@ -387,10 +386,41 @@ def plot_quiescenza_positions(
         positions,
         xlabel="Position in work (%, binned)",
         ylabel="Frequency",
-        title=f"Quiescenzas_{corpus_name}",
+        title=f"{what}_{corpus_name}",
     )
 
 
 # ------------------------------------------------------------------------------
 
-plot_quiescenza_positions("Piano_Sonatas")
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--plot_prog_by_positions", action="store_true", )
+
+    parser.add_argument(
+        "corpus",
+        type=str,
+        required=False,
+        default="OpenScore-LiederCorpus",
+        help="Process all cases within this sub-corpus."
+    )
+
+    parser.add_argument(
+        "what",
+        type=str,
+        required=False,
+        default="Quiescenzas",
+        help="Which of the anthology cases.")
+
+    args = parser.parse_args()
+
+    if args.plot_prog_by_positions:
+        plot_prog_by_positions(
+            corpus_name=args.corpus,
+            what=args.what
+        )
+    else:
+        parser.print_help()
