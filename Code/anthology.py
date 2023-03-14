@@ -35,7 +35,7 @@ from music21 import roman, stream, tempo
 from pathlib import Path
 
 import csv
-from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files, harmonicFunction
+from . import CORPUS_FOLDER, REPO_FOLDER, get_corpus_files, harmonicFunction, mixture
 from .Pitch_profiles.chord_usage import careful_consolidate
 
 
@@ -45,8 +45,8 @@ class RnFinder(object):
     """
     For retrieving specific Roman numerals and/or progressions from analyses.
     Separate methods on this class per search term (e.g., `find_mixtures`).
-    Results stored in attributes (e.g., `mixtures`)
-    that are lists of dicts returns by dataFromRn.
+    All such results stored in the `.results` attributes:
+    that are lists of dicts returns by data_from_Rn.
     """
 
     def __init__(self,
@@ -63,7 +63,7 @@ class RnFinder(object):
 
         for rn in self.rns:
             if not rn.secondaryRomanNumeral:
-                if rn.isMixture():
+                if mixture.is_mixture(rn):
                     self.results.append(data_from_Rn(rn))
 
     def find_applied_chords(self,
@@ -138,7 +138,7 @@ class RnFinder(object):
 
             figures = [x.figure for x in thisRange]
             if figures == rns_list:
-                # Variant on dataFromRn
+                # Variant on data_from_Rn
                 info = [thisRange[0].getContextByClass("Measure").measureNumber,
                         figures,
                         thisRange[0].key]
@@ -523,7 +523,12 @@ def fallender_Quintanstieg(
     if len(chord_list) != 4:
         raise ValueError("Please call this functon on a list of exactly 4 chords.")
 
-    return interval_match(chord_list, [5, -6, 5], specific_not_generic=False)
+    return interval_match(
+        chord_list,
+        [5, -6, 5],
+        bass_not_root=False,
+        specific_not_generic=False
+    )
 
 
 def aufsteigender_Quintfall(
@@ -557,7 +562,12 @@ def aufsteigender_Quintfall(
     if len(chord_list) != 4:
         raise ValueError("Please call this functon on a list of exactly 4 chords.")
 
-    return interval_match(chord_list, [-5, 6, -5], specific_not_generic=False)
+    return interval_match(
+        chord_list,
+        [-5, 6, -5],
+        bass_not_root=False,
+        specific_not_generic=False
+    )
 
 
 # ------------------------------------------------------------------------------
@@ -1108,6 +1118,17 @@ def all_searches_one_corpus(corpus: str = "OpenScore-LiederCorpus"):
         one_search_one_corpus(corpus=corpus, what=w)
 
 
+def all_corpora_one_search(what: str = "fallender_Quintanstieg"):
+    """
+    Runs the one_search_one_corpus function for
+    one corpus and
+    all search terms except "Progressions".
+    """
+
+    for c in corpora:
+        one_search_one_corpus(corpus=c, what=what)
+
+
 def all_searches_all_corpora():
     """
     Runs the one_search_one_corpus function for all pairs of
@@ -1123,4 +1144,5 @@ def all_searches_all_corpora():
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
