@@ -27,7 +27,11 @@ music21 repo [roman.py](https://github.com/cuthbertLab/music21/blob/master/music
 
 """
 
-from music21 import bar, converter, instrument, interval, layout, metadata, roman, stream, tempo
+from music21 import bar, chord, converter
+from music21 import instrument, interval
+from music21 import layout, metadata
+from music21 import roman, stream, tempo
+
 from pathlib import Path
 
 import csv
@@ -48,15 +52,9 @@ class RnFinder(object):
     def __init__(self,
                  pathToFile: str | Path):
 
-        self.user_progression = []
-        self.augmented_chords = []
-        self.augmented_sixths = []
-        self.neapolitan_sixths = []
-        self.applied_chords = []
-        self.mixtures = []
-
         self.analysis = converter.parse(pathToFile, format="romanText")
         self.rns = [x for x in self.analysis.recurse().getElementsByClass("RomanNumeral")]
+        self.results = []
 
     def find_mixtures(self):
         """
@@ -66,13 +64,13 @@ class RnFinder(object):
         for rn in self.rns:
             if not rn.secondaryRomanNumeral:
                 if rn.isMixture():
-                    self.mixtures.append(data_from_Rn(rn))
+                    self.results.append(data_from_Rn(rn))
 
     def find_applied_chords(self,
                             require_dominant_function: bool = True):
         for rn in self.rns:
             if is_applied_chord(rn, require_dominant_function=require_dominant_function):
-                self.applied_chords.append(data_from_Rn(rn))
+                self.results.append(data_from_Rn(rn))
 
     def find_Neapolitan_sixths(self):
         """
@@ -82,7 +80,7 @@ class RnFinder(object):
         for rn in self.rns:
 
             if rn.isNeapolitan(require1stInversion=False):
-                self.neapolitan_sixths.append(data_from_Rn(rn))
+                self.results.append(data_from_Rn(rn))
 
     def find_augmented_sixths(self):
         """
@@ -94,7 +92,7 @@ class RnFinder(object):
         for rn in self.rns:
             #
             if rn.isAugmentedSixth():
-                self.augmented_sixths.append(data_from_Rn(rn))
+                self.results.append(data_from_Rn(rn))
 
     def find_augmented_chords(self,
                               acceptSevenths: bool = True,
@@ -114,14 +112,14 @@ class RnFinder(object):
 
         for rn in self.rns:
             if rn.isAugmentedTriad():
-                self.augmented_chords.append(data_from_Rn(rn))
+                self.results.append(data_from_Rn(rn))
             elif acceptSevenths:
                 if rn.isSeventh:
                     if rn.isSeventhOfType([0, 4, 8, 11]) or rn.isSeventhOfType([0, 4, 8, 10]):
-                        self.augmented_chords.append(data_from_Rn(rn))
+                        self.results.append(data_from_Rn(rn))
                     elif not requireAugAsTriad:
                         if rn.isSeventhOfType([0, 3, 7, 11]):
-                            self.augmented_chords.append(data_from_Rn(rn))
+                            self.results.append(data_from_Rn(rn))
 
     def find_rn_progression(self,
                             rns_list: list[str]):
@@ -145,15 +143,15 @@ class RnFinder(object):
                         figures,
                         thisRange[0].key]
 
-                self.user_progression.append(info)
+                self.results.append(info)
 
     def find_prog_by_qual_and_intv(
             self,
-            qualitiesList: list | None = None,
-            intervalList: list[str | interval.Interval] = None,
+            qualities: list | None = None,
+            intervals: list[interval.GenericInterval | interval.Interval] | None = None,
             # TODO qualities, intervals or both. Neither = error.
             # TODO accept generic intervals too
-            bassOrRoot: str = "bass",
+            bass_not_root: bool = True
     ):
         """
         Find a specific progression of Roman numerals
@@ -161,39 +159,46 @@ class RnFinder(object):
 
         For instance, to find everything that might constitute a ii-V-I progression
         (regardless of whether those are the exact Roman numerals used), search for
-        qualitiesList=["Minor", "Major", "Major"], intervalList=["P4", "P-5"]. bassOrRoot="root")
+        qualities=["Minor", "Major", "Major"],
+        intervals=["P4", "P-5"].
+        bass_not_root=False.
 
         This method accepts many input types.
-        For the range accepted by qualitiesList,
+        For the range accepted by qualities,
         see documentation at is_of_type().
 
         Blank entries are also fine.
         For instance, to find out how augmented chords resolve, search for
-        qualitiesList=["Augmented triad", ""].
+        qualities=["Augmented triad", ""].
         To add the preceding chord as well, expand to:
-        qualitiesList=["", "Augmented triad", ""].
-        Note that intervalList is left unspecified (we are interested in any interval succession.
-        Anytime the intervalList is left blank, the search runs on quality only.
+        qualities=["", "Augmented triad", ""].
+        Note that intervals is left unspecified (we are interested in any interval succession).
+        Anytime the intervals is left blank, the search runs on quality only
+        (and vice versa).
         """
+        if not qualities and not intervals:
+            raise ValueError("Pick at least one of qualities and intervals")
 
-        lnQs = len(qualitiesList)
+        lnQs = len(qualities)
 
-        if intervalList:
-            if lnQs != len(intervalList) + 1:
+        if intervals:
+            if lnQs != len(intervals) + 1:
                 raise ValueError("There must be exactly one more chord than interval.")
 
         # 1. Search quality match first: quality is required
         for index in range(len(self.rns) - lnQs):
             theseRns = self.rns[index: index + lnQs]
             for i in range(lnQs):
-                if not is_of_type(theseRns[i], qualitiesList[i]):
+                if not is_of_type(theseRns[i], qualities[i]):
                     continue  # TODO check
             # 2. Only search for interval match if required and if the qualities already match.
-            if intervalList:
-                if interval_match(theseRns, intervalList, bassOrRoot):
+            if intervals:
+                if interval_match(theseRns,
+                                  intervals,
+                                  bass_not_root):
                     info = data_from_Rn(self.rns[index])
                     info["FIGURE"] = [x.figure for x in theseRns]
-                    self.user_progression.append(info)
+                    self.results.append(info)
 
     def find_Cto_dim7(
             self,
@@ -221,7 +226,7 @@ class RnFinder(object):
                         self.rns[index + 1],
                         require_prolongation=require_prolongation
                 ):
-                    self.user_progression.append(data_from_Rn(this_chord))
+                    self.results.append(data_from_Rn(this_chord))
 
     def find_quiescenzas(self):
         """
@@ -246,6 +251,7 @@ class RnFinder(object):
                 continue
 
             if is_quiescenza(this_range):
+                print("Y")
                 figures = "-".join([x.figure for x in this_range])
                 measure_start = this_range[0].getContextByClass("Measure").measureNumber
 
@@ -255,7 +261,60 @@ class RnFinder(object):
                 info["FIGURE"] = figures
                 # key is fine
 
-                self.user_progression.append(info)
+                self.results.append(info)
+                print(self.results)
+
+    def find_aufsteigender_Quintfall(self):
+        """
+        Find specific cases of the
+        aufsteigender_Quintfall()
+        as defined at that functions below.
+
+        Apologies for the mixed languages.
+        The long form of this method can be called:
+        "Ich frage mich, ob das ein aufsteigender Quintfall ist."
+        """
+
+        last_measure = self.rns[-1].getContextByClass("Measure").measureNumber
+
+        for index in range(len(self.rns) - 4):
+            this_range = self.rns[index: index + 4]
+
+            if aufsteigender_Quintfall(this_range):
+                figures = "-".join([x.figure for x in this_range])
+                measure_start = this_range[0].getContextByClass("Measure").measureNumber
+
+                info = data_from_Rn(this_range[0])
+                # TODO think through shared steps. For now override
+                info["MEASURE"] = f"{measure_start}/{last_measure}"
+                info["FIGURE"] = figures
+                # key is fine
+
+                self.results.append(info)
+
+    def find_fallender_Quintanstieg(self):
+        """
+        Find specific cases of the
+        fallender_Quintanstieg()
+        as defined at that function below.
+        """
+
+        last_measure = self.rns[-1].getContextByClass("Measure").measureNumber
+
+        for index in range(len(self.rns) - 4):
+            this_range = self.rns[index: index + 4]
+
+            if fallender_Quintanstieg(this_range):
+                figures = "-".join([x.figure for x in this_range])
+                measure_start = this_range[0].getContextByClass("Measure").measureNumber
+
+                info = data_from_Rn(this_range[0])
+                # TODO think through shared steps. For now override
+                info["MEASURE"] = f"{measure_start}/{last_measure}"
+                info["FIGURE"] = figures
+                # key is fine
+
+                self.results.append(info)
 
 
 # ------------------------------------------------------------------------------
@@ -360,29 +419,29 @@ def is_quiescenza(
     Some true examples:
 
     >>> figs = ["V7/IV", "IV", "viio", "I"]
-    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> rns = [roman.RomanNumeral(f, "F") for f in figs]
     >>> is_quiescenza(rns)
     True
 
     >>> figs = ["V2/IV", "IV6", "V9", "I"]
-    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> rns = [roman.RomanNumeral(f, "F") for f in figs]
     >>> is_quiescenza(rns)
     True
 
     >>> figs = ["viio/iv", "iv", "V[no3]", "I"]
-    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> rns = [roman.RomanNumeral(f, "F") for f in figs]
     >>> is_quiescenza(rns)
     True
 
     And some false ones:
 
     >>> figs = ["V", "V6", "viio", "i"]
-    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> rns = [roman.RomanNumeral(f, "F") for f in figs]
     >>> is_quiescenza(rns)
     False
 
     >>> figs = ["V7/ii", "ii", "V", "vi"]
-    >>> rns = [roman.RomanNumeral(f) for f in figs]
+    >>> rns = [roman.RomanNumeral(f, "F") for f in figs]
     >>> is_quiescenza(rns)
     False
 
@@ -436,6 +495,71 @@ def is_quiescenza(
     return True
 
 
+def fallender_Quintanstieg(
+        chord_list: list[roman.RomanNumeral]
+) -> bool:
+    """
+    In the minimum definition of the `fallende Quintstiege` progression,
+    there are two pairs of adjacent chords with roots a 5th apart, where the
+    - fifth is ascending;
+    - step between 5th-related pairs is descending.
+
+    >>> rns_strings = ["iv/ii", "ii", "iv", "i"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> fallender_Quintanstieg(rns)
+    True
+
+    See also the paired aufsteigender_Quintfall() which would be True in this case:
+
+    >>> rns_strings = ["V", "I", "V/ii", "ii"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> fallender_Quintanstieg(rns)
+    False
+
+    Args:
+        chord_list: a list of exactly 4 Roman Numeral chords (for the minimum definition)
+    Returns: bool
+    """
+    if len(chord_list) != 4:
+        raise ValueError("Please call this functon on a list of exactly 4 chords.")
+
+    return interval_match(chord_list, [5, -6, 5], specific_not_generic=False)
+
+
+def aufsteigender_Quintfall(
+        chord_list: list[roman.RomanNumeral]
+) -> bool:
+    """
+    In the minimum definition of this progression,
+    there are two pairs of adjacent chords with roots a 5th apart, where the
+    - fifth is descending;
+    - step between 5th-related pairs is ascending.
+
+    >>> rns_strings = ["V", "I", "V/ii", "ii"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> aufsteigender_Quintfall(rns)
+    True
+
+    See also the paired fallender_Quintanstieg() which would be True in this case:
+
+    >>> rns_strings = ["iv/ii", "ii", "iv", "i"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> aufsteigender_Quintfall(rns)
+    False
+
+    Note how they are transposition and octave neutral
+    (i.e., while named after rising/falling 5ths, falling/rising 4ths are fine).
+
+    Args:
+        chord_list: a list of exactly 4 Roman Numeral chords (for the minimum definition)
+    Returns: bool
+    """
+    if len(chord_list) != 4:
+        raise ValueError("Please call this functon on a list of exactly 4 chords.")
+
+    return interval_match(chord_list, [-5, 6, -5], specific_not_generic=False)
+
+
 # ------------------------------------------------------------------------------
 
 # Other Static
@@ -460,7 +584,10 @@ def data_from_Rn(
             "LENGTH": rn.quarterLength}
 
 
-def is_of_type(this_chord, query_type):
+def is_of_type(
+        this_chord: chord.Chord,
+        query_type: str | list[int] | chord.Chord
+) -> bool:
     """
     Tests whether a chord (this_chord) is of a particular type (query_type).
 
@@ -525,7 +652,6 @@ def is_of_type(this_chord, query_type):
 
     Raises an error if the query_type is (still!) not valid.
     """
-    from music21 import chord
 
     if "Chord" not in this_chord.classes:
         raise ValueError("Invalid this_chord: must be a chord.Chord object")
@@ -557,34 +683,102 @@ def is_of_type(this_chord, query_type):
     return t
 
 
-def interval_match(rnsList: list,
-                   intervalList: list,
-                   bassOrRoot: str = "bass"):
+def interval_match(
+        rns: list[roman.RomanNumeral],
+        query_intervals: list,
+        bass_not_root: bool = True,
+        specific_not_generic: bool = True,
+) -> bool:
     """
     Check whether the intervals (bass or root) between a succession of Roman numerals match a query.
     Requires the creation of interval.Interval objects.
     Minimised here to reduce load on large corpus searches.
 
-    :param rnsList: list of Roman numerals
-    :param intervalList: the query list of intervals (interval.Interval objects or directed names)
-    :param bassOrRoot: intervals between the bass notes or the roots?
-    :return: bool.
-    """
-    if bassOrRoot == "bass":
-        pitches = [x.bass() for x in rnsList]
-    elif bassOrRoot == "root":
-        pitches = [x.root() for x in rnsList]
-    else:
-        raise ValueError("The bassOrRoot variable must be either bass or root.")
+    >>> ints = [-7, 9, -7]
+    >>> rns_strings = ["V", "I", "V/ii", "ii"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
 
-    if len(pitches) != len(intervalList) + 1:
+    >>> interval_match(rns, ints)
+    True
+
+    Supports the use of generic instead of specific intervals.
+    So the same example above could look like this:
+
+    >>> generic = [-5, 6, -5]
+
+    By default, the interals are assumed to be specific:
+    >>> interval_match(rns, generic)
+    False
+
+    ... But this is settable with `specific_not_generic` as False:
+    >>> interval_match(rns, generic, specific_not_generic=False)
+    True
+
+    Use `bass_not_root` to distinguish between inversions.
+    If the Vs in the above example are now in first inversion:
+
+    >>> rns_strings = ["V6", "I", "V6/ii", "ii"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+
+    Then with the default value of `bass_not_root` as True, the match is lost:
+
+    >>> interval_match(rns, ints, specific_not_generic=True)
+    False
+
+    >>> interval_match(rns, generic, specific_not_generic=False)
+    False
+
+    ... but again this is settable to work on roots with bass_not_root=False.
+    The roots are unchanged but the alteration to inversions here:
+
+    >>> interval_match(rns, ints, bass_not_root=False, specific_not_generic=True)
+    True
+
+    >>> interval_match(rns, generic, bass_not_root=False, specific_not_generic=False)
+    True
+
+    As in so many cases then, the assingment of both bass and root matter.
+    So the following is false despite significant similarity to the V6 case above.
+    >>> rns_strings = ["viio", "I", "viio/ii", "ii"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> interval_match(rns, ints, bass_not_root=False, specific_not_generic=False)
+    False
+
+    The functional equivalence between these examples is supported in some cases on the code base,
+    but not (currently) here.
+
+    Args:
+        rns: a list of roman.RomanNumeral objects
+        query_intervals: the query list of intervals
+            (any valid string for interval.Interval or interval.GenericInterval)
+        bass_not_root: intervals between the bass notes (if true, default) or the roots.
+        specific_not_generic: work with interval.Interval or interval.GenericInterval objects
+
+    Returns: bool
+    """
+    if bass_not_root:
+        pitches = [x.bass() for x in rns]
+    else:  # root
+        pitches = [x.root() for x in rns]
+
+    if len(pitches) != len(query_intervals) + 1:
         raise ValueError("There must be exactly one more RN than interval.")
 
-    for i in range(len(intervalList)):
-        sourceInterval = interval.Interval(pitches[i], pitches[i + 1]).intervalClass
-        comparisonInterval = interval.Interval(intervalList[i]).intervalClass
-        # NOTE: ^ must go through interval.Interval object
-        if sourceInterval != comparisonInterval:
+    for i in range(len(query_intervals)):
+
+        # print(pitches[i], pitches[i + 1])
+        source = interval.Interval(pitches[i], pitches[i + 1])
+
+        if specific_not_generic:
+            source = source.semitones % 12  # removes octave, preserves direction
+            comparison = interval.Interval(query_intervals[i]).semitones % 12
+        else:  # generic
+            source = source.generic.mod7
+            comparison = interval.GenericInterval(query_intervals[i]).mod7
+
+        # print(source, comparison)
+
+        if source != comparison:
             return False  # false as soon as one does not match
 
     return True
@@ -603,9 +797,14 @@ def changes_key(
     Returns: bool
     """
 
-    distinct_keys = set([x.key.name for x in rns_list])
+    keys = [x.key for x in rns_list]
+    if None in keys:
+        raise ValueError("All of the roman.RomanNumeral objects must have key specified.")
+
+    distinct_keys = set([x.name for x in keys])
     if len(distinct_keys) > 1:
         return True
+
     return False
 
 
@@ -630,6 +829,8 @@ valid_searches = [
     "Applied Chords",
     "Common Tone Diminished Sevenths",
     "Quiescenzas",
+    "aufsteigender_Quintfall",
+    "fallender_Quintanstieg",
     "Progressions",
 ]
 
@@ -639,7 +840,7 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                           progression: list | None = None,
                           write_summary: bool = True,
                           heads: list | None = None,
-                          write_examples: bool = True,
+                          write_examples: bool = False,
                           ):
     """
     Runs the search methods on a specific pair of corpus and search term.
@@ -727,30 +928,26 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
 
         if what == "Modal Mixture":
             rnf.find_mixtures()
-            this_work_list = rnf.mixtures
         elif what == "Augmented Chords":
             rnf.find_augmented_chords()
-            this_work_list = rnf.augmented_chords
         elif what == "Augmented Sixths":
             rnf.find_augmented_sixths()
-            this_work_list = rnf.augmented_sixths
         elif what == "Neapolitan Sixths":
             rnf.find_Neapolitan_sixths()
-            this_work_list = rnf.neapolitan_sixths
         elif what == "Applied Chords":
             rnf.find_applied_chords()
-            this_work_list = rnf.applied_chords
         elif what == "Common Tone Diminished Sevenths":
             rnf.find_Cto_dim7()
-            this_work_list = rnf.user_progression
         elif what == "Quiescenzas":
             rnf.find_quiescenzas()
-            this_work_list = rnf.user_progression
+        elif what == "fallender_Quintanstieg":
+            rnf.find_fallender_Quintanstieg()
+        elif what == "aufsteigender_Quintfall":
+            rnf.find_aufsteigender_Quintfall()
         elif what == "Progressions":
             rnf.find_rn_progression(rns_list=progression)
-            this_work_list = rnf.user_progression
 
-        for x in this_work_list:
+        for x in rnf.results:
 
             x["COMPOSER"] = composer
             x["COLLECTION"] = collection
@@ -769,7 +966,7 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
                     x["DOWNLOAD"] = f"{mscz_download} {mxl_download}"
                     x["EXAMPLE"] = eg_url_base + f'{x["eg_file"]}-1.png">{x["eg_file"]}</a>'
 
-        out_data += this_work_list
+        out_data += rnf.results
 
     sortedList = sorted(out_data, key=lambda x: (x["COMPOSER"],
                                                  x["COLLECTION"],
@@ -811,7 +1008,8 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
             score = converter.parse(in_path)
 
             # Range to use
-            if what == "Quiescenzas":  # special case in format and range
+            if what in ["Quiescenzas", "aufsteigender_Quintfall", "fallender_Quintanstieg"]:
+                # ^ special handling of progressions
                 start = int(item["MEASURE"].split("/")[0])
                 end = start + 2
                 item["eg_file"] = item["eg_file"].split("/")
