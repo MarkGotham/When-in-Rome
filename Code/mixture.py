@@ -41,7 +41,7 @@ def is_mixture(
         require_fits_all_minor: bool = False,
         require_shared_or_mixed: bool = False,
         minimum_score: int = 0
-) -> roman.RomanNumeral:
+) -> bool:
     """
     Find instances of modal mixture as defined in [forthcoming].
 
