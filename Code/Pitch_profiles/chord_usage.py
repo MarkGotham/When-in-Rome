@@ -44,8 +44,9 @@ import json
 from . import get_distributions
 from .chord_features import simplify_chord
 from .. import get_corpus_files, CORPUS_FOLDER, CODE_FOLDER, write_json
+from pathlib import Path
 
-from music21 import roman
+from music21 import converter, roman
 
 RESOURCES_FOLDER = CODE_FOLDER / "Resources"
 
@@ -55,7 +56,8 @@ RESOURCES_FOLDER = CODE_FOLDER / "Resources"
 # Code
 
 def get_usage(
-        base_path: str = CORPUS_FOLDER / "OpenScore-LiederCorpus",
+        base_path: Path = CORPUS_FOLDER / "OpenScore-LiederCorpus",
+        source_analysis_not_tabular: bool = True,
         weight_by_length: bool = True,
         sort_dict: bool = True,
         percentages: bool = True,
@@ -77,39 +79,77 @@ def get_usage(
     This applies to both percentage and otherwise.
     E.g., 0.01 for low percentages or
     1 for single quarterLength usage (or equivalent).
+
+    If `source_analysis_not_tabular` then the data is extracted directly from analysis files;
+    if false then from the tabluar `slices_with_analysis` files.
     """
 
     if this_mode not in ["major", "minor", "both"]:
         raise ValueError('Invalid mode: chose one of "major", "minor", "both".')
 
-    files = get_corpus_files(base_path, file_name="slices_with_analysis.tsv")
-
     working_dict = {}
 
-    for path_to_file in files:
-        try:
-            data = get_distributions.DistributionsFromTabular(path_to_file).profiles_by_chord
-            print(".")
-        except:
-            print(f"Cannot load {path_to_file}")
-            continue
+    if source_analysis_not_tabular:
 
-        for d in data:
-            # Mode
-            if this_mode == "major" and not d["key"][0].isupper():  # Major e.g. "C", "Ab".
-                continue
-            elif this_mode == "minor" and d["key"][0].isupper():  # Should be lower e.g. ab".
+        files = get_corpus_files(base_path, file_name="analysis.txt")
+
+        for path_to_file in files:
+            try:
+                data = converter.parse(
+                    path_to_file,
+                    format="Romantext"
+                    ).recurse().getElementsByClass(roman.RomanNumeral)
+                print(".", len(data))
+            except:
+                print(f"Cannot load {path_to_file}")
                 continue
 
-            # Init new entries
-            if d["chord"] not in working_dict:
-                working_dict[d["chord"]] = 0
+            for d in data:
+                # Mode
+                if this_mode == "major" and d.key.mode != "major":
+                    continue
+                elif this_mode == "minor" and d.key.mode != "minor":
+                    continue
+
+                # Init new entries
+                if d.figure not in working_dict:
+                    working_dict[d.figure] = 0
 
                 # Length or count:
-            if weight_by_length:
-                working_dict[d["chord"]] += d["quarter length"]
-            else:
-                working_dict[d["chord"]] += 1
+                if weight_by_length:
+                    working_dict[d.figure] += d.quarterLength
+                else:
+                    working_dict[d.figure] += 1
+
+    else:  # tabular
+        files = get_corpus_files(base_path, file_name="slices_with_analysis.tsv")
+
+        for path_to_file in files:
+            try:
+                data = get_distributions.DistributionsFromTabular(path_to_file).profiles_by_chord
+                print(".")
+            except:
+                print(f"Cannot load {path_to_file}")
+                continue
+
+            for d in data:
+                # Mode
+                if this_mode == "major" and d["key"][0].islower():  # Major e.g. "C", "Ab".
+                    continue
+                elif this_mode == "minor" and d["key"][0].isupper():  # Should be lower e.g. ab".
+                    continue
+
+                # Init new entries
+                if d["chord"] not in working_dict:
+                    working_dict[d["chord"]] = 0
+
+                    # Length or count:
+                if weight_by_length:
+                    working_dict[d["chord"]] += d["quarter length"]
+                else:
+                    working_dict[d["chord"]] += 1
+
+    print(this_mode, working_dict)
 
     if sort_dict:
         working_dict = sort_this_dict(working_dict)
