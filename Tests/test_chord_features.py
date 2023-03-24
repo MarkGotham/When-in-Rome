@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
             pop_list = []
 
             for fig in no_inv:
-                if not roman.RomanNumeral(fig).isAugmentedSixth():
+                if not roman.RomanNumeral(fig).isAugmentedSixth(permitAnyInversion=True):
                     pop_list.append(fig)
 
             for p in pop_list:
