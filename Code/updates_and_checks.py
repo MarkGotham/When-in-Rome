@@ -176,7 +176,7 @@ def process_one_score(
 
 
 def process_corpus(
-        corpus: Path = CORPUS_FOLDER / "OpenScore-LiederCorpus",
+        corpus_name: str = "OpenScore-LiederCorpus",
         combine: bool = True,
         slices: bool = True,
         feedback: bool = True,
@@ -185,7 +185,7 @@ def process_corpus(
     """
     Corpus wide implementation of `process_one_score`. See docs there.
     """
-    analysis_paths = get_corpus_files(sub_corpus_path=corpus,
+    analysis_paths = get_corpus_files(sub_corpus_path=CORPUS_FOLDER / corpus_name,
                                       file_name="analysis.txt")
 
     for p in analysis_paths:
@@ -470,7 +470,7 @@ if __name__ == "__main__":
     if args.process_one_score:
         process_one_score(path_to_score=args.path_to_score)
     elif args.process_corpus:
-        process_corpus(corpus=args.corpus)
+        process_corpus(corpus_name=args.corpus)
     elif args.check_all_parse:
         check_all_parse(corpus=args.corpus)
     elif args.anthology:
