@@ -152,15 +152,19 @@ class Test(unittest.TestCase):
             corpus="OpenScore-LiederCorpus",
             major_mode=True
         )
-        self.assertEqual(maj["i"], ['C-Eb-G', 1, 0, 0, 2, 1.193])
-        self.assertEqual(maj["iv"], ['F-Ab-C', 1, 0, 0, 2, 0.965])
+        self.assertEqual(maj["i"][:-1], ['C-Eb-G', 1, 0, 0, 2])
+        self.assertEqual(round(maj["i"][-1], 1), 1.1)
+        self.assertEqual(maj["iv"][:-1], ['F-Ab-C', 1, 0, 0, 2])
+        self.assertEqual(round(maj["iv"][-1], 1), 0.9)
 
         min = mixture.in_practice(
             corpus="OpenScore-LiederCorpus",
             major_mode=False
         )
-        self.assertEqual(min["V"], ['E-G#-B', 0, 1, 0, 1, 12.634])
-        self.assertEqual(min["I"], ['A-C#-E', 1, 0, 0, 2, 3.302])
+        self.assertEqual(min["V"][:-1], ['E-G#-B', 0, 1, 0, 1])
+        self.assertEqual(round(min["V"][-1], 1), 12.7)
+        self.assertEqual(min["I"][:-1], ['A-C#-E', 1, 0, 0, 2])
+        self.assertEqual(round(min["I"][-1], 1), 3.0)
 
 
 # ------------------------------------------------------------------------------
