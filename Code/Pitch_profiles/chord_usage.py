@@ -28,7 +28,6 @@ Also includes functionality for simplifying harmonies and
 corresponding assessment of that data.
 
 Specifically:
-- 2x Corpora: lieder (OpenScore LiederCorpus); Beethoven (Beethoven)
 - major and minor handled separately
 - expressed as percentages
 
@@ -39,11 +38,11 @@ TODO:
 Currently limited to single chord. Expand to progressions
 
 """
+from fractions import Fraction
 
-import json
 from . import get_distributions
 from .chord_features import simplify_chord
-from .. import get_corpus_files, CORPUS_FOLDER, CODE_FOLDER, write_json
+from .. import get_corpus_files, CORPUS_FOLDER, CODE_FOLDER, load_json, write_json
 from pathlib import Path
 
 from music21 import converter, roman
@@ -98,7 +97,7 @@ def get_usage(
                 data = converter.parse(
                     path_to_file,
                     format="Romantext"
-                    ).recurse().getElementsByClass(roman.RomanNumeral)
+                ).recurse().getElementsByClass(roman.RomanNumeral)
                 print(".", len(data))
             except:
                 print(f"Cannot load {path_to_file}")
@@ -149,7 +148,10 @@ def get_usage(
                 else:
                     working_dict[d["chord"]] += 1
 
-    print(this_mode, working_dict)
+    # Always convert fractions to floats (for json)
+    for k in working_dict:
+        if isinstance(working_dict[k], Fraction):
+            working_dict[k] = float(working_dict[k])
 
     if sort_dict:
         working_dict = sort_this_dict(working_dict)
@@ -191,6 +193,7 @@ def simplify_or_consolidate_usage_dict(
         no_inv: bool = False,
         no_other_alt: bool = True,  # NB
         no_secondary: bool = True,  # NB
+        overwrite: bool = False,
 ) -> dict:
     """
     For a full usage dict (with separate entries for each exact figure),
@@ -206,46 +209,53 @@ def simplify_or_consolidate_usage_dict(
     else:  # consolidate
         assert (file_name.endswith("_raw.json"))
 
-    raw_path = RESOURCES_FOLDER / "chord_usage" / file_name
+    if write:
+        if simplify_not_consolidate:
+            out_file_name = file_name.replace(".json", "_simple.json")
+        else:
+            out_file_name = file_name.replace("_raw.json", ".json")  # as the VoR
 
-    with open(raw_path) as f:
+        out_path = RESOURCES_FOLDER / "chord_usage" / out_file_name
 
-        this_usage_dict = json.load(f)
+        if out_path.exists() and not overwrite:
+            print(f"The path {out_path} exists and overwrite is set to False, skipping.")
+            return
 
-        working_dict = {}
+    in_path = RESOURCES_FOLDER / "chord_usage" / file_name
+    print(f"Processing {in_path}.")
 
-        for k, v in this_usage_dict.items():
+    this_usage_dict = load_json(in_path)
 
-            if simplify_not_consolidate:
-                new_key = simplify_chord(k,
-                                         haupt_function=haupt_function,
-                                         full_function=full_function,
-                                         no_root_alt=no_root_alt,
-                                         no_quality_alt=no_quality_alt,
-                                         no_inv=no_inv,
-                                         no_other_alt=no_other_alt,
-                                         no_secondary=no_secondary)
-            else:  # consolidate
-                new_key = careful_consolidate(k, major_not_minor=major_not_minor)
+    working_dict = {}
 
-            if new_key not in working_dict:
-                working_dict[new_key] = 0  # init
-            working_dict[new_key] += v  # in any case
+    for k, v in this_usage_dict.items():
 
-        if sort_dict:
-            working_dict = sort_this_dict(working_dict)
+        if simplify_not_consolidate:
+            new_key = simplify_chord(k,
+                                     haupt_function=haupt_function,
+                                     full_function=full_function,
+                                     no_root_alt=no_root_alt,
+                                     no_quality_alt=no_quality_alt,
+                                     no_inv=no_inv,
+                                     no_other_alt=no_other_alt,
+                                     no_secondary=no_secondary)
+        else:  # consolidate
+            new_key = careful_consolidate(k, major_not_minor=major_not_minor)
 
-        if percentages:
-            working_dict = dict_in_percentages(working_dict)
+        if new_key not in working_dict:
+            working_dict[new_key] = 0  # init
+        working_dict[new_key] += v  # in any case
 
-        if write:
-            if simplify_not_consolidate:
-                out_file_name = file_name.replace(".json", "_simple.json")
-            else:
-                out_file_name = file_name.replace("_raw.json", ".json")  # as the VoR
-            write_json(working_dict, RESOURCES_FOLDER / "chord_usage" / out_file_name)
+    if sort_dict:
+        working_dict = sort_this_dict(working_dict)
 
-        return working_dict
+    if percentages:
+        working_dict = dict_in_percentages(working_dict)
+
+    if write:
+        write_json(working_dict, out_path)
+
+    return working_dict
 
 
 def sort_this_dict(
@@ -275,7 +285,8 @@ def dict_in_percentages(
 
 def raw_usage_maj_min_one_corpus(
         corpus: str = "OpenScore-LiederCorpus",
-        write: bool = True
+        write: bool = True,
+        overwrite: bool = False
 ) -> None:
     """
     Retrieve the major and minor usage of one corpus and
@@ -283,6 +294,7 @@ def raw_usage_maj_min_one_corpus(
     Args:
         corpus: which corpus (must be a child directory of "Corpus")
         write (bool): optionally write the data (x2) to the "Resources" folder.
+        overwrite (bool): write over an existing file, or skip.
 
     Returns: None
 
@@ -290,12 +302,17 @@ def raw_usage_maj_min_one_corpus(
 
     for this_mode in ["major", "minor"]:
 
+        json_path = RESOURCES_FOLDER / "chord_usage" / f"{this_mode}_{corpus}_raw.json"
+
+        if json_path.exists() and not overwrite:
+            print(f"The path {json_path} exists and overwrite is set to False, skipping.")
+            continue
+
         data = get_usage(CORPUS_FOLDER / corpus,
                          percentages=False,
                          this_mode=this_mode,
                          plateau=2.0,
                          simplify=False)
-        json_path = RESOURCES_FOLDER / "chord_usage" / f"{this_mode}_{corpus}_raw.json"
 
         if write:
             write_json(data, json_path)
@@ -428,6 +445,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("--all",
+                        action = "store_true",
+                        help="Get raw usage then consolidate and simplify on all WiR corpora.")
     parser.add_argument("--get_usage", action="store_true")
     parser.add_argument("--simplify", action="store_true")
     parser.add_argument("--consolidate", action="store_true")
@@ -438,7 +458,29 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.get_usage:
+    if args.all:
+        for c in [
+            "Chamber_Other",
+            "Early_Choral",
+            "Keyboard_Other",
+            "OpenScore-LiederCorpus",
+            "Orchestral",
+            "Piano_Sonatas",
+            "Quartets",
+            "Variations_and_Grounds"
+        ]:
+            raw_usage_maj_min_one_corpus(corpus=c)
+            for this_mode in ["major", "minor"]:
+                simplify_or_consolidate_usage_dict(
+                    f"{this_mode}_{c}_raw.json",  # raw to consolidated
+                    simplify_not_consolidate=False,
+                    major_not_minor=(this_mode == "major"))
+                simplify_or_consolidate_usage_dict(
+                    f"{this_mode}_{c}.json",  # consolidated to simple
+                    simplify_not_consolidate=True,
+                    major_not_minor=(this_mode == "major"))
+
+    elif args.get_usage:
         raw_usage_maj_min_one_corpus(corpus=args.corpus)
 
     elif args.simplify:
