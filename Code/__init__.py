@@ -40,6 +40,17 @@ def get_corpus_files(sub_corpus_path: Path = CORPUS_FOLDER,
     return [x for x in sub_corpus_path.rglob(file_name)]
 
 
+def load_json(
+    json_path: Path
+) -> list:
+    """
+    Read in json format data.
+    Never remember to open / close again.
+    """
+    with open(json_path, "r") as f:
+        return json.load(f)
+
+
 def write_json(
         this_data: dict,
         json_path: Path
