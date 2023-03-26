@@ -58,56 +58,32 @@ class Test(unittest.TestCase):
 
     def test_Aug6(self):
 
-        corpus = "OpenScore-LiederCorpus"
+        maj = chord_usage.get_Aug6s(corpus_name="OpenScore-LiederCorpus", this_mode="major")
+        min = chord_usage.get_Aug6s(corpus_name="OpenScore-LiederCorpus", this_mode="minor")
 
-        for this_mode in ["major", "minor"]:
-            no_inv = chord_usage.simplify_or_consolidate_usage_dict(
-                f"{this_mode}_{corpus}.json",
-                simplify_not_consolidate=True,
-                no_inv=True,
-                no_other_alt=True,
-                no_secondary=True,
-                major_not_minor=(this_mode == "major"),
-                write=False)
-
-            pop_list = []
-
-            for fig in no_inv:
-                if not roman.RomanNumeral(fig).isAugmentedSixth(permitAnyInversion=True):
-                    pop_list.append(fig)
-
-            for p in pop_list:
-                no_inv.pop(p)
-
-            if this_mode == "major":
-                self.assertAlmostEqual(no_inv["It"], 0.051)
-            else:  # minor
-                self.assertAlmostEqual(no_inv["It"], 0.37)
+        self.assertEqual(round(maj["It"], 2), 0.05)
+        self.assertEqual(round(min["It"], 2), 0.42)
 
     def test_N6(self):
 
-        corpus = "OpenScore-LiederCorpus"
+        maj = chord_usage.get_N6s(corpus_name="OpenScore-LiederCorpus", this_mode="major")
+        min = chord_usage.get_N6s(corpus_name="OpenScore-LiederCorpus", this_mode="minor")
 
-        for this_mode in ["major", "minor"]:
-            simple = chord_usage.simplify_or_consolidate_usage_dict(
-                f"{this_mode}_{corpus}.json",
-                simplify_not_consolidate=True,
-                no_inv=False,
-                no_other_alt=True,
-                no_secondary=True,
-                major_not_minor=(this_mode == "major"),
-                write=False)
+        self.assertEqual(round(maj["bII"], 1), 0.1)
+        self.assertEqual(round(min["bII6"], 1), 0.3)
 
-            pop_list = []
+    def testChordPCs(self):
+        """
+        Test list of pitch class sets associated with chords in the corpus.
+        Returns: None
+        """
 
-            for fig in simple:
-                if not roman.RomanNumeral(fig).isNeapolitan(require1stInversion=False):
-                    pop_list.append(fig)
+        maj, min = chord_usage.pc_usage()
 
-            for p in pop_list:
-                simple.pop(p)
+        for m in [maj, min]:
+            self.assertTrue("i" in m['3-11A'])
+            self.assertTrue("I" in m['3-11B'])
+            self.assertTrue("V7" in m['4-27B'])
+            self.assertTrue('Fr43' in m['4-25'])
 
-            if this_mode == "major":
-                self.assertAlmostEqual(simple["bII"], 0.126)
-            else:  # minor
-                self.assertAlmostEqual(simple["bII6"], 0.284)
+        self.assertTrue('V43[b5]' in min['4-25'])  # Not in maj
