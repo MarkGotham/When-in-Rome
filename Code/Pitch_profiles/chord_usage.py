@@ -438,6 +438,123 @@ def careful_consolidate(
         return working_string
 
 
+def get_Aug6s(
+        corpus_name: str = "OpenScore-LiederCorpus",
+        this_mode: str = "major"
+) -> dict:
+    """
+    Usage of augmented chords, separating by category and ignoring inversion.
+
+    Args:
+        corpus_name: the usual
+    Returns: dict with keys of chord figures and values of the combined usage.
+    """
+
+    if this_mode == "major":
+        k = "C"
+    elif this_mode == "minor":
+        k = "a"
+    else:
+        raise ValueError
+
+    no_inv = simplify_or_consolidate_usage_dict(
+            f"{this_mode}_{corpus_name}.json",
+            simplify_not_consolidate=True,
+            no_inv=True,  # NB
+            no_other_alt=True,
+            no_secondary=True,
+            major_not_minor=(this_mode == "major"),
+            write=False)
+
+    pop_list = []
+
+    for fig in no_inv:
+        if not roman.RomanNumeral(fig, k).isAugmentedSixth(permitAnyInversion=True):
+            pop_list.append(fig)
+
+    for p in pop_list:
+        no_inv.pop(p)
+
+    return no_inv
+
+
+def get_N6s(
+        corpus_name: str = "OpenScore-LiederCorpus",
+        this_mode: str = "major"
+) -> dict:
+    """
+    Usage of "Neapolitan" 6 chords, separating by figure _including_ inversion.
+
+    Args:
+        corpus_name: the usual
+    Returns: dict with keys of chord figures and values of the combined usage.
+    """
+
+    # Note key probably unnecessary but safer in case of odd spellings
+    if this_mode == "major":
+        k = "C"
+    elif this_mode == "minor":
+        k = "a"
+    else:
+        raise ValueError
+
+    simple = simplify_or_consolidate_usage_dict(
+        f"{this_mode}_{corpus_name}.json",
+        simplify_not_consolidate=True,
+        no_inv=False,
+        no_other_alt=True,
+        no_secondary=True,
+        major_not_minor=(this_mode == "major"),
+        write=False)
+
+    pop_list = []
+
+    for fig in simple:
+        if not roman.RomanNumeral(fig, k).isNeapolitan(require1stInversion=False):
+            pop_list.append(fig)
+
+    for p in pop_list:
+        simple.pop(p)
+
+    return simple
+
+
+# ------------------------------------------------------------------------------
+
+def pc_usage(
+        corpus_name: str = "OpenScore-LiederCorpus",
+) -> tuple[dict, dict]:
+    """
+    Usage of distinct pitch class sets in the corpora.
+    E.g., `3-11B` stands for all major triads.
+    A good way to look at usual configurations and how they are spelt,
+    e.g., `Fr43` vs `V7[b5]/V`.
+
+    Args:
+        corpus_name: the usual
+    Returns: dict with keys of forte classes and values of the associated figures.
+    """
+
+    chord_usage_dir = CODE_FOLDER / "Resources" / "chord_usage"
+    minor_data = load_json(chord_usage_dir / f"minor_{corpus_name}.json")  # _simple?
+    major_data = load_json(chord_usage_dir / f"major_{corpus_name}.json")
+
+    major_pcs = {}
+    minor_pcs = {}
+    for x in major_data:
+        pc = roman.RomanNumeral(x, "C").forteClass
+        if pc not in major_pcs:
+            major_pcs[pc] = []
+        major_pcs[pc] += [x]
+    for x in minor_data:
+        pc = roman.RomanNumeral(x, "c").forteClass
+        if pc not in minor_pcs:
+            minor_pcs[pc] = []
+        minor_pcs[pc] += [x]
+
+    return major_pcs, minor_pcs
+
+
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -446,7 +563,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--all",
-                        action = "store_true",
+                        action="store_true",
                         help="Get raw usage then consolidate and simplify on all WiR corpora.")
     parser.add_argument("--get_usage", action="store_true")
     parser.add_argument("--simplify", action="store_true")
