@@ -30,9 +30,9 @@ class Test(unittest.TestCase):
         rns = [roman.RomanNumeral(x) for x in ['i', 'iiø65', 'V7']]
 
         intervalsType1 = ['M2', 'P4']
-        self.assertTrue(interval_match(rns, intervalsType1, bassOrRoot='root'))
-        self.assertFalse(interval_match(rns, intervalsType1, bassOrRoot='bass'))
+        self.assertTrue(interval_match(rns, intervalsType1, bass_not_root=False))
+        self.assertFalse(interval_match(rns, intervalsType1, bass_not_root=True))
 
         intervalsType2 = ['P4', 'M2']
-        self.assertTrue(interval_match(rns, intervalsType2, bassOrRoot='bass'))
-        self.assertFalse(interval_match(rns, intervalsType2, bassOrRoot='root'))
+        self.assertTrue(interval_match(rns, intervalsType2, bass_not_root=True))
+        self.assertFalse(interval_match(rns, intervalsType2, bass_not_root=False))
