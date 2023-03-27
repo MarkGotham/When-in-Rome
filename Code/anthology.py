@@ -496,7 +496,10 @@ def is_quiescenza(
 
 
 def fallender_Quintanstieg(
-        chord_list: list[roman.RomanNumeral]
+        chord_list: list[roman.RomanNumeral],
+        require_one_key: bool = False,
+        exclude_Cad64: bool = True,
+        exclude_Aug6: bool = True
 ) -> bool:
     """
     In the minimum definition of the `fallende Quintstiege` progression,
@@ -518,10 +521,18 @@ def fallender_Quintanstieg(
 
     Args:
         chord_list: a list of exactly 4 Roman Numeral chords (for the minimum definition)
+        require_one_key (bool): Limit returns to non-modulating cases.
+        exclude_Cad64 (bool): If True, ignore any succession with a Cad64 in it (however spelt).
+            The label `Cad64` deliberately avoids the contentious question of what the root is.
+        exclude_Aug6 (bool): These root of these chord is also ambiguous.
     Returns: bool
     """
-    if len(chord_list) != 4:
-        raise ValueError("Please call this functon on a list of exactly 4 chords.")
+    if not _shared_quint_checks_ok(
+        chord_list,
+        exclude_Cad64=exclude_Cad64,
+        exclude_Aug6=exclude_Aug6
+    ):
+        return False
 
     return interval_match(
         chord_list,
@@ -532,7 +543,10 @@ def fallender_Quintanstieg(
 
 
 def aufsteigender_Quintfall(
-        chord_list: list[roman.RomanNumeral]
+        chord_list: list[roman.RomanNumeral],
+        require_one_key: bool = False,
+        exclude_Cad64: bool = True,
+        exclude_Aug6: bool = True
 ) -> bool:
     """
     In the minimum definition of this progression,
@@ -552,15 +566,29 @@ def aufsteigender_Quintfall(
     >>> aufsteigender_Quintfall(rns)
     False
 
+    >>> rns_strings = ["V7", "I", "V7", "I64"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> aufsteigender_Quintfall(rns)
+    False
+
     Note how they are transposition and octave neutral
     (i.e., while named after rising/falling 5ths, falling/rising 4ths are fine).
 
     Args:
         chord_list: a list of exactly 4 Roman Numeral chords (for the minimum definition)
+        require_one_key (bool): Limit returns to non-modulating cases.
+        exclude_Cad64 (bool): If True, ignore any succession with a Cad64 in it (however spelt).
+            The label `Cad64` deliberately avoids the contentious question of what the root is.
+        exclude_Aug6 (bool): These root of these chord is also ambiguous.
     Returns: bool
     """
-    if len(chord_list) != 4:
-        raise ValueError("Please call this functon on a list of exactly 4 chords.")
+    if not _shared_quint_checks_ok(
+        chord_list,
+        require_one_key=require_one_key,
+        exclude_Cad64=exclude_Cad64,
+        exclude_Aug6=exclude_Aug6
+    ):
+        return False
 
     return interval_match(
         chord_list,
@@ -568,6 +596,34 @@ def aufsteigender_Quintfall(
         bass_not_root=False,
         specific_not_generic=False
     )
+
+
+def _shared_quint_checks_ok(
+    chord_list: list[roman.RomanNumeral],
+    require_one_key: bool = True,
+    exclude_Cad64: bool = True,
+    exclude_Aug6: bool = True
+) -> bool:
+
+    if len(chord_list) != 4:
+        raise ValueError("Please call on a list of exactly 4 chords.")
+
+    if require_one_key:
+        if changes_key(chord_list):
+            return False
+
+    for rn in chord_list:
+
+        if exclude_Cad64:
+            if rn.inversion() == 2:
+                if rn.scaleDegree == 1:
+                    return False
+
+        if exclude_Aug6:
+            if rn.isAugmentedSixth(permitAnyInversion=True):
+                return False
+
+    return True
 
 
 # ------------------------------------------------------------------------------
@@ -614,9 +670,9 @@ def is_of_type(
 
     The query_type can be in almost any format.
     First, it can also be a chord.Chord object, including the same object as this_chord:
-    >>> majorTriad = chord.Chord("C E G")
-    >>> is_of_type(majorTriad, majorTriad)
-    True
+    # >>> majorTriad = chord.Chord("C E G")
+    # >>> is_of_type(majorTriad, majorTriad)
+    # True
 
     Second, is anything you can use to create a chord.Chord object, i.e.
     string of pitch names (with or without octave), or a list of
@@ -625,8 +681,8 @@ def is_of_type(
     MIDI numbers, or
     pitch class numbers.
     It bear repeating here that transpositon equivalence is fine:
-    >>> is_of_type(majorTriad, [2, 6, 9])
-    True
+    # >>> is_of_type(majorTriad, [2, 6, 9])
+    # True
 
     # TODO: implement chord.fromCommonName then add this:
     # Third, it can be any string returned by music21.chord.commonName.
@@ -640,7 +696,7 @@ def is_of_type(
     # TODO >>> is_of_type(majorTriad, "whole tone scale")
     # TODO False
     #
-    >>> wholeToneChord = chord.Chord([0, 2, 4, 6, 8, 10])
+    # >>> wholeToneChord = chord.Chord([0, 2, 4, 6, 8, 10])
     #
     # TODO >>> is_of_type(wholeToneChord, "whole tone scale")
     # TODO True
