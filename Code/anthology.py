@@ -138,12 +138,7 @@ class RnFinder(object):
 
             figures = [x.figure for x in thisRange]
             if figures == rns_list:
-                # Variant on data_from_Rn
-                info = [thisRange[0].getContextByClass("Measure").measureNumber,
-                        figures,
-                        thisRange[0].key]
-
-                self.results.append(info)
+                self.results.append(data_from_Rn_list(rns_list))
 
     def find_prog_by_qual_and_intv(
             self,
@@ -196,9 +191,7 @@ class RnFinder(object):
                 if interval_match(theseRns,
                                   intervals,
                                   bass_not_root):
-                    info = data_from_Rn(self.rns[index])
-                    info["FIGURE"] = [x.figure for x in theseRns]
-                    self.results.append(info)
+                    self.results.append(data_from_Rn_list(theseRns))
 
     def find_Cto_dim7(
             self,
@@ -226,7 +219,14 @@ class RnFinder(object):
                         self.rns[index + 1],
                         require_prolongation=require_prolongation
                 ):
-                    self.results.append(data_from_Rn(this_chord))
+                    self.results.append(
+                        data_from_Rn_list(
+                            [self.rns[index - 1],
+                             this_chord,
+                             self.rns[index + 1]
+                             ]
+                        )
+                    )
 
     def find_quiescenzas(self):
         """
@@ -251,18 +251,9 @@ class RnFinder(object):
                 continue
 
             if is_quiescenza(this_range):
-                print("Y")
-                figures = "-".join([x.figure for x in this_range])
-                measure_start = this_range[0].getContextByClass("Measure").measureNumber
-
-                info = data_from_Rn(this_range[0])
-                # TODO think through shared steps. For now override
-                info["MEASURE"] = f"{measure_start}/{last_measure}"
-                info["FIGURE"] = figures
-                # key is fine
-
+                info = data_from_Rn_list(this_range)
+                info["MEASURE"] += f"/{last_measure}"  # interested in position in work.
                 self.results.append(info)
-                print(self.results)
 
     def find_aufsteigender_Quintfall(self):
         """
@@ -275,22 +266,11 @@ class RnFinder(object):
         "Ich frage mich, ob das ein aufsteigender Quintfall ist."
         """
 
-        last_measure = self.rns[-1].getContextByClass("Measure").measureNumber
-
         for index in range(len(self.rns) - 4):
             this_range = self.rns[index: index + 4]
 
             if aufsteigender_Quintfall(this_range):
-                figures = "-".join([x.figure for x in this_range])
-                measure_start = this_range[0].getContextByClass("Measure").measureNumber
-
-                info = data_from_Rn(this_range[0])
-                # TODO think through shared steps. For now override
-                info["MEASURE"] = f"{measure_start}/{last_measure}"
-                info["FIGURE"] = figures
-                # key is fine
-
-                self.results.append(info)
+                self.results.append(data_from_Rn_list(this_range))
 
     def find_fallender_Quintanstieg(self):
         """
@@ -299,22 +279,11 @@ class RnFinder(object):
         as defined at that function below.
         """
 
-        last_measure = self.rns[-1].getContextByClass("Measure").measureNumber
-
         for index in range(len(self.rns) - 4):
             this_range = self.rns[index: index + 4]
 
             if fallender_Quintanstieg(this_range):
-                figures = "-".join([x.figure for x in this_range])
-                measure_start = this_range[0].getContextByClass("Measure").measureNumber
-
-                info = data_from_Rn(this_range[0])
-                # TODO think through shared steps. For now override
-                info["MEASURE"] = f"{measure_start}/{last_measure}"
-                info["FIGURE"] = figures
-                # key is fine
-
-                self.results.append(info)
+                self.results.append(data_from_Rn_list(this_range))
 
 
 # ------------------------------------------------------------------------------
@@ -635,16 +604,51 @@ def data_from_Rn(
         consolidate: bool = True
 ) -> dict:
     if consolidate:
-        fig = careful_consolidate(rn.figure,
-                                  major_not_minor=(rn.key.mode == "major"),
-                                  rn=rn
-                                  )
+        fig = careful_consolidate(
+            rn.figure,
+            major_not_minor=(rn.key.mode == "major"),
+            rn=rn
+        )
     else:
         fig = rn.figure
 
     return {"MEASURE": rn.getContextByClass("Measure").measureNumber,
             "FIGURE": fig,
             "KEY": rn.key.name.replace("-", "b"),
+            "BEAT": rn.beat,
+            "BEAT STRENGTH": rn.beatStrength,
+            "LENGTH": rn.quarterLength}
+
+
+def data_from_Rn_list(
+        rn_list: list[roman.RomanNumeral],
+        consolidate: bool = True
+) -> dict:
+
+    # figures
+    if consolidate:
+        figs = [careful_consolidate(
+            rn.figure,
+            major_not_minor=(rn.key.mode == "major"),
+            rn=rn
+        ) for rn in rn_list]
+    else:
+        figs = [rn.figure for rn in rn_list]
+    figures = "-".join(figs)
+
+    # keys
+    keys = [rn_list[0].key.name]
+    for rn in rn_list[1:]:
+        if rn.key.name not in keys:
+            keys.append(rn.key.name)
+    keys = "-".join([k.replace("-", "b") for k in keys])
+
+    measure_start = rn_list[0].getContextByClass("Measure").measureNumber
+    measure_end = rn_list[-1].getContextByClass("Measure").measureNumber
+
+    return {"MEASURE": f"{measure_start}-{measure_end}",
+            "FIGURE": figures,
+            "KEY": keys,
             "BEAT": rn.beat,
             "BEAT STRENGTH": rn.beatStrength,
             "LENGTH": rn.quarterLength}
