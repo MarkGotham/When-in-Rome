@@ -22,7 +22,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2.4.0
       - name: Zip the Corpus folder
-        run: zip -r Corpus.zip Corpus/
+        run: zip -r Corpus.zip Corpus/*
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
