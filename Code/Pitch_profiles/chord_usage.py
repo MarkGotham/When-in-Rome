@@ -466,24 +466,31 @@ def get_Aug6s(
             major_not_minor=(this_mode == "major"),
             write=False)
 
-    pop_list = []
-
+    short_dict = {}
     for fig in no_inv:
-        if not roman.RomanNumeral(fig, k).isAugmentedSixth(permitAnyInversion=True):
-            pop_list.append(fig)
+        rn = roman.RomanNumeral(fig, k)
+        if rn.isAugmentedSixth(permitAnyInversion=True):
+            # Slightly verbose, and should be unnecessary given the filtering above, but safe
+            if rn.romanNumeralAlone not in short_dict:
+                print("Adding key:", rn.romanNumeralAlone)
+                short_dict[rn.romanNumeralAlone] = 0
+            short_dict[rn.romanNumeralAlone] += no_inv[fig]
 
-    for p in pop_list:
-        no_inv.pop(p)
+    assert len(short_dict) <= 3
 
-    return no_inv
+    return short_dict
 
 
 def get_N6s(
         corpus_name: str = "OpenScore-LiederCorpus",
-        this_mode: str = "major"
+        this_mode: str = "major",
 ) -> dict:
     """
     Usage of "Neapolitan" 6 chords, separating by figure _including_ inversion.
+
+    Similar to (cf) `get_Aug6s`, but reading from the
+    `<mode>_<corpus>_simple.json` file directly:
+    not using `simplify_or_consolidate_usage_dict` because the simplification options are the same.
 
     Args:
         corpus_name: the usual
@@ -498,17 +505,10 @@ def get_N6s(
     else:
         raise ValueError
 
-    simple = simplify_or_consolidate_usage_dict(
-        f"{this_mode}_{corpus_name}.json",
-        simplify_not_consolidate=True,
-        no_inv=False,
-        no_other_alt=True,
-        no_secondary=True,
-        major_not_minor=(this_mode == "major"),
-        write=False)
+    chord_usage_dir = CODE_FOLDER / "Resources" / "chord_usage"
+    simple = load_json(chord_usage_dir / f"{this_mode}_{corpus_name}_simple.json")
 
     pop_list = []
-
     for fig in simple:
         if not roman.RomanNumeral(fig, k).isNeapolitan(require1stInversion=False):
             pop_list.append(fig)
