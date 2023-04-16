@@ -365,7 +365,7 @@ class AnnotationConverter(ABC):
                 fig = str(rn.figure)
                 fig = fig.split("[")[0]
                 rn = roman.RomanNumeral(fig, rn.key)
-                return = _get_quality(rn)
+                return _get_quality(rn)
 
             tip_off_quality_pairs = (
                 ("9", "D9"),  # TODO Review and document the mapping of all 9ths (sic) to dominants.
