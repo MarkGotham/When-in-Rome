@@ -27,8 +27,13 @@ import numpy as np
 from pathlib import Path
 from scipy.optimize import curve_fit
 from typing import Callable, Union
-from . import CODE_FOLDER
-from . import data_by_heading
+from music21 import roman
+
+from . import CODE_FOLDER, data_by_heading, load_json
+
+from .Pitch_profiles import chord_usage
+
+ANTHOLOGY_PATH = CODE_FOLDER.parent / "Anthology"
 
 
 # ------------------------------------------------------------------------------
@@ -373,9 +378,7 @@ def plot_prog_by_positions(
         corpus_name: str = "OpenScore-LiederCorpus",
         what: str = "Quiescenzas"
 ) -> plt:
-    base_path = CODE_FOLDER.parent / "Anthology"
-
-    data = data_by_heading(base_path / corpus_name / (what + ".csv"))
+    data = data_by_heading(ANTHOLOGY_PATH / corpus_name / (what + ".csv"))
     position_strings = [x["MEASURE"] for x in data]
     positions = []
     for i in range(len(position_strings)):
@@ -390,6 +393,95 @@ def plot_prog_by_positions(
     )
 
 
+def plot_usage(
+        corpus_name: str = "OpenScore-LiederCorpus",
+        what: str = "Aug6",
+        user_list: list | None = ["bII", "bII6", "bII64", "bII7", "bII65", "bII43", "bII2"],
+        save_fig: bool = True,
+        out_path: Path | None = None
+) -> plt:
+    """
+    Plot the usage of single chords by category.
+    E.g., if "what" = "Aug6",
+    plots all augmented 6ths in a sub-corpus by mode (maj/min) and
+    3 "Nationality" labels ignoring inversion.
+
+    Args:
+        corpus_name: one of the sub-corpora
+        what: str. What chord type. Currently, "Aug6", "N6", "User" in which last case use ...
+        user_list: list. Optional. A user-defined list of figures to plot (in order).
+            This is ignored unless "what" is "User".
+            The default provides an alternative way of plotting the Neapolitans.
+        save_fig: bool. Save a copy
+        out_path: Path | None. Path to write to. If None, use ANTHOLOGY_PATH / corpus_name.
+
+    Returns: plt
+
+    """
+    minor_data = None
+    major_data = None
+    all_keys = None
+
+    if what == "Aug6":
+        minor_data = chord_usage.get_Aug6s(this_mode="minor", corpus_name=corpus_name)
+        major_data = chord_usage.get_Aug6s(this_mode="major", corpus_name=corpus_name)
+        all_keys = ("Ger", "It", "Fr")
+    elif what == "N6":
+        minor_data = chord_usage.get_N6s(this_mode="minor", corpus_name=corpus_name)
+        major_data = chord_usage.get_N6s(this_mode="major", corpus_name=corpus_name)
+        all_keys = list(minor_data.keys()) + list(major_data.keys())
+    elif what == "User":
+        chord_usage_dir = CODE_FOLDER / "Resources" / "chord_usage"
+        minor_data = load_json(chord_usage_dir / f"minor_{corpus_name}_simple.json")
+        major_data = load_json(chord_usage_dir / f"major_{corpus_name}_simple.json")
+        all_keys = user_list
+        pass
+
+    for k in all_keys:
+        if k not in minor_data:
+            minor_data[k] = 0
+        if k not in major_data:
+            major_data[k] = 0
+
+    by_mode = {"minor": tuple([round(minor_data[x], 2) for x in all_keys]),
+               "major": tuple([round(major_data[x], 2) for x in all_keys])
+               }
+    max_val = max(list(by_mode["minor"]) + list(by_mode["major"]))
+
+    x = np.arange(len(all_keys))
+    bar_width = 0.25
+    count = 0
+
+    fig, ax = plt.subplots(layout='constrained')
+
+    for k, v in by_mode.items():
+        offset = bar_width * count
+        rects = ax.bar(x + offset, v, bar_width, label=k)
+        ax.bar_label(rects, padding=2)
+        count += 1
+
+    ax.set_ylabel("Frequency (%)")
+    ax.set_xticks(x + bar_width / 2, all_keys)
+    ax.legend(loc="upper right", ncols=2)
+
+    ax.set_ylim(0, round(max_val, 2) + 0.04)
+    ax.set_xlabel("Figure")
+
+    if what == "Aug6":
+        ax.set_xlabel('"Nationality" (any inversion)')
+        ax.set_title(f'Aug 6ths in the {corpus_name.replace("_", " ")} by so-called "nationality"')
+
+    if not out_path:
+        out_path = ANTHOLOGY_PATH / corpus_name
+
+    if save_fig:
+        plt.savefig(out_path / (what + ".png"), facecolor="w", edgecolor="w", format="png")
+    else:
+        plt.show()
+
+    return plt
+
+
 # ------------------------------------------------------------------------------
 
 
@@ -398,10 +490,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--plot_prog_by_positions", action="store_true", )
+    parser.add_argument("--plot_prog_by_positions", action="store_true")
+    parser.add_argument("--plot_N6_usage", action="store_true")
+    parser.add_argument("--plot_Aug6_usage", action="store_true")
 
     parser.add_argument(
-        "corpus",
+        "--corpus",
         type=str,
         required=False,
         default="OpenScore-LiederCorpus",
@@ -409,7 +503,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "what",
+        "--what",
         type=str,
         required=False,
         default="Quiescenzas",
@@ -422,5 +516,9 @@ if __name__ == "__main__":
             corpus_name=args.corpus,
             what=args.what
         )
+    elif args.plot_N6_usage:
+        plot_usage(corpus_name=args.corpus, what="N6")
+    elif args.plot_Aug6_usage:
+        plot_usage(corpus_name=args.corpus, what="Aug6")
     else:
         parser.print_help()
