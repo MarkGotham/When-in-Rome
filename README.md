@@ -224,7 +224,7 @@ It takes in a harmonic analysis and the corresponding score to assess how well t
 - [Anthology](/Code/anthology.py) for retrieving instances of specific chords and progression from the analyses.
 - [Pitch_profile](/Code/Pitch_profiles/) for producing the profile and feature information discussed above.
 
-## Licence, Acknowledging, Contribution
+## Licence, Citation, External Apps, Contribution
 
 ### Licence
 
@@ -241,18 +241,28 @@ These external licences vary.
 As far as we can tell, all the content here is either original to this repo,  
 or properly credited and fair to use in this way.
 If you think you see an issue please let us know.
-Again, if you are simply looking for a scores in a maximally permissive licence, then hea to the 
+Again, if you are simply looking for a scores in a maximally permissive licence, then head to the 
 [OpenScore collections](https://github.com/openscore) which are notable for using CC0.
 
-For research and other public-facing projects making use of this work, please cite or otherwise acknowledge one or more of the papers listed below as appropriate to your project.
+For research and other public-facing projects making use of this work, 
+please cite or otherwise acknowledge one or more of the papers listed below as appropriate to your project.
 
-### Citeable Papers
+### Citation
 
 The materials provided in this repo includes supplementary resources promised in:
 - [Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
 - [Gianluca Micchi, Mark Gotham, and Mathieu Giraud (2020). "Not All Roads Lead to Rome: Pitch Representation and Model Architecture for Automatic Harmonic Analysis", Transactions of the International Society for Music Information Retrieval, 3(1), pp. 42–54. DOI: https://doi.org/10.5334/tismir.45](https://transactions.ismir.net/articles/10.5334/tismir.45/)
 - [Néstor Nápoles López, Mark R H Gotham, & Ichiro Fujinaga. (2021). AugmentedNet: A Roman Numeral Analysis Network with Synthetic Training Examples and Additional Tonal Tasks. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 404–411](https://doi.org/10.5281/zenodo.5624533)
 - [Mark R H Gotham, Rainer Kleinertz, Christof Weiss, Meinard Müller, & Stephanie Klauk. (2021). What if the 'When' Implies the 'What'?: Human harmonic analysis datasets clarify the relative role of the separate steps in automatic tonal analysis. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 229–236](https://doi.org/10.5281/zenodo.5676067)
+
+### External Apps and More
+
+'When in Rome' data is also used in external research projects and apps including the:
+- ["Open Music Theory" (OMT) textbook's harmony anthology](https://viva.pressbooks.pub/openmusictheory/chapter/anthology-harmony/)
+- ["RAWL" app](https://rawl.vercel.app)
+- ["VIMU" (Visual Musicology) app](https://vimu.app) via [AugmentedNet](https://github.com/napulen/AugmentedNet)
+
+Using 'When in Rome' in your project? Let us know!
 
 ### Syntax and Contributing
 
