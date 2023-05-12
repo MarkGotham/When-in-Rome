@@ -482,8 +482,93 @@ def plot_usage(
     return plt
 
 
-# ------------------------------------------------------------------------------
+def plot_counts(
+        corpora: list | None = None,
+        what: list | None = None,
+        save_fig: bool = True,
+        out_path: Path | None = None
+) -> plt:
+    """
+    Plot the usage of chords and/or progressions by category.
+    E.g., "what" defaults to
+    ["ascending_fifths",
+    "descending_fifths",
+    "aufsteigender_Quintfall",
+    "fallender_Quintanstieg"
+    ],
+    and plots the number of each appearing
+    in each of the sub-corpora listed by `corpora`.
 
+    Args:
+        corpora: list of which sub-corpora
+        what: list of what chord / progressions type.
+        save_fig: bool. Save a copy
+        out_path: Path | None. Path to write to. If None, use ANTHOLOGY_PATH.
+
+    Returns: plt
+
+    """
+    if corpora is None:
+        corpora = ["OpenScore-LiederCorpus",
+                   "Keyboard_Other",
+                   "Early_Choral"
+                   ]
+    if what is None:
+        what = ["ascending_fifths",
+                "descending_fifths",
+                "aufsteigender_Quintfall",
+                "fallender_Quintanstieg"
+                ]
+
+    import csv
+
+    by_mode = {}
+    max_val = 0
+    for corpus in corpora:
+        this_list = []
+        for w in what:
+            this_path = str(ANTHOLOGY_PATH / corpus / f"{w}.csv")
+            with open(this_path) as csvfile:
+                data = csv.reader(csvfile)
+                row_count = sum(1 for row in data)  # sum() w generator to avoid storing whole file
+            this_list.append(row_count - 1)
+            if row_count > max_val:
+                max_val = row_count
+        by_mode[corpus] = this_list
+
+    x = np.arange(len(what))
+    bar_width = 0.25
+    count = 0
+
+    fig, ax = plt.subplots(layout='constrained')
+
+    for k, v in by_mode.items():
+        offset = bar_width * count
+        rects = ax.bar(x + offset, v, bar_width, label=k)
+        ax.bar_label(rects, padding=2)
+        count += 1
+
+    ax.set_ylabel("Count")
+    ax.set_xlabel("Progression type")
+    ax.set_xticks(x + bar_width / 2,
+                  [x.split("_")[0] for x in what]  # shorthand
+                  )
+    ax.legend(loc="upper right", ncols=1)
+
+    ax.set_ylim(0, round(max_val, 2) + 0.04)
+
+    if not out_path:
+        out_path = ANTHOLOGY_PATH
+
+    if save_fig:
+        plt.savefig(out_path / ("?" + ".png"), facecolor="w", edgecolor="w", format="png")
+    else:
+        plt.show()
+
+    return plt
+
+
+# ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     import argparse
@@ -493,6 +578,7 @@ if __name__ == "__main__":
     parser.add_argument("--plot_prog_by_positions", action="store_true")
     parser.add_argument("--plot_N6_usage", action="store_true")
     parser.add_argument("--plot_Aug6_usage", action="store_true")
+    parser.add_argument("--plot_counts", action="store_true")
 
     parser.add_argument(
         "--corpus",
@@ -520,5 +606,7 @@ if __name__ == "__main__":
         plot_usage(corpus_name=args.corpus, what="N6")
     elif args.plot_Aug6_usage:
         plot_usage(corpus_name=args.corpus, what="Aug6")
+    elif args.plot_counts:
+        plot_counts()
     else:
         parser.print_help()
