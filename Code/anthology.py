@@ -255,6 +255,32 @@ class RnFinder(object):
                 info["MEASURE"] += f"/{last_measure}"  # interested in position in work.
                 self.results.append(info)
 
+    def find_descending_fifths(self):
+        """
+        Find cases of
+        descending_fifths()
+        as defined at that functions below.
+        """
+
+        for index in range(len(self.rns) - 4):
+            this_range = self.rns[index: index + 4]
+
+            if descending_fifths(this_range):
+                self.results.append(data_from_Rn_list(this_range))
+
+    def find_ascending_fifths(self):
+        """
+        Find cases of the
+        ascending_fifths()
+        as defined at that functions below.
+        """
+
+        for index in range(len(self.rns) - 4):
+            this_range = self.rns[index: index + 4]
+
+            if ascending_fifths(this_range):
+                self.results.append(data_from_Rn_list(this_range))
+
     def find_aufsteigender_Quintfall(self):
         """
         Find specific cases of the
@@ -464,6 +490,104 @@ def is_quiescenza(
     return True
 
 
+def descending_fifths(
+        chord_list: list[roman.RomanNumeral],
+        require_one_key: bool = False,
+        exclude_Cad64: bool = True,
+        exclude_Aug6: bool = True
+) -> bool:
+    """
+    Is this progression a descending cycle of fifths, i.e.:
+    each root is a generic fifth below the previous one.
+
+    >>> rns_strings = ["V/ii", "ii", "V", "i"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> descending_fifths(rns)
+    True
+
+    See also the paired ascending_fifths() which would be True in this case:
+
+    >>> rns_strings = ["iv", "i", "V", "V/V"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> descending_fifths(rns)
+    False
+
+    Note how they are transposition and octave neutral
+    (i.e., while named after rising/falling 5ths, falling/rising 4ths are fine).
+
+    Args:
+        chord_list: a list of Roman Numeral object (the requirement for exactly 4 may change)
+        require_one_key (bool): Limit returns to non-modulating cases.
+        exclude_Cad64 (bool): If True, ignore any succession with a Cad64 in it (however spelt).
+            The label `Cad64` deliberately avoids the contentious question of what the root is.
+        exclude_Aug6 (bool): The root of these chords is also ambiguous.
+    Returns: bool
+    """
+    if not _shared_quint_checks_ok(
+        chord_list,
+        require_one_key=require_one_key,
+        exclude_Cad64=exclude_Cad64,
+        exclude_Aug6=exclude_Aug6
+    ):
+        return False
+
+    return interval_match(
+        chord_list,
+        [-5, -5, -5],
+        bass_not_root=False,
+        specific_not_generic=False
+    )
+
+
+def ascending_fifths(
+        chord_list: list[roman.RomanNumeral],
+        require_one_key: bool = False,
+        exclude_Cad64: bool = True,
+        exclude_Aug6: bool = True
+) -> bool:
+    """
+    Is this progression an ascending cycle of fifths, i.e.:
+    each root is a generic fifth above the previous one.
+
+    >>> rns_strings = ["iv", "i", "V", "V/V"]
+    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> ascending_fifths(rns)
+    True
+
+    See also the paired descending_fifths() which would be True in this case:
+
+    >>> rns_strings = ["V/ii", "ii", "V", "i"]
+    >>> rns = [roman.RomanNumeral(x, "a") for x in rns_strings]
+    >>> ascending_fifths(rns)
+    False
+
+    Note how they are transposition and octave neutral
+    (i.e., while named after rising/falling 5ths, falling/rising 4ths are fine).
+
+    Args:
+        chord_list: a list of Roman Numeral object (the requirement for exactly 4 may change)
+        require_one_key (bool): Limit returns to non-modulating cases.
+        exclude_Cad64 (bool): If True, ignore any succession with a Cad64 in it (however spelt).
+            The label `Cad64` deliberately avoids the contentious question of what the root is.
+        exclude_Aug6 (bool): The root of these chords is also ambiguous.
+    Returns: bool
+    """
+    if not _shared_quint_checks_ok(
+        chord_list,
+        require_one_key=require_one_key,
+        exclude_Cad64=exclude_Cad64,
+        exclude_Aug6=exclude_Aug6
+    ):
+        return False
+
+    return interval_match(
+        chord_list,
+        [5, 5, 5],
+        bass_not_root=False,
+        specific_not_generic=False
+    )
+
+
 def fallender_Quintanstieg(
         chord_list: list[roman.RomanNumeral],
         require_one_key: bool = False,
@@ -477,14 +601,14 @@ def fallender_Quintanstieg(
     - step between 5th-related pairs is descending.
 
     >>> rns_strings = ["iv/ii", "ii", "iv", "i"]
-    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> rns = [roman.RomanNumeral(x, "a") for x in rns_strings]
     >>> fallender_Quintanstieg(rns)
     True
 
     See also the paired aufsteigender_Quintfall() which would be True in this case:
 
     >>> rns_strings = ["V", "I", "V/ii", "ii"]
-    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> rns = [roman.RomanNumeral(x, "a") for x in rns_strings]
     >>> fallender_Quintanstieg(rns)
     False
 
@@ -493,11 +617,12 @@ def fallender_Quintanstieg(
         require_one_key (bool): Limit returns to non-modulating cases.
         exclude_Cad64 (bool): If True, ignore any succession with a Cad64 in it (however spelt).
             The label `Cad64` deliberately avoids the contentious question of what the root is.
-        exclude_Aug6 (bool): These root of these chord is also ambiguous.
+        exclude_Aug6 (bool): The root of these chords is also ambiguous.
     Returns: bool
     """
     if not _shared_quint_checks_ok(
         chord_list,
+        require_one_key=require_one_key,
         exclude_Cad64=exclude_Cad64,
         exclude_Aug6=exclude_Aug6
     ):
@@ -524,19 +649,19 @@ def aufsteigender_Quintfall(
     - step between 5th-related pairs is ascending.
 
     >>> rns_strings = ["V", "I", "V/ii", "ii"]
-    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> rns = [roman.RomanNumeral(x, "a") for x in rns_strings]
     >>> aufsteigender_Quintfall(rns)
     True
 
     See also the paired fallender_Quintanstieg() which would be True in this case:
 
     >>> rns_strings = ["iv/ii", "ii", "iv", "i"]
-    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> rns = [roman.RomanNumeral(x, "a") for x in rns_strings]
     >>> aufsteigender_Quintfall(rns)
     False
 
     >>> rns_strings = ["V7", "I", "V7", "I64"]
-    >>> rns = [roman.RomanNumeral(x) for x in rns_strings]
+    >>> rns = [roman.RomanNumeral(x, "a") for x in rns_strings]
     >>> aufsteigender_Quintfall(rns)
     False
 
@@ -548,7 +673,7 @@ def aufsteigender_Quintfall(
         require_one_key (bool): Limit returns to non-modulating cases.
         exclude_Cad64 (bool): If True, ignore any succession with a Cad64 in it (however spelt).
             The label `Cad64` deliberately avoids the contentious question of what the root is.
-        exclude_Aug6 (bool): These root of these chord is also ambiguous.
+        exclude_Aug6 (bool): The root of these chords is also ambiguous.
     Returns: bool
     """
     if not _shared_quint_checks_ok(
@@ -569,12 +694,13 @@ def aufsteigender_Quintfall(
 
 def _shared_quint_checks_ok(
     chord_list: list[roman.RomanNumeral],
+    require_4: bool = True,
     require_one_key: bool = True,
     exclude_Cad64: bool = True,
     exclude_Aug6: bool = True
 ) -> bool:
 
-    if len(chord_list) != 4:
+    if require_4 and len(chord_list) != 4:
         raise ValueError("Please call on a list of exactly 4 chords.")
 
     if require_one_key:
@@ -899,6 +1025,8 @@ valid_searches = [
     "Applied Chords",
     "Common Tone Diminished Sevenths",
     "Quiescenzas",
+    "ascending_fifths",
+    "descending_fifths",
     "aufsteigender_Quintfall",
     "fallender_Quintanstieg",
     "Progressions",
@@ -1010,6 +1138,10 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
             rnf.find_Cto_dim7()
         elif what == "Quiescenzas":
             rnf.find_quiescenzas()
+        elif what == "ascending_fifths":
+            rnf.find_ascending_fifths()
+        elif what == "descending_fifths":
+            rnf.find_descending_fifths()
         elif what == "fallender_Quintanstieg":
             rnf.find_fallender_Quintanstieg()
         elif what == "aufsteigender_Quintfall":
@@ -1078,7 +1210,13 @@ def one_search_one_corpus(corpus: str = "OpenScore-LiederCorpus",
             score = converter.parse(in_path)
 
             # Range to use
-            if what in ["Quiescenzas", "aufsteigender_Quintfall", "fallender_Quintanstieg"]:
+            if what in [
+                "Quiescenzas",
+                "ascending_fifths",
+                "descending_fifths",
+                "aufsteigender_Quintfall",
+                "fallender_Quintanstieg"
+            ]:
                 # ^ special handling of progressions
                 start = int(item["MEASURE"].split("/")[0])
                 end = start + 2
