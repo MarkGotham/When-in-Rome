@@ -18,8 +18,8 @@ ABOUT:
 Conversion routines not (yet) promoted up the music21.
 
 Specifically, the following 2-way conversions with rntxt:
-- music21: DCML
-- WiR (here): BPS, Dez.
+- music21 <> DCML
+- WiR (here) <> BPS <> Dez.
 
 
 """
@@ -222,6 +222,7 @@ class AnnotationConverter(ABC):
             "M7": (True, "seventh", "M"),
             "m7": (False, "seventh", ""),
             "D7": (True, "seventh", ""),
+            "D9": (True, "seventh", ""),  # NB hard coded simplification, as above
             "d7": (False, "seventh", "o"),
             "h7": (False, "seventh", "ø"),
             "Gr+6": (True, "seventh", "Gr"),
@@ -555,7 +556,10 @@ class ConverterRn2Tab(AnnotationConverter):
 
             if any([n != c for n, c in zip(new_label, current_label)]):
                 _, end_offset = _find_offset(
-                    current_rn, measure_offsets, initial_beat_length, measure_zero
+                    current_rn,
+                    measure_offsets,
+                    # initial_beat_length,
+                    measure_zero
                 )
                 if start_offset % 0.5 != 0 or end_offset % 0.5 != 0:
                     self.logger.warning("The chords are not aligned to the quaver's grid")
@@ -566,7 +570,11 @@ class ConverterRn2Tab(AnnotationConverter):
                 current_rn = new_rn
 
         # write the last chord
-        _, end_offset = _find_offset(current_rn, measure_offsets, initial_beat_length, measure_zero)
+        _, end_offset = _find_offset(current_rn,
+                                     measure_offsets,
+                                     initial_beat_length,
+                                     # measure_zero
+                                     )
         out_data.append([start_offset, end_offset, *current_label])
 
         _correct_final_offset_inplace(out_data, score)
@@ -845,6 +853,29 @@ class ConverterTab2Dez(AnnotationConverter):
 
         out_data = {"labels": labels}
 
+        # TODO dez now has "meta" labels for doing layout once only. Update with something like:
+        # if include_meta:
+        #     out["meta"] = {
+        #         "layout": [
+        #             {
+        #                 "filter": {
+        #                     "type": "Harmony"
+        #                 },
+        #                 "style": {
+        #                     "line": "bot.1"
+        #                 }
+        #             },
+        #             {
+        #                 "filter": {
+        #                     "type": "Tonality"
+        #                 },
+        #                 "style": {
+        #                     "line": "bot.2",
+        #                     "color": "#5850be"
+        #                 }
+        #             }
+        #     }
+
         return out_data, flag
 
 
@@ -919,3 +950,5 @@ if __name__ == "__main__":
 
     c = ConverterTab2Dez()
     c.convert_file(score_path, tab_path, dez_path)
+
+    # TODO direct rn <> dez (one step here rather than 2)
