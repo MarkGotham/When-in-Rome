@@ -31,6 +31,7 @@ from pathlib import Path
 
 from . import REPO_FOLDER
 from . import CORPUS_FOLDER
+from . import converters_local
 from . import get_corpus_files
 from . import DT_BASE
 from . import raw_git
@@ -574,6 +575,31 @@ def remote_TAVERN(
                 json.dump(this_metadata, json_file, indent=4)
 
 
+def convert_corpus_to_dez(
+        corpus: str = "OpenScore-LiederCorpus",
+) -> None:
+    """
+    Convert a corpus to dez format for display in the dezrann.
+    """
+
+    file_paths = get_corpus_files(sub_corpus_path=CORPUS_FOLDER / corpus,
+                                  file_name="analysis.txt")
+
+    for f in file_paths:
+        print("INFO: processing", f)
+        rn_path = f  # f.parent / "analysis.txt"
+        score_path = f.parent / "score.mxl"
+        tab_path = f.parent / "analysis_BPS_format.csv"
+        dez_path = f.parent / "analysis_dez_format.dez"
+
+        c = converters_local.ConverterRn2Tab()
+        c.convert_file(score_path, rn_path, tab_path)
+        c = converters_local.ConverterTab2Dez()
+        c.convert_file(score_path, tab_path, dez_path)
+
+        # TODO (in converters_local) direct rn <> dez (one step here rather than 2)
+
+
 def convert_and_write_local(remote_URL_path,
                             local_path,
                             ):
@@ -618,7 +644,8 @@ if __name__ == "__main__":
                    "--remote_Beethoven_sonata_list",
                    "--remote_Beethoven_variations_list",
                    "--remote_Mozart_variations_list",
-                   "--update_all_DCML_analyses_from_json"
+                   "--update_all_DCML_analyses_from_json",
+                   "--convert_corpus_to_dez"
                    )
 
     for x in arg_strings:
@@ -647,6 +674,7 @@ if __name__ == "__main__":
         remote_scores(["Variations_and_Grounds", "Beethoven,_Ludwig_van", "_"])
     elif args.remote_Mozart_variations_list:
         remote_scores(["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus", "_"])
-
+    elif args.convert_corpus_to_dez:
+        convert_corpus_to_dez()
     else:
         parser.print_help()
