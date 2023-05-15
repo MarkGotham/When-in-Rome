@@ -215,6 +215,10 @@ def _correct_final_offset_inplace(out_data, score):
     return
 
 
+def _note(start: float, end: float, tag: str, tag_type: str, layer: str) -> dict:
+    return {"type": tag_type, "layers": [layer], "start": start, "actual-duration": end - start, "tag": tag}
+
+
 class AnnotationConverter(ABC):
     def __init__(self, in_ext=None, out_ext=None):
         self.in_ext = in_ext
@@ -570,7 +574,6 @@ class ConverterRn2Tab(AnnotationConverter):
         flag = False
         measure_offsets = self._get_measure_offsets(score)
 
-        initial_beat_length = score.flat.getTimeSignatures()[0].beatDuration.quarterLength
         # notice that rntxt can have measureNumber == 0, unlike scores
         measure_zero = rntxt[0].measureNumber == 0
 
@@ -583,12 +586,7 @@ class ConverterRn2Tab(AnnotationConverter):
                 current_label = self.chord_music21_to_tab(current_rn)
 
             if any([n != c for n, c in zip(new_label, current_label)]):
-                _, end_offset = _find_offset(
-                    current_rn,
-                    measure_offsets,
-                    # initial_beat_length,
-                    measure_zero,
-                )
+                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
                 if start_offset % 0.5 != 0 or end_offset % 0.5 != 0:
                     self.logger.warning("The chords are not aligned to the quaver's grid")
                 out_data.append([start_offset, end_offset, *current_label])
@@ -598,12 +596,7 @@ class ConverterRn2Tab(AnnotationConverter):
                 current_rn = new_rn
 
         # write the last chord
-        _, end_offset = _find_offset(
-            current_rn,
-            measure_offsets,
-            initial_beat_length,
-            # measure_zero
-        )
+        _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
         out_data.append([start_offset, end_offset, *current_label])
 
         _correct_final_offset_inplace(out_data, score)
@@ -611,14 +604,64 @@ class ConverterRn2Tab(AnnotationConverter):
         return out_data, flag
 
 
-datatype_chord = [
-    ("onset", "float"),
-    ("end", "float"),
-    ("key", "<U10"),
-    ("degree", "<U10"),
-    ("quality", "<U10"),
-    ("inversion", "int"),
-]
+class ConverterRn2Dez(AnnotationConverter):
+    def __init__(self):
+        super().__init__(in_ext="txt", out_ext="csv")
+
+    def write_output(self, out_data, out_path):
+        """
+
+        :param out_data:
+        :param out_path:
+        :return:
+        """
+        return self._write_dez(out_data, out_path)
+
+    def load_input(self, txt_path):
+        """
+        Load the rntxt analysis file into a music21 object
+        :param txt_path: the path to the rntxt file with the harmonic analysis
+        :return:
+        """
+        return self._load_rntxt(txt_path)
+
+    def run(self, rntxt, score, layer="automated"):
+        """
+        Convert from rntxt format to dezrann format.
+        Pay attention to the measure numbers because there are three conventions at play:
+          - for python, every list or array is 0-indexed
+          - for music21, measures in a score are always 1-indexed
+          - for rntxt, measures are 0-indexed if there is anacrusis and 1-indexed if there is not
+        We solve by moving everything to 0-indexed and
+        adjusting the rntxt output in the retrieve_measure_and_beat function
+
+        Similarly, for the beat, convert the 1-index of music21 and rntxt to 0-index and then back at the end.
+        """
+
+        flag = False
+        measure_offsets = self._get_measure_offsets(score)
+
+        # notice that rntxt can have measureNumber == 0, unlike scores
+        measure_zero = rntxt[0].measureNumber == 0
+
+        current_rn = None
+        start_offset = 0.0
+        labels = []
+        # FIXME Deal with multiple keys
+        key = score.analyze("key")
+        labels.append(_note(key.offset, score.duration.quarterLength, key.name, "Tonality", layer))
+        for new_rn in rntxt:
+            if current_rn is None:  # initialize the system
+                current_rn = new_rn
+            if current_rn.figure != new_rn.figure:
+                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+                labels.append(_note(start_offset, end_offset, current_rn.figure, "Harmony", layer))
+                start_offset, current_rn = end_offset, new_rn
+
+        # write the last chord
+        _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+        labels.append(_note(start_offset, end_offset, current_rn.figure, "Harmony", layer))
+        return {'labels': labels}, flag
 
 
 class ConverterTab2Rn(AnnotationConverter):
@@ -830,26 +873,9 @@ class ConverterTab2Dez(AnnotationConverter):
         # Two for-loops are apparent below, and one each hides in _get_keys() and _get_rn()
         # However, it is so fast that I prefer to keep it like this, for the moment.
         for start, end, key in _get_keys(tabular):
-            labels.append(
-                {
-                    "type": "Tonality",
-                    "layers": [layer],
-                    "start": start,
-                    "actual-duration": end - start,
-                    "tag": key,
-                }
-            )
+            labels.append(_note(start, end, key, 'Tonality', layer))
         for start, end, rn in _get_rn(tabular):
-            labels.append(
-                {
-                    "type": "Harmony",
-                    "layers": [layer],
-                    "start": start,
-                    "actual-duration": end - start,
-                    "tag": rn,
-                }
-            )
-
+            labels.append(_note(start, end, rn, 'Harmony', layer))
         out_data = {"labels": labels}
 
         # TODO dez now has "meta" labels for doing layout once only. Update with something like:
