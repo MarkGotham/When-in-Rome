@@ -42,6 +42,15 @@ logger = logging.getLogger()
 
 # ------------------------------------------------------------------------------
 
+datatype_chord = [
+    ("onset", "float"),
+    ("end", "float"),
+    ("key", "<U10"),
+    ("degree", "<U10"),
+    ("quality", "<U10"),
+    ("inversion", "int"),
+]
+
 
 def roman_to_int(roman):
     r2i = {
@@ -438,6 +447,25 @@ class AnnotationConverter(ABC):
         # NB: recurse for the offsets inside the measure
         return analysis.recurse().getElementsByClass("RomanNumeral")
 
+    def _load_csv(self, csv_path):
+        chords = []
+        with open(csv_path, mode="r") as f:
+            data = csv.reader(f)
+            for row in data:
+                chords.append(tuple(row))
+        return np.array(chords, dtype=datatype_chord)
+
+    def _load_dez(self, dez_path):
+        with open(dez_path, "r") as f:
+            data = json.load(f)
+        return data
+
+    def _write_rntxt(self, data, txt_path):
+        with open(txt_path, "w") as f:
+            for row in data:
+                f.write(row + os.linesep)
+        return
+
     def _write_csv(self, data, csv_path):
         with open(csv_path, "w") as fp:
             w = csv.writer(fp)
@@ -599,10 +627,7 @@ class ConverterTab2Rn(AnnotationConverter):
         self.datatype_chord = datatype_chord
 
     def write_output(self, out_data, out_path):
-        with open(out_path, "w") as f:
-            for row in out_data:
-                f.write(row + os.linesep)
-        return
+        return self._write_rntxt(out_data, out_path)
 
     def load_input(self, csv_path):
         """
@@ -610,13 +635,7 @@ class ConverterTab2Rn(AnnotationConverter):
         :param csv_path: the path to the file with the harmonic analysis
         :return: chord_labels, an array of tuples (start, end, key, degree, quality, inversion)
         """
-
-        chords = []
-        with open(csv_path, mode="r") as f:
-            data = csv.reader(f)
-            for row in data:
-                chords.append(tuple(row))
-        return np.array(chords, dtype=self.datatype_chord)
+        return self._load_csv(csv_path)
 
     def run(self, tabular, score):
         """
@@ -730,9 +749,7 @@ class ConverterTab2Dez(AnnotationConverter):
         :param out_path:
         :return:
         """
-        with open(out_path, "w") as fp:
-            json.dump(out_data, fp, indent=4)
-        return
+        return self._write_dez(out_data, out_path)
 
     def load_input(self, csv_path):
         """
@@ -740,13 +757,7 @@ class ConverterTab2Dez(AnnotationConverter):
         :param csv_path: the path to the file with the harmonic analysis
         :return: chord_labels, an array of tuples (start, end, key, degree, quality, inversion)
         """
-
-        chords = []
-        with open(csv_path, mode="r") as f:
-            data = csv.reader(f)
-            for row in data:
-                chords.append(tuple(row))
-        return np.array(chords, dtype=self.datatype_chord)
+        return self._load_csv(csv_path)
 
     def run(self, tabular, score, layer="automated"):
         """
@@ -873,18 +884,13 @@ class ConverterDez2Tab(AnnotationConverter):
         self.datatype_chord = datatype_chord
 
     def write_output(self, out_data, out_path):
-        with open(out_path, "w") as fp:
-            w = csv.writer(fp)
-            w.writerows(out_data)
-        return
+        return self._write_csv(out_data, out_path)
 
     def load_input(self, dez_path):
         """
         Load the dezrann file containing the annotations
         """
-        with open(dez_path, "r") as f:
-            data = json.load(f)
-        return data
+        return self._load_dez(dez_path)
 
     def run(self, dezrann, score):
         """
