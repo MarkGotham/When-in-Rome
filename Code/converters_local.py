@@ -662,9 +662,9 @@ class ConverterRn2Dez(AnnotationConverter):
             current_rn = new_rn
 
         # write the last chord
-        _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
-        labels.append(_note(rn_offset, end_offset, current_rn.figure, "Harmony", layer))
-        labels.append(_note(key_offset, end_offset, current_rn.key.name, "Tonality", layer))
+        # _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+        labels.append(_note(rn_offset, score.duration.quarterLength, current_rn.figure, "Harmony", layer))
+        labels.append(_note(key_offset, score.duration.quarterLength, current_rn.key.name, "Tonality", layer))
         return {'labels': labels}, flag
 
 
