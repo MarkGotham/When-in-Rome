@@ -645,22 +645,26 @@ class ConverterRn2Dez(AnnotationConverter):
         measure_zero = rntxt[0].measureNumber == 0
 
         current_rn = None
-        start_offset = 0.0
+        rn_offset = 0.0
+        key_offset = 0.0
         labels = []
-        # FIXME Deal with multiple keys
-        key = score.analyze("key")
-        labels.append(_note(key.offset, score.duration.quarterLength, key.name, "Tonality", layer))
         for new_rn in rntxt:
             if current_rn is None:  # initialize the system
                 current_rn = new_rn
             if current_rn.figure != new_rn.figure:
                 _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
-                labels.append(_note(start_offset, end_offset, current_rn.figure, "Harmony", layer))
-                start_offset, current_rn = end_offset, new_rn
+                labels.append(_note(rn_offset, end_offset, current_rn.figure, "Harmony", layer))
+                rn_offset = end_offset
+            if current_rn.key.name != new_rn.key.name:
+                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+                labels.append(_note(key_offset, end_offset, current_rn.key.name, "Tonality", layer))
+                key_offset = end_offset
+            current_rn = new_rn
 
         # write the last chord
         _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
-        labels.append(_note(start_offset, end_offset, current_rn.figure, "Harmony", layer))
+        labels.append(_note(rn_offset, end_offset, current_rn.figure, "Harmony", layer))
+        labels.append(_note(key_offset, end_offset, current_rn.key.name, "Tonality", layer))
         return {'labels': labels}, flag
 
 
@@ -950,11 +954,6 @@ class ConverterDez2Tab(AnnotationConverter):
 
 
 if __name__ == "__main__":
-    c = ConverterTab2Dez()
-
-# ------------------------------------------------------------------------------
-
-if __name__ == "__main__":
     base_path = REPO_FOLDER / "Tests" / "Resources" / "Example"
 
     score_path = base_path / "score.mxl"
@@ -965,7 +964,5 @@ if __name__ == "__main__":
     c = ConverterRn2Tab()
     c.convert_file(score_path, rn_path, tab_path)
 
-    c = ConverterTab2Dez()
-    c.convert_file(score_path, tab_path, dez_path)
-
-    # TODO direct rn <> dez (one step here rather than 2)
+    c = ConverterRn2Dez()
+    c.convert_file(score_path, rn_path, dez_path)
