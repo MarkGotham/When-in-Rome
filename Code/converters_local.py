@@ -24,7 +24,6 @@ Specifically, the following 2-way conversions with rntxt:
 
 """
 
-
 # ------------------------------------------------------------------------------
 
 from . import REPO_FOLDER
@@ -39,9 +38,19 @@ import os
 from abc import ABC, abstractmethod
 
 logging.basicConfig(level=logging.INFO)
-
+logger = logging.getLogger()
 
 # ------------------------------------------------------------------------------
+
+datatype_chord = [
+    ("onset", "float"),
+    ("end", "float"),
+    ("key", "<U10"),
+    ("degree", "<U10"),
+    ("quality", "<U10"),
+    ("inversion", "int"),
+]
+
 
 def roman_to_int(roman):
     r2i = {
@@ -70,9 +79,7 @@ def int_to_roman(n: int):
     return "".join(result)
 
 
-def merge_dezrann_annotations(
-    in_path_1, in_path_2, out_path, layer_1=None, layer_2=None, force_overwrite=False
-):
+def merge_dezrann_annotations(in_path_1, in_path_2, out_path, layer_1=None, layer_2=None, force_overwrite=False):
     """
     Merge two dezrann files into a third one.
     The layer field inside dezrann files is used to separate conceptually different annotations.
@@ -123,8 +130,7 @@ def merge_dezrann_annotations(
     return
 
 
-def remove_prima_volta(score: stream.Score,
-                       change_measure_number: bool = True):
+def remove_prima_volta(score: stream.Score, change_measure_number: bool = True):
     """
     Remove first time ("prima volta") from a music21-parsed score.
     Note: Works inplace due to the call to an inplace function in music21.
@@ -164,6 +170,55 @@ def remove_prima_volta(score: stream.Score,
     return
 
 
+def _find_offset(rn: roman.RomanNumeral, score_measure_offset: list, measure_zero: bool):
+    """
+    Given a roman numeral element from an analysis parsed by music21,
+    find its offset in quarter notes length.
+    It automatically adapts to the presence of pickup measures thanks to the Boolean measure_zero.
+
+    :param rn: a RomanNumeral object from an rntxt analysis file parsed by music21
+    :param score_measure_offset: a list of measure offsets in quarter length
+    :param initial_beat_length: Beat length in the first measure;
+        e.g. if the piece starts in 4/4, ibl=1; if it starts in 12/8, ibl=1.5
+    :param measure_zero: Bool, True if there's a measure counted as zero (pickup measure)
+    """
+    measure = rn.measureNumber if measure_zero else rn.measureNumber - 1  # 0-indexed
+    offset_in_measure = rn.offset
+    # if measure == 0:
+    #     offset_in_measure -= -score_measure_offset[1] % initial_beat_length
+    start = float(score_measure_offset[measure] + offset_in_measure)
+    duration = float(rn.quarterLength)
+    # TODO: check if we really need to stop the offset at the beginning of the next measure
+    # Normally, this should be already implied in the parsing of the rntxt files
+    # end = min(start + duration, float(score_measure_offset[measure + 1]))
+    end = start + duration
+    return round(start, 3), round(end, 3)
+
+
+def _correct_final_offset_inplace(out_data, score):
+    """
+    rntxt files don't repeat the last chord indefinitely, but only give it once.
+    This can cause problems because the total length of the score and the analysis differ.
+    For tabular representation we need to refer to the total length of the score,
+    so we modify the last end_offset to reflect that.
+    """
+    end_of_analysis = out_data[-1][1]
+    end_of_piece = score.duration.quarterLength
+
+    if end_of_analysis != end_of_piece:
+        logger.warning(
+            f"A gap of {end_of_piece - end_of_analysis} crotchets has been closed at the"
+            f" end of the piece. If > 0, it means that the score is longer than the "
+            f" analysis, which could be due to the final chord lasting several measures."
+        )
+    out_data[-1][1] = end_of_piece
+    return
+
+
+def _note(start: float, end: float, tag: str, tag_type: str, layer: str) -> dict:
+    return {"type": tag_type, "layers": [layer], "start": start, "actual-duration": end - start, "tag": tag}
+
+
 class AnnotationConverter(ABC):
     def __init__(self, in_ext=None, out_ext=None):
         self.in_ext = in_ext
@@ -185,7 +240,6 @@ class AnnotationConverter(ABC):
             "German augmented sixth chord": "Gr+6",
             "French augmented sixth chord": "Fr+6",
             "Italian augmented sixth chord": "It+6",
-
             # Simplifications:
             "dominant-ninth": "D7",
             "augmented major tetrachord": "a",
@@ -233,9 +287,7 @@ class AnnotationConverter(ABC):
         return
 
     @staticmethod
-    def _get_measure_offsets(
-            score: stream.Score
-    ) -> list:
+    def _get_measure_offsets(score: stream.Score) -> list:
         """
         The measure_offsets are zero-indexed:
         the first measure in the score will be at index zero, regardless of anacrusis.
@@ -339,9 +391,7 @@ class AnnotationConverter(ABC):
             if rn.secondaryRomanNumeral is not None:
                 secondary_degree = _degree_str_from_rn(rn.secondaryRomanNumeral)
 
-                if (
-                    rn.key.mode == "minor" and "7" in secondary_degree
-                ):  # use the harmonic scale on the base key
+                if rn.key.mode == "minor" and "7" in secondary_degree:  # use the harmonic scale on the base key
                     secondary_degree = _lower_degree(secondary_degree)
 
                 if (
@@ -369,7 +419,10 @@ class AnnotationConverter(ABC):
                 return _get_quality(rn)
 
             tip_off_quality_pairs = (
-                ("9", "D9"),  # TODO Review and document the mapping of all 9ths (sic) to dominants.
+                (
+                    "9",
+                    "D9",
+                ),  # TODO Review and document the mapping of all 9ths (sic) to dominants.
                 ("Fr", "Fr+6"),
                 ("Ger", "Gr+6"),
                 ("It", "It+6"),
@@ -391,6 +444,42 @@ class AnnotationConverter(ABC):
         inversion = min(rn.inversion(), 3)  # fourth inversions on ninths are sent to 3 arbitrarily
         # TODO: Document handling of ninths
         return [key, degree, quality, inversion]
+
+    def _load_rntxt(self, txt_path):
+        analysis = converter.parse(txt_path, format="romanText")
+        remove_prima_volta(analysis, change_measure_number=False)
+        # NB: recurse for the offsets inside the measure
+        return analysis.recurse().getElementsByClass("RomanNumeral")
+
+    def _load_csv(self, csv_path):
+        chords = []
+        with open(csv_path, mode="r") as f:
+            data = csv.reader(f)
+            for row in data:
+                chords.append(tuple(row))
+        return np.array(chords, dtype=datatype_chord)
+
+    def _load_dez(self, dez_path):
+        with open(dez_path, "r") as f:
+            data = json.load(f)
+        return data
+
+    def _write_rntxt(self, data, txt_path):
+        with open(txt_path, "w") as f:
+            for row in data:
+                f.write(row + os.linesep)
+        return
+
+    def _write_csv(self, data, csv_path):
+        with open(csv_path, "w") as fp:
+            w = csv.writer(fp)
+            w.writerows(data)
+        return
+
+    def _write_dez(self, data, dez_path):
+        with open(dez_path, "w") as fp:
+            json.dump(data, fp, indent=4)
+        return
 
     @abstractmethod
     def load_input(self, in_path):
@@ -424,7 +513,7 @@ class AnnotationConverter(ABC):
             print(f"{score_path}")
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         self.write_output(out_data, out_path)
-        return
+        return out_data
 
     # TODO Put an "experimental" decorator here
     def convert_corpus(self, score_folder, in_folder, out_folder, corpus_id, **kwargs):
@@ -438,14 +527,10 @@ class AnnotationConverter(ABC):
         """
         os.makedirs(out_folder, exist_ok=True)
 
-        dir_entries = [
-            x for x in os.scandir(in_folder) if x.is_file() and x.name.endswith(self.in_ext)
-        ]
+        dir_entries = [x for x in os.scandir(in_folder) if x.is_file() and x.name.endswith(self.in_ext)]
 
         for in_file in dir_entries:
-            score_file = (
-                f"{in_file.name[:-6]}.mxl" if "Tavern" in corpus_id else f"{in_file.name[:-4]}.mxl"
-            )
+            score_file = f"{in_file.name[:-6]}.mxl" if "Tavern" in corpus_id else f"{in_file.name[:-4]}.mxl"
             out_file = ".".join([in_file.name[:-4], self.out_ext])
             self.convert_file(
                 os.path.join(score_folder, score_file),
@@ -461,10 +546,7 @@ class ConverterRn2Tab(AnnotationConverter):
         super().__init__(in_ext="txt", out_ext="csv")
 
     def write_output(self, out_data, out_path):
-        with open(out_path, "w") as fp:
-            w = csv.writer(fp)
-            w.writerows(out_data)
-        return
+        return self._write_csv(out_data, out_path)
 
     def load_input(self, txt_path):
         """
@@ -472,10 +554,7 @@ class ConverterRn2Tab(AnnotationConverter):
         :param txt_path: the path to the rntxt file with the harmonic analysis
         :return:
         """
-        analysis = converter.parse(txt_path, format="romanText")
-        remove_prima_volta(analysis, change_measure_number=False)
-        # NB: recurse for the offsets inside the measure
-        return analysis.recurse().getElementsByClass("RomanNumeral")
+        return self._load_rntxt(txt_path)
 
     def run(self, rntxt, score):
         """
@@ -491,58 +570,10 @@ class ConverterRn2Tab(AnnotationConverter):
         convert the 1-index of music21 and rntxt to 0-index and then back at the end.
         """
 
-        def _find_offset(
-                rn: roman.RomanNumeral,
-                score_measure_offset: list,
-                measure_zero: bool
-        ):
-            """
-            Given a roman numeral element from an analysis parsed by music21,
-            find its offset in quarter notes length.
-            It automatically adapts to the presence of pickup measures thanks to the Boolean measure_zero.
-
-            :param rn: a RomanNumeral object from an rntxt analysis file parsed by music21
-            :param score_measure_offset: a list of measure offsets in quarter length
-            :param initial_beat_length: Beat length in the first measure;
-                e.g. if the piece starts in 4/4, ibl=1; if it starts in 12/8, ibl=1.5
-            :param measure_zero: Bool, True if there's a measure counted as zero (pickup measure)
-            """
-            measure = rn.measureNumber if measure_zero else rn.measureNumber - 1  # 0-indexed
-            offset_in_measure = rn.offset
-            # if measure == 0:
-            #     offset_in_measure -= -score_measure_offset[1] % initial_beat_length
-            start = float(score_measure_offset[measure] + offset_in_measure)
-            duration = float(rn.quarterLength)
-            # TODO: check if we really need to stop the offset at the beginning of the next measure
-            # Normally, this should be already implied in the parsing of the rntxt files
-            # end = min(start + duration, float(score_measure_offset[measure + 1]))
-            end = start + duration
-            return round(start, 3), round(end, 3)
-
-        def _correct_final_offset_inplace(out_data, score):
-            """
-            rntxt files don't repeat the last chord indefinitely, but only give it once.
-            This can cause problems because the total length of the score and the analysis differ.
-            For tabular representation we need to refer to the total length of the score,
-            so we modify the last end_offset to reflect that.
-            """
-            end_of_analysis = out_data[-1][1]
-            end_of_piece = score.duration.quarterLength
-
-            if end_of_analysis != end_of_piece:
-                self.logger.warning(
-                    f"A gap of {end_of_piece - end_of_analysis} crotchets has been closed at the"
-                    f" end of the piece. If > 0, it means that the score is longer than the "
-                    f" analysis, which could be due to the final chord lasting several measures."
-                )
-            out_data[-1][1] = end_of_piece
-            return
-
         out_data = []
         flag = False
         measure_offsets = self._get_measure_offsets(score)
 
-        initial_beat_length = score.flat.getTimeSignatures()[0].beatDuration.quarterLength
         # notice that rntxt can have measureNumber == 0, unlike scores
         measure_zero = rntxt[0].measureNumber == 0
 
@@ -555,12 +586,7 @@ class ConverterRn2Tab(AnnotationConverter):
                 current_label = self.chord_music21_to_tab(current_rn)
 
             if any([n != c for n, c in zip(new_label, current_label)]):
-                _, end_offset = _find_offset(
-                    current_rn,
-                    measure_offsets,
-                    # initial_beat_length,
-                    measure_zero
-                )
+                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
                 if start_offset % 0.5 != 0 or end_offset % 0.5 != 0:
                     self.logger.warning("The chords are not aligned to the quaver's grid")
                 out_data.append([start_offset, end_offset, *current_label])
@@ -570,11 +596,7 @@ class ConverterRn2Tab(AnnotationConverter):
                 current_rn = new_rn
 
         # write the last chord
-        _, end_offset = _find_offset(current_rn,
-                                     measure_offsets,
-                                     initial_beat_length,
-                                     # measure_zero
-                                     )
+        _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
         out_data.append([start_offset, end_offset, *current_label])
 
         _correct_final_offset_inplace(out_data, score)
@@ -582,14 +604,68 @@ class ConverterRn2Tab(AnnotationConverter):
         return out_data, flag
 
 
-datatype_chord = [
-    ("onset", "float"),
-    ("end", "float"),
-    ("key", "<U10"),
-    ("degree", "<U10"),
-    ("quality", "<U10"),
-    ("inversion", "int"),
-]
+class ConverterRn2Dez(AnnotationConverter):
+    def __init__(self):
+        super().__init__(in_ext="txt", out_ext="csv")
+
+    def write_output(self, out_data, out_path):
+        """
+
+        :param out_data:
+        :param out_path:
+        :return:
+        """
+        return self._write_dez(out_data, out_path)
+
+    def load_input(self, txt_path):
+        """
+        Load the rntxt analysis file into a music21 object
+        :param txt_path: the path to the rntxt file with the harmonic analysis
+        :return:
+        """
+        return self._load_rntxt(txt_path)
+
+    def run(self, rntxt, score, layer="automated"):
+        """
+        Convert from rntxt format to dezrann format.
+        Pay attention to the measure numbers because there are three conventions at play:
+          - for python, every list or array is 0-indexed
+          - for music21, measures in a score are always 1-indexed
+          - for rntxt, measures are 0-indexed if there is anacrusis and 1-indexed if there is not
+        We solve by moving everything to 0-indexed and
+        adjusting the rntxt output in the retrieve_measure_and_beat function
+
+        Similarly, for the beat, convert the 1-index of music21 and rntxt to 0-index and then back at the end.
+        """
+
+        flag = False
+        measure_offsets = self._get_measure_offsets(score)
+
+        # notice that rntxt can have measureNumber == 0, unlike scores
+        measure_zero = rntxt[0].measureNumber == 0
+
+        current_rn = None
+        rn_offset = 0.0
+        key_offset = 0.0
+        labels = []
+        for new_rn in rntxt:
+            if current_rn is None:  # initialize the system
+                current_rn = new_rn
+            if current_rn.figure != new_rn.figure:
+                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+                labels.append(_note(rn_offset, end_offset, current_rn.figure, "Harmony", layer))
+                rn_offset = end_offset
+            if current_rn.key.name != new_rn.key.name:
+                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+                labels.append(_note(key_offset, end_offset, current_rn.key.name, "Tonality", layer))
+                key_offset = end_offset
+            current_rn = new_rn
+
+        # write the last chord
+        # _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
+        labels.append(_note(rn_offset, score.duration.quarterLength, current_rn.figure, "Harmony", layer))
+        labels.append(_note(key_offset, score.duration.quarterLength, current_rn.key.name, "Tonality", layer))
+        return {'labels': labels}, flag
 
 
 class ConverterTab2Rn(AnnotationConverter):
@@ -598,10 +674,7 @@ class ConverterTab2Rn(AnnotationConverter):
         self.datatype_chord = datatype_chord
 
     def write_output(self, out_data, out_path):
-        with open(out_path, "w") as f:
-            for row in out_data:
-                f.write(row + os.linesep)
-        return
+        return self._write_rntxt(out_data, out_path)
 
     def load_input(self, csv_path):
         """
@@ -609,13 +682,7 @@ class ConverterTab2Rn(AnnotationConverter):
         :param csv_path: the path to the file with the harmonic analysis
         :return: chord_labels, an array of tuples (start, end, key, degree, quality, inversion)
         """
-
-        chords = []
-        with open(csv_path, mode="r") as f:
-            data = csv.reader(f)
-            for row in data:
-                chords.append(tuple(row))
-        return np.array(chords, dtype=self.datatype_chord)
+        return self._load_csv(csv_path)
 
     def run(self, tabular, score):
         """
@@ -645,20 +712,14 @@ class ConverterTab2Rn(AnnotationConverter):
             if in_row is None:  # New line
                 in_row = "m" + str(measure)
 
-            beat = (
-                int(beat) if int(beat) == beat else round(float(beat), 2)
-            )  # just reformat it prettier
+            beat = int(beat) if int(beat) == beat else round(float(beat), 2)  # just reformat it prettier
 
             return " ".join([in_row, f"b{beat}", annotation] if beat != 1 else [in_row, annotation])
 
-        def _retrieve_measure_and_beat(
-            offset, measure_offsets, time_signatures, ts_measures, beat_zero
-        ):
+        def _retrieve_measure_and_beat(offset, measure_offsets, time_signatures, ts_measures, beat_zero):
             # find what measure we are by looking at all offsets
             measure = np.searchsorted(measure_offsets, offset, side="right") - 1
-            rntxt_measure_number = measure + (
-                0 if beat_zero else 1
-            )  # the measure number we will write in the output
+            rntxt_measure_number = measure + (0 if beat_zero else 1)  # the measure number we will write in the output
 
             offset_in_measure = offset - measure_offsets[measure]
             beat_idx = ts_measures[np.searchsorted(ts_measures, measure, side="right") - 1]
@@ -675,13 +736,9 @@ class ConverterTab2Rn(AnnotationConverter):
         measure_offsets = self._get_measure_offsets(score)
 
         # Get time signature positions while converting measure numbers given by music21 to 0-indexed
-        ts_list = list(
-            score.flat.getTimeSignatures()
-        )  # we need to call flat to create measure numbers
+        ts_list = list(score.flat.getTimeSignatures())  # we need to call flat to create measure numbers
         first_measure_number = 0 if any([ts.measureNumber == 0 for ts in ts_list]) else 1
-        time_signatures = dict(
-            [(max(ts.measureNumber - first_measure_number, 0), ts) for ts in ts_list]
-        )
+        time_signatures = dict([(max(ts.measureNumber - first_measure_number, 0), ts) for ts in ts_list])
         ts_measures = sorted(time_signatures.keys())
         ts_offsets = [measure_offsets[m] for m in ts_measures]
 
@@ -703,17 +760,13 @@ class ConverterTab2Rn(AnnotationConverter):
             # Was there a time signature change?
             while ts_index < len(ts_offsets) and start >= ts_offsets[ts_index]:
                 out_data.append("")
-                out_data.append(
-                    f"Time Signature : {time_signatures[ts_measures[ts_index]].ratioString}"
-                )
+                out_data.append(f"Time Signature : {time_signatures[ts_measures[ts_index]].ratioString}")
                 out_data.append("")
                 ts_index += 1
 
             # Was there a no-chord passage in between?
             if start != previous_end:
-                m, b = _retrieve_measure_and_beat(
-                    end, measure_offsets, time_signatures, ts_measures, starting_beat
-                )
+                m, b = _retrieve_measure_and_beat(end, measure_offsets, time_signatures, ts_measures, starting_beat)
                 if m == previous_measure:
                     out_data[-1] = _get_rn_row([m, b, ""], in_row=out_data[-1])
                 else:
@@ -721,9 +774,7 @@ class ConverterTab2Rn(AnnotationConverter):
                 previous_measure = m
 
             # Standard annotation conversion
-            m, b = _retrieve_measure_and_beat(
-                start, measure_offsets, time_signatures, ts_measures, starting_beat
-            )
+            m, b = _retrieve_measure_and_beat(start, measure_offsets, time_signatures, ts_measures, starting_beat)
             if m == previous_measure:
                 out_data[-1] = _get_rn_row([m, b, annotation], in_row=out_data[-1])
             else:
@@ -745,9 +796,7 @@ class ConverterTab2Dez(AnnotationConverter):
         :param out_path:
         :return:
         """
-        with open(out_path, "w") as fp:
-            json.dump(out_data, fp, indent=4)
-        return
+        return self._write_dez(out_data, out_path)
 
     def load_input(self, csv_path):
         """
@@ -755,13 +804,7 @@ class ConverterTab2Dez(AnnotationConverter):
         :param csv_path: the path to the file with the harmonic analysis
         :return: chord_labels, an array of tuples (start, end, key, degree, quality, inversion)
         """
-
-        chords = []
-        with open(csv_path, mode="r") as f:
-            data = csv.reader(f)
-            for row in data:
-                chords.append(tuple(row))
-        return np.array(chords, dtype=self.datatype_chord)
+        return self._load_csv(csv_path)
 
     def run(self, tabular, score, layer="automated"):
         """
@@ -780,9 +823,7 @@ class ConverterTab2Dez(AnnotationConverter):
             for row in tabular:
                 start, end, key, degree, quality, inversion = row
                 key = key.replace("-", "b")
-                if (
-                    key != key_previous or start != end_previous
-                ):  # the key changes or no-chord passage
+                if key != key_previous or start != end_previous:  # the key changes or no-chord passage
                     # TODO: no-chord does not necessarily mean no-key. How to do better?
                     if key_previous is not None:
                         out_keys.append([start_previous, end_previous, key_previous])
@@ -810,7 +851,12 @@ class ConverterTab2Dez(AnnotationConverter):
                 if key != key_previous or rn != rn_previous or start != end_previous:
                     if rn_previous is not None:
                         out_rn.append([start_previous, end_previous, rn_previous])
-                    start_previous, end_previous, key_previous, rn_previous = start, end, key, rn
+                    start_previous, end_previous, key_previous, rn_previous = (
+                        start,
+                        end,
+                        key,
+                        rn,
+                    )
                 else:  # same rn
                     end_previous = end
 
@@ -831,26 +877,9 @@ class ConverterTab2Dez(AnnotationConverter):
         # Two for-loops are apparent below, and one each hides in _get_keys() and _get_rn()
         # However, it is so fast that I prefer to keep it like this, for the moment.
         for start, end, key in _get_keys(tabular):
-            labels.append(
-                {
-                    "type": "Tonality",
-                    "layers": [layer],
-                    "start": start,
-                    "actual-duration": end - start,
-                    "tag": key,
-                }
-            )
+            labels.append(_note(start, end, key, 'Tonality', layer))
         for start, end, rn in _get_rn(tabular):
-            labels.append(
-                {
-                    "type": "Harmony",
-                    "layers": [layer],
-                    "start": start,
-                    "actual-duration": end - start,
-                    "tag": rn,
-                }
-            )
-
+            labels.append(_note(start, end, rn, 'Harmony', layer))
         out_data = {"labels": labels}
 
         # TODO dez now has "meta" labels for doing layout once only. Update with something like:
@@ -885,18 +914,13 @@ class ConverterDez2Tab(AnnotationConverter):
         self.datatype_chord = datatype_chord
 
     def write_output(self, out_data, out_path):
-        with open(out_path, "w") as fp:
-            w = csv.writer(fp)
-            w.writerows(out_data)
-        return
+        return self._write_csv(out_data, out_path)
 
     def load_input(self, dez_path):
         """
         Load the dezrann file containing the annotations
         """
-        with open(dez_path, "r") as f:
-            data = json.load(f)
-        return data
+        return self._load_dez(dez_path)
 
     def run(self, dezrann, score):
         """
@@ -923,19 +947,11 @@ class ConverterDez2Tab(AnnotationConverter):
                 continue
             start, duration, key = x["start"], x["actual-duration"], x["tag"]
             end = start + duration
-            while (
-                i < len(out_data) and out_data[i][0] < end
-            ):  # out_data[i] is the start of the annotation
+            while i < len(out_data) and out_data[i][0] < end:  # out_data[i] is the start of the annotation
                 out_data[i].insert(2, key)
                 i += 1
         return out_data, flag
 
-
-if __name__ == "__main__":
-    c = ConverterTab2Dez()
-
-
-# ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     base_path = REPO_FOLDER / "Tests" / "Resources" / "Example"
@@ -948,7 +964,5 @@ if __name__ == "__main__":
     c = ConverterRn2Tab()
     c.convert_file(score_path, rn_path, tab_path)
 
-    c = ConverterTab2Dez()
-    c.convert_file(score_path, tab_path, dez_path)
-
-    # TODO direct rn <> dez (one step here rather than 2)
+    c = ConverterRn2Dez()
+    c.convert_file(score_path, rn_path, dez_path)
