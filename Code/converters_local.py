@@ -216,7 +216,13 @@ def _correct_final_offset_inplace(out_data, score):
 
 
 def _note(start: float, end: float, tag: str, tag_type: str, layer: str) -> dict:
-    return {"type": tag_type, "layers": [layer], "start": start, "actual-duration": end - start, "tag": tag}
+    return {
+        "type": tag_type,
+        "layers": [layer],
+        "start": start,
+        "actual-duration": end - start,
+        "tag": tag.replace("-", "b")
+    }
 
 
 class AnnotationConverter(ABC):
