@@ -612,7 +612,7 @@ class ConverterRn2Tab(AnnotationConverter):
 
 class ConverterRn2Dez(AnnotationConverter):
     def __init__(self):
-        super().__init__(in_ext="txt", out_ext="csv")
+        super().__init__(in_ext="txt", out_ext="dez")
 
     def write_output(self, out_data, out_path):
         """
