@@ -674,6 +674,59 @@ class ConverterRn2Dez(AnnotationConverter):
         return {'labels': labels}, flag
 
 
+def rn2dez(rntxt_path, dez_path):
+    """
+    Quick, direct rn to dez conversion (no score required).
+    """
+
+    rntxt = converter.parse(rntxt_path, format="romanText")
+    rn_iterator = rntxt.recurse().getElementsByClass("RomanNumeral")
+
+    prevailing_key = "FAKE"
+    key_entry_in_progress = None
+    chord_labels = []
+    key_labels = []
+
+    for rn in rn_iterator:
+
+        chord_labels.append(
+            {
+                "type": "Harmony",
+                "layers": ["automated"],
+                "start": rn_iterator.currentHierarchyOffset(),
+                "actual-duration": rn.quarterLength,
+                "tag": rn.figure,
+            }
+        )
+
+        if rn.key.name != prevailing_key:
+            prevailing_key = rn.key.name
+
+            if key_entry_in_progress is not None:
+                # Finish current
+                ql = rn_iterator.currentHierarchyOffset() - key_entry_in_progress["start"]
+                key_entry_in_progress["actual-duration"] = ql
+                key_labels.append(key_entry_in_progress)
+            # Start new
+            key_entry_in_progress = {
+                "type": "Tonality",
+                "layers": ["automated"],
+                "start": rn_iterator.currentHierarchyOffset(),
+                "tag": rn.key.name.replace("-", "b"),
+            }
+
+    total_length = rntxt.duration.quarterLength
+    # wrap last key
+    key_entry_in_progress["actual-duration"] = total_length - key_entry_in_progress["start"]
+    key_labels.append(key_entry_in_progress)
+    # wrap last chord
+    chord_labels[-1]["actual-duration"] = total_length - chord_labels[-1]["start"]  # sic, in place
+
+    data = {"labels": chord_labels + key_labels}
+    with open(dez_path, "w") as fp:
+        json.dump(data, fp, indent=4)
+
+
 class ConverterTab2Rn(AnnotationConverter):
     def __init__(self):
         super().__init__(in_ext="csv", out_ext="txt")
@@ -967,8 +1020,9 @@ if __name__ == "__main__":
     tab_path = base_path / "analysis_BPS_format.csv"
     dez_path = base_path / "analysis_dez_format.dez"
 
-    c = ConverterRn2Tab()
-    c.convert_file(score_path, rn_path, tab_path)
+    # c = ConverterRn2Tab()
+    # c.convert_file(score_path, rn_path, tab_path)
 
-    c = ConverterRn2Dez()
-    c.convert_file(score_path, rn_path, dez_path)
+    # c = ConverterRn2Dez()
+    # c.convert_file(score_path, rn_path, dez_path)
+    rn2dez(rn_path, dez_path)
