@@ -486,7 +486,8 @@ def plot_counts(
         corpora: list | None = None,
         what: list | None = None,
         save_fig: bool = True,
-        out_path: Path | None = None
+        out_path: Path | None = None,
+        title: str | None = None
 ) -> plt:
     """
     Plot the usage of chords and/or progressions by category.
@@ -522,7 +523,7 @@ def plot_counts(
 
     import csv
 
-    by_mode = {}
+    by_topic = {}
     max_val = 0
     for corpus in corpora:
         this_list = []
@@ -531,37 +532,40 @@ def plot_counts(
             with open(this_path) as csvfile:
                 data = csv.reader(csvfile)
                 row_count = sum(1 for row in data)  # sum() w generator to avoid storing whole file
-            this_list.append(row_count - 1)
+            this_list.append(row_count - 1)  # header
             if row_count > max_val:
                 max_val = row_count
-        by_mode[corpus] = this_list
+        by_topic[corpus] = this_list
 
     x = np.arange(len(what))
-    bar_width = 0.25
-    count = 0
+    c_and_gap = len(corpora) + 1
+    bar_width = 1 / c_and_gap  # e.g., 0.25 for 3 corpora
+    mid_bars = bar_width * c_and_gap / 2
 
     fig, ax = plt.subplots(layout='constrained')
 
-    for k, v in by_mode.items():
+    count = 1
+    for k, v in by_topic.items():
         offset = bar_width * count
         rects = ax.bar(x + offset, v, bar_width, label=k)
         ax.bar_label(rects, padding=2)
         count += 1
 
     ax.set_ylabel("Count")
-    ax.set_xlabel("Progression type")
-    ax.set_xticks(x + bar_width / 2,
+    ax.set_xticks(x + mid_bars,
                   [x.split("_")[0] for x in what]  # shorthand
                   )
     ax.legend(loc="upper right", ncols=1)
 
-    ax.set_ylim(0, round(max_val, 2) + 0.04)
+    ax.set_ylim(0, round(max_val, 2))
 
     if not out_path:
         out_path = ANTHOLOGY_PATH
+    if not title:
+        title = "?.png"
 
     if save_fig:
-        plt.savefig(out_path / ("?" + ".png"), facecolor="w", edgecolor="w", format="png")
+        plt.savefig(out_path / title, facecolor="w", edgecolor="w", format="png")
     else:
         plt.show()
 
