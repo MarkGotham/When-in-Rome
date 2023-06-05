@@ -683,44 +683,46 @@ def rn2dez(rntxt_path, dez_path):
     rn_iterator = rntxt.recurse().getElementsByClass("RomanNumeral")
 
     prevailing_key = "FAKE"
-    key_entry_in_progress = None
+    entry_in_progress = None
     chord_labels = []
     key_labels = []
 
     for rn in rn_iterator:
 
+        # print(rn_iterator.currentHierarchyOffset())
+
         chord_labels.append(
             {
                 "type": "Harmony",
                 "layers": ["automated"],
-                "start": rn_iterator.currentHierarchyOffset(),
-                "actual-duration": rn.quarterLength,
+                "start": round(rn_iterator.currentHierarchyOffset(), 3),  # no fracs
+                "actual-duration": round(rn.quarterLength, 3),
                 "tag": rn.figure,
             }
         )
 
         if rn.key.name != prevailing_key:
-            prevailing_key = rn.key.name
+            prevailing_key = str(rn.key.name)
 
-            if key_entry_in_progress is not None:
+            if entry_in_progress is not None:
                 # Finish current
-                ql = rn_iterator.currentHierarchyOffset() - key_entry_in_progress["start"]
-                key_entry_in_progress["actual-duration"] = ql
-                key_labels.append(key_entry_in_progress)
+                ql = round(rn_iterator.currentHierarchyOffset() - entry_in_progress["start"], 3)
+                entry_in_progress["actual-duration"] = ql
+                key_labels.append(entry_in_progress)
             # Start new
-            key_entry_in_progress = {
+            entry_in_progress = {
                 "type": "Tonality",
                 "layers": ["automated"],
-                "start": rn_iterator.currentHierarchyOffset(),
+                "start": round(rn_iterator.currentHierarchyOffset(), 3),
                 "tag": rn.key.name.replace("-", "b"),
             }
 
     total_length = rntxt.duration.quarterLength
     # wrap last key
-    key_entry_in_progress["actual-duration"] = total_length - key_entry_in_progress["start"]
-    key_labels.append(key_entry_in_progress)
-    # wrap last chord
-    chord_labels[-1]["actual-duration"] = total_length - chord_labels[-1]["start"]  # sic, in place
+    entry_in_progress["actual-duration"] = round(total_length - entry_in_progress["start"], 3)
+    key_labels.append(entry_in_progress)
+    # wrap last chord, sic, in place in the list
+    chord_labels[-1]["actual-duration"] = round(total_length - chord_labels[-1]["start"], 3)
 
     data = {"labels": chord_labels + key_labels}
     with open(dez_path, "w") as fp:
