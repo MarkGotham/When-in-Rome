@@ -195,32 +195,12 @@ def _find_offset(rn: roman.RomanNumeral, score_measure_offset: list, measure_zer
     return round(start, 3), round(end, 3)
 
 
-def _correct_final_offset_inplace(out_data, score):
-    """
-    rntxt files don't repeat the last chord indefinitely, but only give it once.
-    This can cause problems because the total length of the score and the analysis differ.
-    For tabular representation we need to refer to the total length of the score,
-    so we modify the last end_offset to reflect that.
-    """
-    end_of_analysis = out_data[-1][1]
-    end_of_piece = score.duration.quarterLength
-
-    if end_of_analysis != end_of_piece:
-        logger.warning(
-            f"A gap of {end_of_piece - end_of_analysis} crotchets has been closed at the"
-            f" end of the piece. If > 0, it means that the score is longer than the "
-            f" analysis, which could be due to the final chord lasting several measures."
-        )
-    out_data[-1][1] = end_of_piece
-    return
-
-
-def _note(start: float, end: float, tag: str, tag_type: str, layer: str) -> dict:
+def _note(start: float, duration: float, tag: str, tag_type: str, layer: str) -> dict:
     return {
         "type": tag_type,
         "layers": [layer],
-        "start": start,
-        "duration": end - start,
+        "start": round(start, 3),
+        "duration": round(duration, 3),
         "tag": tag.replace("-", "b")
     }
 
@@ -306,7 +286,7 @@ class AnnotationConverter(ABC):
         :return: a list where at index m there is the offset in quarter length of measure m
         """
         score_mom = score.measureOffsetMap()
-        measure_offsets = [k for k in score_mom.keys() if score_mom[k][0].numberSuffix is None]
+        measure_offsets = [k for k in score_mom.keys() if score_mom[k][0].numberSuffix in [None, '']]
         measure_offsets.append(score.duration.quarterLength)
         return measure_offsets
 
@@ -455,7 +435,7 @@ class AnnotationConverter(ABC):
         analysis = converter.parse(txt_path, format="romanText")
         remove_prima_volta(analysis, change_measure_number=False)
         # NB: recurse for the offsets inside the measure
-        return analysis.recurse().getElementsByClass("RomanNumeral")
+        return analysis
 
     def _load_csv(self, csv_path):
         chords = []
@@ -512,7 +492,10 @@ class AnnotationConverter(ABC):
         self.logger.info(
             f"Converting file {os.path.relpath(in_path, os.curdir)} to {os.path.relpath(out_path, os.curdir)}"
         )
-        score = converter.parse(score_path)
+        if score_path is not None:
+            score = converter.parse(score_path)
+        else:
+            score = None
         in_data = self.load_input(in_path)
         out_data, flag = self.run(in_data, score)
         if flag:
@@ -562,7 +545,7 @@ class ConverterRn2Tab(AnnotationConverter):
         """
         return self._load_rntxt(txt_path)
 
-    def run(self, rntxt, score):
+    def run(self, rntxt, score=None):
         """
         Convert from rntxt format to tabular format.
         Pay attention to the measure numbers because there are three conventions at play:
@@ -578,7 +561,7 @@ class ConverterRn2Tab(AnnotationConverter):
 
         out_data = []
         flag = False
-        measure_offsets = self._get_measure_offsets(score)
+        measure_offsets = self._get_measure_offsets(rntxt)
 
         # notice that rntxt can have measureNumber == 0, unlike scores
         measure_zero = rntxt[0].measureNumber == 0
@@ -605,8 +588,6 @@ class ConverterRn2Tab(AnnotationConverter):
         _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
         out_data.append([start_offset, end_offset, *current_label])
 
-        _correct_final_offset_inplace(out_data, score)
-
         return out_data, flag
 
 
@@ -631,7 +612,7 @@ class ConverterRn2Dez(AnnotationConverter):
         """
         return self._load_rntxt(txt_path)
 
-    def run(self, rntxt, score, layer="automated"):
+    def run(self, rntxt, score=None, layer="automated"):
         """
         Convert from rntxt format to dezrann format.
         Pay attention to the measure numbers because there are three conventions at play:
@@ -645,32 +626,31 @@ class ConverterRn2Dez(AnnotationConverter):
         """
 
         flag = False
-        measure_offsets = self._get_measure_offsets(score)
+        measure_offsets = self._get_measure_offsets(rntxt)
 
         # notice that rntxt can have measureNumber == 0, unlike scores
-        measure_zero = rntxt[0].measureNumber == 0
+        rn_iterator = rntxt.recurse().getElementsByClass("RomanNumeral")
+        measure_zero = rn_iterator[0].measureNumber == 0
 
         current_rn = None
-        rn_offset = 0.0
         key_offset = 0.0
         labels = []
-        for new_rn in rntxt:
+        for new_rn in rn_iterator:
             if current_rn is None:  # initialize the system
                 current_rn = new_rn
             if current_rn.figure != new_rn.figure:
-                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
-                labels.append(_note(rn_offset, end_offset, current_rn.figure, "Harmony", layer))
-                rn_offset = end_offset
+                rn_offset = rn_iterator.currentHierarchyOffset()
+                labels.append(_note(rn_offset, current_rn.quarterLength, current_rn.figure, "Harmony", layer))
             if current_rn.key.name != new_rn.key.name:
-                _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
-                labels.append(_note(key_offset, end_offset, current_rn.key.name, "Tonality", layer))
-                key_offset = end_offset
+                duration = rn_iterator.currentHierarchyOffset() + current_rn.quarterLength
+                labels.append(_note(key_offset, duration, current_rn.key.name, "Tonality", layer))
+                key_offset = key_offset + duration
             current_rn = new_rn
 
         # write the last chord
         # _, end_offset = _find_offset(current_rn, measure_offsets, measure_zero)
-        labels.append(_note(rn_offset, score.duration.quarterLength, current_rn.figure, "Harmony", layer))
-        labels.append(_note(key_offset, score.duration.quarterLength, current_rn.key.name, "Tonality", layer))
+        labels.append(_note(rn_offset, rntxt.duration.quarterLength, current_rn.figure, "Harmony", layer))
+        labels.append(_note(key_offset, rntxt.duration.quarterLength, current_rn.key.name, "Tonality", layer))
         return {'labels': labels}, flag
 
 
@@ -938,9 +918,9 @@ class ConverterTab2Dez(AnnotationConverter):
         # Two for-loops are apparent below, and one each hides in _get_keys() and _get_rn()
         # However, it is so fast that I prefer to keep it like this, for the moment.
         for start, end, key in _get_keys(tabular):
-            labels.append(_note(start, end, key, 'Tonality', layer))
+            labels.append(_note(start, end - start, key, 'Tonality', layer))
         for start, end, rn in _get_rn(tabular):
-            labels.append(_note(start, end, rn, 'Harmony', layer))
+            labels.append(_note(start, end - start, rn, 'Harmony', layer))
         out_data = {"labels": labels}
 
         # TODO dez now has "meta" labels for doing layout once only. Update with something like:
@@ -1025,6 +1005,6 @@ if __name__ == "__main__":
     # c = ConverterRn2Tab()
     # c.convert_file(score_path, rn_path, tab_path)
 
-    # c = ConverterRn2Dez()
-    # c.convert_file(score_path, rn_path, dez_path)
-    rn2dez(rn_path, dez_path)
+    c = ConverterRn2Dez()
+    c.convert_file(score_path, rn_path, dez_path)
+    # rn2dez(rn_path, dez_path)

@@ -24,6 +24,7 @@ def test_rn2dez():
     c = ConverterRn2Dez()
     ref = c._load_dez(dez_path)
     with NamedTemporaryFile() as f:
+        # c.convert_file(None, rn_path, f.name)
         rn2dez(rn_path, f.name)
         pred = c._load_dez(f.name)
     assert ref == pred
