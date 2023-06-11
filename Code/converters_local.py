@@ -220,7 +220,7 @@ def _note(start: float, end: float, tag: str, tag_type: str, layer: str) -> dict
         "type": tag_type,
         "layers": [layer],
         "start": start,
-        "actual-duration": end - start,
+        "duration": end - start,
         "tag": tag.replace("-", "b")
     }
 
@@ -696,7 +696,7 @@ def rn2dez(rntxt_path, dez_path):
                 "type": "Harmony",
                 "layers": ["automated"],
                 "start": round(rn_iterator.currentHierarchyOffset(), 3),  # no fracs
-                "actual-duration": round(rn.quarterLength, 3),
+                "duration": round(rn.quarterLength, 3),
                 "tag": rn.figure,
             }
         )
@@ -707,7 +707,7 @@ def rn2dez(rntxt_path, dez_path):
             if entry_in_progress is not None:
                 # Finish current
                 ql = round(rn_iterator.currentHierarchyOffset() - entry_in_progress["start"], 3)
-                entry_in_progress["actual-duration"] = ql
+                entry_in_progress["duration"] = ql
                 key_labels.append(entry_in_progress)
             # Start new
             entry_in_progress = {
@@ -719,10 +719,10 @@ def rn2dez(rntxt_path, dez_path):
 
     total_length = rntxt.duration.quarterLength
     # wrap last key
-    entry_in_progress["actual-duration"] = round(total_length - entry_in_progress["start"], 3)
+    entry_in_progress["duration"] = round(total_length - entry_in_progress["start"], 3)
     key_labels.append(entry_in_progress)
     # wrap last chord, sic, in place in the list
-    chord_labels[-1]["actual-duration"] = round(total_length - chord_labels[-1]["start"], 3)
+    chord_labels[-1]["duration"] = round(total_length - chord_labels[-1]["start"], 3)
 
     data = {"labels": chord_labels + key_labels}
     with open(dez_path, "w") as fp:
@@ -997,7 +997,7 @@ class ConverterDez2Tab(AnnotationConverter):
         for x in dezrann["labels"]:
             if x["type"] != "Harmony":
                 continue
-            start, duration, chord = x["start"], x["actual-duration"], x["tag"]
+            start, duration, chord = x["start"], x["duration"], x["tag"]
             end = start + duration
             degree, quality, inversion = self.chord_rn_to_tab(chord)
             out_data.append([start, end, degree, quality, inversion])
@@ -1006,7 +1006,7 @@ class ConverterDez2Tab(AnnotationConverter):
         for x in dezrann["labels"]:
             if x["type"] != "Tonality":
                 continue
-            start, duration, key = x["start"], x["actual-duration"], x["tag"]
+            start, duration, key = x["start"], x["duration"], x["tag"]
             end = start + duration
             while i < len(out_data) and out_data[i][0] < end:  # out_data[i] is the start of the annotation
                 out_data[i].insert(2, key)
