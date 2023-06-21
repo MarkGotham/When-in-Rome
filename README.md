@@ -24,6 +24,20 @@ There is a very great deal we can do with those analyses alone.
 Clearly there are also certain questions to require analysis-source alignment.
 We do our best to cater for that by including the _score_ wherever possible, and as reliably aligned as possible (as anyone in the field knows, this is a significant challenge).
 
+### Maybe yes ...
+
+'When in Rome' data is also used in external research projects and apps including the:
+- ["Dezrann" app for visualising score-analysis and more](http://www.dezrann.net/) (coming soon)
+- ["Open Music Theory" (OMT) textbook's harmony anthology](https://viva.pressbooks.pub/openmusictheory/chapter/anthology-harmony/)
+- ["RAWL" app](https://rawl.vercel.app)
+- ["Sibelius" (Avid) notation software](https://www.avid.com/sibelius) (by permission, coming soon)
+- ["TiLiA" TimeLineAnnotator]() (coming soon)
+- ["VIMU" (Visual Musicology) app](https://vimu.app) via [AugmentedNet](https://github.com/napulen/AugmentedNet)
+
+Are you using 'When in Rome' in a public-facing project? Let us know!
+
+### Maybe no ...
+
 We're proud of how useful this is.
 All the same, it might not serve your needs.
 Might we suggest that if you're looking for:
@@ -190,6 +204,9 @@ for which there are 3 external corpora, all of them incomplete:
 3. 32 movements (complete first movements) as converted from the  
   ['BPS-FH' dataset, ISMIR 2018](https://github.com/Tsung-Ping/functional-harmony).
 
+There is not yet a single source for this collection.
+Are you tempted to attempt that?
+Do get in touch?
 
 ### New corpora by MG and colleagues
 - [Bach Preludes](/Corpus/Etudes_and_Preludes/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/):
@@ -224,13 +241,15 @@ It takes in a harmonic analysis and the corresponding score to assess how well t
 - [Anthology](/Code/anthology.py) for retrieving instances of specific chords and progression from the analyses.
 - [Pitch_profile](/Code/Pitch_profiles/) for producing the profile and feature information discussed above.
 
-## Licence, Citation, External Apps, Contribution
+## Licence, Citation, Contribution
 
 ### Licence
 
 New content in this repository, including the new analyses, code, and the conversion 
 (specifically) of existing analyses is available under the
-[CC BY-SA licence](https://creativecommons.org/licenses/by-sa/4.0/) (a free culture licence).
+[CC BY-SA licence](https://creativecommons.org/licenses/by-sa/4.0/) (a free culture licence)
+except by arrangement.
+Please get in touch with requests for special permission.
 
 For analyses that originated elsewhere and have been converted into the format used here,
 please refer to the original source for licence.
@@ -254,15 +273,6 @@ The materials provided in this repo includes supplementary resources promised in
 - [Gianluca Micchi, Mark Gotham, and Mathieu Giraud (2020). "Not All Roads Lead to Rome: Pitch Representation and Model Architecture for Automatic Harmonic Analysis", Transactions of the International Society for Music Information Retrieval, 3(1), pp. 42–54. DOI: https://doi.org/10.5334/tismir.45](https://transactions.ismir.net/articles/10.5334/tismir.45/)
 - [Néstor Nápoles López, Mark R H Gotham, & Ichiro Fujinaga. (2021). AugmentedNet: A Roman Numeral Analysis Network with Synthetic Training Examples and Additional Tonal Tasks. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 404–411](https://doi.org/10.5281/zenodo.5624533)
 - [Mark R H Gotham, Rainer Kleinertz, Christof Weiss, Meinard Müller, & Stephanie Klauk. (2021). What if the 'When' Implies the 'What'?: Human harmonic analysis datasets clarify the relative role of the separate steps in automatic tonal analysis. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 229–236](https://doi.org/10.5281/zenodo.5676067)
-
-### External Apps and More
-
-'When in Rome' data is also used in external research projects and apps including the:
-- ["Open Music Theory" (OMT) textbook's harmony anthology](https://viva.pressbooks.pub/openmusictheory/chapter/anthology-harmony/)
-- ["RAWL" app](https://rawl.vercel.app)
-- ["VIMU" (Visual Musicology) app](https://vimu.app) via [AugmentedNet](https://github.com/napulen/AugmentedNet)
-
-Using 'When in Rome' in your project? Let us know!
 
 ### Syntax and Contributing
 
