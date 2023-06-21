@@ -577,27 +577,28 @@ def remote_TAVERN(
 
 def convert_corpus_to_dez(
         corpus: str = "OpenScore-LiederCorpus",
+        overwrite: bool = False
 ) -> None:
     """
-    Convert a corpus to dez format for display in the dezrann.
+    Convert a corpus to dez format for display in the dezrann app.
     """
 
     file_paths = get_corpus_files(sub_corpus_path=CORPUS_FOLDER / corpus,
                                   file_name="analysis.txt")
 
     for f in file_paths:
-        print("INFO: processing", f)
-        rn_path = f  # f.parent / "analysis.txt"
-        score_path = f.parent / "score.mxl"
-        tab_path = f.parent / "analysis_BPS_format.csv"
+        print("INFO: ", f.parent)
         dez_path = f.parent / "analysis_dez_format.dez"
-
-        c = converters_local.ConverterRn2Tab()
-        c.convert_file(score_path, rn_path, tab_path)
-        c = converters_local.ConverterTab2Dez()
-        c.convert_file(score_path, tab_path, dez_path)
-
-        # TODO (in converters_local) direct rn <> dez (one step here rather than 2)
+        if overwrite and dez_path.exists():
+            print(" ... `.dez` already exists, stopping.")
+        else:
+            try:
+                print(".")
+                # c = converters_local.ConverterRn2Dez()
+                # c.convert_file(rn_path, dez_path)
+                converters_local.rn2dez(f, dez_path)
+            except:
+                print("... fails")
 
 
 def convert_and_write_local(remote_URL_path,
