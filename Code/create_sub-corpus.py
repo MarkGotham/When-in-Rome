@@ -100,14 +100,35 @@ def corelli_op3n4() -> None:
 
 # Early Choral
 
-def bach_chorales(move_analyses: bool = False) -> None:
+def bach_chorales(
+        move_analyses: bool = False,
+        music21_as_url: bool = False
+) -> None:
     """
     Build the chorales sub-corpus.
-    Scores = MG external repo
-    Analyses = DT.
+
+    A tricky one.
+    We organise locally by the Riemenschneider numbering
+    as this is the format for most of the sources and remote content:
+    - DT analyses,
+    - MG external corpus of mxl scores,
+    - and krn scores
+
+    music21 is more complex.
+    The files broadly follow the bwv numbering, with modifications,
+    so the exact string file names are included here.
+    Additionally, there are sometimes duplicates and variants,
+    so the type for each is a tuple.
+    Where there is only one entry there is a trailing comma in the form `(<entry>,)`.
+    Where there are two, the first entry is the one preferred for consistency:
+    _without_ instruments and _with_ text.
 
     Args:
         move_analyses: If True, move DT analyses from local copy to WiR.
+        music21_as_url: If True, make the `remote_score_music21`
+            entry a full URL to the music21 score online.
+            If False, make it instead the shorter string that's used to parse this score
+            from a local copy of the music21 corpus using `music21.corpus.parse(<string>)`.
     Returns: None
     """
 
@@ -115,20 +136,31 @@ def bach_chorales(move_analyses: bool = False) -> None:
     parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt_source = DT_BASE / source["analysis_source"]  # "Bach Chorales"
 
-    for riemenschneider_number in range(1, source["items"] + 1):  # range(371)
+    for item in source["items"]:
 
         md = dict()
 
-        num = str(riemenschneider_number).zfill(3)
+        for i in range(len(source["item_keys"])):
+            md[source["item_keys"][i]] = item[i]  # Riemenschneider etc.
 
-        new_dir = parent_dir_path / num
-        make_dir(new_dir)
+        print(md["Riemenschneider"])
 
-        md[source["item_keys"]] = riemenschneider_number,
-        md["remote_score_mxl"] = source["remote_score_mxl"] + num + "/short_score.mxl"
+        r_string = str(md["Riemenschneider"]).zfill(3)  # e.g., "001"
+
+        new_dir = parent_dir_path / r_string
+        # make_dir(new_dir)
+
         md["composer"] = get_composer(source)
-        r_string = f"riemenschneider{num}.txt"
-        md["analysis_source"] = f"{source['analysis_source']}/{r_string}"
+
+        md["remote_score_mxl"] = source["remote_score_mxl"] + r_string + "/short_score.mxl"
+        md["analysis_source"] = f"{source['analysis_source']}/riemenschneider{r_string}.txt"
+        md["remote_score_krn"] = source["remote_score_krn"] + f"chor{r_string}.krn"
+
+        if music21_as_url:
+            md["remote_score_music21"] = source["remote_score_music21"] + md["music21"][0]
+        else:
+            md["remote_score_music21"] = "bach/" + md["music21"][0]
+
         write_json(md, new_dir / "remote.json")
 
         if move_analyses:
@@ -176,8 +208,11 @@ def goudimel(move_analyses: bool = True) -> None:
 
 def madrigals(move_analyses: bool = True) -> None:
     """
-    Build the madrgials sub-corpus.
-    Scores = music21 external repo
+    Build the madrigals sub-corpus.
+    Scores = music21 external repo:
+        `remote_score_mxl` points to the full URL to the music21 score online.
+        `remote_score_music21` is the shorter string that's used to parse this score
+            from a local copy of the music21 corpus using `music21.corpus.parse(<string>)`.
     Analyses = DT.
 
     Args:
@@ -206,7 +241,12 @@ def madrigals(move_analyses: bool = True) -> None:
             md["book"] = book
             md["number"] = number
             md["composer"] = get_composer(source)
+
+            # DT, not music21:
             md["analysis_source"] = source["analysis_source"] + f"/{m21_dt_string}.txt"
+
+            # music21, not DT:
+            md["remote_score_music21"] = f"monteverdi/{m21_dt_string}.mxl"
             md["remote_score_mxl"] = source["remote_score_mxl"] + f"{m21_dt_string}.mxl"
 
             if move_analyses:
@@ -214,8 +254,6 @@ def madrigals(move_analyses: bool = True) -> None:
                 analysis_dst = num_dir / "analysis.txt"
                 shutil.copy(analysis_src, analysis_dst)
 
-            print(book, number)
-            print(md)
             write_json(md, num_dir / "remote.json")
 
 
@@ -225,7 +263,7 @@ def madrigals(move_analyses: bool = True) -> None:
 
 def tempered_II(move_analyses: bool = True) -> None:
     """
-    Build the Goudimel chorale sub-corpus.
+    Build the WTC sub-corpus.
     Scores = Krn remote
     Analyses = DT.
 

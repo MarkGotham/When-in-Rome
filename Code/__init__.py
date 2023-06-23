@@ -59,7 +59,7 @@ def write_json(
     Write the metadata in json format to the specified path
     """
     with open(json_path, "w") as json_file:
-        json.dump(this_data, json_file, indent=4)
+        json.dump(this_data, json_file, indent=4, sort_keys=True)
 
 
 # ------------------------------------------------------------------------------

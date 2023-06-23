@@ -86,6 +86,14 @@ class Test(unittest.TestCase):
                 else:
                     assert(len(i) == k)
 
+    def test_bach(self):
+        m = metadata.bach_chorales["items"]
+        count = 1
+        self.assertEqual(len(m), 371)
+        for x in m:
+            self.assertEqual(x[-1], count)
+            count += 1
+
 
 if __name__ == "__main__":
     # Not unittests because the local copy is required.
