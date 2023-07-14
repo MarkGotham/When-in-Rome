@@ -76,7 +76,7 @@ def plot_dist(
         title: str = "Profile weighting",
         width: float = 0.5,
         savefig: bool = False,
-        out_path: Path | str | None = CODE_FOLDER / "test.png"
+        out_path: Path | str | None = CODE_FOLDER / "test"
 ) -> plt:
     """
     Plot (bars or line) usage distribution
@@ -285,7 +285,7 @@ def plot_scatter_best_fit(
     plt.ylabel(ylabel, fontsize=12)
 
     if savefig:
-        plt.savefig(title + ".png", facecolor="w", edgecolor="w", format="png")
+        plt.savefig(title + ".pdf", facecolor="w", edgecolor="w", format="pdf")
     else:
         plt.show()
 
@@ -336,7 +336,7 @@ def plot_with_best_fit(
     plt.ylabel(ylabel, fontsize=12)
 
     if savefig:
-        plt.savefig(title + ".png", facecolor="w", edgecolor="w", format="png")
+        plt.savefig(title + ".pdf", facecolor="w", edgecolor="w", format="pdf")
     else:
         plt.show()
         return plt
@@ -464,18 +464,17 @@ def plot_usage(
     ax.set_xticks(x + bar_width / 2, all_keys)
     ax.legend(loc="upper right", ncols=2)
 
-    ax.set_ylim(0, round(max_val, 2) + 0.04)
+    ax.set_ylim(0, round(max_val, 2))  # top border = highest value; care if using with title
     ax.set_xlabel("Figure")
 
     if what == "Aug6":
-        ax.set_xlabel('"Nationality" (any inversion)')
-        ax.set_title(f'Aug 6ths in the {corpus_name.replace("_", " ")} by so-called "nationality"')
+        ax.set_xlabel('Augmented 6th by so-called "nationality" (any inversion)')
 
     if not out_path:
         out_path = ANTHOLOGY_PATH / corpus_name
 
     if save_fig:
-        plt.savefig(out_path / (what + ".png"), facecolor="w", edgecolor="w", format="png")
+        plt.savefig(out_path / (what + ".pdf"), facecolor="w", edgecolor="w", format="pdf")
     else:
         plt.show()
 
@@ -511,6 +510,7 @@ def plot_counts(
     """
     if corpora is None:
         corpora = ["OpenScore-LiederCorpus",
+                   "Piano_sonatas",
                    "Keyboard_Other",
                    "Early_Choral"
                    ]
@@ -562,10 +562,10 @@ def plot_counts(
     if not out_path:
         out_path = ANTHOLOGY_PATH
     if not title:
-        title = "?.png"
+        title = "?.pdf"
 
     if save_fig:
-        plt.savefig(out_path / title, facecolor="w", edgecolor="w", format="png")
+        plt.savefig(out_path / title, facecolor="w", edgecolor="w", format="pdf")
     else:
         plt.show()
 
