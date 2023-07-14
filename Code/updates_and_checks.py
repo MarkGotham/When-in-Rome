@@ -153,7 +153,7 @@ def process_one_score(
     stopping_message = "file exists and overwrite set to False. Stopping"
 
     if combine:
-        if overwrite or not os.path.exists(Path(write_path) / "analysis_on_score.mxl"):
+        if overwrite or not (Path(write_path) / "analysis_on_score.mxl").exists():
             t.writeScoreWithAnalysis(outPath=write_path,
                                      outFile="analysis_on_score")
         else:
@@ -161,14 +161,14 @@ def process_one_score(
 
     if slices:
         t.matchUp()  # Sic, necessary here and only here
-        if overwrite or not os.path.exists(Path(write_path) / "slices_with_analysis.tsv"):
+        if overwrite or not (Path(write_path) / "slices_with_analysis.tsv").exists():
             t.writeSlicesFromScore(outPath=write_path,
                                    outFile="slices_with_analysis")
         else:
             print("slices_with_analysis " + stopping_message)
 
     if feedback:
-        if overwrite or not os.path.exists(Path(write_path) / "feedback_on_analysis.txt"):
+        if overwrite or not (Path(write_path) / "feedback_on_analysis.txt").exists():
             t.printFeedback(outPath=write_path,
                             outFile="feedback_on_analysis")
         else:
@@ -191,7 +191,7 @@ def process_corpus(
     for p in analysis_paths:
         pth_to_dir = p.parent
         print("Processing: ", pth_to_dir)
-        already_exist = os.path.exists(Path(pth_to_dir) / "analysis_on_score.mxl")
+        already_exist = (Path(pth_to_dir) / "analysis_on_score.mxl").exists()
         if overwrite or (not already_exist):
             try:
                 process_one_score(pth_to_dir,
