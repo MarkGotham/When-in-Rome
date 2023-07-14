@@ -25,9 +25,11 @@ This implementation of the multiple option approach is new.
 
 # ------------------------------------------------------------------------------
 
-from music21 import chord, expressions, interval, meter, pitch, roman, stream
+from music21 import chord, converter, expressions, interval, meter, pitch, roman, stream
 
 from Code.Pitch_profiles import chord_usage
+
+from .import CORPUS_FOLDER as CF
 
 
 # ------------------------------------------------------------------------------
@@ -216,6 +218,162 @@ def is_mixture(
         return True
     else:
         return False
+
+
+def progression_mixture_metric(
+        rn: roman.RomanNumeral,
+        rn_before: roman.RomanNumeral | None = None,
+        rn_after: roman.RomanNumeral | None = None,
+        exclude_picardy: bool = True,
+        exclude_completed_applied: bool = True
+) -> int | bool:
+    """
+    We can assess how modally mixed each chord is in the abstract,
+    looking only at the (single) chord in question
+    (see `is_mixture()` and `add_mixture_info()`).
+    However, for a more complete picture, we also need to look at the context.
+
+    Even the single chord case considers the key-context.
+    These tests demonstrate that "iv" is mixed in a major context, but not in minor one:
+
+    >>> minor_subdominant_in_major = roman.RomanNumeral("iv", "C")
+    >>> is_mixture(minor_subdominant_in_major)
+    True
+
+    >>> minor_subdominant_in_minor = roman.RomanNumeral("iv", "a")
+    >>> is_mixture(minor_subdominant_in_minor)
+    False
+
+    This function assesses the relative mixture of a given chord (`rn`)
+    against the context of the _proceeding_ and _following_ chords.
+    That context is either provided explicitly
+    (by the arguments `rn_before` and `rn_after`),
+    or using the .previous() and .next() methods on a music21 Stream.
+
+    The returned value estimates the strength of mixture
+    according to the values provided by `is_mixture`, with a twist:
+    while 'more is more' for the chord in question
+    (stronger mixture on that chord indicates stronger mixture overall),
+    the chords before and after can
+    _enhance_ the case for mixture when they are clearly _not_ mixed (less is more).
+
+    Currently, this is calculated by simple addition/substracion of the values:
+    the central chord counts positively, while the surrounding chords count negatively.
+    (The details of that calculation may change, but the basic logic is unlikely to).
+
+    Let's return to the `minor_subdominant_in_major` case introduced above.
+    
+    Alone, it receives rather a low mixture score:
+    
+    >>> add_mixture_info(minor_subdominant_in_major).mixture_metric
+    2
+
+    Surrounded by a major tonic chord ("I"),
+    the overall case for mixture is gratly enhanced:
+
+    >>> major_tonic = roman.RomanNumeral("I", "C")
+    >>> progression_mixture_metric(minor_subdominant_in_major, major_tonic, major_tonic)
+    6
+
+    Conversely, placing that same chord between _minor_ tonics ("i")
+    reduces the case for mixture because the overall impression is on continued minor mode
+    rather than a momentary borrowing:
+
+    >>> minor_tonic = roman.RomanNumeral("i", "C")
+    >>> progression_mixture_metric(minor_subdominant_in_major, minor_tonic, minor_tonic)
+    -2
+
+    The remaining parameter argument for this function handle special cases
+    which may return the boolean False.
+
+    If the `exclude_picardy` argument is True (default) then
+    we exclude cases of the "Picardy third" whereby the last chord in a piece
+    (i.e., there's no `next`) is a major tonic in a minor key context.
+    If `exclude_completed_applied` is True (default) then
+    exclude secondary and applied chords, but only if they resolve as implied.
+
+    See tests at `is_picardy` and `is_completed_applied`.
+    """
+
+    if exclude_picardy and is_picardy(rn):
+        return False
+
+    if exclude_completed_applied and is_completed_applied(rn):
+        return False
+
+    rn_mixture_value = add_mixture_info(rn).mixture_metric
+
+    if rn_before:
+        rn_before_mixture_value = add_mixture_info(rn_before).mixture_metric
+    elif rn.previous():
+        rn_before_mixture_value = add_mixture_info(rn_before).mixture_metric
+    else:
+        rn_before_mixture_value = 0
+
+    if rn_after:
+        rn_after_mixture_value = add_mixture_info(rn_after).mixture_metric
+    elif rn.next():
+        rn_after_mixture_value = add_mixture_info(rn_after).mixture_metric
+    else:
+        rn_after_mixture_value = 0
+
+    return rn_mixture_value - rn_before_mixture_value - rn_after_mixture_value
+
+
+def is_picardy(rn: roman.RomanNumeral) -> bool:
+    """
+    Quick corpus test case with a Picardy third at the end.
+    See notes in `progression_mixture_metric` and import at end of module.
+
+    >>> is_picardy(freuet.recurse().getElementsByClass(roman.RomanNumeral)[0])
+    False
+
+    >>> is_picardy(freuet.recurse().getElementsByClass(roman.RomanNumeral)[-1])
+    True
+
+    """
+    if rn.next():
+        return False
+    if rn.key.mode != "minor":
+        return False
+    if rn.figure != "I":
+        return False
+
+    return True
+
+
+def is_completed_applied(rn: roman.RomanNumeral) -> bool:
+    """
+    Quick corpus test case with a completed applied progression near the start.
+    See notes in `progression_mixture_metric` and import at end of module.
+
+    >>> first_three = freuet.recurse().getElementsByClass(roman.RomanNumeral)[:3]
+
+    >>> first_three[0].figure
+    'i'
+
+    >>> first_three[1].figure
+    'V2/iv'
+
+    >>> first_three[2].figure
+    'iv6'
+
+    So then
+    >>> is_completed_applied(first_three[0])
+    False
+
+    >>> is_completed_applied(first_three[1])
+    True
+
+    """
+    if not rn.secondaryRomanNumeral:
+        return False
+    if not rn.next():
+        return False
+    if rn.secondaryRomanNumeral.romanNumeralAlone != rn.next().romanNumeralAlone:
+        return False
+
+    return True
 
 
 pitch_names = (
@@ -592,5 +750,9 @@ def pitches_in_order(
 
 if __name__ == "__main__":
     import doctest
+    freuet = converter.parse(
+        CF / "Early_Choral" / "Bach,_Johann_Sebastian" / "Chorales" / "008" / "analysis.txt",
+        format="Romantext"
+     )
 
     doctest.testmod()
