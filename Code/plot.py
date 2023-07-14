@@ -590,6 +590,7 @@ if __name__ == "__main__":
         required=False,
         default="OpenScore-LiederCorpus",
         help="Process all cases within this sub-corpus."
+             "If set to `all` then run on all sub-corpora"
     )
 
     parser.add_argument(
@@ -606,11 +607,28 @@ if __name__ == "__main__":
             corpus_name=args.corpus,
             what=args.what
         )
+
     elif args.plot_N6_usage:
-        plot_usage(corpus_name=args.corpus, what="N6")
+        if args.corpus == "all":
+            for child in ANTHOLOGY_PATH.iterdir():
+                if child.is_dir():
+                    print(str(child.parts[-1]))
+                    plot_usage(corpus_name=str(child.parts[-1]), what="N6")
+        else:
+            plot_usage(corpus_name=args.corpus, what="N6")
+
     elif args.plot_Aug6_usage:
-        plot_usage(corpus_name=args.corpus, what="Aug6")
+        if args.corpus == "all":
+            for child in ANTHOLOGY_PATH.iterdir():
+                if child.is_dir():
+                    print(str(child.parts[-1]))
+                    plot_usage(corpus_name=str(child.parts[-1]), what="Aug6")
+        else:
+            plot_usage(corpus_name=args.corpus, what="Aug6")
+
     elif args.plot_counts:
         plot_counts()
+
     else:
         parser.print_help()
+
