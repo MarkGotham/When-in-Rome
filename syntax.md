@@ -159,3 +159,19 @@ The following tables set out how these options relate to each other in a minor. 
 |Cautionary|gb|g|g#|G|G#|G##|
 |Sharp / Raised|gb|g|g#|G#|G##|G###|
 |Flat / Lowered|gbb|gb|g|G|G#|G##|
+
+### Ne plus ultra!
+
+Roman text does a decent job of encoding not only the main task of standard harmonic analysis,
+but also many details of the score (measures, time signatures including changes, and the like).
+It cannot, however, encode every detail you might expect from dedicated score notation software.
+For example, in [this Mozart sonata](./Corpus/Piano_Sonatas/Mozart,_Wolfgang_Amadeus/K284/3/analysis.txt)
+there's a split measure with time signature change in m.221.
+Notation software and libraries encode this with either a:
+- mid-measure time signature change (sometimes, rarely supported), or
+- split measure (two shorter measures) with the time signature at the start of the second and the numbering adapted.
+
+There is no way of encoding that in Romantext.
+It's a ne plus ultra.
+Instead, we deal with this and other edge cases using separate alignment techniques.
+The templates provided should make clear the best practice in these cases.
