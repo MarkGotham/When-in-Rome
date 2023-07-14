@@ -239,7 +239,15 @@ Briefly, this repo. includes:
 It takes in a harmonic analysis and the corresponding score to assess how well they match.
 [Working in Harmony](https://fourscoreandmore.org/working-in-harmony/analysis/) is an initial attempt at an interactive app for making use of this code online (no downloads, coding, dependency).
 - [Anthology](/Code/anthology.py) for retrieving instances of specific chords and progression from the analyses.
-- [Pitch_profile](/Code/Pitch_profiles/) for producing the profile and feature information discussed above.
+- [Pitch_profile](/Code/Pitch_profiles) for producing the profile and feature information discussed above.
+
+Here are a couple of example of what all that can lead to:
+
+A histogram of augmented chord usage in the lieder corpus ...
+![histogram of augmented chord usage in the lieder corpus](Anthology/OpenScore-LiederCorpus/Augmented Sixths.pdf)
+
+... and a histogram of fifth progression types across corpora:
+![histogram of fifth progressions across corpora](Anthology/multi_corpus_plot_count_example.pdf)
 
 ## Licence, Citation, Contribution
 
