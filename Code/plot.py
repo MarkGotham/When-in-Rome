@@ -562,7 +562,7 @@ def plot_counts(
     if not out_path:
         out_path = ANTHOLOGY_PATH
     if not title:
-        title = "?.pdf"
+        title = "multi_corpus_plot_count_example.pdf"
 
     if save_fig:
         plt.savefig(out_path / title, facecolor="w", edgecolor="w", format="pdf")
