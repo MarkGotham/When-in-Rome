@@ -244,10 +244,10 @@ It takes in a harmonic analysis and the corresponding score to assess how well t
 Here are a couple of example of what all that can lead to:
 
 A histogram of augmented chord usage in the lieder corpus ...
-![histogram of augmented chord usage in the lieder corpus](Anthology/OpenScore-LiederCorpus/Augmented Sixths.pdf)
+![histogram of augmented chord usage in the lieder corpus](https://github.com/MarkGotham/When-in-Rome/blob/master/Anthology/OpenScore-LiederCorpus/Augmented%20Sixths.pdf?raw=true)
 
 ... and a histogram of fifth progression types across corpora:
-![histogram of fifth progressions across corpora](Anthology/multi_corpus_plot_count_example.pdf)
+![histogram of fifth progressions across corpora](https://github.com/MarkGotham/When-in-Rome/blob/master/Anthology/multi_corpus_plot_count_example.pdf?raw=true)
 
 ## Licence, Citation, Contribution
 
