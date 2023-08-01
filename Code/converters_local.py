@@ -15,18 +15,17 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 ABOUT:
 ===============================
-Conversion routines not (yet) promoted up the music21.
+Conversion routines not incorporated into music21 or elsewhere.
 
-Specifically, the following 2-way conversions with rntxt:
-- music21 <> DCML
-- WiR (here) <> BPS <> Dez.
-
-
+Specifically, the following 2-way conversions:
+- music21: rntxt (core only, not phrase or form) with DCML
+- WiR (here): full rntxt (with phrase and form) with BPS, Dez, and (work in progress) TiLiA.
 """
 
 # ------------------------------------------------------------------------------
 
 from . import REPO_FOLDER
+example_base_path = REPO_FOLDER / "Tests" / "Resources" / "Example"
 
 from music21 import converter, pitch, roman, romanText, spanner, stream
 import numpy as np
@@ -40,7 +39,235 @@ from abc import ABC, abstractmethod
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
+
 # ------------------------------------------------------------------------------
+
+def retrieve_unprocessed_metadata(
+        score: stream.Score,
+        tag: str = "Form",
+        retrieve_position: bool = True,
+        durations: bool = True,
+        empty_initial: bool = True
+) -> list[dict]:
+    """
+    Retrieve tagged but unprocessed information from a romanText file stored as "metadata"
+    including formal labels.
+
+    Note that this covers more than clear metadata.
+    Entries like "Composer", "Title" are clearly metadata and _are_ processed.
+    "Analyst" and "Proofreader" are metadata are _not_ processed (use this function).
+    Moreover, it includes formal labels throughout the score.
+
+    We cannot retrieve any position information (not even the measure number) directly from the
+    these processed whole line entries.
+    But we can deduce it from context:
+    here, users have a choice (`retrieve_position`) for whether to attempt the retrieval of
+    postion information in the form of `measure` (number) and `start` (offset) from the next item in the recurse.
+
+    >>> analysis = converter.parse(example_base_path / "analysis.txt", format="Romantext")
+
+    Where measure information is not needed, set `retrieve_position` to False
+    as the process is slightly easier, more reliable, and faster.
+
+    >>> form = retrieve_unprocessed_metadata(analysis, retrieve_position=False, durations=False, empty_initial=False)
+    >>> form[0]
+    {'type': 'Form', 'duration': None, 'tag': "Verse 1 'Liebst du um Schönheit'"}
+
+    By default, `retrieve_position` is True:
+    >>> form = retrieve_unprocessed_metadata(analysis, durations=False, empty_initial=False)
+    >>> form[0]
+    {'type': 'Form', 'start': 8.0, 'duration': None, 'tag': "Verse 1 'Liebst du um Schönheit'", 'measure': 3}
+
+    If `durations` is True (default) then duration inforamtion is deduced
+    from the distance between start values for consecutive entries (see `deduce_durations()`).
+
+    The `empty_initial` value is also True by default, and creates initial entries
+    where the first entry does not start at 0 (see `fill_empty_initial()`).
+
+    >>> form = retrieve_unprocessed_metadata(analysis)
+    >>> form[0]
+    {'type': 'Form', 'start': 0, 'duration': 8.0, 'measure': 1}
+
+
+    Args:
+        score: a (stream.Score) parsed romantext analysis.
+        tag (str): the tag to find. Defaults to "Form" for retrieving formal labels (in the case of metadata).
+        Other options include "Note" (further analyst annotations) and "Pedal".
+        retrieve_position: if True, process all objects to deduce get the measure number and offset.
+        durations: if True, run `deduce_durations()`
+        empty_initial: if True, run `fill_empty_initial()`
+
+    Returns: list[dict] with text (e.g., formal label, excluding the initial "Form: " part).
+
+    """
+
+    return_data = []
+
+    if retrieve_position:  # all objects
+        for obj in score.recurse():
+            if "RomanTextUnprocessedMetadata" in obj.classes:
+                if "tag" in obj.__dict__:
+                    if obj.__dict__["tag"] == tag:
+                        m = obj.next().getContextByClass(stream.Measure)  # NB from the next (processed) entry
+                        # TODO may get 2+ unprocessed and then need to iterate next until we get a processed one.
+                        return_data.append(
+                            {
+                                "type": tag,  # defaults to "Form",
+                                "start": m.offset,
+                                "duration": None,  # Note: only to initialise -- corrected by `deduce_durations`
+                                "tag": obj.__dict__["data"],
+                                # T:
+                                "measure": m.measureNumber,
+                            }
+                        )
+
+    else:  # RomanTextUnprocessedMetadata only
+        for obj in score.recurse().getElementsByClass(romanText.translate.RomanTextUnprocessedMetadata):
+            if "tag" in obj.__dict__:
+                if obj.__dict__["tag"] == tag:
+                    return_data.append(
+                        {
+                            "type": tag,  # defaults to "Form",
+                            # no "start" or other timing info, hence alternative above
+                            "duration": None,  # Note: only to initialise -- corrected by `deduce_durations`
+                            "tag": obj.__dict__["data"]
+                        }
+                    )
+
+    if empty_initial and retrieve_position:
+        return_data = fill_empty_initial(return_data, tag=tag, score=score)
+
+    if durations and retrieve_position:
+        return_data = deduce_durations(return_data, score)
+
+    return return_data
+
+
+def retrieve_phrase(s: stream.Score, durations: bool = True, empty_initial: bool = True) -> list[dict]:
+    """
+    Retrieve phrase labels indicated in the text analysis by the '||' token
+    and stored on a parsed rntxt analysis only as:
+    `romanText.translate.RomanTextUnprocessedToken`
+    and
+    `<music21.romanText.rtObjects.RTPhraseBoundary '||'>`
+    .
+
+    For any unprocessed "whole line" entries, see the complementary
+    `retrieve_unprocessed_metadata` function for what rntxt stores as "metadata" information.
+    This includes not only actual metadata preamble ("composer", "title", "analyst", and "proofreader"),
+    but also "form" and other whole-line entries.
+
+    >>> analysis = converter.parse(example_base_path / "analysis.txt", format="Romantext")
+    >>> phrase = retrieve_phrase(analysis, durations = False, empty_initial = False)
+    >>> phrase[0]
+    {'type': 'Phrase', 'start': 39.5, 'duration': None, 'measure': 10, 'fraction_of_measure': 0.875}
+
+    Args:
+        s (stream.Score): only makes sense if this stream is a parsed romantext analysis.
+        durations: if True, run `deduce_durations()`
+        empty_initial: if True, run `fill_empty_initial()`
+
+    Returns: list[dict]
+
+    """
+    return_data = []
+    for u in s.recurse().getElementsByClass(romanText.translate.RomanTextUnprocessedToken):
+        if "RTPhraseBoundary" in u.__dict__["obj"].classes:
+            m = u.getContextByClass(stream.Measure)
+            return_data.append(
+                {
+                    # Mainly for dez:
+                    "type": "Phrase",
+                    "start": m.offset + u.offset,
+                    # NB ^ not u.currentHierarchyOffset(), despite being a recurse iterator
+                    # NB ^ u.offset same as u._activeSiteStoredOffset here
+                    "duration": None,  # Note: only to initialise -- corrected by `deduce_durations`
+
+                    # Mainly for TiLiA:
+                    "measure": m.measureNumber,  # u.measureNumber,  either
+                    # "offset_in_measure": u.offset,  # NB same as u._activeSiteStoredOffset  # Not needed
+                    "fraction_of_measure": u.offset / m.quarterLength,  # TODO TiLiA process for incomplete measures
+                }
+            )
+        else:
+            logger.warning(f"`retrieve_phrase` revealed this other non-phrase unprocessed token: {u.__dict__}.")
+
+    if durations:
+        return_data = deduce_durations(return_data, s)
+
+    if empty_initial:
+        return_data = fill_empty_initial(return_data, tag="Phrase")
+
+    return return_data
+
+
+def deduce_durations(data: list[dict], score: stream.Score | None = None) -> list[dict]:
+    """
+    Deduce duration information for any data where that is missing or incomplete.
+    Deduction from successive start positions (assuming no gaps)
+    and total score length for the last entry (as needed).
+
+    In the following example,
+    the first entry has duration 0 and `deduce_durations` corrects that to 5:
+    >>> phrase_list = [{'type': 'Phrase', 'start': 10, 'duration': 0}, {'type': 'Phrase', 'start': 15, 'duration': 20}]
+    >>> deduce_durations(phrase_list)
+    [{'type': 'Phrase', 'start': 10, 'duration': 5}, {'type': 'Phrase', 'start': 15, 'duration': 20}]
+
+    """
+    for i in range(len(data) - 1):
+        if not data[i]["duration"]:
+            data[i]["duration"] = data[i + 1]["start"] - data[i]["start"]
+
+    # last one from score
+    if score:
+        if not data[-1]["duration"]:
+            data[-1]["duration"] = score.duration.quarterLength - data[-1]["start"]
+
+    return data
+
+
+def fill_empty_initial(data: list[dict], tag: str = "Phrase", score: stream.Score | None = None) -> list[dict]:
+    """
+    For dez-style json data,
+    and for any given key (default is "Phrase")
+    if the first entry in that data types does not start at offset 0,
+    add an entry to fill this in.
+
+    In the following example,
+    the first (only) entry starts at 10 and `fill_empty_initial` inserts one from 0 to 10:
+    >>> phrase_list = [{'type': 'Phrase', 'start': 10, 'duration': 5}]
+    >>> fill_empty_initial(phrase_list)
+    [{'type': 'Phrase', 'start': 0, 'duration': 10}, {'type': 'Phrase', 'start': 10, 'duration': 5}]
+
+    If there's a score, then check the number of the first measure (usually 0 or 1) and add that.
+    """
+    for d in data:
+        if d["type"] == tag:
+            if d["start"] != 0:
+
+                new = {
+                    "type": tag,
+                    "start": 0,
+                    "duration": d["start"],
+                    # "tag": "",  # filled automatically
+                }
+
+                if score:
+                    new["measure"] = score.recurse().getElementsByClass(stream.Measure)[0].measureNumber
+
+                data.insert(0, new)
+
+                return data  # sic, stop after first match
+
+
+dez_metadata_preset = {
+    "layout": [
+        dict(filter={"type": "Form"}, style={"line": "bot.1", "color": "blue"}),
+        dict(filter={"type": "Phrase"}, style={"line": "bot.2", "color": "orange"}),
+        dict(filter={"type": "Harmony"}, style={"line": "bot.3", "color": "green"}),
+        dict(filter={"type": "Tonality"}, style={"line": "bot.4", "color": "purple"})
+    ]
+}
 
 datatype_chord = [
     ("onset", "float"),
@@ -172,8 +399,9 @@ def remove_prima_volta(score: stream.Score, change_measure_number: bool = True):
 
 def _find_offset(rn: roman.RomanNumeral, score_measure_offset: list, measure_zero: bool):
     """
-    Given a roman numeral element from an analysis parsed by music21,
-    find its offset in quarter notes length.
+    Given any object contained in a music21.stream.Measure,
+    find its offset from the start in quarter notes length.
+    Note that this
     It automatically adapts to the presence of pickup measures thanks to the Boolean measure_zero.
 
     :param rn: a RomanNumeral object from an rntxt analysis file parsed by music21
@@ -220,7 +448,7 @@ def _note(start: float, end: float, tag: str, tag_type: str, layer: str) -> dict
         "type": tag_type,
         "layers": [layer],
         "start": start,
-        "actual-duration": end - start,
+        "duration": end - start,
         "tag": tag.replace("-", "b")
     }
 
@@ -674,11 +902,19 @@ class ConverterRn2Dez(AnnotationConverter):
         return {'labels': labels}, flag
 
 
-def rn2dez(rntxt_path, dez_path):
+def rn2dez(
+        rntxt_path,
+        dez_path,
+        phrase: bool = True,
+        form: bool = True,
+        include_metadata: bool = True,
+        metadata=None,
+        write: bool = True
+) -> dict | None:
     """
     Quick, direct rn to dez conversion (no score required).
-    """
 
+    """
     rntxt = converter.parse(rntxt_path, format="romanText")
     rn_iterator = rntxt.recurse().getElementsByClass("RomanNumeral")
 
@@ -694,9 +930,8 @@ def rn2dez(rntxt_path, dez_path):
         chord_labels.append(
             {
                 "type": "Harmony",
-                "layers": ["automated"],
                 "start": round(rn_iterator.currentHierarchyOffset(), 3),  # no fracs
-                "actual-duration": round(rn.quarterLength, 3),
+                "duration": round(rn.quarterLength, 3),
                 "tag": rn.figure,
             }
         )
@@ -707,26 +942,47 @@ def rn2dez(rntxt_path, dez_path):
             if entry_in_progress is not None:
                 # Finish current
                 ql = round(rn_iterator.currentHierarchyOffset() - entry_in_progress["start"], 3)
-                entry_in_progress["actual-duration"] = ql
+                entry_in_progress["duration"] = ql
                 key_labels.append(entry_in_progress)
             # Start new
             entry_in_progress = {
                 "type": "Tonality",
-                "layers": ["automated"],
                 "start": round(rn_iterator.currentHierarchyOffset(), 3),
                 "tag": rn.key.name.replace("-", "b"),
             }
 
     total_length = rntxt.duration.quarterLength
     # wrap last key
-    entry_in_progress["actual-duration"] = round(total_length - entry_in_progress["start"], 3)
+    entry_in_progress["duration"] = round(total_length - entry_in_progress["start"], 3)
     key_labels.append(entry_in_progress)
     # wrap last chord, sic, in place in the list
-    chord_labels[-1]["actual-duration"] = round(total_length - chord_labels[-1]["start"], 3)
+    chord_labels[-1]["duration"] = round(total_length - chord_labels[-1]["start"], 3)
 
     data = {"labels": chord_labels + key_labels}
-    with open(dez_path, "w") as fp:
-        json.dump(data, fp, indent=4)
+
+    if phrase:
+        data["labels"] += retrieve_phrase(rntxt, durations=True, empty_initial=True)
+
+    if form:
+        data["labels"] += retrieve_unprocessed_metadata(rntxt, durations=True, empty_initial=True)
+
+    if include_metadata:
+        if metadata is None:
+            metadata = dez_metadata_preset
+        data["meta"] = metadata
+
+    if write:
+
+        # Clear any non-dez info.
+        for l in data["labels"]:
+            for i in list(l):
+                if i not in ["type", "layers", "start", "duration", "tag"]:
+                    l.pop(i)
+
+        with open(dez_path, "w") as fp:
+            json.dump(data, fp, indent=4)
+    else:
+        return data
 
 
 class ConverterTab2Rn(AnnotationConverter):
@@ -943,29 +1199,6 @@ class ConverterTab2Dez(AnnotationConverter):
             labels.append(_note(start, end, rn, 'Harmony', layer))
         out_data = {"labels": labels}
 
-        # TODO dez now has "meta" labels for doing layout once only. Update with something like:
-        # if include_meta:
-        #     out["meta"] = {
-        #         "layout": [
-        #             {
-        #                 "filter": {
-        #                     "type": "Harmony"
-        #                 },
-        #                 "style": {
-        #                     "line": "bot.1"
-        #                 }
-        #             },
-        #             {
-        #                 "filter": {
-        #                     "type": "Tonality"
-        #                 },
-        #                 "style": {
-        #                     "line": "bot.2",
-        #                     "color": "#5850be"
-        #                 }
-        #             }
-        #     }
-
         return out_data, flag
 
 
@@ -997,7 +1230,7 @@ class ConverterDez2Tab(AnnotationConverter):
         for x in dezrann["labels"]:
             if x["type"] != "Harmony":
                 continue
-            start, duration, chord = x["start"], x["actual-duration"], x["tag"]
+            start, duration, chord = x["start"], x["duration"], x["tag"]
             end = start + duration
             degree, quality, inversion = self.chord_rn_to_tab(chord)
             out_data.append([start, end, degree, quality, inversion])
@@ -1006,7 +1239,7 @@ class ConverterDez2Tab(AnnotationConverter):
         for x in dezrann["labels"]:
             if x["type"] != "Tonality":
                 continue
-            start, duration, key = x["start"], x["actual-duration"], x["tag"]
+            start, duration, key = x["start"], x["duration"], x["tag"]
             end = start + duration
             while i < len(out_data) and out_data[i][0] < end:  # out_data[i] is the start of the annotation
                 out_data[i].insert(2, key)
@@ -1014,17 +1247,8 @@ class ConverterDez2Tab(AnnotationConverter):
         return out_data, flag
 
 
+# ------------------------------------------------------------------------------
+
 if __name__ == "__main__":
-    base_path = REPO_FOLDER / "Tests" / "Resources" / "Example"
-
-    score_path = base_path / "score.mxl"
-    rn_path = base_path / "analysis.txt"
-    tab_path = base_path / "analysis_BPS_format.csv"
-    dez_path = base_path / "analysis_dez_format.dez"
-
-    # c = ConverterRn2Tab()
-    # c.convert_file(score_path, rn_path, tab_path)
-
-    # c = ConverterRn2Dez()
-    # c.convert_file(score_path, rn_path, dez_path)
-    rn2dez(rn_path, dez_path)
+    import doctest
+    doctest.testmod()
