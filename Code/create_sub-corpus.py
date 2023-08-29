@@ -29,7 +29,7 @@ with initial information in the "remote.json" file.
 import shutil
 from pathlib import Path
 
-from . import CORPUS_FOLDER, DT_BASE, write_json
+from . import REPO_FOLDER, CORPUS_FOLDER, DT_BASE, write_json
 from .Resources import metadata
 
 
@@ -101,7 +101,8 @@ def corelli_op3n4() -> None:
 # Early Choral
 
 def bach_chorales(
-        move_analyses: bool = False,
+        move_DT_analyses: bool = False,
+        move_BCMH_analyses: bool = True,
         music21_as_url: bool = False
 ) -> None:
     """
@@ -124,7 +125,8 @@ def bach_chorales(
     _without_ instruments and _with_ text.
 
     Args:
-        move_analyses: If True, move DT analyses from local copy to WiR.
+        move_DT_analyses: If True, move DT analyses from local copy to WiR.
+        move_BCMH_analyses: If True, move BCMH analyses (NNL conversion) from local copy to WiR.
         music21_as_url: If True, make the `remote_score_music21`
             entry a full URL to the music21 score online.
             If False, make it instead the shorter string that's used to parse this score
@@ -135,6 +137,7 @@ def bach_chorales(
     source = metadata.bach_chorales
     parent_dir_path = make_parent_dirs(source["path_within_WiR"])
     dt_source = DT_BASE / source["analysis_source"]  # "Bach Chorales"
+    bcmh_source = REPO_FOLDER.parent / "BCMH" / "BCMH_dataset" / "rntxt"
 
     for item in source["items"]:
 
@@ -156,6 +159,15 @@ def bach_chorales(
         md["analysis_source"] = f"{source['analysis_source']}/riemenschneider{r_string}.txt"
         md["remote_score_krn"] = source["remote_score_krn"] + f"chor{r_string}.krn"
 
+        if md["Riemenschneider"] <= 101:
+            if md["Riemenschneider"] != 70:  # Not included
+                md["analysis_BCMH_source"] = source["analysis_BCMH_source"] + f"chor{r_string}_rev.rntxt"  # cf krn
+
+                if move_BCMH_analyses:
+                    src = bcmh_source / f"chor{r_string}_rev.rntxt"  # cf krn score
+                    dst = new_dir / "analysis_BCMH.txt"
+                    shutil.copy(src, dst)
+
         if music21_as_url:
             md["remote_score_music21"] = source["remote_score_music21"] + md["music21"][0]
         else:
@@ -163,7 +175,7 @@ def bach_chorales(
 
         write_json(md, new_dir / "remote.json")
 
-        if move_analyses:
+        if move_DT_analyses:
             src = dt_source / r_string
             dst = new_dir / "analysis.txt"
             shutil.copy(src, dst)
