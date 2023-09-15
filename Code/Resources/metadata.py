@@ -68,6 +68,7 @@ corelli_op1 = dict(
     remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
     analysis_DT_source="Corelli",  # NB no public listing, so relative path only
     remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op1&file="
+    # e.g. "https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op1&file=op01n03a.krn&f=kern"
 )
 
 corelli_op3 = dict(
@@ -873,6 +874,7 @@ bach_chorales = dict(
     # remote_score_mscx=raw_git + f"DCMLab/bach_chorales/{bach_commit}/MS3/",
     remote_score_krn=raw_git + "craigsapp/bach-370-chorales/master/kern/",
     # ossia http://kernscores.stanford.edu/browse?l=370chorales
+    # ossia https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/bach/chorales&file=chor-034.krn&f=kern
     remote_score_music21=raw_git + "cuthbertLab/music21/master/music21/corpus/bach/"
 )
 
@@ -905,14 +907,15 @@ madrigals = dict(
 tempered_I = dict(
     path_within_WiR=["Keyboard_Other", "Bach,_Johann_Sebastian", "The_Well-Tempered_Clavier_I"],
     items=24,
-    analysis_source="New"
+    analysis_source="New",
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/bach/keyboard/wtc&file="  # NB not "wtc-1"
 )
 
 tempered_II = dict(
     path_within_WiR=["Keyboard_Other", "Bach,_Johann_Sebastian", "The_Well-Tempered_Clavier_II"],
     items=(7, 11, 16, 23, 24),
     analysis_source="wtc_fugues",
-    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/bach/keyboard/wtc-2&file="
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/bach/keyboard/wtc&file="  # NB not "wtc-2"
 )
 
 chopin_commit = "ad38f0a82e5c50740b1d70a41c84924562bdf9f2"
@@ -923,7 +926,7 @@ chopin_etudes = dict(
     item_keys="Number",
     items=(1, 12),
     analysis_source="New",
-    remote_score_mscx="https://musescore.com/user/33306646/sets/5102068"
+    remote_score_mscx="https://musescore.com/user/33306646/sets/5102068"  # TODO downloadable copy
 )
 
 chopin_mazurkas = dict(
@@ -1010,6 +1013,7 @@ chopin_mazurkas = dict(
     remote_score_mscx=raw_git + f"DCMLab/chopin_mazurkas/{chopin_commit}/MS3/",
     analysis_DT_source="Chopin",  # NB no public listing, so relative path only
     remote_score_krn=raw_git + "craigsapp/chopin-mazurkas/master/kern/",
+    # ossia "https://kern.humdrum.org/cgi-bin/ksdata?l=users/craig/classical/chopin/mazurka&file=mazurka06-1.krn&f=kern"
 )
 
 # All new, no remote content
@@ -1281,7 +1285,7 @@ sonatas_Beethoven = dict(
     analysis_BPS_source=raw_git + f"Tsung-Ping/functional-harmony/master/BPS_FH_Dataset/",
     analysis_DCML_source=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/beethoven_piano_sonatas/{lvb_commit}/MS3/",
-    analysis_DT_source="Beethoven",  # NB no public listing, so relative path only
+    analysis_DT_source="Beethoven",  # NB no public listing, so relative path only. TODO when public
     remote_score_krn=raw_git + "craigsapp/beethoven-piano-sonatas/master/kern/",
     # No such split file issues here
 )
@@ -1293,8 +1297,8 @@ sonatas_Mozart = dict(
         (279, 280, 281, 282, 283, 284, 309, 310, 311, 330, 331, 332, 333, 457, 533, 545, 570, 576)
     ),  # always 3 movements so no need to specify
     analysis_source=raw_git + f"DCMLab/mozart_piano_sonatas/harmonies/",
-    remote_score_mscx=raw_git + f"DCMLab/mozart_piano_sonatas/MS3/",
-    analysis_DT_source="Mozart",  # NB no public listing, so relative path only
+    remote_score_mscx=raw_git + f"DCMLab/mozart_piano_sonatas/main/MS3/",  # NB main. Next update, add specific commit
+    analysis_DT_source="Mozart",  # NB no public listing, so relative path only. TODO when public
     # remote_score_krn=raw_git + "craigsapp/mozart-piano-sonatas/master/kern/",
     # Omit ^ Split files too complex (e.g., "sonata06-3m.krn").
 )
@@ -1328,7 +1332,7 @@ quartets_Beethoven = dict(
         (135, None, 4),
     ),
     analysis_source=raw_git + f"DCMLab/ABC/harmonies/",
-    remote_score_mscx=raw_git + f"DCMLab/ABC/MS3/",
+    remote_score_mscx=raw_git + f"DCMLab/ABC/main/MS3/",  # NB main. Next update, add specific commit
     # TODO consider adding "remote_score_krn"
 )
 
@@ -1344,8 +1348,8 @@ haydn_op20 = dict(
         (20, 5, 4),
         (20, 6, 4)
     ),
-    analysis_source="napulen/haydn_op20_harm/master/op20/",
-    remote_score_krn="napulen/humdrum-haydn-quartets/master/kern/"
+    analysis_source=raw_git + "napulen/haydn_op20_harm/master/op20/",
+    remote_score_krn=raw_git + "napulen/humdrum-haydn-quartets/master/kern/"
 )
 
 haydn_op74 = dict(
@@ -1357,7 +1361,7 @@ haydn_op74 = dict(
         (74, 3, 4)
     ),
     analysis_source="Haydn",
-    remote_score_krn="napulen/humdrum-haydn-quartets/master/kern/"
+    remote_score_krn=raw_git + "napulen/humdrum-haydn-quartets/master/kern/"
 )
 
 brahms_op51 = dict(
@@ -1368,5 +1372,5 @@ brahms_op51 = dict(
         (51, 1, 4),
     ),
     analysis_source="Brahms",
-    score_source=raw_git + "OpenScore/StringQuartets/main/scores/Brahms,_Johannes/Op51_No1/"
+    score_source="OpenScore/StringQuartets/main/scores/Brahms,_Johannes/Op51_No1/"  # TODO raw_git + when public
 )
