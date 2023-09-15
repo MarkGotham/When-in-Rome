@@ -25,12 +25,13 @@ Plot
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+
+from more_itertools import take
 from scipy.optimize import curve_fit
 from typing import Callable, Union
 from music21 import roman
 
 from . import CODE_FOLDER, data_by_heading, load_json
-
 from .Pitch_profiles import chord_usage
 
 ANTHOLOGY_PATH = CODE_FOLDER.parent / "Anthology"
@@ -572,6 +573,57 @@ def plot_counts(
     return plt
 
 
+def plot_most_common(
+    corpus_name: str = "OpenScore-LiederCorpus",
+    n: int = 10,
+    save_fig: bool = True,
+    out_path: Path | None = None
+) -> plt:
+    """
+    Similar to `plot_usage`, but for the
+    most used chords (figures),
+    and with maj / mino plotted separately.
+
+    Args:
+        corpus_name: one of the sub-corpora
+        n: how many
+        save_fig: bool. Save a copy
+        out_path: Path | None. Path to write to. If None, use ANTHOLOGY_PATH / corpus_name.
+
+    Returns: plt
+
+    """
+    base = CODE_FOLDER / "Resources" / "chord_usage"
+
+    for mode in ["major", "minor"]:
+        data = take(n, load_json(base / f"{mode}_{corpus_name}_simple.json").items())  # list of tuples
+
+        keys = [x[0] for x in data]
+        vals = [x[1] for x in data]
+
+        x = np.arange(len(data))
+        bar_width = 0.8
+
+        fig, ax = plt.subplots(layout='constrained')
+
+        ax.bar(keys, vals, width=1, edgecolor="white", linewidth=0.7)
+        # ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+        #        ylim=(0, 8), yticks=np.arange(1, 8))
+
+        ax.set_ylabel("Frequency (%)")
+
+        # ax.set_ylim(0, round(max_val, 2))  # top border = highest value; care if using with title
+        ax.set_xlabel("RN Figure")
+
+        if not out_path:
+            out_path = ANTHOLOGY_PATH / corpus_name
+
+        if save_fig:
+            plt.savefig(out_path / f"most_common_{mode}.pdf", facecolor="w", edgecolor="w", format="pdf")
+        else:
+            plt.show()
+
+
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -583,6 +635,7 @@ if __name__ == "__main__":
     parser.add_argument("--plot_N6_usage", action="store_true")
     parser.add_argument("--plot_Aug6_usage", action="store_true")
     parser.add_argument("--plot_counts", action="store_true")
+    parser.add_argument("--plot_most_common", action="store_true")
 
     parser.add_argument(
         "--corpus",
@@ -628,6 +681,9 @@ if __name__ == "__main__":
 
     elif args.plot_counts:
         plot_counts()
+
+    elif args.plot_most_common:
+        plot_most_common(corpus_name=args.corpus)
 
     else:
         parser.print_help()
