@@ -157,7 +157,9 @@ def bach_chorales(
 
         md["remote_score_mxl"] = source["remote_score_mxl"] + r_string + "/short_score.mxl"
         md["analysis_source"] = f"{source['analysis_source']}/riemenschneider{r_string}.txt"
-        md["remote_score_krn"] = source["remote_score_krn"] + f"chor{r_string}.krn"
+
+        if md["Riemenschneider"] != 150:  # Missing from Sapp collection
+            md["remote_score_krn"] = source["remote_score_krn"] + f"chor{r_string}.krn"
 
         if md["Riemenschneider"] <= 101:
             if md["Riemenschneider"] != 70:  # Not included
