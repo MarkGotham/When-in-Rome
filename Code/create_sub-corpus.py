@@ -91,6 +91,7 @@ def corelli_op3n4() -> None:
 
                 md["analysis_source"] = source['analysis_source'] + f"{their_str}.tsv"
                 md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
+                # https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file=op3n1-04.krn&f=kern
                 md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}.krn&f=kern"
 
                 write_json(md, mvt_dir / "remote.json")
@@ -275,9 +276,52 @@ def madrigals(move_analyses: bool = True) -> None:
 
 # Keyboard_Other
 
-def tempered_II(move_analyses: bool = True) -> None:
+
+def tempered_I(move_analyses: bool = False) -> None:
     """
-    Build the WTC sub-corpus.
+    Provide remote information for WTC I fugues where both analysis and score are remote
+    (NB - not preludes where score and analysis are local).
+    TODO use open score fugue scores instead?
+
+    Scores = Krn remote
+    Analyses = DT.
+
+    Args:
+        move_analyses: If True, move DT analyses from local copy to WiR.
+    Returns: None
+    """
+
+    source = metadata.tempered_I
+    parent_dir_path = make_parent_dirs(source["path_within_WiR"])
+    dt_source = DT_BASE / source["analysis_source"]
+
+    for item in source["items"]:
+
+        md = dict()
+
+        z_num = str(item).zfill(2)
+
+        new_dir = parent_dir_path / (z_num + "_fugue")
+        make_dir(new_dir)
+
+        their_string = f"wtc1f{z_num}"  # NB diff
+
+        md["remote_score_krn"] = source["remote_score_krn"] + their_string + ".krn&f=kern"
+        md["composer"] = get_composer(source)
+
+        md["analysis_source"] = f"{source['analysis_source']}/{their_string}.txt"
+        write_json(md, new_dir / "remote.json")
+
+        if move_analyses:
+            src = dt_source / f"{their_string}.txt"
+            dst = new_dir / "analysis.txt"
+            shutil.copy(src, dst)
+
+
+def tempered_II(move_analyses: bool = False) -> None:
+    """
+    See `tempered_I` and TODO DRY
+
     Scores = Krn remote
     Analyses = DT.
 
@@ -299,7 +343,7 @@ def tempered_II(move_analyses: bool = True) -> None:
         new_dir = parent_dir_path / (z_num + "_fugue")
         make_dir(new_dir)
 
-        their_string = f"wtc2f{z_num}"
+        their_string = f"wtc2f{z_num}"  # NB diff
 
         md["remote_score_krn"] = source["remote_score_krn"] + their_string + ".krn&f=kern"
         md["composer"] = get_composer(source)

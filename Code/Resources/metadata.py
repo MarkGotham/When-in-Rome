@@ -91,6 +91,8 @@ corelli_op3 = dict(
     analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
     remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file="
+    # NB different from op 1!
+    # e.g. "https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file=op3n1-04.krn&f=kern"
 )
 
 corelli_op4 = dict(
@@ -906,7 +908,7 @@ madrigals = dict(
 
 tempered_I = dict(
     path_within_WiR=["Keyboard_Other", "Bach,_Johann_Sebastian", "The_Well-Tempered_Clavier_I"],
-    items=24,
+    items=(19, 22),
     analysis_source="New",
     remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/bach/keyboard/wtc&file="  # NB not "wtc-1"
 )
