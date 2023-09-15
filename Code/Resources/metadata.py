@@ -114,7 +114,9 @@ corelli_op4 = dict(
     ),
     analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
-    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file="
+    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op4&file="
+    # NB like op3
+    # e.g. "https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op4&file=op4n1-01.krn&f=kern"
 )
 
 # ------------------------------------------------------------------------------

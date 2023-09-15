@@ -88,11 +88,12 @@ def corelli_op3n4() -> None:
                 make_dir(mvt_dir)
 
                 their_str = f"op{str(md['Opus']).zfill(2)}n{str(md['Number']).zfill(2)}{letters[m]}"
+                # Note krn v different from op1: "op4n1-01.krn&f=kern"
+                krn_str = f"op{str(md['Opus'])}n{str(md['Number'])}-{str(m).zfill(2)}"
 
                 md["analysis_source"] = source['analysis_source'] + f"{their_str}.tsv"
                 md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
-                # https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file=op3n1-04.krn&f=kern
-                md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}.krn&f=kern"
+                md["remote_score_krn"] = source["remote_score_krn"] + f"{krn_str}.krn&f=kern"
 
                 write_json(md, mvt_dir / "remote.json")
 
