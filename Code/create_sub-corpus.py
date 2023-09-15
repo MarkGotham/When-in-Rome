@@ -749,53 +749,69 @@ def move_and_report(src, dest):
 if __name__ == "__main__":
 
     import argparse
+    parser = argparse.ArgumentParser()
 
+    arg_strings = (
+        "corelli_op1",
+        "corelli_op3n4",
 
-    def run_args():
+        "bach_chorales",
+        "goudimel",
+        "madrigals",
 
-        parser = argparse.ArgumentParser()
+        "tempered_I",
+        "tempered_II",
 
-        arg_strings = (
-            "corelli_op1",
-            "corelli_op3n4",
+        "chopin_etudes",
+        "chopin_mazurkas",
+        "debussy_suite_bergamasque",
+        "dvorak_silhouettes",
+        "grieg_lyric_pieces",
+        "liszt_pelerinage",
+        "medtner_tales",
+        "schumann_kinderszenen",
+        "tchaikovsky_seasons",
 
-            "bach_chorales",
-            "goudimel",
-            "madrigals",
+        "sonatas_Mozart",
+        "sonatas_Beethoven",
 
-            "tempered_I",
-            "tempered_II",
+        "quartets_Beethoven",
+        "haydn_op20",
+        "haydn_op74",
+        "brahms_op51"
+    )
 
-            "chopin_etudes",
-            "chopin_mazurkas",
-            "debussy_suite_bergamasque",
-            "dvorak_silhouettes",
-            "grieg_lyric_pieces",
-            "liszt_pelerinage",
-            "medtner_tales",
-            "schumann_kinderszenen",
-            "tchaikovsky_seasons",
-
-            "sonatas_Mozart",
-            "sonatas_Beethoven",
-
-            "quartets_Beethoven",
-            "haydn_op20",
-            "haydn_op74",
-            "brahms_op51"
+    for arg in arg_strings:  # add each arg separately
+        parser.add_argument(
+            "--" + arg,
+            action="store_true",
+            help=f"Create sub-corpus {arg}."
         )
 
-        for x in arg_strings:
-            parser.add_argument("--" + x, action="store_true")
+    parser.add_argument(  # add the option to run every arg
+        "--all",
+        action="store_true",
+        help="Create all sub-corpora."
+    )
 
-        args = parser.parse_args()
+    args = parser.parse_args()
 
-        for y in arg_strings:
-            if args.__getattribute__(y):
-                eval(y + "()")
-                return
+    def find_and_run_arg():
+        for this_arg in arg_strings:
+            if args.__getattribute__(this_arg):  # run one
+                eval(this_arg + "()")
+                return True
+        return False
 
-        parser.print_help()
+    if args.all:  # run all
+        for arg in arg_strings:
+            try:
+                eval(arg + "()")
+            except:
+                print(f"WARNING: cannot run {arg}")
 
-
-    run_args()
+    else:
+        if find_and_run_arg():
+            pass
+        else:
+            parser.print_help()
