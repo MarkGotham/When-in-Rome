@@ -870,7 +870,7 @@ bach_chorales = dict(
          ),
     analysis_source="Bach Chorales",  # NB no public listing, so relative path only
     analysis_BCMH_source=raw_git + f"napulen/BCMH/master/BCMH_dataset/rntxt/",
-    remote_score_mxl=raw_git + "MarkGotham/Chorale-Corpus/Bach,_Johann_Sebastian/Chorales/",
+    remote_score_mxl=raw_git + "MarkGotham/Chorale-Corpus/main/Bach,_Johann_Sebastian/Chorales/",  # NB main
     # remote_score_mscx=raw_git + f"DCMLab/bach_chorales/{bach_commit}/MS3/",
     remote_score_krn=raw_git + "craigsapp/bach-370-chorales/master/kern/",
     # ossia http://kernscores.stanford.edu/browse?l=370chorales
