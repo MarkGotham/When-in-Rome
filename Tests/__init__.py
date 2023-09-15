@@ -1,4 +1,4 @@
-from Code import data_by_heading
+from Code import data_by_heading, get_corpus_files
 import unittest
 from pathlib import Path
 
