@@ -1255,7 +1255,7 @@ sonatas_Beethoven = dict(
         (13, None, "Pathetique", 3, True),
 
         (14, 1, None, 3, True),
-        (14, 2, None, 4, True),  # 10
+        (14, 2, None, 3, True),  # 10
 
         (22, None, None, 4, False),
 
