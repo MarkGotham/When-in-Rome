@@ -1,4 +1,31 @@
-# TODO split this into two: `get_remote_scores` user function and `test_remote_score_URLs` testing validity
+# -*- coding: utf-8 -*-
+"""
+NAME
+===============================
+Test Remote Score URLs (test_remote_urls.py)
+
+BY:
+===============================
+Malcolm Sailor and Mark Gotham, 2023
+
+
+LICENCE:
+===============================
+Creative Commons Attribution-ShareAlike 4.0 International License
+https://creativecommons.org/licenses/by-sa/4.0/
+
+
+ABOUT:
+===============================
+
+Test validity of remote urls.
+Curently score only.
+
+# TODO consider splitting this into two: `get_remote_scores` user function and `test_remote_score_URLs` testing validity
+
+See also `collect_convert.convert_and_write_local`
+
+"""
 
 import json
 from functools import partial
@@ -29,10 +56,18 @@ def download_file(url, empty_files, errors, invalid_urls):
         errors.append(url)
 
 
+remote_score_keys = [
+    "remote_score_mscx",
+    "remote_score_krn",
+    "remote_score_mxl",
+]
+
+
 def main():
     manager = Manager()
     empty_files = manager.list()
     errors = manager.list()
+    not_urls = manager.list()
     invalid_urls = manager.list()
     files_to_download = []
     download_f = partial(
@@ -41,16 +76,21 @@ def main():
     for f in files:
         with open(f) as inf:
             data = json.load(inf)
-        for key in [
-            "remote_score_mscx",
-            "remote_score_krn",
-            "remote_score_mxl",
-        ]:
+        for key in remote_score_keys:
             if key in data:
                 url = data[key]
+
+                if url is None:  # Key set but already declared to not exist
+                    continue
+
                 if not isinstance(url, str):
                     invalid_urls.append(f)
                     continue
+
+                if not url.startswith("https://"):
+                    not_urls.append(f)
+                    continue
+
                 files_to_download.append(url)
 
     with Pool(24) as pool:
@@ -63,9 +103,15 @@ def main():
     for f in errors:
         print(f)
 
+    print(f"{len(not_urls)} strings that are perhaps paths, not urls")
+    for f in not_urls:
+        print(f)
+
     print(f"{len(invalid_urls)} invalid URLS")
     for f in invalid_urls:
         print(f)
+
+    return empty_files + errors + not_urls + invalid_urls  # return flat long list
 
 
 if __name__ == "__main__":
