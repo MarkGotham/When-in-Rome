@@ -58,7 +58,9 @@ def corelli_op1(move_analyses: bool = True) -> None:
 
             md["analysis_source"] = source['analysis_source'] + f"{their_str}.tsv"
             md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
-            md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}.krn&f=kern"
+
+            if "remote_score_krn" in source.keys():
+                md["remote_score_krn"] = source["remote_score_krn"] + f"{their_str}.krn&f=kern"
 
             # DT
             md["analysis_DT_source"] = f"{source['analysis_DT_source']}/{their_str}.txt"
@@ -93,7 +95,9 @@ def corelli_op3n4() -> None:
 
                 md["analysis_source"] = source['analysis_source'] + f"{their_str}.tsv"
                 md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
-                md["remote_score_krn"] = source["remote_score_krn"] + f"{krn_str}.krn&f=kern"
+
+                if "remote_score_krn" in source.keys():
+                    md["remote_score_krn"] = source["remote_score_krn"] + f"{krn_str}.krn&f=kern"
 
                 write_json(md, mvt_dir / "remote.json")
 

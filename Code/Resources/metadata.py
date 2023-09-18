@@ -67,8 +67,9 @@ corelli_op1 = dict(
     analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
     analysis_DT_source="Corelli",  # NB no public listing, so relative path only
-    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op1&file="
+    # remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op1&file="
     # e.g. "https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op1&file=op01n03a.krn&f=kern"
+    # Mostly works, but some movement inconsistency. See #95
 )
 
 corelli_op3 = dict(
@@ -93,6 +94,7 @@ corelli_op3 = dict(
     remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file="
     # NB different from op 1!
     # e.g. "https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op3&file=op3n1-04.krn&f=kern"
+    # This one actually works throughout
 )
 
 corelli_op4 = dict(
@@ -114,9 +116,10 @@ corelli_op4 = dict(
     ),
     analysis_source=raw_git + f"DCMLab/corelli/{corelli_commit}/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/corelli/{corelli_commit}/MS3/",
-    remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op4&file="
+    # remote_score_krn="https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op4&file="
     # NB like op3
     # e.g. "https://kern.humdrum.org/cgi-bin/ksdata?l=musedata/corelli/op4&file=op4n1-01.krn&f=kern"
+    # Mostly works, but some movement inconsistency. See #95
 )
 
 # ------------------------------------------------------------------------------
