@@ -1335,7 +1335,7 @@ quartets_Beethoven = dict(
         (132, None, 3),
         (135, None, 4),
     ),
-    analysis_source=raw_git + f"DCMLab/ABC/harmonies/",
+    analysis_source=raw_git + f"DCMLab/ABC/main/harmonies/",
     remote_score_mscx=raw_git + f"DCMLab/ABC/main/MS3/",  # NB main. Next update, add specific commit
     # TODO consider adding "remote_score_krn"
 )

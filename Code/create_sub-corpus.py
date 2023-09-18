@@ -643,8 +643,8 @@ def quartets_Beethoven():
             md["movement"] = m
             make_dir(parent_dir_path / our_string / str(m))
             their_full_string = "_".join([their_opus_str, str(m).zfill(2)])
-            md["analysis_source"] = source['analysis_source'] + their_full_string + ".tsv"
-            md["remote_score_mscx"] = source['remote_score_mscx'] + their_full_string + ".tsv"
+            md["analysis_source"] = source['analysis_source'] + their_full_string + ".harmonies.tsv"
+            md["remote_score_mscx"] = source['remote_score_mscx'] + their_full_string + ".mscx"
             write_json(md, parent_dir_path / our_string / str(m) / "remote.json")
 
 
@@ -733,7 +733,7 @@ def simple_case(source: dict) -> None:
         their_str = f"op{str(md['Opus']).zfill(2)}n{str(md['Number']).zfill(2)}"
         our_string = f"Op{str(md['Opus']).zfill(2)}_No{md['Number']}"
         make_dir(parent_dir_path / our_string)
-        md["analysis_source"] = source["analysis_source"] + f"{their_str}.tsv"
+        md["analysis_source"] = source["analysis_source"] + f"{their_str}.harmonies.tsv"
         md["remote_score_mscx"] = source["remote_score_mscx"] + f"{their_str}.mscx"
         write_json(md, parent_dir_path / our_string / "remote.json")
 
