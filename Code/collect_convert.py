@@ -524,21 +524,27 @@ def remote_TAVERN(
         write_score: bool = False
 ) -> None:
     """
-    Remote scores for the TAVERN variations.
+    For the TAVERN variations,
+    create `remote.json`
+    and optionally convert the scores and write local copies.
 
-    Args:
+        Args:
         local_path: See notes at remotes
         Beethoven (bool): `True` for the Beethoven side of the collection, `False` for Mozart.
         write_score: See notes at remotes
     Returns: None
+
+    TODO move to `resources/metadata` and `create_sub-corpus` like the others. TAVERN is 300+ MB
     """
 
     local_base_path = os.path.join(CORPUS_FOLDER, *local_path)
-    remote_base_path = raw_git + "jcdevaney/TAVERN/blob/master/"
+    remote_base_path = raw_git + "jcdevaney/TAVERN/master/"
     if Beethoven:
         remote_base_path += "Beethoven/"
+        composer = "Beethoven, Ludwig van"
     else:
         remote_base_path += "Mozart/"
+        composer = "Mozart, Wolfgang Amadeus"
 
     opus_strings = list_dir_sorted_not_hidden(local_base_path)
 
@@ -565,10 +571,11 @@ def remote_TAVERN(
             convert_and_write_local(remote_URL_path=remote_URL_path,
                                     local_path=local_path)
         else:
-            this_metadata = dict(catalogue_type=cat_type,
-                                 catalogue_number=cat_number,
-                                 remote_URL_path=remote_URL_path
-                                 )
+            this_metadata = {
+                "composer": composer,
+                cat_type: cat_number,
+                "remote_score_krn": remote_URL_path
+            }
 
             write_path = os.path.join(local_path, "remote.json")
             with open(write_path, "w") as json_file:
