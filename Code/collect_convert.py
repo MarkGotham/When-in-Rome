@@ -638,6 +638,24 @@ def convert_and_write_local(remote_URL_path,
         environment.set("autoDownload", before)  # Restore settings as they were
 
 
+def create_default_analysis_from_mix(
+        corpus_path: Path = CORPUS_FOLDER / "Piano_Sonatas" / "Beethoven,_Ludwig_van",
+        priority_list: list | None = None
+) -> None:
+    """
+    Create `analysis.txt` files where they are absent by copying
+    "analysis_<xyz>.txt" files or one or more type in an order specified by `priority_list`.
+    """
+    if priority_list is None:
+        priority_list = ["analysis_DT.txt", "analysis_DCML.txt"]
+    for p in priority_list:
+        print(f"***Checking for presence of `{p}` without `analysis.txt`")
+        for src in get_corpus_files(corpus_path, p):
+            dst = src.parent / "analysis.txt"
+            if not dst.exists():
+                shutil.copyfile(src, dst)
+
+
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -653,7 +671,8 @@ if __name__ == "__main__":
                    "--remote_Beethoven_variations_list",
                    "--remote_Mozart_variations_list",
                    "--update_all_DCML_analyses_from_json",
-                   "--convert_corpus_to_dez"
+                   "--convert_corpus_to_dez",
+                   "--create_default_analysis_from_mix"
                    )
 
     for x in arg_strings:
@@ -684,5 +703,7 @@ if __name__ == "__main__":
         remote_scores(["Variations_and_Grounds", "Mozart,_Wolfgang_Amadeus", "_"])
     elif args.convert_corpus_to_dez:
         convert_corpus_to_dez()
+    elif args.create_default_analysis_from_mix:
+        create_default_analysis_from_mix()
     else:
         parser.print_help()
