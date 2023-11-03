@@ -446,7 +446,7 @@ if __name__ == "__main__":
     elif args.process_corpus:
         process_corpus(corpus_name=args.corpus)
     elif args.check_all_parse:
-        check_all_parse(corpus=args.corpus)
+        check_all_parse(corpus=CORPUS_FOLDER / args.corpus)
     elif args.anthology:
         from . import anthology
         anthology.all_searches_one_corpus(corpus=args.corpus)
