@@ -262,10 +262,10 @@ def fill_empty_initial(data: list[dict], tag: str = "Phrase", score: stream.Scor
 
 dez_metadata_preset = {
     "layout": [
-        dict(filter={"type": "Form"}, style={"line": "bot.1", "color": "blue"}),
-        dict(filter={"type": "Phrase"}, style={"line": "bot.2", "color": "orange"}),
-        dict(filter={"type": "Harmony"}, style={"line": "bot.3", "color": "green"}),
-        dict(filter={"type": "Tonality"}, style={"line": "bot.4", "color": "purple"})
+        dict(filter={"type": "Form"}, style={"line": "top.2", "color": "blue"}),
+        dict(filter={"type": "Phrase"}, style={"line": "top.1", "color": "orange"}),
+        dict(filter={"type": "Harmony"}, style={"line": "bot.1", "color": "green"}),
+        dict(filter={"type": "Tonality"}, style={"line": "bot.2", "color": "purple"})
     ]
 }
 
