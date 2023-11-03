@@ -163,7 +163,7 @@ def plot_hist(
 
     incr = (mx - mn) / bins
 
-    plt.figure(figsize=(15, 6))
+    plt.figure(figsize=(10, 6))
 
     plt.hist(data_list,
              bins=bins,
@@ -172,17 +172,19 @@ def plot_hist(
              align="mid",
              )
 
-    plt.title(title, fontsize=20, family="serif")
     plt.xlabel(xlabel, fontsize=14, family="serif")
     plt.ylabel(ylabel, fontsize=14, family="serif")
     plt.xticks(np.arange(mn, mx, incr))
-    plt.yticks(np.arange(0, 10, 1))
 
-    if not title:
+    plt.tight_layout()
+
+    if title:
+        plt.title(title, fontsize=20, family="serif")
+    else:
         title = "Plot"
 
     if save_fig:
-        plt.savefig(title + ".pdf",
+        plt.savefig(ANTHOLOGY_PATH / (title + ".pdf"),
                     facecolor="w",
                     edgecolor="w",
                     format="pdf")
@@ -382,15 +384,17 @@ def plot_prog_by_positions(
     data = data_by_heading(ANTHOLOGY_PATH / corpus_name / (what + ".csv"))
     position_strings = [x["MEASURE"] for x in data]
     positions = []
-    for i in range(len(position_strings)):
+    for i in range(len(position_strings)):  # e.g., "32-33/36"
         x, y = position_strings[i].split("/")
+        if "-" in x:
+            x = x.split("-")[0]
         positions.append(100 * int(x) / int(y))
 
     plot_hist(
         positions,
         xlabel="Position in work (%, binned)",
         ylabel="Frequency",
-        title=f"{what}_{corpus_name}",
+        # title=f"{what}_{corpus_name}",
     )
 
 
@@ -430,7 +434,11 @@ def plot_usage(
     elif what == "N6":
         minor_data = chord_usage.get_N6s(this_mode="minor", corpus_name=corpus_name)
         major_data = chord_usage.get_N6s(this_mode="major", corpus_name=corpus_name)
-        all_keys = list(minor_data.keys()) + list(major_data.keys())
+        all_keys = list(minor_data.keys())  # usually all there ;)
+        for k in major_data.keys():
+            if k not in all_keys:
+                print("Adding the following key used in major contexts only: ", k)
+                all_keys.append(k)
     elif what == "User":
         chord_usage_dir = CODE_FOLDER / "Resources" / "chord_usage"
         minor_data = load_json(chord_usage_dir / f"minor_{corpus_name}_simple.json")
@@ -516,11 +524,12 @@ def plot_counts(
                    "Early_Choral"
                    ]
     if what is None:
-        what = ["ascending_fifths",
-                "descending_fifths",
-                "aufsteigender_Quintfall",
-                "fallender_Quintanstieg"
-                ]
+        what = [
+            "ascending_fifths",
+            "descending_fifths",
+            "aufsteigender_Quintfall",
+            "fallender_Quintanstieg"
+        ]
 
     import csv
 
