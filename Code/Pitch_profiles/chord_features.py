@@ -26,17 +26,15 @@ Extract features of chords
 and chord-source comparisons
 e.g., for categorisation tasks in machine learning.
 
-
-TODO: Currently limited to single chord. Include chord progressions here too.
-
 """
 
-from . import chord_comparisons
-from . import normalisation_comparison
+from . import chord_comparisons, normalisation_comparison
 from ..Resources import chord_profiles, import_chord_usage_stats
-from .. import harmonicFunction
+from .. import REPO_FOLDER, harmonicFunction, load_json, write_json
 
 from music21 import analysis, roman
+
+from pathlib import Path
 
 
 # ------------------------------------------------------------------------------
@@ -562,7 +560,160 @@ def simplify_chord(
 
 # ------------------------------------------------------------------------------
 
+def single_to_pair(
+        path_to_single: Path = REPO_FOLDER / "Tests" / "Resources" / "Example" / "profiles_and_features_by_chord.json",
+        harmonic_rhythm_list=None,
+        out_path: Path | None = None
+) -> None:
+    """
+    Takes in a `profiles_and_features_by_chord.json` file,
+    specifically the key, chord, and chordPCPVector for each pair of chords (successive entries),
+    and creates a `transition_features.json` file with the following diffs:
+
+    `diffChordPCPVector`:
+    difference between the two binary PCPs
+
+    `diff_root_rotated_pcp_vector`:
+    the same but rotated to the first chord's root note (for transposition equivalent progressions).
+
+    `diff_key_rotated_pcp_vector`:
+    the same but rotated to the first key's tonic note (for key-relative equivalent progressions).
+
+    `harmonicRhythmPair`:
+    a comparative measure to the nearest value in a fixed list which is settable, and defaults to
+    3 (i.e., 3x as long as in a 3:1 rhythm),
+    2,
+    1 (equal in length),
+    and the same the other way round
+    1/2 (i.e., 1:2),
+    and 1/3.
+
+    TODO accept analysis as direct input?
+
+    """
+
+    in_data = load_json(path_to_single)
+    out_data = []
+
+    if harmonic_rhythm_list is None:
+        harmonic_rhythm_list = [3, 2, 1, 1 / 2, 1 / 3]
+
+    for i in range(len(in_data) - 1):
+        c1 = in_data[i]
+        c2 = in_data[i + 1]
+
+        assert len(c1["chosenChordPCPVector"]) == 12
+
+        diff_chord_pcp_vector = [0] * 12
+        for j in range(12):
+            if c1["chosenChordPCPVector"][j] != c2["chosenChordPCPVector"][j]:
+                diff_chord_pcp_vector[j] = 1
+
+        diff_root_rotated_pcp_vector = chord_comparisons.rotate(diff_chord_pcp_vector, 12 - c1["rootPitchClassVector"][0])
+
+        tonic = string_to_PC(c1["key"])
+        diff_key_rotated_pcp_vector = chord_comparisons.rotate(diff_chord_pcp_vector, tonic)
+
+        rat = c1["quarter length"] / c2["quarter length"]
+
+        diff = 10
+        index = 0
+
+        for i in range(len(harmonic_rhythm_list)):
+            if harmonic_rhythm_list[i] == rat:
+                index = i
+                break
+            else:
+                this_diff = abs(harmonic_rhythm_list[i] - rat)
+                if this_diff < diff:
+                    diff = this_diff
+                    index = i
+
+        harmonic_rhythm_vector = [0] * len(harmonic_rhythm_list)
+        harmonic_rhythm_vector[index] = 1
+        # ossia min(harmonic_rhythm_list, key=lambda x: abs(x - rat))
+
+        new_dict = {
+            "HP1-diffChordPCPVector": diff_chord_pcp_vector,
+            "HP2-diffRootRotatedPCPVector": diff_root_rotated_pcp_vector,
+            "HP3-diffKeyRotatedPCPVector": diff_key_rotated_pcp_vector,
+            "HP4-harmonicRhythmVector": harmonic_rhythm_vector
+        }
+
+        out_data.append(new_dict)
+
+    if out_path is None:
+        out_path = path_to_single.parent / "transition_features.json"
+
+    write_json(out_data, out_path)
+
+
+def string_to_PC(pitch_string: str):
+    """
+    (From https://github.com/MarkGotham/Serial_Analyser).
+
+    Converts a string like 'Bb' to the corresponding pc integer (10).
+
+    First character must be one of the unmodified pitches: C, D, E, F, G, A, B
+    (not case sensitive).
+
+    Any subsequent characters must indicate a single accidental type: one of
+    '♭', 'b' or '-' for flat;
+    '♯', '#', and '+' for sharp.
+
+    >>> es = 'Eb'
+    >>> string_to_PC(es)
+    3
+
+    >>> eses = 'Ebb'
+    >>> string_to_PC(eses)
+    2
+
+    Note that 's' is not a supported accidental type as it is ambiguous:
+    'Fs' probably indicates F#, but Es is more likely Eb (German).
+
+    Also unsupported:
+     mixtures of sharps and flats (e.g. B#b);
+     symbols for double sharps etc.;
+     any other symbols (including white space).
+    """
+
+    # Four conditions
+
+    # 1: type
+    if type(pitch_string) != str:
+        raise TypeError('Invalid pitch_string: must be a string')
+
+    # 2: base pitch
+    base_pitch_steps = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+    pitch_string = pitch_string.lower()
+    if pitch_string[0] not in base_pitch_steps:
+        raise ValueError(f'Invalid first character: must be one of {base_pitch_steps}.')
+
+    # 3: valid accidental
+    modifier = 0
+    if len(pitch_string) > 1:
+        accidental = pitch_string[1]
+        if accidental in ['♭', 'b', '-']:
+            modifier = -1
+        elif accidental in ['♯', '#', '+']:
+            modifier = +1
+        else:
+            raise ValueError('Invalid second character: must be an accidental.')
+
+        # 4: same accidental
+        if len(pitch_string) > 2:
+            for x in pitch_string[2:]:
+                assert (x == accidental)
+            modifier *= len(pitch_string) - 1
+
+    initial = {'c': 0, 'd': 2, 'e': 4, 'f': 5, 'g': 7, 'a': 9, 'b': 11}
+
+    return (initial[pitch_string[0]] + modifier) % 12
+
+
+# ------------------------------------------------------------------------------
+
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()
