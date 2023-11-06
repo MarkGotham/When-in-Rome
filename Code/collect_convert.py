@@ -596,8 +596,8 @@ def convert_corpus_to_dez(
     for f in file_paths:
         print("INFO: ", f.parent)
         dez_path = f.parent / "analysis_dez_format.dez"
-        if overwrite and dez_path.exists():
-            print(" ... `.dez` already exists, stopping.")
+        if not overwrite and dez_path.exists():
+            print(" ... `.dez` file already exists, stopping.")
         else:
             try:
                 print(".")
