@@ -28,6 +28,7 @@ from . import REPO_FOLDER
 example_base_path = REPO_FOLDER / "Tests" / "Resources" / "Example"
 
 from music21 import converter, pitch, roman, romanText, spanner, stream
+from pathlib import Path
 import numpy as np
 
 import csv
@@ -201,7 +202,10 @@ def retrieve_phrase(s: stream.Score, durations: bool = True, empty_initial: bool
     return return_data
 
 
-def deduce_durations(data: list[dict], score: stream.Score | None = None) -> list[dict]:
+def deduce_durations(
+        data: list[dict],
+        score: stream.Score | None = None
+) -> list[dict] | None:
     """
     Deduce duration information for any data where that is missing or incomplete.
     Deduction from successive start positions (assuming no gaps)
@@ -214,6 +218,10 @@ def deduce_durations(data: list[dict], score: stream.Score | None = None) -> lis
     [{'type': 'Phrase', 'start': 10, 'duration': 5}, {'type': 'Phrase', 'start': 15, 'duration': 20}]
 
     """
+    if not data:
+        print("No data, skipping")
+        return
+
     for i in range(len(data) - 1):
         if not data[i]["duration"]:
             data[i]["duration"] = data[i + 1]["start"] - data[i]["start"]
@@ -221,12 +229,16 @@ def deduce_durations(data: list[dict], score: stream.Score | None = None) -> lis
     # last one from score
     if score:
         if not data[-1]["duration"]:
-            data[-1]["duration"] = score.duration.quarterLength - data[-1]["start"]
+            data[-1]["duration"] = round(score.duration.quarterLength - data[-1]["start"], 3)
 
     return data
 
 
-def fill_empty_initial(data: list[dict], tag: str = "Phrase", score: stream.Score | None = None) -> list[dict]:
+def fill_empty_initial(
+        data: list[dict],
+        tag: str = "Phrase",
+        score: stream.Score | None = None
+) -> list[dict] | None:
     """
     For dez-style json data,
     and for any given key (default is "Phrase")
@@ -241,6 +253,10 @@ def fill_empty_initial(data: list[dict], tag: str = "Phrase", score: stream.Scor
 
     If there's a score, then check the number of the first measure (usually 0 or 1) and add that.
     """
+    if not data:
+        print("No data, skipping")
+        return
+
     for d in data:
         if d["type"] == tag:
             if d["start"] != 0:
@@ -903,8 +919,8 @@ class ConverterRn2Dez(AnnotationConverter):
 
 
 def rn2dez(
-        rntxt_path,
-        dez_path,
+        rntxt_path: Path,
+        dez_path: Path | None = None,
         phrase: bool = True,
         form: bool = True,
         include_metadata: bool = True,
@@ -930,8 +946,8 @@ def rn2dez(
         chord_labels.append(
             {
                 "type": "Harmony",
-                "start": round(rn_iterator.currentHierarchyOffset(), 3),  # no fracs
-                "duration": round(rn.quarterLength, 3),
+                "start": round(float(rn_iterator.currentHierarchyOffset()), 3),  # Note: avoid fractions in json
+                "duration": round(float(rn.quarterLength), 3),
                 "tag": rn.figure,
             }
         )
@@ -961,10 +977,14 @@ def rn2dez(
     data = {"labels": chord_labels + key_labels}
 
     if phrase:
-        data["labels"] += retrieve_phrase(rntxt, durations=True, empty_initial=True)
+        phrase_labels = retrieve_phrase(rntxt, durations=True, empty_initial=True)
+        if phrase_labels:
+            data["labels"] += phrase_labels
 
     if form:
-        data["labels"] += retrieve_unprocessed_metadata(rntxt, durations=True, empty_initial=True)
+        form_labels = retrieve_unprocessed_metadata(rntxt, durations=True, empty_initial=True)
+        if form_labels:
+            data["labels"] += form_labels
 
     if include_metadata:
         if metadata is None:
@@ -979,6 +999,8 @@ def rn2dez(
                 if i not in ["type", "layers", "start", "duration", "tag"]:
                     l.pop(i)
 
+        if not dez_path:
+            dez_path = rntxt_path.parent / "analysis_dez_format.dez"
         with open(dez_path, "w") as fp:
             json.dump(data, fp, indent=4)
     else:
