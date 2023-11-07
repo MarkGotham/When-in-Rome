@@ -276,7 +276,20 @@ please cite or otherwise acknowledge one or more of the papers listed below as a
 
 ### Citation
 
-The materials provided in this repo includes supplementary resources promised in:
+Here's the best way to cite the code and/or corpus: 
+
+```
+@article{gotham_when_2023,
+	title = {When in {Rome}: a meta-corpus of functional harmony},
+	shorttitle = {When in {Rome}},
+	journal = {Transactions of the International Society for Music Information Retrieval},
+	author = {Gotham, Mark and Micchi, Gianluca and Nápoles-López, Néstor and Sailor, Malcolm},
+	year = {2023},
+}
+```
+
+Alternatively, depending on the specific context,
+it may be appropriate to cite one of the papers using this data and functionality:
 - [Dmitri Tymoczko, Mark Gotham, Michael Scott Cuthbert, Christopher Ariza. “The Romantext Format: a Flexible and Standard Method for Representing Roman Numeral Analyses”, 20th International Society for Music Information Retrieval Conference, Delft, The Netherlands, 2019.](http://archives.ismir.net/ismir2019/paper/000012.pdf )
 - [Gianluca Micchi, Mark Gotham, and Mathieu Giraud (2020). "Not All Roads Lead to Rome: Pitch Representation and Model Architecture for Automatic Harmonic Analysis", Transactions of the International Society for Music Information Retrieval, 3(1), pp. 42–54. DOI: https://doi.org/10.5334/tismir.45](https://transactions.ismir.net/articles/10.5334/tismir.45/)
 - [Néstor Nápoles López, Mark R H Gotham, & Ichiro Fujinaga. (2021). AugmentedNet: A Roman Numeral Analysis Network with Synthetic Training Examples and Additional Tonal Tasks. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 404–411](https://doi.org/10.5281/zenodo.5624533)

@@ -17,7 +17,9 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 CITATION:
 ===============================
-Watch this space!
+Gotham et al. 2023 or Gotham et al. 2021,
+see
+https://github.com/MarkGotham/When-in-Rome#citation
 
 
 ABOUT:
