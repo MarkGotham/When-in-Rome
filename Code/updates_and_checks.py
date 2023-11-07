@@ -209,7 +209,8 @@ def process_corpus(
 # Automated analyses from augmentednet
 
 def make_automated_analyses(
-        corpus: Path = CORPUS_FOLDER
+        corpus: Path = CORPUS_FOLDER,
+        file_name: str = "analysis_AugmentedNet_v1.9.1.txt"
 ) -> None:
     """
     Create automated analyses using augmentednet (Nápoles López et al. 2021).
@@ -234,7 +235,7 @@ def make_automated_analyses(
         pathrntxt = path.replace(".mxl", "_annotated.rntxt")
         annotatedScore = path.replace(".mxl", "_annotated.xml")
         annotationCSV = path.replace(".mxl", "_annotated.csv")
-        newrntxt = path.replace("score.mxl", "analysis_automatic.rntxt")
+        newrntxt = path.replace("score.mxl", file_name)
         print(path)
         if os.path.isfile(newrntxt):
             print("... Already present, skipping.")
