@@ -2,7 +2,7 @@ import unittest
 
 from music21 import roman, chord
 
-from Code.anthology import is_of_type, interval_match
+from Code.chords_and_progs import is_of_type, interval_match
 
 
 class Test(unittest.TestCase):
