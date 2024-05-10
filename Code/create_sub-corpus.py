@@ -189,7 +189,7 @@ def bach_chorales(
             shutil.copy(src, dst)
 
 
-def goudimel(move_analyses: bool = True) -> None:
+def goudimel(move_analyses: bool = False) -> None:
     """
     Build the Goudimel chorale sub-corpus.
     Scores = MG external repo
@@ -214,7 +214,7 @@ def goudimel(move_analyses: bool = True) -> None:
         make_dir(new_dir)
 
         md[source["item_keys"]] = psalm_number,
-        md["remote_score_mxl"] = source["remote_score_mxl"] + z_num + "/short_score.mxl"
+        md["remote_score_mxl"] = source["remote_score_mxl"] + f"{z_num}/Goudimel_{z_num}_modern.mxl"
         md["composer"] = get_composer(source)
         their_string = f"GenPs{z_num}_Goudimel_homoph.txt"
         md["analysis_source"] = f"{source['analysis_source']}/{their_string}"

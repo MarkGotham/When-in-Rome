@@ -886,13 +886,13 @@ bach_chorales = dict(
 )
 
 goudimel_chorales = dict(
-    path_within_WiR=["Early_Choral", "Goudimel,_Claude", "Psalmes"],
+    path_within_WiR=["Early_Choral", "Goudimel,_Claude", "Pseaumes"],
     item_keys="Psalm Number",
     items=[1, 3, 21, 25, 29, 32, 35, 36, 42, 43, 47, 49,
            52, 54, 56, 60, 66, 68, 73, 75, 79, 81, 84, 89, 97, 98, 99,
            101, 105, 108, 118, 119, 122, 123, 124, 127, 133, 135, 138, 140, 150],
     analysis_source="Goudimel",
-    remote_score_mxl=raw_git + "MarkGotham/Chorale-Corpus/Goudimel,_Claude/Psalmes/"
+    remote_score_mxl=raw_git + "MarkGotham/Chorale-Corpus/Goudimel,_Claude/Pseaumes/"
 )
 
 madrigals = dict(
