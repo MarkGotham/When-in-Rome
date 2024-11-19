@@ -163,15 +163,15 @@ m201 V7/IV
 m202 bII64 b3 V7/#iv
 m203 V7/V
 m206 viio65/V b3 bVI
-m207 b2 i64 b3 io64 b3 IVd7
+m207 b2 i64 b3 io64 b4 IVd7
 m208 I6 b3 viio65 b3.33 V65/bV
 m211 I/bV
 m212 b2 IM2/bV b3 V2/bI
-m213 b1.75 I6/bI b2.75 i6/bi b3.75 V2 b3.75 V7/VI
+m213 b1.75 bI6 b2.75 bi6 b3.75 V2 b4.75 V7/VI
 m214 b2 viio65/VI
 m215 I/VI
 m216 b2 IM2/VI b3 V2/II
-m217 b1.75 II6 b2.75 ii6 b3.75 V2/bIII b3.75 V7
+m217 b1.75 II6 b2.75 ii6 b3.75 V2/bIII b4.75 V7
 m218 b2 viio65
 m219 I
 m220 b2 V7/IV
@@ -191,10 +191,10 @@ m235 b2 #viio65/iv
 m237 V65/bVI
 m239 V43/IV
 m241 V2/ii
-m242 b2 bIII6 b3 I64 b3 V2/ii
-m243 b2 bIII6 b3 I64 b3 V2/ii
-m244 b2 bIII6 b3 I64 b3 V2/ii
-m245 bIII6 b2 I64 b3 V2/ii b3 bIII6
+m242 b2 bIII6 b3 I64 b4 V2/ii
+m243 b2 bIII6 b3 I64 b4 V2/ii
+m244 b2 bIII6 b3 I64 b4 V2/ii
+m245 bIII6 b2 I64 b3 V2/ii b4 bIII6
 m246 I64 b2 V2/ii
 m251 V
 m253 V/ii
@@ -218,7 +218,7 @@ m277 V
 m278 viio7 b3 V7
 m279 bVI6
 m280 viio2/V b3 viio43/V
-m281 V b3 viio65/V b3 viio43/V
+m281 V b3 viio65/V b4.5 viio43/V
 m282 V b3 viio6/V
 m284 b2.5 V b3.75 bVI
 m285 b3.75 bII
@@ -226,7 +226,7 @@ m286 b3.75 V7[no1][addb2]
 m288 b3 V7
 m290 I b3 bVII
 m291 b3 I
-m292 V[no3][add4] b3 V b3 V7
+m292 V[no3][add4] b3 V b4 V7
 m293 vi b3 V/III
 m294 I/III
 Time Signature: 33/32
