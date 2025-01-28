@@ -280,11 +280,19 @@ Here's the best way to cite the code and/or corpus:
 
 ```
 @article{gotham_when_2023,
-	title = {When in {Rome}: a meta-corpus of functional harmony},
+	title = {When in {Rome}: {A} {Meta}-corpus of {Functional} {Harmony}},
+	volume = {6},
+	issn = {2514-3298},
 	shorttitle = {When in {Rome}},
+	url = {https://transactions.ismir.net/articles/10.5334/tismir.165/},
+	doi = {10.5334/tismir.165},
+	language = {en},
+	number = {1},
 	journal = {Transactions of the International Society for Music Information Retrieval},
-	author = {Gotham, Mark and Micchi, Gianluca and Nápoles-López, Néstor and Sailor, Malcolm},
+	author = {Gotham, Mark and Micchi, Gianluca and López, Néstor Nápoles and Sailor, Malcolm},
+	month = nov,
 	year = {2023},
+	pages = {150--166},
 }
 ```
 
