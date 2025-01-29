@@ -303,15 +303,28 @@ it may be appropriate to cite one of the papers using this data and functionalit
 - [Néstor Nápoles López, Mark R H Gotham, & Ichiro Fujinaga. (2021). AugmentedNet: A Roman Numeral Analysis Network with Synthetic Training Examples and Additional Tonal Tasks. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 404–411](https://doi.org/10.5281/zenodo.5624533)
 - [Mark R H Gotham, Rainer Kleinertz, Christof Weiss, Meinard Müller, & Stephanie Klauk. (2021). What if the 'When' Implies the 'What'?: Human harmonic analysis datasets clarify the relative role of the separate steps in automatic tonal analysis. Proceedings of the 22nd International Society for Music Information Retrieval Conference, 229–236](https://doi.org/10.5281/zenodo.5676067)
 
-### Syntax and Contributing
+
+### Contributing analyses
 
 As the papers attest, harmonic analysis is fundamentally, necessarily, and intentionally a reductive act that includes a good degree of subjective reading.
 As such, these analyses are not in any sense 'definitive', to the exclusion of other possibilities.
 Quite the opposite: part of the point of having a representation format like this is to enable the recording of variant readings.
-Please feel free to re-analyse these works by using the existing analysis as a template and changing the parts you disagree with.
-- For minor changes, consider integrating your edits into the existing file using the variant (`var`) option that rntxt provides. E.g. `m1 I b2 IV` followed by a new line with `m1var1 I b2 ii6`
-- For more thoroughly divergent analyses, a new file may be warranted. In that case, perhaps credit the original analyst too in the format - `Analyst: [Your name] after [their name]`
-- For any cases of clear errors, please submit a pull request with the correction.
+
+For new analyses of works in the corpus please feel free to either
+- work from scratch or
+- re-analyse these works by using the existing analysis as a template and changing the parts you disagree with. In that case, credit the original analyst too in the format - `Analyst: [Your name] after [their name]`.
+
+For correcting cases of clear errors:
+- If the file originates here, please submit a pull request with the correction.
+- If the file is a conversion from a [corpus originating elsewhere](https://github.com/MarkGotham/When-in-Rome?tab=readme-ov-file#corpora-originating-elsewhere):
+     - Where there is a publicly-visible version of record for the source repo (as in the DCML cases) please propose changes to those repositories and let me know (e.g., tag) if there's an update coming. The wonderful @johentsch is still maintaining the DCML corpora.
+     - Where there is no such publicly-visible version of record please treat them as per the files that originate here and submit a PR directly.
+
+Again, corrections are for cases of clear errors, not a difference of approach.
+
+Finally, if you're an analyst that's comfortable with RNTXT but not with github, then email me. ;)
+
+### Syntax
 
 For more details of the RomanText format used to encode analyses here, see:
 - the [technical specification paper](http://archives.ismir.net/ismir2019/paper/000012.pdf), or 
