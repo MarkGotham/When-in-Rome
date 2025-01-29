@@ -26,11 +26,11 @@ We do our best to cater for that by including the _score_ wherever possible, and
 
 ### Maybe yes ...
 
-'When in Rome' data is also used in external research projects and apps including the:
+'When in Rome' data is also used in external research projects and also apps including the:
 - ["Dezrann" app for visualising score-analysis and more](http://www.dezrann.net/) (coming soon)
 - ["Open Music Theory" (OMT) textbook's harmony anthology](https://viva.pressbooks.pub/openmusictheory/chapter/anthology-harmony/)
 - ["RAWL" app](https://rawl.vercel.app)
-- ["Sibelius" (Avid) notation software](https://www.avid.com/sibelius) (by permission, coming soon)
+- ["Sibelius" (Avid) notation software](https://www.avid.com/resource-center/data-driven-workflows-within-sibelius)
 - ["TiLiA" TimeLineAnnotator]() (coming soon)
 - ["VIMU" (Visual Musicology) app](https://vimu.app) via [AugmentedNet](https://github.com/napulen/AugmentedNet)
 
