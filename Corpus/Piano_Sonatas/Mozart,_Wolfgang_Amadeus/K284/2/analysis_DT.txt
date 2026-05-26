@@ -16,7 +16,7 @@ m4 V6/5
 m5 I6 b3 V4/3
 m6 I b3 V2
 m7 I6 b2.5 V2 b3 I6 b3.5 V4/3
-m8 I b1.5 ii6 b2 I6/4 b3 V
+m8 I b1.5 ii6 b2 I64 b3 V
 m9 I b3 V7
 m10 I
 m11 V7 b3 I 
@@ -25,7 +25,7 @@ m12var1 V4/3 b3 I b3.5 V6/5
 m13 I6 b3 viio6
 m14 I b3 V2
 m15 I6 b3 IV 
-m16 I6/4 b1.5 V7 b2 I
+m16 I64 b1.5 V7 b2 I
 form: rondo B
 m17 I b2 I6 b2.5 V2 b3 I6 b3.5 V2
 m18 I6 b1.5 V6 b2 I b2.5 V4/3 b3 I b3.5 V6 
@@ -36,7 +36,7 @@ m20 V6 b1.5 I b2 V4/3 b2.5 I6 b3 V4/3 b3.5 I
 m21 b3 vi6/5 E: ii6/5 
 m22 E: V4/3
 m23 I6 b3 IV
-m24 I6/4 b2 V b3 V7
+m24 I64 b2 V b3 V7
 m24var1 b2 V b3 V7
 m25 I
 m26 V4/3 b3 V6/5
@@ -49,12 +49,12 @@ m33 A: V6 b3 I
 m34 = m12 
 m35 I6 b3 ii
 m35var1 I6 b3 viio6
-m36 I6/4 b3 V2
-m37 I6 b2.5 viio6/4 b3 I6 b3.5 viio6
-m38 I b1.5 I6 b2 I6/4 b3 V 
+m36 I64 b3 V2
+m37 I6 b2.5 viio64 b3 I6 b3.5 viio6
+m38 I b1.5 I6 b2 I64 b3 V
 m39 I b3 V7
 m40 I
-m41 V7 b3 I6/4 
+m41 V7 b3 I64
 m42 V7 
 m43 I6 b3 viio6
 m44 I b3 V2 
@@ -76,7 +76,7 @@ m56 V6 b1.5 I b2 V4/3 b2.5 I6 b3 V4/3 b3.5 I
 m57 b3 vi6/5 A: ii6/5 
 m58 V4/3
 m59 I6 b3 IV6 
-m60 I6/4 b2 V b3 V7
+m60 I64 b2 V b3 V7
 m61 I
 m62 V4/3 b2 V6 b3 V9 
 m62var1 V4/3 b2 V6 b3 V9 b3.5 V6
@@ -88,10 +88,10 @@ m68 i b2 Ger6/5 b3 Ger7
 m69 V
 Form: rondo A 
 m70-71 = m1-2
-m72 V b3 I6/4 
+m72 V b3 I64
 m73 V6/5 
 m74-76 = m5-7
-m77 I b1.5 I6 b2 I6/4 b3 V
+m77 I b1.5 I6 b2 I64 b3 V
 m78 I b2 I6 b3 V7
 m79 I b1.5 V4/3 b2 I b2.5 V6 b3 I
 m80 V6/5 b2 V7 b3 I
@@ -99,12 +99,12 @@ m81 V6 b1.5 I b2 V4/3 b2.5 I b3 V6/5 b3.5 V7
 m82 I6 b3 viio6 
 m83 I b3 V2
 m84 I6 b2 IV b3 ii6/5
-m85 I6/4 b1.5 V7 b2 viio7/vi b3 vi b3.5 viio4/3/ii
+m85 I64 b1.5 V7 b2 viio7/vi b3 vi b3.5 viio4/3/ii
 m86 ii6 b2 V7
 m87 = m85
 m88 ii6
 m89 V7 
 m90 I6 b3 IV 
-m91 I6/4 b1.5 V7 b2 I
+m91 I64 b1.5 V7 b2 I
 m92 I b1.5 V7 b2 I
 m92var1 I b1.5 viio b2 I 

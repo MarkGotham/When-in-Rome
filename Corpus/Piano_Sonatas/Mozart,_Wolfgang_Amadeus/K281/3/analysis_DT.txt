@@ -12,7 +12,7 @@ m0 b2 Bb: V6/5/ii
 m1 ii b2.5 V6
 m2 I b2.5 I6
 m3 IV b1.5 I6 b2 V4/3 b2.5 I
-m4 I6/4 b1.5 V b2.5 V6/5/ii
+m4 I64 b1.5 V b2.5 V6/5/ii
 m5 ii b1.5 ii6 b2.5 V6/5
 m6 I b1.5 I6 
 m7 IV b1.5 ii4/3 b2 V
@@ -21,7 +21,7 @@ m9 I b1.5 I6 b2 ii6 b2.5 viio/V
 m10 V b1.5 I b2 ii b2.5 viio
 m11 I b1.5 IV b2 V b2.5 V7
 m12 I b1.5 I+6 b2 IV b2.5 I+6
-m13 IV b2 I6/4 b2.5 V7
+m13 IV b2 I64 b2.5 V7
 m14-15 = m12-13
 m16 I b1.5 V7 b2 I b2.5 V7
 m17 I
@@ -33,7 +33,7 @@ m23 V4/3 b2 I6 b2.5 I
 m24 = m22
 m25 V4/3 b2 I6
 m26 ii6
-m27 I6/4 b1.5 V
+m27 I64 b1.5 V
 Form: rondo B
 m28 I b2 V6/5
 m29 V4/3 b2 I6
@@ -48,7 +48,7 @@ m37 ii6/5 b2 ii4/3
 m38 b1.5 ii6/5 b2 V
 Form: retransition
 m39 I b1.5 V7/IV
-m40 IV6/4 b1.5 viio6
+m40 IV64 b1.5 viio6
 m41-42 = m39-40
 Time signature: 8/2
 m43 I Bb: V b8.5 V6/5/ii
@@ -63,16 +63,16 @@ m53 viio6/5
 m54 viio4/3
 m55 i6 b1.5 V6 b2 i b2.5 V4/3
 m56 i6 b2.5 V6/iv
-m57 iv b2.5 i6/4
+m57 iv b2.5 i64
 m58 Ger6/5
-m59 i6/4 b2 V
+m59 i64 b2 V
 m60 V b2 V6/5
 m61 i b2 V2
 m62 i6 b2.75 It6
 m63 V
 m64 i6 b2.5 V6/5/iv
 m65 iv b1.5 viio4/3
-m66 i6/4 b2 V7
+m66 i64 b2 V7
 m67 i
 Form: retransition
 m68 viio4/3/IV b2 IV6
@@ -86,7 +86,7 @@ m89 Eb: V7
 m90 I
 m91 V6/5
 m92-93 = m90-91
-m94 I b2 IV6 b2.5 I6/4
+m94 I b2 IV6 b2.5 I64
 m95 IV b1.75 viio/ii b2 ii
 m96 V b1.25 V2 b1.5 I6 b2 ii6 b2.5 V b2.75 V2
 m96var1 V b1.25 V2 b1.5 I6 b1.75 I b2 IV b2.25 ii b2.5 V b2.75 V2
@@ -100,10 +100,10 @@ m102 viio6/5/vi
 m103 vi6 Bb: ii6 b2 V
 m104 viio6/5
 m105 I6
-m106 ii6/5 b1.5 ii4/3 b2 I6/4 b2.5 V2/IV
+m106 ii6/5 b1.5 ii4/3 b2 I64 b2.5 V2/IV
 m107 IV6 b1.5 IV b2 V6/5/IV b2.5 V7/IV
 m108 IV b2.5 ii6
-m109 I6/4 b1.5 V
+m109 I64 b1.5 V
 m110 viio6/V
 m111 V
 m112-113 = m110-111
@@ -114,7 +114,7 @@ m114 b2 I b2.5 V6/5/ii
 m115 = m1
 m116 I b2 I6 b2.5 I
 m117 viio6 b1.5 vi6 b2 V6 b2.5 viio6/V
-m117var1 V6/4 b2 V6
+m117var1 V64 b2 V6
 m118 V
 Pedal: F m118 b2 m123 b1
 m119-122 = m114-117
@@ -134,9 +134,9 @@ m134 vi
 m135 b1.5 I6 b2 ii6/5 b2.5 V
 Form: retransition
 m136 I b1.5 V7/IV
-m137 IV6/4 b1.5 viio6
+m137 IV64 b1.5 viio6
 m138 I6 b1.5 V7/IV
-m139 IV6/4 b1.5 viio6
+m139 IV64 b1.5 viio6
 m140 I6 b2 V6
 m141 I b2 viio6
 Form: rondo A

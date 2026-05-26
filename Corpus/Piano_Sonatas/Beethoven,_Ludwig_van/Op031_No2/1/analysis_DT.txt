@@ -12,9 +12,9 @@ m9 I b2.5 V6/ii
 m10 ii d: iv b2.5 N6
 m11 viio4/3
 m12 viio7/V
-m13 i6/4
-Note: lower neighbors become upper neighbors in m17, treating this all as i6/4
-m19 i6/4
+m13 i64
+Note: lower neighbors become upper neighbors in m17, treating this all as i64
+m19 i64
 m21 i
 m25 V4/3
 m29 i6
@@ -24,15 +24,15 @@ m35 viio6
 m37 i6
 m38 viio7/V
 m41 V7
-m45 i6/4
+m45 i64
 m49 V7
 m55 i6 b2 N6
 m56 b2.5 viio4/3
 m57-58 = m55-56
 m59 = m55
-m60 b1.5 V6/V b2 i6/4
+m60 b1.5 V6/V b2 i64
 m61 b1.5 V4/3/iv b2 iv6 b2.5 V6/iv
-m62 iv b1.5 N6 b2 i6/4 b2.5 V
+m62 iv b1.5 N6 b2 i64 b2.5 V
 Note: repeat of the theme here starts to shade toward D minor.  Could read this as root position Neapolitan alternating with major tonic, but that is a bit hard to swallow.  This is a good example of "semi modulation" of the sort you find in popular music.
 Note: amazing that changing C to C# (and reregistering) pushes you from A minor to a D minor whose tonic never appears!
 m63 i b2 d: VI
@@ -46,10 +46,10 @@ m71 a: V7
 m72 i b2 i6
 m73 ii/o6/5
 m74 V
-m75 i6/4 b2 V7
-m76 i6/4 b2 V
+m75 i64 b2 V7
+m76 i64 b2 V
 m77 i6 b2 V7
-m78 i6/4 b2 V
+m78 i64 b2 V
 m79-80 = m75-76
 m81-82 = m77-78
 m83-84 = m75-76
@@ -60,7 +60,7 @@ Note: this D6 chord, given the opening, could be a feint to G.
 m93 f#: VI6
 m93var1 G: V6 f#: VI6
 m95 viio7/V
-m97 I6/4
+m97 I64
 m99 i
 m103 V4/3
 m107 i6
@@ -73,13 +73,13 @@ m119 viio6/V
 m120 It6
 m121 V
 Note: reading b2.5 as nonharmonic
-m122 V b2 i6/4
+m122 V b2 i64
 m123 = m122
 m124 = m122
 m125 V
 m126-129 = m122-125
 m130-133 = m122-125
-m134 i6/4
+m134 i64
 m135 V
 Pedal: D m136 m136
 m136 N6
@@ -99,7 +99,7 @@ m165 i
 m167 d: viio4/3
 m169 viio7/V
 m171 V7
-m175 i6/4
+m175 i64
 m179 V7
 m185-188 = m55-58
 Note: rare upper voice pedal; because of limits of Beethoven's piano
@@ -111,7 +111,7 @@ m190 V6/V b2 iv6
 m190var1 V6/5/V b2 i4/3
 m191 viio6/iv b2 iv6 b2.5 V6/5/iv
 m191var1 V4/3/iv b2 iv6 b2.5 V6/5/iv
-m192 iv b1.5 N6 b2 i6/4 b2.5 V
+m192 iv b1.5 N6 b2 i64 b2.5 V
 m193 i b2 g: VI
 m194 b2.5 viio7/V
 m195 V b2 VI

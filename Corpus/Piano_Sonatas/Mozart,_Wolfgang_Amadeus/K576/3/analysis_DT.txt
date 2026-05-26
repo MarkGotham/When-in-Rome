@@ -19,7 +19,7 @@ m3 V6
 m4 I
 m5 I6 b1.5 V4/3 b2 I
 m6 V4/3 b1.5 I6 b2 V2
-m7 I6 b2 V6/4
+m7 I6 b2 V64
 Note: in m8 a G# is inferred based on general conventions of the style.
 m8 V7/V b2 V
 m8var1 ii7 b2 V
@@ -29,7 +29,7 @@ m11 viio b2 V
 m12 I
 m13 V2/IV b2 IV6
 m14 V2 b2 I6
-m15 ii6 b2 I6/4 b2.5 V7
+m15 ii6 b2 I64 b2.5 V7
 Pedal: D m16 b1 m20 b1
 m16 I
 m17 V7
@@ -39,7 +39,7 @@ m20 I b1.5 viio b2 I b2.5 V7
 m21 = m20
 m22 I
 m23 V b2 I
-m24 V b2 I6/4
+m24 V b2 I64
 m25 V
 Form: rondo B
 Form: second theme #1
@@ -54,9 +54,9 @@ Pedal: E m34 b1 m41 b2
 m34 V
 m35 vi2
 m36 V7
-m37 I6/4
+m37 I64
 m38 V
-m39 I6/4
+m39 I64
 m40 V7
 Note: mm42-43 are interpreted as purely melodic motion in thirds over a V7 harmony.
 m44 I b2 V2
@@ -64,7 +64,7 @@ m45 I6 b2 V2
 m46 I6 b1.5 iio/ii b2 V6/5/ii b2.5 ii
 m47 V6/5 b1.5 I b2 IV6/5 b2.5 viio
 m48 V6/5/vi b1.5 vi b2 V6/5/V b2.5 V2
-m49 I6 b1.5 IV b2 I6/4 b2.5 V7
+m49 I6 b1.5 IV b2 I64 b2.5 V7
 Note: m50 has an altered "Pachelbel" sequence, with a viio6/vi replacing the standard V
 Form: second theme #2
 m50 I b2.5 viio6/vi
@@ -72,9 +72,9 @@ m51 vi b1.5 iii6 b2 IV b2.5 I6
 m52 V4/3 b1.5 I b2.5 I6
 m53 IV6 b1.5 iii6 b2 ii6 b2.5 V6/5/V
 Note: now the standard "Pachelbel" sequence
-m54 I6/4 b1.5 V b2 I b2.5 V6
+m54 I64 b1.5 V b2 I b2.5 V6
 m55-56 = m51-52
-m57 IV b1.5 ii6 b2 I6/4 b2.5 V
+m57 IV b1.5 ii6 b2 I64 b2.5 V
 Pedal: A m58 b1 m64 b2
 m58 I
 m59 V7
@@ -96,14 +96,14 @@ m90 I b1.5 d: viio7 b2 i b2.5 g: viio6/5
 m91 i6 F: ii6 b2.5 V6/5/V
 Note: mm92-94 echo 23-25
 m92 V b2 I
-m93 V b2 I6/4
+m93 V b2 I64
 m94 V
 Form: development
 Form: rondo C
 m95 I
-m96 ii6/4 b2 viio
+m96 ii64 b2 viio
 m97 g: i
-m98 ii6/4 b2 viio
+m98 ii64 b2 viio
 m99 i
 m100 iio
 m101 viio6/5
@@ -111,7 +111,7 @@ m102 A: viio6/5
 m103 I
 m104 ii6 b2 ii6/5
 m105 V
-m106 I6/4 b2 b: ii6/5
+m106 I64 b2 b: ii6/5
 m107 V
 m108 i
 m109 iv D: ii
@@ -120,7 +120,7 @@ m111 I
 m112 ii6
 m113 ii6 b2.5 V6/5/V
 m114 V b2 I
-m115 V b2 I6/4
+m115 V b2 I64
 m116 V
 Form: rondo B (transposed to tonic key of D)
 Form: recapitulation (first and second themes reversed)
@@ -136,24 +136,24 @@ Pedal: A m125 b1 m132 b2
 m125 V
 m126 vi2
 m127 V7
-m128 I6/4
+m128 I64
 m129 V
-m130 I6/4
+m130 I64
 m131 V7
 m135 I b2 V2
 m136 I6 b2 V2
 m137 I6 b1.5 iio/ii b2 V6/5/ii b2.5 ii
 m138 V6/5 b1.5 I b2 IV6/5 b2.5 viio
 m139 V6/5/vi b1.5 vi b2 V6/5/V b2.5 V2
-m140 I6 b1.5 IV b2 I6/4 b2.5 V7
+m140 I6 b1.5 IV b2 I64 b2.5 V7
 Form: second Theme #2
 m141 I b2.5 viio6/vi
 m142 vi b1.5 iii6 b2 IV b2.5 I6
 m143 V4/3 b1.5 I b2.5 I6
 m144 IV6 b1.5 iii6 b2 ii6 b2.5 V6/5/V
-m145 I6/4 b1.5 V b2 I b2.5 V6
+m145 I64 b1.5 V b2 I b2.5 V6
 m146-147 = m142-143
-m148 IV b1.5 ii6 b2 I6/4 b2.5 V
+m148 IV b1.5 ii6 b2 I64 b2.5 V
 Pedal: D m149 b1 m151 b2
 m149 I
 m150 V7
@@ -163,11 +163,11 @@ m153 V6/5 b2 V2/IV
 m154 IV6 b1.5 iii6 b2 ii6 b2.5 V6/5/V
 Pedal: A m155 b1 m162 b2
 m155 V
-m156 I6/4
+m156 I64
 m157 V
-m158 i6/4
+m158 i64
 m159 V b2 viio/V
-m160 V7 b2 I6/4
+m160 V7 b2 I64
 Note: m161-2 hint at descending first inversion triads, but they are interpreted here as merely melodic
 m161 V7
 Form: rondo A
@@ -175,10 +175,10 @@ Form: first theme
 m163-177 = m1-15
 m178 I6
 m179 ii6/5
-m180 I6/4 b2 V7
+m180 I64 b2 V7
 m181-183 = m178-180
 Pedal: D m184 b1 m189 b1
-m184 I b2 IV6/4
+m184 I b2 IV64
 m185 I b2 viio
 m186-187 = 184-185
 m188 I
