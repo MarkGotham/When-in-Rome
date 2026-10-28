@@ -137,6 +137,9 @@ class HarmonicRange:
         self.bassFeedbackMessage: Optional[str] = None
         self.bassSuggestions: Optional[list] = []
 
+        # Shared by the score marker and the printed feedback for this range.
+        self.feedbackNumber: Optional[int] = None
+
         if source:
 
             if ('NotRest' in source.classes) and ('GeneralNote' in source.classes):
@@ -1064,6 +1067,8 @@ class ScoreAndAnalysis:
         if (not pitches) and (not rare) and (not metre) and (not bass):
             raise ValueError('Please select at least one of the feedback options.')
 
+        self.numberFeedback()
+
         if pitches:
             self.comparePitches()
             pitchToPrint = ['PITCH COVERAGE =====================\n']
@@ -1080,7 +1085,7 @@ class ScoreAndAnalysis:
                 for hr in self.harmonicRanges:
                     if hr.pitchFeedbackMessage:
                         if len(hr.pitchSuggestions) > 0:
-                            pitchToPrint.append(hr.pitchFeedbackMessage)
+                            pitchToPrint.append(f'[{hr.feedbackNumber}] {hr.pitchFeedbackMessage}')
                             pitchToPrint.append(f'Pitch match: {hr.pitchMatchStrength}%')
                             pitchToPrint.append('How about:')
                             for x in hr.pitchSuggestions:
@@ -1088,7 +1093,7 @@ class ScoreAndAnalysis:
                             pitchToPrint.append('\n')
                         else:  # no suggestions
                             if not constructiveOnly:
-                                pitchToPrint.append(hr.pitchFeedbackMessage)
+                                pitchToPrint.append(f'[{hr.feedbackNumber}] {hr.pitchFeedbackMessage}')
                                 pitchToPrint.append(f'Pitch match: {hr.pitchMatchStrength}%')
                                 pitchToPrint.append('Sorry, no suggestions - '
                                                     "I can't find any triads or sevenths.")
@@ -1101,7 +1106,7 @@ class ScoreAndAnalysis:
             for hr in self.harmonicRanges:
                 if hr.rareRnFeedbackMessage:
                     self.totalRareRnFeedback += 1
-                    rareToPrint.append(hr.rareRnFeedbackMessage + '\n')
+                    rareToPrint.append(f'[{hr.feedbackNumber}] {hr.rareRnFeedbackMessage}\n')
 
             if self.totalRareRnFeedback == 0:
                 msg = 'No rare or unconventional Roman Numerals in this analysis.\n'
@@ -1126,7 +1131,7 @@ class ScoreAndAnalysis:
                                     'at an unusually weak metrical position:\n')
                 for hr in self.harmonicRanges:
                     if hr.metricalFeedbackMessage:
-                        metreToPrint.append(hr.metricalFeedbackMessage + '\n')
+                        metreToPrint.append(f'[{hr.feedbackNumber}] {hr.metricalFeedbackMessage}\n')
 
         if bass:
             self.compareBass()
@@ -1145,14 +1150,14 @@ class ScoreAndAnalysis:
                 for hr in self.harmonicRanges:
                     if hr.bassFeedbackMessage:
                         if len(hr.bassSuggestions) > 0:
-                            bassToPrint.append(hr.bassFeedbackMessage)
+                            bassToPrint.append(f'[{hr.feedbackNumber}] {hr.bassFeedbackMessage}')
                             bassToPrint.append('How about:')
                             for x in hr.bassSuggestions:
                                 bassToPrint.append(x)
                             bassToPrint.append('\n')
                         else:  # no suggestions
                             if not constructiveOnly:
-                                bassToPrint.append(hr.bassFeedbackMessage)
+                                bassToPrint.append(f'[{hr.feedbackNumber}] {hr.bassFeedbackMessage}')
                                 bassToPrint.append('Sorry, no inversion suggestions - '
                                                    'none of the bass note(s) are in the chord.')
                                 bassToPrint.append('\n')
@@ -1182,49 +1187,71 @@ class ScoreAndAnalysis:
 
         text_file.close()
 
+    def numberFeedback(self):
+        """
+        Numbers the harmonic ranges with feedback of any type, in score order,
+        setting each one's feedbackNumber.
+        The score (writeScoreWithAnalysis) marks each of these ranges with its number,
+        and printFeedback starts each message with the same number in [brackets],
+        so that a marker on the score leads to the corresponding text.
+        All types count, whichever ones are selected for display,
+        so that a range keeps the same number either way.
+        """
+
+        self.runComparisons()
+
+        number = 0
+        for hr in self.harmonicRanges:
+            if hr.pitchFeedbackMessage or hr.rareRnFeedbackMessage or \
+                    hr.metricalFeedbackMessage or hr.bassFeedbackMessage:
+                number += 1
+                hr.feedbackNumber = number
+            else:
+                hr.feedbackNumber = None
+
     def _feedbackOnScore(self,
                          pitches: bool = True,
                          rare: bool = True,
                          metre: bool = True,
                          bass: bool = True):
         """
-        Inserts comments on the score for moments where there is feedback available.
+        Marks the score for moments where there is feedback available:
+        a warning sign and the number of that feedback (as in printFeedback)
+        above the analysis, and the chord in red.
         As with the printFeedback method, you can chose to any or all of the feedback types:
         'pitches', 'rare', 'metre'; and 'bass'.
         """
 
-        if pitches:
-            self.comparePitches()
-        if metre:
-            self.metricalPositions()
-        if bass:
-            self.compareBass()
+        self.numberFeedback()
 
         for hr in self.harmonicRanges:
-            if pitches and hr.pitchFeedbackMessage:
-                self.insertFeedback(hr, '* Pitch')
-            if rare and hr.rareRnFeedbackMessage:
-                self.insertFeedback(hr, '* Rare')
-            if metre and hr.metricalFeedbackMessage:
-                self.insertFeedback(hr, '* Beat')
-            if bass and hr.bassFeedbackMessage:
-                self.insertFeedback(hr, '* Bass')
+            if (pitches and hr.pitchFeedbackMessage) or \
+                    (rare and hr.rareRnFeedbackMessage) or \
+                    (metre and hr.metricalFeedbackMessage) or \
+                    (bass and hr.bassFeedbackMessage):
+                # A warning sign (in text, not emoji, style) as well as colour, for
+                # colour-blind readers and black-and-white printing.
+                self.insertFeedback(hr, f'\u26a0\ufe0e{hr.feedbackNumber}')
 
     def insertFeedback(self,
                        hr: HarmonicRange,
                        message: str):
         """
-        Shared method for inserting feedback of each type in to the score.
+        Inserts a message above the analysis at the start of a harmonic range
+        and colours the chord there red.
         """
         te = expressions.TextExpression(message)  # NB: Have to make a new one each time
         te.placement = 'above'
+        te.style.fontWeight = 'bold'
         te.style.color = 'red'
-        # Known issue: ^ This works within musicXML but readers like MuseScore don't show it.
         p = self.scoreWithAnalysis.parts[-1]
         m = p.measure(hr.startMeasure)
         mOffset = m.getOffsetInHierarchy(p)
         offsetInMeasure = hr.startOffset - mOffset  # TODO compress, but note not offset nor beat
         m.insert(offsetInMeasure, te)
+        # Unlike text colour, MuseScore and other readers show note colour.
+        for c in m.flatten().getElementsByOffset(offsetInMeasure).getElementsByClass(chord.Chord):
+            c.style.color = 'red'
 
 
 # ------------------------------------------------------------------------------

@@ -1,7 +1,8 @@
 import os
+import tempfile
 import unittest
 
-from music21 import converter
+from music21 import chord, converter, expressions
 
 from Code.romanUmpire import ScoreAndAnalysis
 from . import TEST_RESOURCES_FOLDER
@@ -47,3 +48,36 @@ class Test(unittest.TestCase):
                              "Measure 9, beat 1, iiø7 in bb, "
                              "indicating the bass C for lowest note(s) of: ['Eb2'].",)
             self.assertEqual(sa.totalMetricalFeedback, 19)
+
+    def testFeedbackNumbers(self):
+        """
+        Each harmonic range with feedback gets a number,
+        shown both on the score and in the printed feedback.
+        """
+
+        basePath = TEST_RESOURCES_FOLDER / "Example"
+        sa = ScoreAndAnalysis(os.path.join(basePath, "score.mxl"),
+                              analysisLocation=os.path.join(basePath, "analysis.txt"),
+                              tolerance=60)
+
+        with tempfile.TemporaryDirectory() as outPath:
+            sa.writeScoreWithAnalysis(outPath=outPath, outFile="annotated.mxl")
+            sa.printFeedback(outPath=outPath, outFile="feedback")
+            with open(os.path.join(outPath, "feedback.txt")) as f:
+                feedback = f.read()
+
+        numbered = [hr for hr in sa.harmonicRanges if hr.feedbackNumber]
+        self.assertGreater(len(numbered), 0)
+        self.assertEqual([hr.feedbackNumber for hr in numbered],
+                         list(range(1, len(numbered) + 1)))
+
+        analysis = sa.scoreWithAnalysis.parts[-1]
+        markers = analysis.recurse().getElementsByClass(expressions.TextExpression)
+        self.assertEqual([te.content for te in markers],
+                         [f"\u26a0\ufe0e{hr.feedbackNumber}" for hr in numbered])
+        redChords = [c for c in analysis.recurse().getElementsByClass(chord.Chord)
+                     if c.style.color == "red"]
+        self.assertEqual(len(redChords), len(numbered))
+
+        hr = sa.harmonicRanges[20]
+        self.assertIn(f"[{hr.feedbackNumber}] {hr.bassFeedbackMessage}", feedback)
